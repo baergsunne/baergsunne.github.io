@@ -1,2 +1,1 @@
-Bärgsunne Poker 1.5.0 — Legacy & Records Center (10 planned data-derived features)
-All 2010–2025 historical results are simulated. Backend not activated.
+Bärgsunne Poker 1.6.0 — 10 datenbasierte Deep Insights; historische Resultate 2010–2025 simuliert; Backend deaktiviert.
