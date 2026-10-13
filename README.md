@@ -1,19 +1,11 @@
-# Bärgsunne Poker v1.4.3 — iPhone Layout-Korrektur
+# Bärgsunne Poker v1.4.4 – iPhone Update
 
-Die Dateien im Hauptverzeichnis von baergsunne/baergsunne.github.io hochladen (Dateinamen beibehalten, bestehende Dateien ersetzen). **Nicht** das separate Backend-ZIP veröffentlichen.
+Vollständige GitHub Pages-Website. Alle Dateien aus diesem Paket direkt in das Hauptverzeichnis von `baergsunne/baergsunne.github.io` hochladen und gleichnamige ersetzen. Das separate sichere Backend gehört NICHT in GitHub Pages.
 
-## Korrekturen
-- Einheitliche Seitenbreite und Kantenabstände auf allen Ansichten (mobil)
-- Keine überlaufenden Farbflächen oder unkontrollierten grossen grünen Kreise
-- Dynamische Grün-Gold-Verläufe bleiben innerhalb der jeweiligen Karten
-- Tabellen und Diagramme scrollen innerhalb ihrer Karten, statt die gesamte Seite zu verbreitern
-- Mehrfach-Jahresauswahl, Legenden, Kachel-Navigation und Hall of Champions aus v1.4 bleiben erhalten
-- Sichtbare Versionskennung: VERSION 1.4.3
+## Änderungen gegenüber v1.4.3
+- Breite, einheitliche und vollständig lesbare Jahrgangskacheln in der wischbaren Historie.
+- Die Champion-Zusammenfassung enthält ausschliesslich Jahr, Siegername und erreichte Punkte.
+- Websiteweit kompakte Ranglistentabellen: Spalten nach Inhalt, schmalere Zellen, weniger Leerraum und weiterhin antippbare Sortierung.
+- Ruhiger, kontrastreicher Tabellenhintergrund; die umgebenden Karten behalten ihren Grün-Gold-Verlauf.
 
-## Sicherheit
-Öffentliches GitHub Pages enthält weiterhin nur Demo; sichere Admin-API erfordert separates Backend. Keine produktive Mehrgeräte-Synchronisierung.
-
-## Änderungen v1.4.3
-- Kein zusätzlicher Button «+ Jahre einzeln auswählen»; die Mehrfachauswahl bleibt über «Jahrgänge» möglich.
-- Historien-Jahreskacheln zeigen nur noch Jahr und Sieger (kein «EDITION»).
-- Aktiver Jahrgang hat einen goldenen Rand bei dunkelgrünem Hintergrund und heller Schrift, nicht eine goldene Füllung mit schwarzer Schrift.
+**Hinweis:** Die Statistikdaten 2010–2025 sind ausschliesslich simuliert; Admin-Backend und gemeinsame Live-Daten sind noch nicht aktiviert.
