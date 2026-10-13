@@ -1,1 +1,1 @@
-Bärgsunne Poker v1.7.0 – erklärtes, frei konfigurierbares Analyse-Studio (lokaler Teststand)
+Bärgsunne Poker v1.8.0 — Standardanalysen-Katalog (Demo)

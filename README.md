@@ -1,1 +1,3 @@
-Bärgsunne Poker v1.7.0: Neues Analyse-Studio in Statistiken, zwei frei definierbare Gruppen, Spieler-, Jahres- und Einzelrundenfilter, fünf Kennzahlen, laufende Erklärungen, Rechenbeispiele und lokal gespeicherte Vergleiche. Alle historischen Daten sind simuliert. Kein geschütztes Live-Backend aktiviert.
+# Bärgsunne Poker 1.8.0
+
+24 wiederverwendbare Analyse-Definitionen, als Standardkatalog und in Spieler-/Jahresseiten. Simulierte Daten, keine öffentlichen Tatsachen. Die vier Vergleichsanalysen sind Vorlagen für den bestehenden Vergleichsbereich und ersetzen keine echten direkten Duelle. Backend bleibt deaktiviert.
