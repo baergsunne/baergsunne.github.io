@@ -253,3 +253,6 @@ main{width:min(100%,1240px);margin-inline:auto}
 
 /* v1.8.0 compact standard analysis layout */
 .standard-catalog{margin:24px 0}.standard-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:12px}.standard-card{min-width:0}.standard-card p{line-height:1.55}.standard-card details{margin-top:14px}.standard-card summary{cursor:pointer;font-weight:700}.standard-card details p{margin:12px 0}
+
+/* v1.8.1 consistent disclosure for statistics */
+.explain-detail{margin-top:16px;border:1px solid rgba(200,177,115,.28);border-radius:12px;overflow:hidden;max-width:100%}.explain-detail summary{cursor:pointer;padding:14px 15px;font-weight:700;line-height:1.5;list-style-position:inside}.explain-body{padding:2px 16px 16px;overflow-wrap:anywhere}.explain-body h4{margin:14px 0 5px;color:#d6b775;font-size:.92rem}.explain-body p{margin:0 0 8px;line-height:1.65}.explain-detail[open] summary{border-bottom:1px solid rgba(200,177,115,.22)}
