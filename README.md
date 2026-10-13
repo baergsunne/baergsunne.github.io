@@ -1,3 +1,1 @@
-# Bärgsunne Poker v1.6.0
-
-Erweiterung der bestehenden v1.5.0 um 10 datenbasierte Analysen in Statistikregister, Historie und Spielerprofil. Keine neuen Datenquellen. 2010–2025 nur simulierte Ergebnisse. Backend weiterhin nicht aktiviert. Zur Veröffentlichung alle Dateien ins GitHub-Repository baergsunne/baergsunne.github.io hochladen.
+Bärgsunne Poker v1.7.0: Neues Analyse-Studio in Statistiken, zwei frei definierbare Gruppen, Spieler-, Jahres- und Einzelrundenfilter, fünf Kennzahlen, laufende Erklärungen, Rechenbeispiele und lokal gespeicherte Vergleiche. Alle historischen Daten sind simuliert. Kein geschütztes Live-Backend aktiviert.

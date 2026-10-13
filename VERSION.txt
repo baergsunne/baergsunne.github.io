@@ -1,1 +1,1 @@
-Bärgsunne Poker 1.6.0 — 10 datenbasierte Deep Insights; historische Resultate 2010–2025 simuliert; Backend deaktiviert.
+Bärgsunne Poker v1.7.0 – erklärtes, frei konfigurierbares Analyse-Studio (lokaler Teststand)
