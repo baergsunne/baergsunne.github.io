@@ -232,3 +232,13 @@ main{width:min(100%,1240px);margin-inline:auto}
  .champion-summary-name{font-size:23px}
  .table-scroll .datatable th,.table-scroll .datatable td{padding:6px 7px!important}
 }
+
+/* v1.4.5 – fixed card rhythm and viewport-width charts */
+.champ-tile{display:grid!important;grid-template-rows:26px 37px minmax(43px,auto) 22px 25px 39px 25px;justify-items:center;align-content:center;gap:7px!important;height:255px!important;min-height:255px!important;padding:14px 8px!important}
+.champ-tile .champ-year,.champ-tile .champ-crown,.champ-tile .champ-name,.champ-tile .champ-caption,.champ-tile .champ-score,.champ-tile .champ-go{margin:0!important;align-self:center}
+.champ-badge-slot{min-height:37px;display:flex;align-items:center;justify-content:center;width:100%}.champ-multi{font-size:clamp(8px,2.6vw,11px)!important;white-space:normal}
+.playercard{gap:5px!important;padding:14px 8px!important;min-height:115px!important}.playercard b{font-size:clamp(22px,5vw,30px)!important}.playercard small{font-size:11px}.playercard em{font-size:18px!important}
+.chart-scroll--large{width:100%;max-width:100%;overflow:hidden!important;margin-inline:0!important}.chart-svg--large{width:100%!important;min-width:0!important;max-width:100%!important;height:auto!important;aspect-ratio:auto}
+.bp-series-legend{max-width:100%;min-width:0}.bp-series-pill{min-width:0}
+.race-list{display:grid;gap:7px;margin:14px 0}.race-entry{background:#153124;border:1px solid #3e5a47;border-radius:12px;padding:11px 12px}.race-entry>div{display:flex;gap:10px;align-items:center}.race-entry strong{margin-right:auto}.race-entry b{color:#f0d091;white-space:nowrap}.race-entry small{display:block;margin-top:5px;color:#b8c9bc}.race-up{color:#70d6a6;font-weight:800}.race-down{color:#f0a18d;font-weight:800}.race-flat{color:#a8baae}
+@media(max-width:400px){.champ-tile{height:238px!important;min-height:238px!important;grid-template-rows:22px 32px 40px 19px 21px 33px 20px;gap:6px!important}.champ-name{font-size:clamp(19px,6vw,25px)!important}.champ-year{font-size:clamp(10px,3vw,12px)!important}.champ-caption{font-size:10px!important}.champ-score{font-size:10px!important}.champ-multi{padding:4px!important}}

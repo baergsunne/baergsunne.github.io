@@ -1,2 +1,2 @@
-Bärgsunne Poker 1.4.4 — mobile consistency correction
-CSS: one consistent content width, gradients clipped inside cards, tables scroll inside cards.
+Bärgsunne Poker 1.4.5 — Statistik- und Karten-Update
+Lokale DOM-Tests bestanden; GitHub-Pages-Deployment und iPhone-Safari-Abnahme noch ausstehend.

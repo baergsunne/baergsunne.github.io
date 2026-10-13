@@ -1,4 +1,4 @@
-# Bärgsunne Poker v1.4.4 – iPhone Update
+# Bärgsunne Poker v1.4.5 – iPhone Update
 
 Vollständige GitHub Pages-Website. Alle Dateien aus diesem Paket direkt in das Hauptverzeichnis von `baergsunne/baergsunne.github.io` hochladen und gleichnamige ersetzen. Das separate sichere Backend gehört NICHT in GitHub Pages.
 
@@ -9,3 +9,7 @@ Vollständige GitHub Pages-Website. Alle Dateien aus diesem Paket direkt in das 
 - Ruhiger, kontrastreicher Tabellenhintergrund; die umgebenden Karten behalten ihren Grün-Gold-Verlauf.
 
 **Hinweis:** Die Statistikdaten 2010–2025 sind ausschliesslich simuliert; Admin-Backend und gemeinsame Live-Daten sind noch nicht aktiviert.
+
+
+## v1.4.5
+Championship Race mit Rundenergebnissen und Auf-/Abstieg; Platzierungsverteilung entfernt; Rivalitätsvergleich erläutert und Prozentmatrix; Karriereschnitt; Spielerkacheln ohne Initialen; Champion-Kacheln mit festen Zeilen; Diagramme ohne seitlichen Scrollzwang. Alle Archivresultate sind weiterhin simuliert. Backend bleibt deaktiviert.
