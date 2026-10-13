@@ -1,3 +1,3 @@
-# Bärgsunne Poker v1.8.1
+# Bärgsunne Poker v1.8.2
 
-Basis: v1.8.0. Erweitert Statistik-Karten um aufklappbare Erläuterungen mit Fragestellung, Berechnungsweg, verständlichem Beispiel, konkretem Demo-Rundendatensatz und Aussagegrenzen. Vorhandene Wenn-dann-Erklärungen bleiben bestehen. Keine Veränderung an Backend oder Ergebnissen. Historische Daten 2010–2025 weiterhin simuliert.
+Aufbauend auf v1.8.1: leichter verständliche Erklärungstexte und je drei automatisch aus den vorhandenen Demo-Runden errechnete Erkenntniskarten auf Spieler- und Jahrgangsseiten. Keine Änderungen am Ergebnisbestand, Backend oder Punktesystem. Die Daten 2010–2025 sind simuliert. Veröffentlichung separat.
