@@ -1,0 +1,5 @@
+BÄRGSUNNE POKER V1.1
+Geprüft: JS-Syntax, Rendering Home/History/Statistics/Players/Live/Admin/Hall of Fame, Filter 3 Jahre × 2 Spieler, Unteransichten.
+Nicht geprüft: realer mobiler Browser und GitHub Pages nach Veröffentlichung.
+Nicht implementiert: echter passwortgeschützter Admin mit Backend, Echtzeit-Synchronisierung, automatischer GitHub-Deploy (GitHub-Connector derzeit ohne gültigen Zugriff).
+Keine Änderungen an öffentlichen GitHub-Repositories durchgeführt.
