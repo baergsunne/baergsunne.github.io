@@ -1,2 +1,2 @@
-Bärgsunne Poker 1.4.2 — mobile consistency correction
+Bärgsunne Poker 1.4.3 — mobile consistency correction
 CSS: one consistent content width, gradients clipped inside cards, tables scroll inside cards.
