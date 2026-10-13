@@ -35,3 +35,83 @@
 .pickgrid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:10px!important}
 .pick{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 @media(max-width:380px){.feature{min-height:190px}.featureicon{font-size:41px!important}.feature b{font-size:20px!important}.pickgrid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+
+
+/* =============================================================
+   BÄRGSUNNE POKER 1.4 — UNIVERSAL CARD DESIGN
+   Cards are content-sized, fully centred and have ambient depth.
+   Data-bearing panels preserve readable left-aligned tables/charts.
+   ============================================================= */
+:root{--bp-ink:#091b13;--bp-gold:#e8c37e;--bp-soft:#c6dbcb}
+/* Unified ambient gradient for EVERY card/panel surface */
+:where(.kpi,.feature,.playercard,.record,.champ-tile,.podium-card,.yearcard,.card,.filterbar,.round-detail,.admin-notice,.adm-box){
+ background-color:#163125;
+ background-image:radial-gradient(ellipse 90% 75% at 100% 0%,rgba(109,160,105,.31),transparent 73%),radial-gradient(ellipse 80% 70% at 0% 100%,rgba(217,173,86,.20),transparent 78%),linear-gradient(132deg,#244b36 0%,#19392b 42%,#10291f 100%)!important;
+ background-repeat:no-repeat;
+ border-color:rgba(173,188,128,.39);
+ box-shadow:inset 0 1px 0 rgba(251,255,233,.12),0 10px 25px rgba(0,0,0,.26);
+}
+/* Click targets receive consistent tactile feedback, without jumping layout */
+:where(.kpi-click,.feature,.playercard,.record,.champ-tile,.podium-card,.yearcard){
+ position:relative;isolation:isolate;overflow:hidden;
+ transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease;
+}
+:where(.kpi-click,.feature,.playercard,.record,.champ-tile,.podium-card,.yearcard):is(:hover,:focus-visible){border-color:#e8c37e;box-shadow:inset 0 1px #fff4,0 12px 28px #0006,0 0 0 1px #e8c37e66}
+:where(.kpi-click,.feature,.playercard,.record,.champ-tile,.podium-card,.yearcard):active{transform:scale(.985)}
+/* Metric tiles: compact, proportional, centred */
+.metrics{align-items:stretch;grid-auto-rows:auto}
+.kpi,.kpi-click{min-height:0!important;height:auto;display:flex!important;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center!important;padding:19px 13px!important}
+.kpi>div{font-size:clamp(12px,1.7vw,15px);line-height:1.35;color:var(--bp-soft);overflow-wrap:anywhere}
+.kpi strong{font-size:clamp(27px,3.5vw,40px);line-height:1.1;margin:3px 0!important}
+.kpi small{font-size:clamp(11px,1.5vw,13px);line-height:1.35;overflow-wrap:anywhere}
+.kpi-arrow{position:static!important;display:inline-block;margin-top:3px;font-size:19px}
+/* Main navigation tiles: no forced blank height; icon and copy scale together */
+.featuregrid,.playergrid,.record-grid,.champ-timeline{align-items:stretch;grid-auto-rows:auto}
+.feature{min-height:0!important;height:auto;padding:22px 15px!important;gap:8px!important;justify-content:center;align-items:center;text-align:center!important}
+.featureicon{font-size:clamp(38px,5vw,52px)!important;line-height:1!important;margin:0 0 4px!important}
+.feature b,.feature strong{font-size:clamp(18px,2.6vw,26px)!important;line-height:1.18!important;overflow-wrap:anywhere;text-align:center}
+.feature small{min-height:0!important;margin:0!important;max-width:25ch;font-size:clamp(12px,1.75vw,14px);line-height:1.43}
+.featurearrow{position:static!important;margin:3px 0 0!important;font-size:19px!important;line-height:1}
+/* Player and record tiles */
+.playercard{display:flex!important;flex-direction:column;align-items:center;justify-content:center;text-align:center!important;gap:8px;padding:20px 12px!important;min-height:0!important}
+.playercard>span{min-width:0;max-width:100%;overflow-wrap:anywhere;text-align:center}
+.playercard .avatar{margin:0 auto;font-size:24px}
+.playercard strong,.playercard b{font-size:clamp(17px,2.3vw,23px);overflow-wrap:anywhere}
+.playercard small{font-size:12px;line-height:1.4}
+.playercard em{position:static;margin:2px 0 0;font-size:20px;color:var(--bp-gold)}
+.record{min-height:0!important;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;text-align:center!important;padding:18px 13px!important}
+.record span{font-size:clamp(25px,3.8vw,38px);color:var(--bp-gold);line-height:1.15}
+.record small{line-height:1.4;font-size:12px}
+.record strong{font-size:clamp(16px,2.3vw,21px);line-height:1.2;overflow-wrap:anywhere}
+.record b{font-size:clamp(19px,2.8vw,27px);line-height:1.15;overflow-wrap:anywhere}
+/* Champions and podium: consistent centre composition, no fake height */
+.champ-tile{min-height:0!important;height:auto;display:flex;align-items:center!important;justify-content:center!important;flex-direction:column;gap:7px;text-align:center!important;padding:20px 15px 21px!important}
+.champ-year{font-size:13px}.champ-name{margin:0!important;font-size:clamp(22px,3vw,31px)!important;text-align:center;max-width:100%}
+.champ-crown{position:static!important;font-size:clamp(27px,3.5vw,36px)!important;line-height:1}
+.champ-caption,.champ-score,.champ-multi{text-align:center}
+.champ-go{position:static!important;display:block;font-size:19px!important;line-height:1;margin-top:2px}
+.podium-card{min-height:0!important;display:flex;align-items:center;justify-content:center;gap:8px;text-align:center!important;padding:20px 12px!important}
+.podium-card strong{font-size:clamp(18px,2.8vw,26px);overflow-wrap:anywhere}
+.yearcard{min-height:0!important;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center!important;padding:15px 13px!important}
+.yearcard strong{font-size:clamp(20px,2.7vw,25px)}
+/* Form/table/chart cards: share gradient, keep content left aligned */
+.card,.filterbar,.round-detail,.admin-notice{background-size:cover}
+.card h3{line-height:1.3}
+/* All informational capsules use a subtle linked ambient gradient */
+:where(.chip,.pill,.selectlike,.champ-statline span,.legend-item,.bp-series-pill){background-image:linear-gradient(135deg,rgba(109,154,112,.18),rgba(232,195,126,.08))}
+/* Mobile: truly compact even when four tiles share a small screen */
+@media(max-width:800px){
+ .metrics,.featuregrid,.playergrid,.champ-timeline{gap:10px}
+ .kpi,.kpi-click{padding:15px 9px!important;gap:5px}
+ .kpi strong{font-size:clamp(25px,7vw,34px)}
+ .feature{padding:17px 10px!important;gap:7px!important}
+ .featureicon{font-size:clamp(38px,10vw,48px)!important}
+ .feature b,.feature strong{font-size:clamp(18px,5vw,23px)!important}
+ .feature small{font-size:clamp(11px,3.1vw,13px)}
+ .playercard,.record{padding:16px 9px!important}
+ .champ-tile{padding:17px 10px!important}
+ .champ-name{font-size:clamp(20px,6vw,27px)!important}
+ .podium-card{padding:15px 8px!important}
+}
+@media(max-width:380px){.feature{padding:14px 8px!important}.featureicon{font-size:37px!important}.feature b{font-size:17px!important}.feature small{font-size:11px}.champ-name{font-size:20px!important}}
+@media(prefers-reduced-motion:reduce){:where(.kpi-click,.feature,.playercard,.record,.champ-tile,.podium-card,.yearcard){transition:none!important}}

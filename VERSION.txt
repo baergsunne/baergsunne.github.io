@@ -1,2 +1,1 @@
-Bärgsunne Poker v1.3.0 · A UI-Korrekturen / B Backend separat vorbereitet.
-Diese statische Vorschau hat KEINE freigeschaltete Administration.
+Bärgsunne Poker v1.4.0 — universelles zentriertes Kacheldesign mit dynamischem Verlauf; keine Backend-Aktivierung.
