@@ -1,2 +1,2 @@
-Bärgsunne Poker 1.4.5 — Statistik- und Karten-Update
-Lokale DOM-Tests bestanden; GitHub-Pages-Deployment und iPhone-Safari-Abnahme noch ausstehend.
+Bärgsunne Poker 1.5.0 — Legacy & Records Center (10 planned data-derived features)
+All 2010–2025 historical results are simulated. Backend not activated.

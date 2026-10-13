@@ -13,3 +13,6 @@ Vollständige GitHub Pages-Website. Alle Dateien aus diesem Paket direkt in das 
 
 ## v1.4.5
 Championship Race mit Rundenergebnissen und Auf-/Abstieg; Platzierungsverteilung entfernt; Rivalitätsvergleich erläutert und Prozentmatrix; Karriereschnitt; Spielerkacheln ohne Initialen; Champion-Kacheln mit festen Zeilen; Diagramme ohne seitlichen Scrollzwang. Alle Archivresultate sind weiterhin simuliert. Backend bleibt deaktiviert.
+
+## v1.5.0
+Legacy & Records Center: Hall of Fame, round streaks, expanded duels, form overview, championship drama, best seasons, career milestones, consistency, era comparison, template-based seasonal recaps. Based exclusively on existing simulated dataset; no extra API or user input.
