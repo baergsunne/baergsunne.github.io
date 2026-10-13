@@ -1,15 +1,14 @@
-# Bärgsunne Poker v1.4.0 — iPhone Website
+# Bärgsunne Poker v1.4.1 — iPhone Layout-Korrektur
 
-Dieses ZIP enthält ausschliesslich Dateien für das öffentliche GitHub-Pages-Repository `baergsunne/baergsunne.github.io`. Der geschützte Worker mit Datenbank gehört **nicht** in dieses öffentliche Repository.
+Die Dateien im Hauptverzeichnis von baergsunne/baergsunne.github.io hochladen (Dateinamen beibehalten, bestehende Dateien ersetzen). **Nicht** das separate Backend-ZIP veröffentlichen.
 
-## Änderungen
-- Alle Kennzahlen-, Navigations-, Jahrgangs-, Spieler-, Rekord-, Sieger- und Podestkacheln: zentrierte Inhalte und grössenangepasste Typografie/Symbole.
-- Kein künstliches Mindesthöhen-Polster. Karten bleiben in einem Raster gleich hoch, orientieren sich aber am Inhalt statt an starren grossen Höhen.
-- Einheitlicher, lebendiger mehrschichtiger Grün-Gold-Verlauf auf allen Kachel- und Paneltypen einschliesslich Datenpanels.
-- Tabellen, Diagramme und Formulare bleiben für ihre Lesbarkeit bewusst linksbündig.
-- iPhone/kleine Bildschirme mit abgestuften Text- und Icongrössen, respektiert reduzierte Animationen.
+## Korrekturen
+- Einheitliche Seitenbreite und Kantenabstände auf allen Ansichten (mobil)
+- Keine überlaufenden Farbflächen oder unkontrollierten grossen grünen Kreise
+- Dynamische Grün-Gold-Verläufe bleiben innerhalb der jeweiligen Karten
+- Tabellen und Diagramme scrollen innerhalb ihrer Karten, statt die gesamte Seite zu verbreitern
+- Mehrfach-Jahresauswahl, Legenden, Kachel-Navigation und Hall of Champions aus v1.4 bleiben erhalten
+- Sichtbare Versionskennung: VERSION 1.4.1
 
-## iPhone-Veröffentlichung
-ZIP in Dateien entpacken; alle 12 Webdateien ohne Unterordner in das GitHub-Repository hochladen, gleichnamige Dateien ersetzen, `main` committen. Dann `https://baergsunne.github.io/?v=1.4.0` öffnen; auf die sichtbare Kennung `VERSION 1.4.0` achten.
-
-Admin-Backend ist weiterhin **nicht aktiv**; keine produktive Synchronisierung oder sichere Schreibfunktion. Sämtliche Archivresultate sind simuliert.
+## Sicherheit
+Öffentliches GitHub Pages enthält weiterhin nur Demo; sichere Admin-API erfordert separates Backend. Keine produktive Mehrgeräte-Synchronisierung.

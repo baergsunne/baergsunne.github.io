@@ -1,1 +1,2 @@
-Bärgsunne Poker v1.4.0 — universelles zentriertes Kacheldesign mit dynamischem Verlauf; keine Backend-Aktivierung.
+Bärgsunne Poker 1.4.1 — mobile consistency correction
+CSS: one consistent content width, gradients clipped inside cards, tables scroll inside cards.

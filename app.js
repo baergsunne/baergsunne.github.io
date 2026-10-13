@@ -14,7 +14,7 @@ const clone=v=>JSON.parse(JSON.stringify(v));
 let db=loadCustom()||clone(seed);
 function loadCustom(){try{let s=localStorage.getItem('poker-demo-data-v1');if(!s)return null;const v=JSON.parse(s);if(v&&Array.isArray(v.editions)&&Array.isArray(v.players))return v;}catch(e){}return null;}
 function persist(){try{localStorage.setItem('poker-demo-data-v1',JSON.stringify(db))}catch(e){alert('Speichern fehlgeschlagen. Browser-Speicher könnte voll oder deaktiviert sein. Bitte Daten exportieren.')}}
-const APP_VERSION='1.4.0';
+const APP_VERSION='1.4.1';
 const state={hiddenSeries:[],page:'home',year:'all',selectedYears:[],selected:[],tab:'overview',chart:'lines',metric:'avg',sort:{},tablePages:{},historyYear:2025,rivalA:'Mike',rivalB:'Fösu',profile:'Mike',simRule:'classic',manageRound:1,raceRound:1,onlyActive:false,navStack:[]};
 const navs=[['home','⌂','Start'],['history','◷','Historie'],['stats','◈','Statistiken'],['players','♙','Spieler'],['live','♠','Live']];
 function eyear(y){return db.editions.find(e=>e.year===Number(y))}

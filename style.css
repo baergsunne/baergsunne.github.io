@@ -115,3 +115,52 @@
 }
 @media(max-width:380px){.feature{padding:14px 8px!important}.featureicon{font-size:37px!important}.feature b{font-size:17px!important}.feature small{font-size:11px}.champ-name{font-size:20px!important}}
 @media(prefers-reduced-motion:reduce){:where(.kpi-click,.feature,.playercard,.record,.champ-tile,.podium-card,.yearcard){transition:none!important}}
+
+/* Bärgsunne Poker 1.4.1 — consistent viewport width and contained ambient gradients */
+html,body{width:100%;max-width:100%;overflow-x:clip}
+#app,main,.page{width:100%;max-width:100%;min-width:0}
+main{width:min(100%,1240px);margin-inline:auto}
+.page>*,.two-col>*,.split>*,.featuregrid>*,.playergrid>*,.metrics>*,.champ-timeline>*,.record-grid>*,.podium>*,.filterrow>*,.filterrow label{min-width:0;max-width:100%}
+.two-col,.split,.featuregrid,.playergrid,.metrics,.champ-timeline,.record-grid,.podium{width:100%;max-width:100%}
+.card,.filterbar,.round-detail,.hero,.kpi,.feature,.playercard,.record,.yearcard,.champ-tile,.podium-card{max-width:100%;min-width:0;overflow:hidden;isolation:isolate}
+/* Use only contained linear layers: removes giant radial discs on Safari screenshots */
+:where(.kpi,.feature,.playercard,.record,.champ-tile,.podium-card,.yearcard,.card,.filterbar,.round-detail,.admin-notice,.adm-box){
+ background:#19372a!important;
+ background-image:linear-gradient(126deg,rgba(226,185,105,.10),transparent 27%),linear-gradient(306deg,rgba(110,169,120,.20),transparent 48%),linear-gradient(155deg,#254a37 0%,#1a372a 45%,#10251c 100%)!important;
+ background-size:100% 100%!important;
+ background-repeat:no-repeat!important;
+ background-position:center!important;
+}
+/* Full-bleed gradients stay behind content, never outside tile bounds */
+:where(.kpi,.feature,.playercard,.record,.champ-tile,.podium-card,.yearcard,.card,.filterbar,.round-detail)::before,
+:where(.kpi,.feature,.playercard,.record,.champ-tile,.podium-card,.yearcard,.card,.filterbar,.round-detail)::after{max-width:100%;pointer-events:none}
+.feature::before{content:none!important}
+.champ-tile::before{content:none!important}
+/* All cards share a single full-width column rhythm */
+.card,.filterbar{width:100%;margin-left:0;margin-right:0}
+.two-col>div{min-width:0;width:100%}
+.two-col>div>.card{width:100%;}
+.edition-head{display:flex;flex-wrap:wrap;justify-content:flex-start;align-items:center;gap:8px 16px}
+.edition-head h2{margin:0;min-width:0;overflow-wrap:anywhere}
+.editionfacts{display:flex;flex-wrap:wrap;gap:12px}
+.table-scroll,.chart-scroll,.heat-scroll{max-width:100%;min-width:0;overflow-x:auto;overscroll-behavior-x:contain}
+.datatable{width:100%}
+.bp-series-legend{min-width:0;max-width:100%;}
+.bp-series-pill{width:100%;box-sizing:border-box;}
+.chart-scroll>svg{display:block;max-width:100%;}
+/* Consistent edges without excessive whitespace */
+@media(max-width:800px){
+ main{padding-inline:14px!important}
+ .hero,.card,.filterbar{border-radius:20px}
+ .hero{width:100%}
+ .two-col,.split{grid-template-columns:minmax(0,1fr)!important}
+ .two-col>div{display:flex;flex-direction:column;gap:12px}
+ .two-col>div>.card{margin:0}
+ .metrics,.featuregrid,.playergrid,.champ-timeline{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ .record-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ .edition-head{gap:7px 12px}
+ .edition-head .overline{width:100%}
+ .edition-head h2{font-size:clamp(22px,7vw,34px)}
+ .kpi,.feature,.champ-tile,.record,.playercard{height:auto;}
+}
+@media(max-width:360px){main{padding-inline:10px!important}.champ-tile,.feature{padding-inline:9px!important}}
