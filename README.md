@@ -1,7 +1,11 @@
-# Bärgsunne Poker 2.0.0 — Alpine Poker Heritage
+# Bärgsunne Poker 2.0.1 – Premium-Grafiken
 
-Grafische Überarbeitung der bestehenden 1.9.9-Anwendung. Keine Änderungen an `data.js`, `historische-ergebnisse.json` oder Statistikformeln. Originale Inter-/Systemschrift. Grafik: ortsspezifische stilisierte Chalet-/Berglandschaft und Pokal-Silhouette in lokalen SVG-Assets. CHF 0, GitHub Pages, keine externen Dienste.
+Fortsetzung der bestehenden Version 2.0.0. Die früheren einfachen SVG-Illustrationen werden auf der Startseite durch drei vom Owner freigegebene, hochwertige WEBP-Assets ersetzt: Alpen-/Chalet-Hero, Bärgsunne-Emblem und Pokal. Die bestehenden SVG-Dateien bleiben als Fallback im `assets/`-Ordner. `style.css`, `editorial.css`, Statistik- und Historiendaten werden **nicht verändert**. Originale Inter-/Systemtypografie bleibt bestehen.
 
-Die Illustration ist eine künstlerische Annäherung an die Originalfotos und keine exakte architektonische Zeichnung.
+## Bereitstellung
 
-Vor Veröffentlichung vollständige visuelle Browserabnahme und Abgleich GitHub-Stand erforderlich.
+Den **gesamten Inhalt** des ZIP in das Repository `baergsunne/baergsunne.github.io` übernehmen, inklusive `assets` und drei neuer `.webp`-Dateien. Nicht bloss das ZIP hochladen. GitHub Pages benötigt exakt `assets/` in Kleinbuchstaben.
+
+## Stand
+
+Lokal erstellter und statisch geprüfter Entwicklungskandidat. GitHub-Deployment und iPhone-Safari-Abnahme sind separat zu bestätigen. Die neuen Bilder sind gestalterische Illustrationen auf Basis der Originalfotos und keine unveränderten Fotografien.
