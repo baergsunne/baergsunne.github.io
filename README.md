@@ -20,3 +20,6 @@ Turi 2008: Runde 5 = 6 Punkte und Rundenrang 3. Fösu und die nachfolgenden Spie
 
 ## v1.9.7
 Originalturnier 2021 aus IMG_0324.jpeg mit zehn Spielern und sieben Runden ergänzt. 16 statt 15 Turniere. Turnierfrei 2014, 2020, 2023.
+
+## 1.9.8 Hybrid Editorial
+Visuelles Redesign durch `editorial.css` mit Clubgrün, Creme, Messing, Serifentiteln, flachen Datenkomponenten und mobiler Navigation. Keine Daten- oder Formeländerung. Status vor Veröffentlichung separat prüfen. Bestehende SVG-Diagramme und Tabellen bleiben aus Performancegründen erhalten; ECharts/Tabulator nicht ohne belegten Funktionsbedarf injizieren. Penpot-Designvorgabe in DESIGN_1.0.md. Kosten CHF 0.
