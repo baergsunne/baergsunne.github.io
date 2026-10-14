@@ -1,0 +1,28 @@
+BÄRGSUNNE POKER – ENTWICKLUNGSBERICHT 2.1.3
+14. Oktober 2026
+
+QUELLE: unveränderte vollständige 2.1.2-Website aus Chat-04-Handoff.
+REPO: baergsunne/baergsunne.github.io
+LESENDER GITHUB-BEFUND: VERSION.txt und index.html in main Version 2.1.2 (GitHub-Connector).
+LIVE GITHUB PAGES: mit verfügbarer Webabfrage nicht zuverlässig zugänglich; Auslieferung nicht bestätigt.
+
+LOKAL IMPLEMENTIERT 2.1.3:
+- pro Statistikwerkzeug getrennte Spieler-/Jahresauswahl über Browser-Speicher auch nach Neuladen erhalten;
+- lokale Jahrbereichswahl Von/Bis über tatsächliche Turnierjahrgänge;
+- individueller Zurücksetzen-Knopf pro Statistikwerkzeug;
+- widersprüchliche mobile 1-/2-Spalten-Regel in studio-flagship.css bereinigt;
+- kompakte Bedienelemente und Tastaturfokus-Markierung ergänzt;
+- Cache-Versionierung app.js/CSS auf 2.1.3 angepasst.
+
+VERIFIKATION:
+- node --check aller JavaScript-Dateien: PASS;
+- data.js SHA256 24039122302165f343ab451d8eb66351e6373f060791fba1315b20e826713d75, identisch mit 2.1.2;
+- historische-ergebnisse.json SHA256 0d165e12555457831b443f6b64bc97761d3179b2dd0352af6659caa6c11c1fba, identisch mit 2.1.2;
+- Browser-Test wurde versucht, Chromium/Playwright meldet ERR_BLOCKED_BY_ADMINISTRATOR sowohl für localhost als auch file://. Keine erfolgreiche grafische Browserabnahme.
+
+OFFEN / NICHT ALS FERTIG BEHAUPTEN:
+- echter Browser-Test sämtlicher 12 Werkzeuge + Studio, Sprungziele, Filterlogik, Reload, 375/390/430/768/1440;
+- echte Safari-iPhone-Abnahme;
+- tool-spezifische weitere Parameter, Ausschlusswahl, Rundenbereiche, Analyseeinstiege;
+- GitHub-Deployment und HTTPS-Readback; derzeit KEIN Schreibvorgang erfolgt.
+- Die Beschränkung auf lokale technische Prüfungen rechtfertigt noch keine Freigabe als geprüftes Release.
