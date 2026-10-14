@@ -1,0 +1,23 @@
+BÄRGSUNNE POKER – VERSION 2.1.5 / LOKALER ENTWICKLUNGSKANDIDAT
+Basis: übergebener vollständiger Quellstand 2.1.4.
+
+UMGESETZT
+- Neuer kompakter eigener Turniersimulator: Jahr (Standard aktuelles Kalenderjahr), Spieler hinzufügen/entfernen, Rundenanzahl 1–30, Punkte pro Rang, Rundenergebnisse, Live-Rangliste.
+- Ein historisches Turnier kann als bearbeitbare Kopie geladen werden.
+- Freie Zielrang-Berechnung: für überschaubare Kombinationen vollständige Aufzählung konsistenter Rundenzuteilungen mit Beispielresultaten, bester/schlechtester Rang, möglich/ausgeschlossen/garantiert.
+- Transparenter Stopp bei zu grosser Zahl an Möglichkeiten statt erfundener Ergebnisse.
+- Simulationsdaten ausschliesslich im lokalen Browser-Speicher. Originaldaten bleiben unverändert.
+- Statistikwerkzeug-Auswahl zeigt zunächst Jahr auswählen / Spieler auswählen ohne voreingestellte Checkboxen; nach Wahl von Jahren werden passende Teilnehmer aufgelistet.
+
+PRÜFUNGEN
+- JavaScript-Syntaxprüfungen bestanden.
+- Drei automatisierte Solver-Stichproben bestanden: garantiert / unmöglich / 2 von 6 Möglichkeiten.
+- ZIP-Integrität erfolgreich.
+- data.js und historische-ergebnisse.json bytegenau unverändert.
+- Chromium-Headless-Abnahme auf der bereitgestellten Laufzeit schlug durch Timeout fehl; iPhone-Safari-Akzeptanz NICHT geprüft.
+
+BEKANNTE GRENZEN
+- Zielrechner nutzt für Gleichstand Punkte, Rundensiege, alphabetische Reihenfolge: ausdrücklich nur Simulationsregel.
+- Suchgrenze 180000 Kombinationen bzw. 10 offene Plätze. Grössere Szenarien erfordern zusätzliche Festlegungen.
+- Auswahl- und Sprungverhalten aller History-Sonderansichten und im Analyse-Studio sind noch nicht vollumfänglich visuell getestet.
+- GitHub und Website wurden nicht aktualisiert. Keine Produktionsfreigabe.
