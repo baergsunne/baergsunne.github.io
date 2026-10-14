@@ -10,3 +10,10 @@ Version 1.9.5: Korrektur irreführender Demo-Kennzeichnung in den Standardanalys
 
 ## Korrektur 1.9.5
 Turi 2008: Runde 5 = 6 Punkte und Rundenrang 3. Fösu und die nachfolgenden Spieler dieser Runde werden entsprechend neu gereiht; offizielles Endtotal 61 und Endrang 5 bleiben unverändert. 144 von 144 Zeilen rechnerisch konsistent. Keine GitHub-Veröffentlichung durch dieses ZIP.
+
+## Version 1.9.6 (Veröffentlichungskandidat)
+- Korrigiert das veraltete Prüfmerkmal: 0 bekannte Rundensummen-Konflikte nach Owner-Korrektur zu Turi 2008.
+- Epochenanalyse beginnt 2007; Karrieretext nennt 2007–2025.
+- Analyse-Studio kennzeichnet historische Zahlen nicht mehr als Demo-Datensätze.
+- Bestehende Anwendung und zwölf Projektdateien samt .nojekyll bleiben erhalten.
+- Keine Veröffentlichung und keine iPhone-Abnahme durch die Paket-Erstellung.
