@@ -1,11 +1,1 @@
-{
-  "name": "Bärgsunne Poker",
-  "short_name": "Bärgsunne Poker",
-  "start_url": "./index.html",
-  "scope": "./",
-  "display": "standalone",
-  "background_color": "#081510",
-  "theme_color": "#081510",
-  "lang": "de-CH",
-  "description": "Historisches Pokerarchiv mit 16 echten Turnieren von 2007 bis 2025"
-}
+{"name": "Bärgsunne Poker", "short_name": "Bärgsunne Poker", "start_url": "./index.html", "scope": "./", "display": "standalone", "background_color": "#10271f", "theme_color": "#10271f", "lang": "de-CH", "description": "Historisches Pokerarchiv Lenk mit 16 Originalturnieren seit 2007"}

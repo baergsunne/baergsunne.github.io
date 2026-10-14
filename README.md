@@ -1,7 +1,7 @@
-# Bärgsunne Poker 1.9.9 — Ranglisten und Typografie
+# Bärgsunne Poker 2.0.0 — Alpine Poker Heritage
 
-Aufbauend auf 1.9.8. Stellt die ursprüngliche Inter-/Systemschrift wieder her und überarbeitet die Jahres- und Rundenranglisten responsiv mit eigenem CSS. Alle übrigen Statistik-Tabellen erhalten eine klare, ruhigere Gestaltung. Der originale Datenbestand und alle Berechnungsformeln bleiben unverändert.
+Grafische Überarbeitung der bestehenden 1.9.9-Anwendung. Keine Änderungen an `data.js`, `historische-ergebnisse.json` oder Statistikformeln. Originale Inter-/Systemschrift. Grafik: ortsspezifische stilisierte Chalet-/Berglandschaft und Pokal-Silhouette in lokalen SVG-Assets. CHF 0, GitHub Pages, keine externen Dienste.
 
-Externe Tabellenbibliotheken werden bewusst nicht pauschal eingebunden: Das bestehende Tabellenmodul bietet bereits Sortierung und Seitenaufteilung, ohne zusätzliche Netzwerkabhängigkeiten. Tabulator bleibt als gezielte spätere Option für Tabellen mit vielen Spalten erhalten.
+Die Illustration ist eine künstlerische Annäherung an die Originalfotos und keine exakte architektonische Zeichnung.
 
-Dies ist ein noch nicht browserabgenommener Entwicklungskandidat, keine bestätigte Live-Version.
+Vor Veröffentlichung vollständige visuelle Browserabnahme und Abgleich GitHub-Stand erforderlich.
