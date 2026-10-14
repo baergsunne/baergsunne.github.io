@@ -1,0 +1,29 @@
+/* Premium flagship statistics hub · clean mobile-first component geometry */
+.studio-flagship,.tool-directory,.tool-active-heading{margin:18px clamp(14px,3vw,32px)!important;min-width:0;max-width:calc(100% - 28px);box-sizing:border-box}
+.studio-flagship{overflow:hidden;border:1px solid #a68a54;border-radius:16px;background:#112d22;color:#f8f1e5;box-shadow:0 15px 38px #06150d45}
+.studio-flagship-visual{padding:clamp(24px,5vw,54px);position:relative;isolation:isolate;background:linear-gradient(90deg,#0c251eea 0%,#0c251ec9 58%,#0c251e73 100%),url('assets/alpine-hero.webp') center center/cover}
+.studio-flagship-kicker,.studio-flagship-edition{color:#e0bc79;letter-spacing:.18em;font-size:clamp(10px,2vw,12px);font-weight:750}
+.studio-flagship-head{display:flex;align-items:center;gap:12px;margin-top:30px}
+.studio-flagship-mark{display:grid;place-items:center;width:48px;height:48px;border:1px solid #caa66a;border-radius:50%;font-size:25px;color:#e7c383;background:#0d271e99}
+.studio-flagship h2{font-size:clamp(44px,9vw,90px);line-height:1.06;letter-spacing:-.055em;margin:18px 0 16px;color:#fff9ef}
+.studio-flagship h2 em{font-style:normal;color:#d9b374}
+.studio-flagship p{font-size:clamp(16px,2.4vw,21px);line-height:1.5;max-width:700px;color:#f1e8d7;margin:0}
+.studio-flagship-actions{display:flex;flex-wrap:wrap;align-items:center;gap:14px 22px;margin-top:28px}
+.studio-flagship-button{border:1px solid #e7c389;background:#d6b06d;color:#09251b;border-radius:7px;padding:15px 20px;font-size:16px;font-weight:800;display:flex;justify-content:space-between;gap:26px;cursor:pointer;min-height:52px}
+.studio-flagship-button:focus-visible,.tool-tile:focus-visible{outline:3px solid #fff;outline-offset:3px}
+.studio-flagship-actions>span{color:#d7c6a6;font-size:13px}
+.studio-flagship-foot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 15px;border-top:1px solid #a68a5466;padding:14px clamp(20px,4vw,40px);background:#0b2018;color:#d3b57d;font-weight:750;letter-spacing:.1em;font-size:10px}
+.tool-directory{margin-top:36px!important;margin-bottom:28px!important}
+.tool-directory-intro .overline,.tool-active-heading .overline{color:#a57b3c}
+.tool-directory-intro h2{font-size:clamp(26px,4vw,42px);line-height:1.14;margin:10px 0}
+.tool-directory-intro p{margin:0 0 22px;line-height:1.5}
+.tool-group{margin:23px 0}.tool-group>h2{font-size:14px;letter-spacing:.13em;text-transform:uppercase;color:#947040;margin:0 0 12px}
+.tool-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.tool-tile{display:flex;align-items:center;gap:13px;text-align:left;width:100%;min-width:0;min-height:115px;padding:18px;background:#112d23;border:1px solid #6f846f;border-radius:11px;color:#f4eee1;cursor:pointer;box-sizing:border-box}
+.tool-tile.is-active{border:2px solid #d6b06d;background:#1d4230}
+.tool-tile-symbol{width:44px;flex:0 0 44px;font-size:29px;color:#d6b06d;text-align:center}
+.tool-tile-copy{flex:1;min-width:0;display:grid;gap:5px}.tool-tile-copy strong{font-size:17px;line-height:1.25}.tool-tile-copy small{font-size:13px;font-weight:400;line-height:1.35;color:#d3dacd}
+.tool-tile-arrow{color:#d6b06d;font-size:20px;align-self:flex-start}
+.tool-active-heading{border-top:1px solid #a88d624d;padding-top:25px}.tool-active-heading h2{font-size:clamp(27px,4vw,39px);margin:10px 0 15px}
+@media(max-width:650px){.studio-flagship,.tool-directory,.tool-active-heading{margin-left:14px!important;margin-right:14px!important;max-width:calc(100% - 28px)}.studio-flagship-visual{padding:26px 20px;background-position:60% center}.studio-flagship-head{margin-top:25px}.studio-flagship h2{font-size:clamp(43px,12vw,61px)}.studio-flagship-button{width:100%}.studio-flagship-actions>span{display:none}.studio-flagship-foot{justify-content:center;text-align:center}.tool-grid{grid-template-columns:minmax(0,1fr)}.tool-tile{min-height:92px;padding:14px}.tool-directory-intro h2{font-size:28px}}
+@media(min-width:1000px){.tool-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.tool-tile{display:grid;align-content:start;gap:9px;min-height:175px}.tool-tile-symbol{text-align:left}.tool-tile-arrow{display:none}}
