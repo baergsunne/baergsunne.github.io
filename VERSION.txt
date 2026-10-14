@@ -1,1 +1,1 @@
-Bärgsunne Poker 2.1.5 – eigenständiger JavaScript-Turniersimulator und leere Werkzeugauswahl
+Bärgsunne Poker 2.1.8 – einheitliche mobile Ranglistenansichten auf Basis von 2.1.7 (Entwicklungskandidat)

@@ -1,0 +1,26 @@
+BÄRGSUNNE POKER 2.1.6 – KORREKTURKANDIDAT
+
+Basis: lokaler vollständiger Quellcode 2.1.5, unveröffentlichte Änderung.
+
+Anpassungen:
+- Keine automatisch vorbelegten Namen bei Duellen: Spieler 1 / Spieler 2 = „Spieler auswählen“.
+- Duellwerte erscheinen erst nach zwei unterschiedlichen Auswahlen.
+- Die Duellauswahl richtet sich nach den im Tool gewählten Jahren.
+- Fragenbaukasten startet ohne vorausgewählten Spieler und ohne vorausgewählte Jahre.
+- Fragenbaukasten: Jahreswahl vor Spielerauswahl; nur Teilnehmer der gewählten Jahre.
+- Fragenbaukasten: Berechnung verweigert bei unvollständiger Jahr-/Spielerwahl.
+- Gespeicherte ältere Vorbelegungen im Fragenbaukasten werden beim Laden als aktive Spielerwahl geleert (gespeicherte Bedingungen bleiben ansonsten erhalten).
+- „Analysen entdecken“ hat keine fest voreingestellten Namen oder Jahreszahlen auf Aktionsschaltflächen.
+- Aktionen „Jahr auswählen“ / „Spieler auswählen“ öffnen die Werkzeugauswahl.
+- Werkzeugfilter verwendet neuen Speicherschlüssel, damit alte automatische Vorauswahlen nicht erscheinen.
+- Historische Resultate und bewusst gewählte/angezeigte Spielernamen in Tabellen bleiben bestehen.
+
+Tests:
+- JavaScript Syntaxprüfung app.js und analyse-studio.js: PASS.
+- Originaldaten data.js und historische-ergebnisse.json: SHA-256 mit Ausgangsbasis identisch.
+- ZIP Integrität: separat zu prüfen.
+
+Grenzen:
+- Keine interaktive Browser-/Safari-Abnahme durchgeführt.
+- Kein GitHub-Commit, GitHub Pages unverändert.
+- Weitere Dropdowns in History/Profilansichten und bereits bestehende Spezialkomponenten benötigen noch visuelle Gesamtabnahme.

@@ -1,0 +1,9 @@
+Bärgsunne Poker 2.1.7 – rein auswahlbasierte Simulatorbedienung
+- Spieler nur aus der historischen Datenbank; keine freie Namenseingabe.
+- Navigation Turnier / Runden / Rangliste / Berechnen.
+- Jahres- und historische Vorlagen-Auswahl per Dropdown.
+- Runden und Punkte per Plus/Minus.
+- Rundenplätze per Auswahl.
+- Keine Änderung historischer Originaldaten.
+- Statische Tests (Node) bestanden. Browser- und Safari-Abnahme noch offen.
+- Nicht auf GitHub publiziert.

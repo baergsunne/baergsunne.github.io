@@ -1,0 +1,19 @@
+/* Shared mobile-first ranking and results skin: no change to historical data. */
+.bp-smart-ranking{display:grid;gap:8px;margin:12px 0 16px;min-width:0}
+.bp-rank-toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;color:#d2b279;font-size:12px;font-weight:750;letter-spacing:.07em;text-transform:uppercase;margin:0 2px 4px}
+.bp-rank-count{color:#adc4b7;font-weight:500;letter-spacing:0;text-transform:none}
+.bp-rank-entry{background:linear-gradient(110deg,#193b2e,#122d24);border:1px solid #54725c;border-radius:12px;min-width:0;overflow:hidden;color:#fff1dc}
+.bp-rank-first{border-color:#b69a60;background:linear-gradient(110deg,#294634,#163528)}
+.bp-rank-entry summary{display:flex;align-items:center;gap:10px;cursor:pointer;list-style:none;padding:12px;min-height:56px;min-width:0}
+.bp-rank-entry summary::-webkit-details-marker{display:none}
+.bp-rank-position{flex:0 0 32px;display:grid;place-items:center;min-width:32px;height:34px;border-radius:8px;background:#31513e;color:#dfb872;font-weight:800;font-variant-numeric:tabular-nums}
+.bp-rank-name{font-weight:760;font-size:clamp(14px,3.8vw,18px);min-width:0;overflow-wrap:anywhere;flex:1}
+.bp-rank-number{display:flex;flex-direction:column;text-align:right;line-height:1.1;max-width:38%;overflow-wrap:anywhere}
+.bp-rank-number strong{font-weight:800;font-size:clamp(17px,4.4vw,24px);color:#efc77b;font-variant-numeric:tabular-nums}
+.bp-rank-number small{font-size:10px;color:#b9cbbf;margin-top:3px}
+.bp-rank-chevron{color:#d9b775;transform:rotate(0);transition:transform .2s}.bp-rank-entry[open] .bp-rank-chevron{transform:rotate(180deg)}
+.bp-rank-more{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;border-top:1px solid #456451;padding:12px}
+.bp-rank-more>div{min-width:0;display:flex;flex-direction:column;gap:3px}.bp-rank-more span{font-size:12px;color:#b9c9b9}.bp-rank-more strong{font-size:16px;color:#fff4dc;overflow-wrap:anywhere}
+.bp-rank-detail{margin-top:10px}.bp-rank-detail>summary{padding:12px;cursor:pointer;border:1px solid #67806c;border-radius:9px;color:#e4c38a;font-size:14px}.bp-rank-detail>.table-scroll{margin-top:10px}
+.bp-rank-entry summary:focus-visible,.bp-rank-detail summary:focus-visible{outline:3px solid #e7c27f;outline-offset:2px}
+@media(min-width:780px){.bp-smart-ranking{grid-template-columns:repeat(2,minmax(0,1fr))}.bp-rank-toolbar{grid-column:1/-1}.bp-rank-more{grid-template-columns:repeat(3,minmax(0,1fr))}}
