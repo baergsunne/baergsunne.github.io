@@ -1,1 +1,1 @@
-Bärgsunne Poker 2.2.0 – einzeilige dynamische Smart Tables auf allen Seiten
+Bärgsunne Poker 2.2.2 – einheitliche Statistikwerkzeuge, Mehrspielerduelle, Rang-Heatmap, Diagramme

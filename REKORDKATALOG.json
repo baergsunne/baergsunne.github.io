@@ -1,0 +1,350 @@
+{
+  "Meisterschaften": {
+    "category": "Positive / Karriere",
+    "status": "berechenbar",
+    "basis": "offizielle Schlussranglisten",
+    "hinweis": "Offizielle Schlussränge bei Punktgleichheit nicht neu berechnen."
+  },
+  "Jahrespodien": {
+    "category": "Positive / Karriere",
+    "status": "berechenbar",
+    "basis": "offizielle Schlussranglisten",
+    "hinweis": "Offizielle Schlussränge bei Punktgleichheit nicht neu berechnen."
+  },
+  "Vizemeisterschaften": {
+    "category": "Positive / Karriere",
+    "status": "berechenbar",
+    "basis": "offizielle Schlussranglisten",
+    "hinweis": "Offizielle Schlussränge bei Punktgleichheit nicht neu berechnen."
+  },
+  "Karrierepunkte (nur absolut)": {
+    "category": "Positive / Karriere",
+    "status": "berechenbar",
+    "basis": "offizielle Schlussranglisten",
+    "hinweis": "Punktesysteme und Rundenzahlen unterscheiden sich; absolute Werte als historisch, nicht als faire Epochenvergleiche darstellen."
+  },
+  "Turnierteilnahmen": {
+    "category": "Positive / Karriere",
+    "status": "berechenbar",
+    "basis": "offizielle Schlussranglisten",
+    "hinweis": "Offizielle Schlussränge bei Punktgleichheit nicht neu berechnen."
+  },
+  "Rundensiege": {
+    "category": "Positive / Karriere",
+    "status": "berechenbar",
+    "basis": "chronologische Rundenresultate und Schlussranglisten",
+    "hinweis": "Offizielle Schlussränge bei Punktgleichheit nicht neu berechnen."
+  },
+  "Rundenpodien": {
+    "category": "Positive / Karriere",
+    "status": "berechenbar",
+    "basis": "chronologische Rundenresultate und Schlussranglisten",
+    "hinweis": "Offizielle Schlussränge bei Punktgleichheit nicht neu berechnen."
+  },
+  "Rundenpunkte absolut": {
+    "category": "Positive / Karriere",
+    "status": "berechenbar",
+    "basis": "chronologische Rundenresultate und Schlussranglisten",
+    "hinweis": "Punktesysteme und Rundenzahlen unterscheiden sich; absolute Werte als historisch, nicht als faire Epochenvergleiche darstellen."
+  },
+  "Siegquote pro Runde (Mindestumfang)": {
+    "category": "Positive / Karriere",
+    "status": "berechenbar",
+    "basis": "chronologische Rundenresultate und Schlussranglisten",
+    "hinweis": "Offizielle Schlussränge bei Punktgleichheit nicht neu berechnen."
+  },
+  "Podiumsquote pro Turnier (Mindestumfang)": {
+    "category": "Positive / Karriere",
+    "status": "berechenbar",
+    "basis": "offizielle Schlussranglisten",
+    "hinweis": "Offizielle Schlussränge bei Punktgleichheit nicht neu berechnen."
+  },
+  "Durchschnittlicher offizieller Schlussrang": {
+    "category": "Positive / Karriere",
+    "status": "berechenbar",
+    "basis": "offizielle Schlussranglisten",
+    "hinweis": "Offizielle Schlussränge bei Punktgleichheit nicht neu berechnen."
+  },
+  "Relative Schlussrang-Position": {
+    "category": "Positive / Karriere",
+    "status": "berechenbar",
+    "basis": "offizielle Schlussranglisten",
+    "hinweis": "Offizielle Schlussränge bei Punktgleichheit nicht neu berechnen."
+  },
+  "Längste Meistertitelserie": {
+    "category": "Positive / Karriere",
+    "status": "berechenbar",
+    "basis": "offizielle Schlussranglisten",
+    "hinweis": "Offizielle Schlussränge bei Punktgleichheit nicht neu berechnen."
+  },
+  "Längste Teilnahme-Serie": {
+    "category": "Positive / Karriere",
+    "status": "berechenbar",
+    "basis": "offizielle Schlussranglisten",
+    "hinweis": "Offizielle Schlussränge bei Punktgleichheit nicht neu berechnen."
+  },
+  "Rundensieg-Serie": {
+    "category": "Positive / Karriere",
+    "status": "berechenbar",
+    "basis": "chronologische Rundenresultate und Schlussranglisten",
+    "hinweis": "Offizielle Schlussränge bei Punktgleichheit nicht neu berechnen."
+  },
+  "Top-3-Rundenserie": {
+    "category": "Positive / Karriere",
+    "status": "berechenbar",
+    "basis": "chronologische Rundenresultate und Schlussranglisten",
+    "hinweis": "Offizielle Schlussränge bei Punktgleichheit nicht neu berechnen."
+  },
+  "Meiste Punkte in einem Jahr (epochengebunden)": {
+    "category": "Positive / Saison",
+    "status": "berechenbar",
+    "basis": "offizielle Schlussranglisten",
+    "hinweis": "Punktesysteme und Rundenzahlen unterscheiden sich; absolute Werte als historisch, nicht als faire Epochenvergleiche darstellen."
+  },
+  "Meiste Rundensiege in einem Jahr": {
+    "category": "Positive / Saison",
+    "status": "berechenbar",
+    "basis": "chronologische Rundenresultate und Schlussranglisten",
+    "hinweis": "Offizielle Schlussränge bei Punktgleichheit nicht neu berechnen."
+  },
+  "Meiste Rundenpodien in einem Jahr": {
+    "category": "Positive / Saison",
+    "status": "berechenbar",
+    "basis": "chronologische Rundenresultate und Schlussranglisten",
+    "hinweis": "Offizielle Schlussränge bei Punktgleichheit nicht neu berechnen."
+  },
+  "Beste relative Saison": {
+    "category": "Positive / Saison",
+    "status": "berechenbar",
+    "basis": "offizielle Schlussranglisten",
+    "hinweis": "Offizielle Schlussränge bei Punktgleichheit nicht neu berechnen."
+  },
+  "Grösster Meister-Vorsprung": {
+    "category": "Positive / Saison",
+    "status": "berechenbar",
+    "basis": "offizielle Schlussranglisten",
+    "hinweis": "Offizielle Schlussränge bei Punktgleichheit nicht neu berechnen."
+  },
+  "Knappster Titel": {
+    "category": "Positive / Saison",
+    "status": "berechenbar",
+    "basis": "offizielle Schlussranglisten",
+    "hinweis": "Offizielle Schlussränge bei Punktgleichheit nicht neu berechnen."
+  },
+  "Spätester Führungswechsel zum Champion": {
+    "category": "Positive / Saison",
+    "status": "berechenbar",
+    "basis": "chronologische Rundenresultate und Schlussranglisten",
+    "hinweis": "Offizielle Schlussränge bei Punktgleichheit nicht neu berechnen."
+  },
+  "Grösstes Comeback zum Titel": {
+    "category": "Positive / Saison",
+    "status": "berechenbar",
+    "basis": "offizielle Schlussranglisten",
+    "hinweis": "Offizielle Schlussränge bei Punktgleichheit nicht neu berechnen."
+  },
+  "Grösster Sprung in der Schlussrunde": {
+    "category": "Positive / Saison",
+    "status": "berechenbar",
+    "basis": "chronologische Rundenresultate und Schlussranglisten",
+    "hinweis": "Offizielle Schlussränge bei Punktgleichheit nicht neu berechnen."
+  },
+  "Bestes Finale (letzte N Runden; nur vergleichbare Jahrgänge)": {
+    "category": "Positive / Saison",
+    "status": "berechenbar",
+    "basis": "chronologische Rundenresultate und Schlussranglisten",
+    "hinweis": "Nur bei identischer Definition des Finalabschnitts vergleichen; bei weniger Runden ausschliessen."
+  },
+  "Meiste letzte Schlussplätze": {
+    "category": "Negative",
+    "status": "berechenbar",
+    "basis": "offizielle Schlussranglisten",
+    "hinweis": "Offizielle Schlussränge bei Punktgleichheit nicht neu berechnen."
+  },
+  "Meiste letzte Rundenplätze": {
+    "category": "Negative",
+    "status": "berechenbar",
+    "basis": "chronologische Rundenresultate und Schlussranglisten",
+    "hinweis": "Offizielle Schlussränge bei Punktgleichheit nicht neu berechnen."
+  },
+  "Längste Letztplatzierungsserie": {
+    "category": "Negative",
+    "status": "berechenbar",
+    "basis": "offizielle Schlussranglisten",
+    "hinweis": "Offizielle Schlussränge bei Punktgleichheit nicht neu berechnen."
+  },
+  "Meiste Teilnahmen ohne Meistertitel": {
+    "category": "Negative",
+    "status": "berechenbar",
+    "basis": "offizielle Schlussranglisten",
+    "hinweis": "Offizielle Schlussränge bei Punktgleichheit nicht neu berechnen."
+  },
+  "Meiste Teilnahmen ohne Podium": {
+    "category": "Negative",
+    "status": "berechenbar",
+    "basis": "offizielle Schlussranglisten",
+    "hinweis": "Offizielle Schlussränge bei Punktgleichheit nicht neu berechnen."
+  },
+  "Meiste Vizemeistertitel ohne Titel": {
+    "category": "Negative",
+    "status": "berechenbar",
+    "basis": "offizielle Schlussranglisten",
+    "hinweis": "Offizielle Schlussränge bei Punktgleichheit nicht neu berechnen."
+  },
+  "Schlechteste relative Saison": {
+    "category": "Negative",
+    "status": "berechenbar",
+    "basis": "offizielle Schlussranglisten",
+    "hinweis": "Offizielle Schlussränge bei Punktgleichheit nicht neu berechnen."
+  },
+  "Längste Runden ohne Sieg": {
+    "category": "Negative",
+    "status": "berechenbar",
+    "basis": "chronologische Rundenresultate und Schlussranglisten",
+    "hinweis": "Offizielle Schlussränge bei Punktgleichheit nicht neu berechnen."
+  },
+  "Grösster Absturz im Jahrestableau": {
+    "category": "Negative",
+    "status": "berechenbar",
+    "basis": "offizielle Schlussranglisten",
+    "hinweis": "Offizielle Schlussränge bei Punktgleichheit nicht neu berechnen."
+  },
+  "Grösster Schlussrunden-Absturz": {
+    "category": "Negative",
+    "status": "berechenbar",
+    "basis": "chronologische Rundenresultate und Schlussranglisten",
+    "hinweis": "Offizielle Schlussränge bei Punktgleichheit nicht neu berechnen."
+  },
+  "Verpasster Titel nach Zwischenführung": {
+    "category": "Negative",
+    "status": "berechenbar",
+    "basis": "chronologische Rundenresultate und Schlussranglisten",
+    "hinweis": "Offizielle Schlussränge bei Punktgleichheit nicht neu berechnen."
+  },
+  "Schlechtestes Finale (vergleichbare Jahrgänge)": {
+    "category": "Negative",
+    "status": "berechenbar",
+    "basis": "chronologische Rundenresultate und Schlussranglisten",
+    "hinweis": "Nur bei identischer Definition des Finalabschnitts vergleichen; bei weniger Runden ausschliessen."
+  },
+  "Meiste Führungswechsel in einem Turnier": {
+    "category": "Dramen / Kuriositäten",
+    "status": "berechenbar",
+    "basis": "chronologische Rundenresultate und Schlussranglisten",
+    "hinweis": "Offizielle Schlussränge bei Punktgleichheit nicht neu berechnen."
+  },
+  "Wenigste Führungswechsel": {
+    "category": "Dramen / Kuriositäten",
+    "status": "berechenbar",
+    "basis": "chronologische Rundenresultate und Schlussranglisten",
+    "hinweis": "Offizielle Schlussränge bei Punktgleichheit nicht neu berechnen."
+  },
+  "Punktgleichstand am Turnierende": {
+    "category": "Dramen / Kuriositäten",
+    "status": "berechenbar",
+    "basis": "offizielle Schlussranglisten",
+    "hinweis": "Punktesysteme und Rundenzahlen unterscheiden sich; absolute Werte als historisch, nicht als faire Epochenvergleiche darstellen."
+  },
+  "Kleinster Abstand zwischen zwei Nachbarn": {
+    "category": "Dramen / Kuriositäten",
+    "status": "berechenbar",
+    "basis": "chronologische Rundenresultate und Schlussranglisten",
+    "hinweis": "Offizielle Schlussränge bei Punktgleichheit nicht neu berechnen."
+  },
+  "Grösste Jahresplatz-Verbesserung": {
+    "category": "Dramen / Kuriositäten",
+    "status": "berechenbar",
+    "basis": "Jahresranglisten mehrerer Turniere",
+    "hinweis": "Offizielle Schlussränge bei Punktgleichheit nicht neu berechnen."
+  },
+  "Grösste Jahresplatz-Verschlechterung": {
+    "category": "Dramen / Kuriositäten",
+    "status": "berechenbar",
+    "basis": "Jahresranglisten mehrerer Turniere",
+    "hinweis": "Offizielle Schlussränge bei Punktgleichheit nicht neu berechnen."
+  },
+  "Höchste Rundenpunkte bei Nichtmeister": {
+    "category": "Dramen / Kuriositäten",
+    "status": "berechenbar",
+    "basis": "chronologische Rundenresultate und Schlussranglisten",
+    "hinweis": "Punktesysteme und Rundenzahlen unterscheiden sich; absolute Werte als historisch, nicht als faire Epochenvergleiche darstellen."
+  },
+  "Meiste Rundensiege ohne Jahrestitel": {
+    "category": "Dramen / Kuriositäten",
+    "status": "berechenbar",
+    "basis": "chronologische Rundenresultate und Schlussranglisten",
+    "hinweis": "Offizielle Schlussränge bei Punktgleichheit nicht neu berechnen."
+  },
+  "Meiste wechselnde Rundenplatzierungen": {
+    "category": "Dramen / Kuriositäten",
+    "status": "berechenbar",
+    "basis": "chronologische Rundenresultate und Schlussranglisten",
+    "hinweis": "Offizielle Schlussränge bei Punktgleichheit nicht neu berechnen."
+  },
+  "Spitzengruppe bis zur Schlussrunde": {
+    "category": "Dramen / Kuriositäten",
+    "status": "berechenbar",
+    "basis": "chronologische Rundenresultate und Schlussranglisten",
+    "hinweis": "Offizielle Schlussränge bei Punktgleichheit nicht neu berechnen."
+  },
+  "Häufigste gemeinsame Teilnahme": {
+    "category": "Rivalitäten",
+    "status": "berechenbar",
+    "basis": "Jahresranglisten mehrerer Turniere",
+    "hinweis": "Offizielle Schlussränge bei Punktgleichheit nicht neu berechnen."
+  },
+  "Häufiger vor Gegner im offiziellen Schlussrang": {
+    "category": "Rivalitäten",
+    "status": "berechenbar",
+    "basis": "Jahresranglisten mehrerer Turniere",
+    "hinweis": "Offizielle Schlussränge bei Punktgleichheit nicht neu berechnen."
+  },
+  "Engste Punkteduellen eines Jahres": {
+    "category": "Rivalitäten",
+    "status": "berechenbar",
+    "basis": "Jahresranglisten mehrerer Turniere",
+    "hinweis": "Punktesysteme und Rundenzahlen unterscheiden sich; absolute Werte als historisch, nicht als faire Epochenvergleiche darstellen."
+  },
+  "Meiste gegenseitige Rangwechsel über Jahre": {
+    "category": "Rivalitäten",
+    "status": "berechenbar",
+    "basis": "offizielle Schlussranglisten",
+    "hinweis": "Nur chronologisch benachbarte gemeinsame Teilnahmejahre vergleichen."
+  },
+  "Direkter Bilanzvorsprung (gemeinsame Jahre)": {
+    "category": "Rivalitäten",
+    "status": "berechenbar",
+    "basis": "Jahresranglisten mehrerer Turniere",
+    "hinweis": "Offizielle Schlussränge bei Punktgleichheit nicht neu berechnen."
+  },
+  "Ältester noch bestehender Rekord": {
+    "category": "Rekordgeschichte",
+    "status": "berechenbar",
+    "basis": "offizielle Schlussranglisten",
+    "hinweis": "Rekordentwicklung chronologisch mit eindeutig definiertem Gleichstandsstatus nachrechnen."
+  },
+  "Neue Rekorde in gewähltem Jahr": {
+    "category": "Rekordgeschichte",
+    "status": "berechenbar",
+    "basis": "offizielle Schlussranglisten",
+    "hinweis": "Offizielle Schlussränge bei Punktgleichheit nicht neu berechnen."
+  },
+  "Eingestellte Rekorde": {
+    "category": "Rekordgeschichte",
+    "status": "berechenbar",
+    "basis": "offizielle Schlussranglisten",
+    "hinweis": "Offizielle Schlussränge bei Punktgleichheit nicht neu berechnen."
+  },
+  "Persönliche Rekorde je Spieler": {
+    "category": "Rekordgeschichte",
+    "status": "berechenbar",
+    "basis": "offizielle Schlussranglisten",
+    "hinweis": "Offizielle Schlussränge bei Punktgleichheit nicht neu berechnen."
+  },
+  "Rekorde im ausgewählten Zeitraum": {
+    "category": "Rekordgeschichte",
+    "status": "berechenbar",
+    "basis": "offizielle Schlussranglisten",
+    "hinweis": "Offizielle Schlussränge bei Punktgleichheit nicht neu berechnen."
+  }
+}

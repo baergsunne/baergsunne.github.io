@@ -1,0 +1,13 @@
+/* 2.2.2 unified tool interaction */
+.tool-choice-panel{margin:12px 0 18px!important;scroll-margin-top:96px}
+.tool-choice-list{overflow-y:auto;max-height:240px;overscroll-behavior:contain;overflow-anchor:none}
+.duel-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin:14px 0}
+.duel-player{display:flex;gap:8px;align-items:center;padding:10px;border:1px solid #688274;border-radius:8px;min-width:0}
+.duel-player input{accent-color:#c9a562}
+.duel-player:has(input:checked){background:#315141}
+.heat-rounds{margin:10px 0;padding:12px;border:1px solid #58715d;border-radius:8px}
+.heat-rounds summary{cursor:pointer;font-weight:700}
+.heat-cell{display:flex;align-items:center;justify-content:center;min-height:36px;color:#fff;border:1px solid #57705a;border-radius:5px;font-weight:700}
+.diagram-rounds{margin-top:14px}.diagram-rounds summary{cursor:pointer}
+.stat-content .sectiontitle{margin-bottom:10px}
+@media(max-width:410px){.duel-options{grid-template-columns:1fr 1fr}}

@@ -1,0 +1,19 @@
+BÄRGSUNNE POKER – ENTWICKLUNGSKANDIDAT 2.2.2
+
+Basis: lokaler vollständiger 2.2.1-Kandidat. Keine GitHub-Änderungen.
+
+Umsetzung:
+- Auswahlpanel innerhalb der aktiven Statistikwerkzeug-Einleitung; alle Jahre neueste zuerst.
+- Erhalt von Fenster-Scrollposition, Panel-Öffnung, Listen-Scrollposition und Fokus nach Änderung.
+- Duelle: Auswahl von 2 bis 5 historisch vorhandenen Spielern, paarweise Duellbilanzen und gemeinsame Rundenübersicht.
+- Heatmap: echte Schlussränge je Jahr statt Index 0–100, aufklappbare Runden-Heatmaps mit echten Rundenplatzierungen.
+- Labor heisst Diagramme; eigene Auswahl einzelner Runden, Diagrammtypen und Kennzahlen.
+- Standardanalysen heissen Schnellanalysen; bestehende Kennzahlen und Jahr/Spielerfilter bleiben erhalten.
+- Bestehende Smart Tables sowie Analyse-Studio und Simulator bleiben enthalten.
+
+Prüfungen:
+- JavaScript-Syntax: bestanden.
+- data.js / historische-ergebnisse.json bytegenau unverändert gegenüber 2.2.1.
+- UI-Browserprüfung und reale iPhone-Safari-Abnahme NICHT erfolgt.
+- Spezielle Zusatzanalysen und die vollständige semantische Rundenfilterung aller Schnellanalysen noch nicht vollständig geprüft.
+- Keine Veröffentlichung und keine Behauptung einer vollständigen produktiven Abnahme.

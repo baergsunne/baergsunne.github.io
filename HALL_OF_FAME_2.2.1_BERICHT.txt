@@ -1,0 +1,24 @@
+BÄRGSUNNE POKER – HALL OF FAME 2.2.1 (LOKALER KANDIDAT)
+Datum: 15. Oktober 2026
+Quelle: lokales Projektpaket 2.2.0, Katalog aus Dateninventur.
+
+NEU
+- Neues Hall-of-Fame-Rekordbuch mit 26 tatsächlich berechneten Rekordlisten.
+- Vier Kategorien: Erfolge, Saisonrekorde, Hall of Shame, Rivalitäten.
+- Automatische Berechnung beim Seitenaufruf aus window.POKER_SEED.
+- Gleichstände: sämtliche Erstplatzierten werden genannt.
+- Zu jedem Rekord: Erklärung und komplette einzeilige, horizontal scrollbar gestaltete Rangliste.
+- Absolute Punkte und relative Platzierungen sind ausdrücklich unterschieden.
+- Vorhandene Ehrentafel, Champions und Legacy-Rekorde bleiben erhalten.
+
+TESTS
+- JavaScript-Syntax beider veränderter JS-Dateien: bestanden.
+- 16 Turniere, 21 Spieler, 154 Spieler-Saisons geprüft.
+- Meistertitel Mike 6, Podien 12, letzte Schlussplätze 3, Höchstpunkte 76 geprüft.
+- Rekordlisten enthalten endliche numerische Werte und haben ein konsistentes HTML-Grundgerüst.
+- Kein Test auf echtem Safari/iPhone und kein vollständiger visueller Browser-End-to-End-Test.
+- Andere 32 Ideen aus dem 58er-Katalog nicht implementiert: zusätzliche fachliche Kriterien/Validierung erforderlich.
+- Keine GitHub-Veröffentlichung, keine Änderung an GitHub Pages.
+
+DATENSCHUTZ UND ORIGINALTREUE
+Die originalen Dateien data.js und historische-ergebnisse.json sind gegenüber 2.2.0 unverändert.
