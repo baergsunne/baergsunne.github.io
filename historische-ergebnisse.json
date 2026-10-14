@@ -1,6 +1,6 @@
 {
   "data_mode": "HISTORICAL_REAL_ONLY",
-  "status": "FULLY_TRANSCRIBED_WITH_2008_REVIEW_FLAG",
+  "status": "FULLY_TRANSCRIBED_AND_ROUND_TOTALS_RECONCILED",
   "sources": "User photographed original tournament sheets",
   "no_tournament_years": [
     2014,
@@ -580,7 +580,7 @@
             0,
             10,
             0,
-            0,
+            6,
             5,
             6,
             1,
@@ -594,8 +594,7 @@
           ],
           "official_points": 61,
           "official_rank": 5,
-          "calculated_points": 55,
-          "quality_flag": "ROUND_SUM_DIFFERS_FROM_OFFICIAL_TOTAL"
+          "calculated_points": 61
         },
         {
           "name": "Hugo",
@@ -2907,5 +2906,5 @@
     "player_seasons": 144,
     "unresolved_round_sum_conflicts": 1
   },
-  "note": "2007: Alle 7 Runden und Sonntag eingerechnet. 2008 Turi bleibt prüfpflichtig. Schlussrang historisch aus Originalblatt, auch bei Punktgleichheit."
+  "note": "Originalfotos und bestätigte Owner-Korrekturen. Turi 2008 Runde 5: 6 Punkte, Rundenrang 3; 61 Gesamtpunkte. Keine simulierten historischen Resultate."
 }

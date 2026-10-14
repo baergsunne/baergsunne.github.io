@@ -1,9 +1,12 @@
-# Bärgsunne Poker 1.9.3 – Entwicklungskandidat
+# Bärgsunne Poker 1.9.5 – Historische Statistiken
 
-Vollständige bestehende Anwendung auf Basis von 1.8.4 mit den echten historischen Daten der 15 Turniere von 2007 bis 2025. Nicht als iPhone-abgenommen oder veröffentlicht bezeichnen.
+Fortführung der vollständigen ursprünglichen Anwendung (kein Redesign). Alle Statistikseiten verwenden den realen Seed in `data.js` und die echten Originaljahre. Kein Testdatensatz aktiv.
 
-12 sichtbare Dateien + `.nojekyll` (technische GitHub-Pages-Datei). `demo-data.json` wurde durch `historische-ergebnisse.json` ersetzt. Keine Test-Jahrgänge als aktive Daten.
+**Verbindliche Datenbasis:** 15 Austragungen 2007–2025. Turnierfreie Jahre: 2014, 2020, 2021, 2023. Sonntag gehört zum jeweiligen Turnier. Für 2007 sind alle sieben Runden im Total enthalten. Tobi und Töbu sind getrennte Personen.
 
-**Datenhinweis:** Turi 2008: Originaltotal 61, Summe der transkribierten Runden 55. Offizielle Platzierung nicht ändern. Runde-zu-Runde-Analysen zu diesem Eintrag sind bis zur Klärung vorsichtig zu lesen. 2007 enthält alle sieben Runden einschliesslich Sonntag.
+**Wichtige Einschränkung:** Bei Turi 2008 wurde durch Owner-Bestätigung korrigiert: Runde 5 = 6 Punkte / Rang 3, Gesamt 61 Punkte / Schlussrang 5. Alle Rundensummen entsprechen den offiziellen Totals. Gedankenexperimente (Simulator) sind keine Originalergebnisse.
 
-**Status:** Paket lokal gebaut. Vor Veröffentlichung vollständige mobile Browser-Regressionsprüfung durchführen. Keine Backend-Secrets in diesem Paket. GitHub wurde nicht verändert.
+Version 1.9.5: Korrektur irreführender Demo-Kennzeichnung in den Standardanalysen, Startjahr 2007 statt 2010, fortlaufende Qualitätskennzeichnung und Manifest-Text. Keine Serverzugriffe oder kostenpflichtige Dienste hinzugefügt. GitHub-Pages-Deployment und iPhone-Abnahme offen.
+
+## Korrektur 1.9.5
+Turi 2008: Runde 5 = 6 Punkte und Rundenrang 3. Fösu und die nachfolgenden Spieler dieser Runde werden entsprechend neu gereiht; offizielles Endtotal 61 und Endrang 5 bleiben unverändert. 144 von 144 Zeilen rechnerisch konsistent. Keine GitHub-Veröffentlichung durch dieses ZIP.

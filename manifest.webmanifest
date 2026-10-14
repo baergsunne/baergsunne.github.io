@@ -1,1 +1,11 @@
-{"name":"Bärgsunne Poker (Demo)","short_name":"Bärgsunne Poker","start_url":"./index.html","scope":"./","display":"standalone","background_color":"#081510","theme_color":"#081510","lang":"de-CH","description":"Lokale, kostenlose Simulations-App mit 16 Jahrgängen"}
+{
+  "name": "Bärgsunne Poker",
+  "short_name": "Bärgsunne Poker",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#081510",
+  "theme_color": "#081510",
+  "lang": "de-CH",
+  "description": "Historisches Pokerarchiv mit 15 Originalturnieren 2007–2025"
+}
