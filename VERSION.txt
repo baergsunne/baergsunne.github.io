@@ -1,1 +1,1 @@
-Bärgsunne Poker 2.0.7 – dynamischer Analyse-Baukasten mit echten Auswertungen
+Bärgsunne Poker 2.0.8 – fehlende Analyse-Dateien und Auswahlfehler behoben
