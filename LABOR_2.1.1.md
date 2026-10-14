@@ -1,0 +1,1 @@
+Statistik-Labor: aufklappbare Spielerauswahl mit Alle/Keine/Einzelauswahl; sechs Diagrammarten (Linien, Balken, Flächen, Punktdiagramm, Kreisdiagramm, Jahresübersicht). Neue Auswahl bezieht sich nur auf Statistik-Labor, historische Daten unverändert. Diagramme werden aus den vorhandenen Ergebnissen im Browser berechnet. Sichtprüfung in iPhone-Safari offen.
