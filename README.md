@@ -1,3 +1,9 @@
-# Bärgsunne Poker v1.8.2
+# Bärgsunne Poker 1.9.3 – Entwicklungskandidat
 
-Aufbauend auf v1.8.1: leichter verständliche Erklärungstexte und je drei automatisch aus den vorhandenen Demo-Runden errechnete Erkenntniskarten auf Spieler- und Jahrgangsseiten. Keine Änderungen am Ergebnisbestand, Backend oder Punktesystem. Die Daten 2010–2025 sind simuliert. Veröffentlichung separat.
+Vollständige bestehende Anwendung auf Basis von 1.8.4 mit den echten historischen Daten der 15 Turniere von 2007 bis 2025. Nicht als iPhone-abgenommen oder veröffentlicht bezeichnen.
+
+12 sichtbare Dateien + `.nojekyll` (technische GitHub-Pages-Datei). `demo-data.json` wurde durch `historische-ergebnisse.json` ersetzt. Keine Test-Jahrgänge als aktive Daten.
+
+**Datenhinweis:** Turi 2008: Originaltotal 61, Summe der transkribierten Runden 55. Offizielle Platzierung nicht ändern. Runde-zu-Runde-Analysen zu diesem Eintrag sind bis zur Klärung vorsichtig zu lesen. 2007 enthält alle sieben Runden einschliesslich Sonntag.
+
+**Status:** Paket lokal gebaut. Vor Veröffentlichung vollständige mobile Browser-Regressionsprüfung durchführen. Keine Backend-Secrets in diesem Paket. GitHub wurde nicht verändert.

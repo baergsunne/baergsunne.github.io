@@ -1,0 +1,2911 @@
+{
+  "data_mode": "HISTORICAL_REAL_ONLY",
+  "status": "FULLY_TRANSCRIBED_WITH_2008_REVIEW_FLAG",
+  "sources": "User photographed original tournament sheets",
+  "no_tournament_years": [
+    2014,
+    2020,
+    2021,
+    2023
+  ],
+  "duplicate_sources": {
+    "IMG_0304.jpeg": "IMG_0319.jpeg (2025)"
+  },
+  "aliases": {
+    "Graber Mike": "Mike",
+    "Feusier Bernard": "Fösu",
+    "Kupferschmied Marc": "Chopfi",
+    "Chupfi": "Chopfi",
+    "Borer Andreas": "Borer",
+    "Thomas Lack": "Lack",
+    "Lack Thomas": "Lack",
+    "Thomas": "Lack",
+    "Andres Oli": "Oli",
+    "Pat": "Pät",
+    "Pät": "Pät",
+    "Féschi": "Feschi",
+    "Fischer Dominik": "Feschi",
+    "Scheidegger Marco": "Echse",
+    "Kupferschmied Pascal": "Pascal K.",
+    "Müller Roger": "Roger",
+    "R.M. aus Z.": "Roger",
+    "Manu": "Manu",
+    "Mänu": "Manu",
+    "Tobi": "Tobi",
+    "Töbu": "Töbu"
+  },
+  "champions": [
+    {
+      "year": 2007,
+      "name": "Pascal K.",
+      "points": 44,
+      "source": "IMG_0305.jpeg",
+      "original_intermediate_total": 39,
+      "note": "Sieben Runden inklusive Sonntag, bisheriger 39-Punkte-Wert war Zwischenstand nach Samstag."
+    },
+    {
+      "year": 2008,
+      "name": "Borer",
+      "points": 76,
+      "source": "IMG_0306.jpeg"
+    },
+    {
+      "year": 2009,
+      "name": "Fösu",
+      "points": 57,
+      "source": "IMG_0307.jpeg"
+    },
+    {
+      "year": 2010,
+      "name": "Mike",
+      "points": 67,
+      "source": "IMG_0308.jpeg"
+    },
+    {
+      "year": 2011,
+      "name": "Schnarre",
+      "points": 63,
+      "source": "IMG_0309.jpeg"
+    },
+    {
+      "year": 2012,
+      "name": "Töbu",
+      "points": 71,
+      "source": "IMG_0310.jpeg"
+    },
+    {
+      "year": 2013,
+      "name": "Turi",
+      "points": 53,
+      "source": "IMG_0311.jpeg"
+    },
+    {
+      "year": 2015,
+      "name": "Mike",
+      "points": 50,
+      "source": "IMG_0312.jpeg"
+    },
+    {
+      "year": 2016,
+      "name": "Chopfi",
+      "points": 36,
+      "source": "IMG_0313.jpeg"
+    },
+    {
+      "year": 2017,
+      "name": "Turi",
+      "points": 36,
+      "source": "IMG_0314.jpeg"
+    },
+    {
+      "year": 2018,
+      "name": "Mike",
+      "points": 45,
+      "source": "IMG_0315.jpeg"
+    },
+    {
+      "year": 2019,
+      "name": "Mike",
+      "points": 38,
+      "source": "IMG_0316.jpeg"
+    },
+    {
+      "year": 2022,
+      "name": "Chopfi",
+      "points": 42,
+      "source": "IMG_0317.jpeg"
+    },
+    {
+      "year": 2024,
+      "name": "Mike",
+      "points": 42,
+      "source": "IMG_0318.jpeg"
+    },
+    {
+      "year": 2025,
+      "name": "Fösu",
+      "points": 44,
+      "source": "IMG_0319.jpeg"
+    }
+  ],
+  "round_records": [
+    {
+      "year": 2007,
+      "source": "IMG_0305.jpeg",
+      "round_count": 7,
+      "players": [
+        {
+          "name": "Feschi",
+          "original_name": "Feschi",
+          "rounds": [
+            1,
+            0,
+            4,
+            1,
+            2,
+            0,
+            1
+          ],
+          "official_points": 9,
+          "official_rank": 9,
+          "calculated_points": 9,
+          "friday_points": 1,
+          "saturday_points": 7,
+          "sunday_points": 1,
+          "friday_saturday_points": 8,
+          "original_intermediate_total": 8,
+          "rank_note": "Historischer Schlussrang des Originalblatts; bei Punktegleichheit kein automatisches Neu-Ranking."
+        },
+        {
+          "name": "Borer",
+          "original_name": "Borer",
+          "rounds": [
+            3,
+            2,
+            8,
+            6,
+            5,
+            2,
+            4
+          ],
+          "official_points": 30,
+          "official_rank": 6,
+          "calculated_points": 30,
+          "friday_points": 5,
+          "saturday_points": 21,
+          "sunday_points": 4,
+          "friday_saturday_points": 26,
+          "original_intermediate_total": 30,
+          "rank_note": "Historischer Schlussrang des Originalblatts; bei Punktegleichheit kein automatisches Neu-Ranking."
+        },
+        {
+          "name": "Pascal K.",
+          "original_name": "Pascal K.",
+          "rounds": [
+            10,
+            6,
+            5,
+            4,
+            10,
+            4,
+            5
+          ],
+          "official_points": 44,
+          "official_rank": 1,
+          "calculated_points": 44,
+          "friday_points": 16,
+          "saturday_points": 23,
+          "sunday_points": 5,
+          "friday_saturday_points": 39,
+          "original_intermediate_total": 39,
+          "rank_note": "Historischer Schlussrang des Originalblatts; bei Punktegleichheit kein automatisches Neu-Ranking."
+        },
+        {
+          "name": "Lack",
+          "original_name": "Lack",
+          "rounds": [
+            2,
+            5,
+            6,
+            0,
+            2,
+            0,
+            10
+          ],
+          "official_points": 25,
+          "official_rank": 8,
+          "calculated_points": 25,
+          "friday_points": 7,
+          "saturday_points": 8,
+          "sunday_points": 10,
+          "friday_saturday_points": 15,
+          "original_intermediate_total": 15,
+          "rank_note": "Historischer Schlussrang des Originalblatts; bei Punktegleichheit kein automatisches Neu-Ranking."
+        },
+        {
+          "name": "Mike",
+          "original_name": "Mike",
+          "rounds": [
+            0,
+            8,
+            10,
+            5,
+            0,
+            8,
+            0
+          ],
+          "official_points": 31,
+          "official_rank": 3,
+          "calculated_points": 31,
+          "friday_points": 8,
+          "saturday_points": 23,
+          "sunday_points": 0,
+          "friday_saturday_points": 31,
+          "original_intermediate_total": 31,
+          "rank_note": "Historischer Schlussrang des Originalblatts; bei Punktegleichheit kein automatisches Neu-Ranking."
+        },
+        {
+          "name": "Roger",
+          "original_name": "Roger",
+          "rounds": [
+            8,
+            10,
+            3,
+            2,
+            1,
+            6,
+            2
+          ],
+          "official_points": 32,
+          "official_rank": 2,
+          "calculated_points": 32,
+          "friday_points": 18,
+          "saturday_points": 12,
+          "sunday_points": 2,
+          "friday_saturday_points": 30,
+          "original_intermediate_total": 30,
+          "rank_note": "Historischer Schlussrang des Originalblatts; bei Punktegleichheit kein automatisches Neu-Ranking."
+        },
+        {
+          "name": "Fösu",
+          "original_name": "Fösu",
+          "rounds": [
+            6,
+            0,
+            2,
+            8,
+            6,
+            5,
+            3
+          ],
+          "official_points": 30,
+          "official_rank": 4,
+          "calculated_points": 30,
+          "friday_points": 6,
+          "saturday_points": 21,
+          "sunday_points": 3,
+          "friday_saturday_points": 27,
+          "original_intermediate_total": 27,
+          "rank_note": "Historischer Schlussrang des Originalblatts; bei Punktegleichheit kein automatisches Neu-Ranking."
+        },
+        {
+          "name": "Echse",
+          "original_name": "Echse",
+          "rounds": [
+            5,
+            4,
+            0,
+            10,
+            4,
+            1,
+            6
+          ],
+          "official_points": 30,
+          "official_rank": 5,
+          "calculated_points": 30,
+          "friday_points": 9,
+          "saturday_points": 15,
+          "sunday_points": 6,
+          "friday_saturday_points": 24,
+          "original_intermediate_total": 24,
+          "rank_note": "Historischer Schlussrang des Originalblatts; bei Punktegleichheit kein automatisches Neu-Ranking."
+        },
+        {
+          "name": "Chopfi",
+          "original_name": "Chopfi",
+          "rounds": [
+            0,
+            0,
+            1,
+            3,
+            6,
+            10,
+            8
+          ],
+          "official_points": 28,
+          "official_rank": 7,
+          "calculated_points": 28,
+          "friday_points": 0,
+          "saturday_points": 20,
+          "sunday_points": 8,
+          "friday_saturday_points": 20,
+          "original_intermediate_total": 20,
+          "rank_note": "Historischer Schlussrang des Originalblatts; bei Punktegleichheit kein automatisches Neu-Ranking."
+        },
+        {
+          "name": "Oli",
+          "original_name": "Oli",
+          "rounds": [
+            3,
+            2,
+            0,
+            0,
+            0,
+            2,
+            0
+          ],
+          "official_points": 7,
+          "official_rank": 10,
+          "calculated_points": 7,
+          "friday_points": 5,
+          "saturday_points": 2,
+          "sunday_points": 0,
+          "friday_saturday_points": 7,
+          "original_intermediate_total": 7,
+          "rank_note": "Historischer Schlussrang des Originalblatts; bei Punktegleichheit kein automatisches Neu-Ranking."
+        }
+      ],
+      "day_round_mapping": {
+        "Freitag": [
+          1,
+          2
+        ],
+        "Samstag": [
+          3,
+          4,
+          5,
+          6
+        ],
+        "Sonntag": [
+          7
+        ]
+      },
+      "day_round_mapping_source": "Owner confirmation",
+      "scoring_review_note": "Owner bestätigt: Alle sieben Runden zählen 2007 vollständig. Freitag R1–R2, Samstag R3–R6, Sonntag R7. Die vormals als Total interpretierten Werte sind Freitag+Samstag-Zwischenstände. Sonntagsrunde hinzurechnen.",
+      "totals_rule": "final_total = friday_points + saturday_points + sunday_points",
+      "data_verified_by": "Originalfoto IMG_0305.jpeg + Ownerklärung Oktober 2026 + Runden-Summenprüfung"
+    },
+    {
+      "year": 2008,
+      "source": "IMG_0306.jpeg",
+      "round_count": 15,
+      "players": [
+        {
+          "name": "Pascal K.",
+          "original_name": "Pascal K.",
+          "rounds": [
+            2,
+            8,
+            0,
+            1,
+            4,
+            4,
+            3,
+            4,
+            0,
+            0,
+            4,
+            1,
+            1,
+            5,
+            1
+          ],
+          "official_points": 38,
+          "official_rank": 10,
+          "calculated_points": 38
+        },
+        {
+          "name": "Roger",
+          "original_name": "Roger",
+          "rounds": [
+            1,
+            0,
+            0,
+            8,
+            2,
+            8,
+            10,
+            4,
+            10,
+            0,
+            0,
+            8,
+            6,
+            0,
+            10
+          ],
+          "official_points": 67,
+          "official_rank": 4,
+          "calculated_points": 67
+        },
+        {
+          "name": "Mike",
+          "original_name": "Mike",
+          "rounds": [
+            10,
+            4,
+            0,
+            0,
+            8,
+            10,
+            2,
+            10,
+            3,
+            4,
+            5,
+            6,
+            0,
+            2,
+            3
+          ],
+          "official_points": 67,
+          "official_rank": 3,
+          "calculated_points": 67
+        },
+        {
+          "name": "Fösu",
+          "original_name": "Fösu",
+          "rounds": [
+            3,
+            6,
+            4,
+            2,
+            5,
+            2,
+            0,
+            2,
+            1,
+            10,
+            0,
+            0,
+            0,
+            10,
+            0
+          ],
+          "official_points": 45,
+          "official_rank": 9,
+          "calculated_points": 45
+        },
+        {
+          "name": "Echse",
+          "original_name": "Echse",
+          "rounds": [
+            8,
+            3,
+            3,
+            4,
+            1,
+            3,
+            1,
+            3,
+            2,
+            2,
+            6,
+            2,
+            3,
+            4,
+            6
+          ],
+          "official_points": 51,
+          "official_rank": 7,
+          "calculated_points": 51
+        },
+        {
+          "name": "Borer",
+          "original_name": "Borer",
+          "rounds": [
+            4,
+            5,
+            8,
+            6,
+            3,
+            0,
+            5,
+            6,
+            0,
+            6,
+            8,
+            10,
+            4,
+            6,
+            5
+          ],
+          "official_points": 76,
+          "official_rank": 1,
+          "calculated_points": 76
+        },
+        {
+          "name": "Chopfi",
+          "original_name": "Chopfi",
+          "rounds": [
+            0,
+            10,
+            5,
+            3,
+            10,
+            0,
+            0,
+            0,
+            8,
+            8,
+            2,
+            0,
+            10,
+            1,
+            2
+          ],
+          "official_points": 59,
+          "official_rank": 6,
+          "calculated_points": 59
+        },
+        {
+          "name": "Lack",
+          "original_name": "Lack",
+          "rounds": [
+            5,
+            2,
+            6,
+            10,
+            0,
+            6,
+            4,
+            0,
+            4,
+            1,
+            3,
+            4,
+            2,
+            0,
+            0
+          ],
+          "official_points": 47,
+          "official_rank": 8,
+          "calculated_points": 47
+        },
+        {
+          "name": "Turi",
+          "original_name": "Turi",
+          "rounds": [
+            0,
+            0,
+            10,
+            0,
+            0,
+            5,
+            6,
+            1,
+            5,
+            5,
+            1,
+            3,
+            8,
+            3,
+            8
+          ],
+          "official_points": 61,
+          "official_rank": 5,
+          "calculated_points": 55,
+          "quality_flag": "ROUND_SUM_DIFFERS_FROM_OFFICIAL_TOTAL"
+        },
+        {
+          "name": "Hugo",
+          "original_name": "Hugo",
+          "rounds": [
+            6,
+            1,
+            2,
+            5,
+            0,
+            1,
+            8,
+            8,
+            6,
+            2,
+            10,
+            5,
+            5,
+            8,
+            4
+          ],
+          "official_points": 71,
+          "official_rank": 2,
+          "calculated_points": 71
+        }
+      ]
+    },
+    {
+      "year": 2009,
+      "source": "IMG_0307.jpeg",
+      "round_count": 12,
+      "players": [
+        {
+          "name": "Borer",
+          "original_name": "Borer",
+          "rounds": [
+            4,
+            1,
+            1,
+            4,
+            3,
+            8,
+            0,
+            0,
+            6,
+            6,
+            0,
+            3
+          ],
+          "official_points": 36,
+          "official_rank": 8,
+          "calculated_points": 36
+        },
+        {
+          "name": "Hugo",
+          "original_name": "Hugo",
+          "rounds": [
+            10,
+            6,
+            2,
+            0,
+            0,
+            0,
+            10,
+            4,
+            10,
+            4,
+            4,
+            6
+          ],
+          "official_points": 56,
+          "official_rank": 2,
+          "calculated_points": 56
+        },
+        {
+          "name": "Mike",
+          "original_name": "Mike",
+          "rounds": [
+            0,
+            0,
+            0,
+            3,
+            5,
+            6,
+            3,
+            8,
+            1,
+            0,
+            10,
+            5
+          ],
+          "official_points": 41,
+          "official_rank": 9,
+          "calculated_points": 41
+        },
+        {
+          "name": "Roger",
+          "original_name": "Roger",
+          "rounds": [
+            3,
+            10,
+            3,
+            0,
+            0,
+            10,
+            4,
+            1,
+            5,
+            1,
+            0,
+            0
+          ],
+          "official_points": 37,
+          "official_rank": 8,
+          "calculated_points": 37
+        },
+        {
+          "name": "Turi",
+          "original_name": "Turi",
+          "rounds": [
+            4,
+            5,
+            4,
+            1,
+            4,
+            3,
+            5,
+            2,
+            2,
+            0,
+            5,
+            0
+          ],
+          "official_points": 35,
+          "official_rank": 10,
+          "calculated_points": 35
+        },
+        {
+          "name": "Chopfi",
+          "original_name": "Chopfi",
+          "rounds": [
+            2,
+            3,
+            10,
+            6,
+            8,
+            1,
+            1,
+            3,
+            0,
+            10,
+            0,
+            1
+          ],
+          "official_points": 45,
+          "official_rank": 6,
+          "calculated_points": 45
+        },
+        {
+          "name": "Echse",
+          "original_name": "Echse",
+          "rounds": [
+            0,
+            0,
+            8,
+            10,
+            1,
+            2,
+            8,
+            0,
+            8,
+            2,
+            8,
+            8
+          ],
+          "official_points": 55,
+          "official_rank": 3,
+          "calculated_points": 55
+        },
+        {
+          "name": "Lack",
+          "original_name": "Lack",
+          "rounds": [
+            8,
+            2,
+            6,
+            2,
+            2,
+            0,
+            0,
+            6,
+            3,
+            8,
+            2,
+            10
+          ],
+          "official_points": 49,
+          "official_rank": 5,
+          "calculated_points": 49
+        },
+        {
+          "name": "Fösu",
+          "original_name": "Fösu",
+          "rounds": [
+            6,
+            4,
+            0,
+            8,
+            10,
+            4,
+            2,
+            10,
+            4,
+            5,
+            3,
+            1
+          ],
+          "official_points": 57,
+          "official_rank": 1,
+          "calculated_points": 57
+        },
+        {
+          "name": "Oli",
+          "original_name": "Oli",
+          "rounds": [
+            1,
+            8,
+            5,
+            5,
+            6,
+            5,
+            6,
+            5,
+            0,
+            3,
+            5,
+            4
+          ],
+          "official_points": 53,
+          "official_rank": 4,
+          "calculated_points": 53
+        }
+      ]
+    },
+    {
+      "year": 2010,
+      "source": "IMG_0308.jpeg",
+      "round_count": 12,
+      "players": [
+        {
+          "name": "Fösu",
+          "original_name": "Fösu",
+          "rounds": [
+            10,
+            3,
+            5,
+            1,
+            6,
+            3,
+            4,
+            6,
+            1,
+            3,
+            8,
+            4
+          ],
+          "official_points": 54,
+          "official_rank": 4,
+          "calculated_points": 54
+        },
+        {
+          "name": "Lack",
+          "original_name": "Lack",
+          "rounds": [
+            0,
+            1,
+            1,
+            10,
+            10,
+            6,
+            2,
+            3,
+            6,
+            2,
+            0,
+            3
+          ],
+          "official_points": 44,
+          "official_rank": 9,
+          "calculated_points": 44
+        },
+        {
+          "name": "Chopfi",
+          "original_name": "Chopfi",
+          "rounds": [
+            2,
+            4,
+            4,
+            5,
+            0,
+            2,
+            8,
+            0,
+            5,
+            8,
+            1,
+            5
+          ],
+          "official_points": 44,
+          "official_rank": 8,
+          "calculated_points": 44
+        },
+        {
+          "name": "Mike",
+          "original_name": "Mike",
+          "rounds": [
+            6,
+            10,
+            8,
+            6,
+            8,
+            5,
+            6,
+            1,
+            3,
+            1,
+            5,
+            8
+          ],
+          "official_points": 67,
+          "official_rank": 1,
+          "calculated_points": 67
+        },
+        {
+          "name": "Borer",
+          "original_name": "Borer",
+          "rounds": [
+            8,
+            2,
+            3,
+            8,
+            5,
+            4,
+            3,
+            8,
+            8,
+            10,
+            3,
+            1
+          ],
+          "official_points": 63,
+          "official_rank": 2,
+          "calculated_points": 63
+        },
+        {
+          "name": "Turi",
+          "original_name": "Turi",
+          "rounds": [
+            3,
+            0,
+            10,
+            0,
+            2,
+            10,
+            0,
+            4,
+            0,
+            0,
+            10,
+            6
+          ],
+          "official_points": 45,
+          "official_rank": 6,
+          "calculated_points": 45
+        },
+        {
+          "name": "Schnarre",
+          "original_name": "Schnarre",
+          "rounds": [
+            4,
+            5,
+            6,
+            3,
+            4,
+            0,
+            1,
+            2,
+            10,
+            5,
+            4,
+            2
+          ],
+          "official_points": 46,
+          "official_rank": 5,
+          "calculated_points": 46
+        },
+        {
+          "name": "Pät",
+          "original_name": "Pät",
+          "rounds": [
+            5,
+            8,
+            2,
+            2,
+            1,
+            8,
+            5,
+            5,
+            3,
+            4,
+            6,
+            10
+          ],
+          "official_points": 59,
+          "official_rank": 3,
+          "calculated_points": 59
+        },
+        {
+          "name": "Keel",
+          "original_name": "Keel",
+          "rounds": [
+            1,
+            6,
+            0,
+            4,
+            3,
+            1,
+            10,
+            10,
+            2,
+            6,
+            2,
+            0
+          ],
+          "official_points": 45,
+          "official_rank": 7,
+          "calculated_points": 45
+        }
+      ]
+    },
+    {
+      "year": 2011,
+      "source": "IMG_0309.jpeg",
+      "round_count": 10,
+      "players": [
+        {
+          "name": "Mike",
+          "original_name": "Mike",
+          "rounds": [
+            1,
+            0,
+            4,
+            3,
+            0,
+            10,
+            5,
+            5,
+            10,
+            1
+          ],
+          "official_points": 39,
+          "official_rank": 4,
+          "calculated_points": 39
+        },
+        {
+          "name": "Borer",
+          "original_name": "Borer",
+          "rounds": [
+            0,
+            5,
+            2,
+            1,
+            6,
+            2,
+            0,
+            0,
+            0,
+            2
+          ],
+          "official_points": 18,
+          "official_rank": 10,
+          "calculated_points": 18
+        },
+        {
+          "name": "Pät",
+          "original_name": "Pät",
+          "rounds": [
+            5,
+            2,
+            3,
+            5,
+            4,
+            0,
+            3,
+            3,
+            8,
+            0
+          ],
+          "official_points": 33,
+          "official_rank": 8,
+          "calculated_points": 33
+        },
+        {
+          "name": "Fösu",
+          "original_name": "Fösu",
+          "rounds": [
+            3,
+            4,
+            8,
+            8,
+            2,
+            5,
+            4,
+            0,
+            3,
+            0
+          ],
+          "official_points": 37,
+          "official_rank": 7,
+          "calculated_points": 37
+        },
+        {
+          "name": "Schnarre",
+          "original_name": "Schnarre",
+          "rounds": [
+            4,
+            5,
+            10,
+            2,
+            5,
+            8,
+            10,
+            6,
+            5,
+            8
+          ],
+          "official_points": 63,
+          "official_rank": 1,
+          "calculated_points": 63
+        },
+        {
+          "name": "Turi",
+          "original_name": "Turi",
+          "rounds": [
+            8,
+            1,
+            1,
+            10,
+            1,
+            3,
+            8,
+            2,
+            0,
+            5
+          ],
+          "official_points": 39,
+          "official_rank": 5,
+          "calculated_points": 39
+        },
+        {
+          "name": "Keel",
+          "original_name": "Keel",
+          "rounds": [
+            0,
+            3,
+            0,
+            6,
+            0,
+            0,
+            6,
+            10,
+            2,
+            10
+          ],
+          "official_points": 37,
+          "official_rank": 6,
+          "calculated_points": 37
+        },
+        {
+          "name": "Chopfi",
+          "original_name": "Chopfi",
+          "rounds": [
+            2,
+            10,
+            5,
+            0,
+            3,
+            1,
+            2,
+            1,
+            1,
+            4
+          ],
+          "official_points": 29,
+          "official_rank": 9,
+          "calculated_points": 29
+        },
+        {
+          "name": "Lack",
+          "original_name": "Lack",
+          "rounds": [
+            6,
+            8,
+            6,
+            0,
+            8,
+            4,
+            0,
+            4,
+            6,
+            5
+          ],
+          "official_points": 47,
+          "official_rank": 2,
+          "calculated_points": 47
+        },
+        {
+          "name": "Echse",
+          "original_name": "Echse",
+          "rounds": [
+            10,
+            0,
+            0,
+            4,
+            10,
+            6,
+            1,
+            8,
+            4,
+            3
+          ],
+          "official_points": 46,
+          "official_rank": 3,
+          "calculated_points": 46
+        }
+      ]
+    },
+    {
+      "year": 2012,
+      "source": "IMG_0310.jpeg",
+      "round_count": 10,
+      "players": [
+        {
+          "name": "Schnarre",
+          "original_name": "Schnarre",
+          "rounds": [
+            0,
+            4,
+            8,
+            10,
+            10,
+            4,
+            5,
+            8,
+            3,
+            2
+          ],
+          "official_points": 54,
+          "official_rank": 2,
+          "calculated_points": 54
+        },
+        {
+          "name": "Lack",
+          "original_name": "Lack",
+          "rounds": [
+            5,
+            1,
+            0,
+            5,
+            2,
+            1,
+            10,
+            1,
+            5,
+            6
+          ],
+          "official_points": 36,
+          "official_rank": 5,
+          "calculated_points": 36
+        },
+        {
+          "name": "Echse",
+          "original_name": "Echse",
+          "rounds": [
+            3,
+            2,
+            10,
+            0,
+            3,
+            6,
+            1,
+            6,
+            4,
+            0
+          ],
+          "official_points": 35,
+          "official_rank": 7,
+          "calculated_points": 35
+        },
+        {
+          "name": "Mike",
+          "original_name": "Mike",
+          "rounds": [
+            0,
+            6,
+            5,
+            6,
+            4,
+            0,
+            6,
+            3,
+            6,
+            5
+          ],
+          "official_points": 41,
+          "official_rank": 3,
+          "calculated_points": 41
+        },
+        {
+          "name": "Turi",
+          "original_name": "Turi",
+          "rounds": [
+            2,
+            0,
+            0,
+            0,
+            1,
+            2,
+            8,
+            10,
+            1,
+            10
+          ],
+          "official_points": 34,
+          "official_rank": 8,
+          "calculated_points": 34
+        },
+        {
+          "name": "Keel",
+          "original_name": "Keel",
+          "rounds": [
+            6,
+            0,
+            3,
+            2,
+            0,
+            0,
+            0,
+            4,
+            0,
+            1
+          ],
+          "official_points": 16,
+          "official_rank": 10,
+          "calculated_points": 16
+        },
+        {
+          "name": "Fösu",
+          "original_name": "Fösu",
+          "rounds": [
+            10,
+            3,
+            1,
+            8,
+            0,
+            5,
+            0,
+            0,
+            0,
+            0
+          ],
+          "official_points": 27,
+          "official_rank": 9,
+          "calculated_points": 27
+        },
+        {
+          "name": "Chopfi",
+          "original_name": "Chopfi",
+          "rounds": [
+            4,
+            8,
+            2,
+            4,
+            4,
+            3,
+            2,
+            2,
+            2,
+            4
+          ],
+          "official_points": 35,
+          "official_rank": 6,
+          "calculated_points": 35
+        },
+        {
+          "name": "Borer",
+          "original_name": "Borer",
+          "rounds": [
+            1,
+            5,
+            4,
+            1,
+            6,
+            8,
+            4,
+            0,
+            8,
+            3
+          ],
+          "official_points": 40,
+          "official_rank": 4,
+          "calculated_points": 40
+        },
+        {
+          "name": "Töbu",
+          "original_name": "Töbu",
+          "rounds": [
+            8,
+            10,
+            6,
+            3,
+            8,
+            10,
+            3,
+            5,
+            10,
+            8
+          ],
+          "official_points": 71,
+          "official_rank": 1,
+          "calculated_points": 71
+        }
+      ]
+    },
+    {
+      "year": 2013,
+      "source": "IMG_0311.jpeg",
+      "round_count": 10,
+      "players": [
+        {
+          "name": "Töbu",
+          "original_name": "Töbu",
+          "rounds": [
+            10,
+            8,
+            1,
+            4,
+            0,
+            2,
+            4,
+            10,
+            0,
+            1
+          ],
+          "official_points": 40,
+          "official_rank": 5,
+          "calculated_points": 40
+        },
+        {
+          "name": "Schnarre",
+          "original_name": "Schnarre",
+          "rounds": [
+            0,
+            4,
+            2,
+            0,
+            0,
+            10,
+            5,
+            2,
+            1,
+            0
+          ],
+          "official_points": 24,
+          "official_rank": 9,
+          "calculated_points": 24
+        },
+        {
+          "name": "Mike",
+          "original_name": "Mike",
+          "rounds": [
+            4,
+            6,
+            8,
+            1,
+            5,
+            0,
+            6,
+            4,
+            8,
+            10
+          ],
+          "official_points": 52,
+          "official_rank": 2,
+          "calculated_points": 52
+        },
+        {
+          "name": "Borer",
+          "original_name": "Borer",
+          "rounds": [
+            3,
+            5,
+            5,
+            6,
+            10,
+            4,
+            0,
+            1,
+            10,
+            4
+          ],
+          "official_points": 48,
+          "official_rank": 3,
+          "calculated_points": 48
+        },
+        {
+          "name": "Lack",
+          "original_name": "Lack",
+          "rounds": [
+            1,
+            0,
+            0,
+            3,
+            2,
+            6,
+            0,
+            2,
+            4,
+            0
+          ],
+          "official_points": 18,
+          "official_rank": 10,
+          "calculated_points": 18
+        },
+        {
+          "name": "Chopfi",
+          "original_name": "Chopfi",
+          "rounds": [
+            8,
+            3,
+            0,
+            5,
+            4,
+            5,
+            1,
+            8,
+            0,
+            5
+          ],
+          "official_points": 39,
+          "official_rank": 6,
+          "calculated_points": 39
+        },
+        {
+          "name": "Echse",
+          "original_name": "Echse",
+          "rounds": [
+            6,
+            2,
+            3,
+            8,
+            6,
+            1,
+            2,
+            0,
+            2,
+            8
+          ],
+          "official_points": 38,
+          "official_rank": 7,
+          "calculated_points": 38
+        },
+        {
+          "name": "Turi",
+          "original_name": "Turi",
+          "rounds": [
+            5,
+            10,
+            6,
+            2,
+            6,
+            0,
+            10,
+            5,
+            6,
+            3
+          ],
+          "official_points": 53,
+          "official_rank": 1,
+          "calculated_points": 53
+        },
+        {
+          "name": "Fösu",
+          "original_name": "Fösu",
+          "rounds": [
+            2,
+            1,
+            3,
+            10,
+            1,
+            3,
+            8,
+            6,
+            3,
+            6
+          ],
+          "official_points": 43,
+          "official_rank": 4,
+          "calculated_points": 43
+        },
+        {
+          "name": "Keel",
+          "original_name": "Keel",
+          "rounds": [
+            0,
+            0,
+            10,
+            0,
+            3,
+            8,
+            3,
+            0,
+            5,
+            2
+          ],
+          "official_points": 31,
+          "official_rank": 8,
+          "calculated_points": 31
+        }
+      ]
+    },
+    {
+      "year": 2015,
+      "source": "IMG_0312.jpeg",
+      "round_count": 10,
+      "players": [
+        {
+          "name": "Turi",
+          "original_name": "Turi",
+          "rounds": [
+            1,
+            5,
+            6,
+            8,
+            4,
+            5,
+            6,
+            2,
+            3,
+            0
+          ],
+          "official_points": 40,
+          "official_rank": 5,
+          "calculated_points": 40
+        },
+        {
+          "name": "Mike",
+          "original_name": "Mike",
+          "rounds": [
+            3,
+            6,
+            1,
+            2,
+            5,
+            8,
+            8,
+            6,
+            8,
+            3
+          ],
+          "official_points": 50,
+          "official_rank": 1,
+          "calculated_points": 50
+        },
+        {
+          "name": "Fösu",
+          "original_name": "Fösu",
+          "rounds": [
+            6,
+            3,
+            3,
+            4,
+            0,
+            4,
+            5,
+            0,
+            0,
+            1
+          ],
+          "official_points": 26,
+          "official_rank": 10,
+          "calculated_points": 26
+        },
+        {
+          "name": "Töbu",
+          "original_name": "Töbu",
+          "rounds": [
+            2,
+            8,
+            10,
+            1,
+            2,
+            1,
+            4,
+            4,
+            2,
+            1
+          ],
+          "official_points": 35,
+          "official_rank": 7,
+          "calculated_points": 35
+        },
+        {
+          "name": "Chopfi",
+          "original_name": "Chopfi",
+          "rounds": [
+            0,
+            2,
+            0,
+            3,
+            3,
+            3,
+            3,
+            3,
+            10,
+            5
+          ],
+          "official_points": 32,
+          "official_rank": 8,
+          "calculated_points": 32
+        },
+        {
+          "name": "Echse",
+          "original_name": "Echse",
+          "rounds": [
+            8,
+            0,
+            0,
+            0,
+            1,
+            10,
+            1,
+            5,
+            4,
+            10
+          ],
+          "official_points": 39,
+          "official_rank": 6,
+          "calculated_points": 39
+        },
+        {
+          "name": "Keel",
+          "original_name": "Keel",
+          "rounds": [
+            5,
+            4,
+            8,
+            0,
+            10,
+            0,
+            0,
+            10,
+            5,
+            4
+          ],
+          "official_points": 46,
+          "official_rank": 3,
+          "calculated_points": 46
+        },
+        {
+          "name": "Schnarre",
+          "original_name": "Schnarre",
+          "rounds": [
+            10,
+            10,
+            4,
+            10,
+            8,
+            2,
+            2,
+            1,
+            0,
+            0
+          ],
+          "official_points": 47,
+          "official_rank": 2,
+          "calculated_points": 47
+        },
+        {
+          "name": "Lack",
+          "original_name": "Lack",
+          "rounds": [
+            0,
+            0,
+            2,
+            4,
+            0,
+            6,
+            0,
+            8,
+            1,
+            6
+          ],
+          "official_points": 27,
+          "official_rank": 9,
+          "calculated_points": 27
+        },
+        {
+          "name": "Reti",
+          "original_name": "Reti",
+          "rounds": [
+            4,
+            1,
+            4,
+            6,
+            6,
+            0,
+            10,
+            0,
+            6,
+            8
+          ],
+          "official_points": 45,
+          "official_rank": 4,
+          "calculated_points": 45
+        }
+      ]
+    },
+    {
+      "year": 2016,
+      "source": "IMG_0313.jpeg",
+      "round_count": 6,
+      "players": [
+        {
+          "name": "Mike",
+          "original_name": "Mike",
+          "rounds": [
+            10,
+            10,
+            4,
+            5,
+            3,
+            3
+          ],
+          "official_points": 35,
+          "official_rank": 2,
+          "calculated_points": 35
+        },
+        {
+          "name": "Turi",
+          "original_name": "Turi",
+          "rounds": [
+            4,
+            6,
+            0,
+            8,
+            8,
+            0
+          ],
+          "official_points": 26,
+          "official_rank": 6,
+          "calculated_points": 26
+        },
+        {
+          "name": "Töbu",
+          "original_name": "Töbu",
+          "rounds": [
+            8,
+            2,
+            6,
+            1,
+            0,
+            10
+          ],
+          "official_points": 27,
+          "official_rank": 4,
+          "calculated_points": 27
+        },
+        {
+          "name": "Chopfi",
+          "original_name": "Chopfi",
+          "rounds": [
+            5,
+            5,
+            10,
+            10,
+            1,
+            5
+          ],
+          "official_points": 36,
+          "official_rank": 1,
+          "calculated_points": 36
+        },
+        {
+          "name": "Fösu",
+          "original_name": "Fösu",
+          "rounds": [
+            6,
+            8,
+            5,
+            4,
+            10,
+            2
+          ],
+          "official_points": 35,
+          "official_rank": 3,
+          "calculated_points": 35
+        },
+        {
+          "name": "Pät",
+          "original_name": "Pät",
+          "rounds": [
+            0,
+            0,
+            3,
+            2,
+            2,
+            4
+          ],
+          "official_points": 11,
+          "official_rank": 9,
+          "calculated_points": 11
+        },
+        {
+          "name": "Borer",
+          "original_name": "Borer",
+          "rounds": [
+            2,
+            1,
+            0,
+            3,
+            5,
+            6
+          ],
+          "official_points": 17,
+          "official_rank": 8,
+          "calculated_points": 17
+        },
+        {
+          "name": "Manu",
+          "original_name": "Manu",
+          "rounds": [
+            1,
+            4,
+            8,
+            0,
+            6,
+            8
+          ],
+          "official_points": 27,
+          "official_rank": 5,
+          "calculated_points": 27
+        },
+        {
+          "name": "Bröne",
+          "original_name": "Bröne",
+          "rounds": [
+            3,
+            3,
+            2,
+            6,
+            4,
+            1
+          ],
+          "official_points": 19,
+          "official_rank": 7,
+          "calculated_points": 19
+        }
+      ]
+    },
+    {
+      "year": 2017,
+      "source": "IMG_0314.jpeg",
+      "round_count": 6,
+      "players": [
+        {
+          "name": "Chopfi",
+          "original_name": "Chopfi",
+          "rounds": [
+            5,
+            5,
+            4,
+            4,
+            1,
+            5
+          ],
+          "official_points": 24,
+          "official_rank": 5,
+          "calculated_points": 24
+        },
+        {
+          "name": "Mike",
+          "original_name": "Mike",
+          "rounds": [
+            0,
+            2,
+            8,
+            0,
+            5,
+            3
+          ],
+          "official_points": 18,
+          "official_rank": 7,
+          "calculated_points": 18
+        },
+        {
+          "name": "Fösu",
+          "original_name": "Fösu",
+          "rounds": [
+            3,
+            1,
+            1,
+            10,
+            4,
+            4
+          ],
+          "official_points": 23,
+          "official_rank": 6,
+          "calculated_points": 23
+        },
+        {
+          "name": "Töbu",
+          "original_name": "Töbu",
+          "rounds": [
+            6,
+            0,
+            10,
+            1,
+            8,
+            8
+          ],
+          "official_points": 33,
+          "official_rank": 3,
+          "calculated_points": 33
+        },
+        {
+          "name": "Manu",
+          "original_name": "Mänu",
+          "rounds": [
+            10,
+            6,
+            5,
+            0,
+            2,
+            10
+          ],
+          "official_points": 33,
+          "official_rank": 2,
+          "calculated_points": 33
+        },
+        {
+          "name": "Turi",
+          "original_name": "Turi",
+          "rounds": [
+            8,
+            8,
+            3,
+            5,
+            6,
+            6
+          ],
+          "official_points": 36,
+          "official_rank": 1,
+          "calculated_points": 36
+        },
+        {
+          "name": "Bröne",
+          "original_name": "Bröne",
+          "rounds": [
+            0,
+            2,
+            2,
+            8,
+            3,
+            2
+          ],
+          "official_points": 17,
+          "official_rank": 8,
+          "calculated_points": 17
+        },
+        {
+          "name": "Borer",
+          "original_name": "Borer",
+          "rounds": [
+            2,
+            0,
+            6,
+            6,
+            10,
+            0
+          ],
+          "official_points": 24,
+          "official_rank": 4,
+          "calculated_points": 24
+        },
+        {
+          "name": "Pät",
+          "original_name": "Pat",
+          "rounds": [
+            4,
+            4,
+            0,
+            1,
+            0,
+            1
+          ],
+          "official_points": 10,
+          "official_rank": 10,
+          "calculated_points": 10
+        },
+        {
+          "name": "Keel",
+          "original_name": "Keel",
+          "rounds": [
+            1,
+            10,
+            0,
+            3,
+            0,
+            0
+          ],
+          "official_points": 14,
+          "official_rank": 9,
+          "calculated_points": 14
+        }
+      ],
+      "verification": "Rundenwerte gegen handschriftliche Totals abgeglichen"
+    },
+    {
+      "year": 2018,
+      "source": "IMG_0315.jpeg",
+      "round_count": 7,
+      "players": [
+        {
+          "name": "Manu",
+          "original_name": "Mänu",
+          "rounds": [
+            3,
+            0,
+            5,
+            1,
+            8,
+            6,
+            1
+          ],
+          "official_points": 24,
+          "official_rank": 6,
+          "calculated_points": 24
+        },
+        {
+          "name": "Töbu",
+          "original_name": "Töbu",
+          "rounds": [
+            1,
+            8,
+            2,
+            0,
+            0,
+            0,
+            10
+          ],
+          "official_points": 21,
+          "official_rank": 7,
+          "calculated_points": 21
+        },
+        {
+          "name": "Borer",
+          "original_name": "Borer",
+          "rounds": [
+            10,
+            1,
+            4,
+            4,
+            3,
+            5,
+            4
+          ],
+          "official_points": 31,
+          "official_rank": 5,
+          "calculated_points": 31
+        },
+        {
+          "name": "Chopfi",
+          "original_name": "Chopfi",
+          "rounds": [
+            6,
+            5,
+            6,
+            2,
+            4,
+            3,
+            5
+          ],
+          "official_points": 31,
+          "official_rank": 4,
+          "calculated_points": 31
+        },
+        {
+          "name": "Fösu",
+          "original_name": "Fösu",
+          "rounds": [
+            5,
+            3,
+            0,
+            10,
+            6,
+            2,
+            6
+          ],
+          "official_points": 32,
+          "official_rank": 3,
+          "calculated_points": 32
+        },
+        {
+          "name": "Mike",
+          "original_name": "Mike",
+          "rounds": [
+            4,
+            2,
+            3,
+            8,
+            10,
+            10,
+            8
+          ],
+          "official_points": 45,
+          "official_rank": 1,
+          "calculated_points": 45
+        },
+        {
+          "name": "Bröne",
+          "original_name": "Bröne",
+          "rounds": [
+            8,
+            4,
+            6,
+            6,
+            5,
+            4,
+            3
+          ],
+          "official_points": 36,
+          "official_rank": 2,
+          "calculated_points": 36
+        },
+        {
+          "name": "Keel",
+          "original_name": "Keel",
+          "rounds": [
+            0,
+            0,
+            10,
+            3,
+            2,
+            0,
+            0
+          ],
+          "official_points": 15,
+          "official_rank": 10,
+          "calculated_points": 15
+        },
+        {
+          "name": "Pät",
+          "original_name": "Pat",
+          "rounds": [
+            2,
+            6,
+            0,
+            4,
+            1,
+            1,
+            2
+          ],
+          "official_points": 16,
+          "official_rank": 9,
+          "calculated_points": 16
+        },
+        {
+          "name": "Schnarre",
+          "original_name": "Schnarre",
+          "rounds": [
+            0,
+            10,
+            1,
+            0,
+            0,
+            8,
+            0
+          ],
+          "official_points": 19,
+          "official_rank": 8,
+          "calculated_points": 19
+        }
+      ],
+      "verification": "Rundenwerte gegen handschriftliche Totals abgeglichen"
+    },
+    {
+      "year": 2019,
+      "source": "IMG_0316.jpeg",
+      "round_count": 7,
+      "players": [
+        {
+          "name": "Mike",
+          "original_name": "Mike",
+          "rounds": [
+            6,
+            0,
+            5,
+            8,
+            1,
+            8,
+            10
+          ],
+          "official_points": 38,
+          "official_rank": 1,
+          "calculated_points": 38
+        },
+        {
+          "name": "Bröne",
+          "original_name": "Bröne",
+          "rounds": [
+            2,
+            1,
+            4,
+            0,
+            5,
+            5,
+            4
+          ],
+          "official_points": 21,
+          "official_rank": 8,
+          "calculated_points": 21
+        },
+        {
+          "name": "Fösu",
+          "original_name": "Fösu",
+          "rounds": [
+            0,
+            3,
+            2,
+            6,
+            4,
+            0,
+            0
+          ],
+          "official_points": 15,
+          "official_rank": 9,
+          "calculated_points": 15
+        },
+        {
+          "name": "Chopfi",
+          "original_name": "Chopfi",
+          "rounds": [
+            1,
+            8,
+            3,
+            5,
+            8,
+            4,
+            2
+          ],
+          "official_points": 31,
+          "official_rank": 5,
+          "calculated_points": 31
+        },
+        {
+          "name": "Manu",
+          "original_name": "Mänu",
+          "rounds": [
+            5,
+            4,
+            8,
+            3,
+            2,
+            3,
+            0
+          ],
+          "official_points": 25,
+          "official_rank": 7,
+          "calculated_points": 25
+        },
+        {
+          "name": "Schnarre",
+          "original_name": "Schnarre",
+          "rounds": [
+            8,
+            1,
+            6,
+            0,
+            0,
+            6,
+            5
+          ],
+          "official_points": 26,
+          "official_rank": 6,
+          "calculated_points": 26
+        },
+        {
+          "name": "Keel",
+          "original_name": "Keel",
+          "rounds": [
+            3,
+            6,
+            10,
+            2,
+            6,
+            0,
+            8
+          ],
+          "official_points": 35,
+          "official_rank": 2,
+          "calculated_points": 35
+        },
+        {
+          "name": "Echse",
+          "original_name": "Echse",
+          "rounds": [
+            10,
+            10,
+            0,
+            4,
+            3,
+            0,
+            6
+          ],
+          "official_points": 33,
+          "official_rank": 4,
+          "calculated_points": 33
+        },
+        {
+          "name": "Tobi",
+          "original_name": "Tobi",
+          "rounds": [
+            4,
+            5,
+            0,
+            10,
+            10,
+            2,
+            3
+          ],
+          "official_points": 34,
+          "official_rank": 3,
+          "calculated_points": 34
+        },
+        {
+          "name": "Reti",
+          "original_name": "Reti",
+          "rounds": [
+            0,
+            0,
+            1,
+            1,
+            0,
+            10,
+            1
+          ],
+          "official_points": 13,
+          "official_rank": 10,
+          "calculated_points": 13
+        }
+      ],
+      "verification": "Rundenwerte gegen handschriftliche Totals abgeglichen"
+    },
+    {
+      "year": 2022,
+      "source": "IMG_0317.jpeg",
+      "round_count": 7,
+      "players": [
+        {
+          "name": "Mike",
+          "original_name": "Mike",
+          "rounds": [
+            8,
+            0,
+            5,
+            4,
+            10,
+            2,
+            5
+          ],
+          "official_points": 34,
+          "official_rank": 4,
+          "calculated_points": 34
+        },
+        {
+          "name": "Fösu",
+          "original_name": "Fösu",
+          "rounds": [
+            6,
+            5,
+            2,
+            2,
+            4,
+            6,
+            1
+          ],
+          "official_points": 26,
+          "official_rank": 6,
+          "calculated_points": 26
+        },
+        {
+          "name": "Bröne",
+          "original_name": "Bröne",
+          "rounds": [
+            1,
+            3,
+            0,
+            0,
+            5,
+            4,
+            2
+          ],
+          "official_points": 15,
+          "official_rank": 8,
+          "calculated_points": 15
+        },
+        {
+          "name": "Keel",
+          "original_name": "Keel",
+          "rounds": [
+            4,
+            0,
+            1,
+            1,
+            0,
+            0,
+            0
+          ],
+          "official_points": 6,
+          "official_rank": 10,
+          "calculated_points": 6
+        },
+        {
+          "name": "Manu",
+          "original_name": "Mänu",
+          "rounds": [
+            0,
+            8,
+            10,
+            10,
+            1,
+            8,
+            3
+          ],
+          "official_points": 40,
+          "official_rank": 2,
+          "calculated_points": 40
+        },
+        {
+          "name": "Tobi",
+          "original_name": "Tobi",
+          "rounds": [
+            3,
+            10,
+            3,
+            5,
+            6,
+            1,
+            6
+          ],
+          "official_points": 34,
+          "official_rank": 5,
+          "calculated_points": 34
+        },
+        {
+          "name": "Echse",
+          "original_name": "Echse",
+          "rounds": [
+            2,
+            2,
+            0,
+            3,
+            0,
+            2,
+            4
+          ],
+          "official_points": 13,
+          "official_rank": 9,
+          "calculated_points": 13
+        },
+        {
+          "name": "Chopfi",
+          "original_name": "Chopfi",
+          "rounds": [
+            5,
+            4,
+            6,
+            6,
+            3,
+            10,
+            8
+          ],
+          "official_points": 42,
+          "official_rank": 1,
+          "calculated_points": 42
+        },
+        {
+          "name": "Reti",
+          "original_name": "Reti",
+          "rounds": [
+            0,
+            1,
+            4,
+            8,
+            8,
+            5,
+            10
+          ],
+          "official_points": 36,
+          "official_rank": 3,
+          "calculated_points": 36
+        },
+        {
+          "name": "Schnarre",
+          "original_name": "Schnarre",
+          "rounds": [
+            10,
+            5,
+            8,
+            0,
+            2,
+            0,
+            0
+          ],
+          "official_points": 25,
+          "official_rank": 7,
+          "calculated_points": 25
+        }
+      ],
+      "verification": "Rundenwerte gegen handschriftliche Totals abgeglichen"
+    },
+    {
+      "year": 2024,
+      "source": "IMG_0318.jpeg",
+      "round_count": 7,
+      "players": [
+        {
+          "name": "Chopfi",
+          "original_name": "Chopfi",
+          "rounds": [
+            2,
+            8,
+            3,
+            6,
+            2,
+            3,
+            5
+          ],
+          "official_points": 29,
+          "official_rank": 7,
+          "calculated_points": 29
+        },
+        {
+          "name": "Manu",
+          "original_name": "Mänu",
+          "rounds": [
+            3,
+            10,
+            2,
+            10,
+            5,
+            0,
+            3
+          ],
+          "official_points": 33,
+          "official_rank": 3,
+          "calculated_points": 33
+        },
+        {
+          "name": "Mike",
+          "original_name": "Mike",
+          "rounds": [
+            3,
+            5,
+            4,
+            4,
+            8,
+            8,
+            10
+          ],
+          "official_points": 42,
+          "official_rank": 1,
+          "calculated_points": 42
+        },
+        {
+          "name": "Fösu",
+          "original_name": "Fösu",
+          "rounds": [
+            5,
+            2,
+            1,
+            0,
+            10,
+            1,
+            6
+          ],
+          "official_points": 25,
+          "official_rank": 8,
+          "calculated_points": 25
+        },
+        {
+          "name": "Schnarre",
+          "original_name": "Schnarre",
+          "rounds": [
+            10,
+            1,
+            6,
+            2,
+            4,
+            5,
+            4
+          ],
+          "official_points": 32,
+          "official_rank": 4,
+          "calculated_points": 32
+        },
+        {
+          "name": "Bröne",
+          "original_name": "Bröne",
+          "rounds": [
+            6,
+            6,
+            5,
+            1,
+            3,
+            10,
+            1
+          ],
+          "official_points": 32,
+          "official_rank": 5,
+          "calculated_points": 32
+        },
+        {
+          "name": "Keel",
+          "original_name": "Keel",
+          "rounds": [
+            1,
+            3,
+            0,
+            3,
+            6,
+            4,
+            2
+          ],
+          "official_points": 19,
+          "official_rank": 10,
+          "calculated_points": 19
+        },
+        {
+          "name": "Töbu",
+          "original_name": "Töbu",
+          "rounds": [
+            0,
+            4,
+            8,
+            8,
+            1,
+            6,
+            8
+          ],
+          "official_points": 35,
+          "official_rank": 2,
+          "calculated_points": 35
+        },
+        {
+          "name": "Niko",
+          "original_name": "Niko",
+          "rounds": [
+            8,
+            0,
+            10,
+            5,
+            0,
+            2,
+            0
+          ],
+          "official_points": 25,
+          "official_rank": 9,
+          "calculated_points": 25
+        }
+      ],
+      "verification": "Rundenwerte gegen handschriftliche Totals abgeglichen"
+    },
+    {
+      "year": 2025,
+      "source": "IMG_0319.jpeg",
+      "round_count": 7,
+      "players": [
+        {
+          "name": "Mike",
+          "original_name": "Mike",
+          "rounds": [
+            8,
+            6,
+            4,
+            6,
+            5,
+            4,
+            8
+          ],
+          "official_points": 41,
+          "official_rank": 2,
+          "calculated_points": 41
+        },
+        {
+          "name": "Manu",
+          "original_name": "Mänu",
+          "rounds": [
+            3,
+            8,
+            2,
+            10,
+            2,
+            6,
+            3
+          ],
+          "official_points": 34,
+          "official_rank": 6,
+          "calculated_points": 34
+        },
+        {
+          "name": "Schnarre",
+          "original_name": "Schnarre",
+          "rounds": [
+            10,
+            3,
+            3,
+            2,
+            8,
+            8,
+            4
+          ],
+          "official_points": 38,
+          "official_rank": 4,
+          "calculated_points": 38
+        },
+        {
+          "name": "Chopfi",
+          "original_name": "Chopfi",
+          "rounds": [
+            5,
+            10,
+            6,
+            5,
+            3,
+            3,
+            5
+          ],
+          "official_points": 37,
+          "official_rank": 5,
+          "calculated_points": 37
+        },
+        {
+          "name": "Fösu",
+          "original_name": "Fösu",
+          "rounds": [
+            4,
+            2,
+            10,
+            4,
+            4,
+            10,
+            10
+          ],
+          "official_points": 44,
+          "official_rank": 1,
+          "calculated_points": 44
+        },
+        {
+          "name": "Niko",
+          "original_name": "Niko",
+          "rounds": [
+            2,
+            5,
+            5,
+            3,
+            10,
+            2,
+            6
+          ],
+          "official_points": 33,
+          "official_rank": 7,
+          "calculated_points": 33
+        },
+        {
+          "name": "Keel",
+          "original_name": "Keel",
+          "rounds": [
+            6,
+            4,
+            8,
+            8,
+            6,
+            5,
+            2
+          ],
+          "official_points": 39,
+          "official_rank": 3,
+          "calculated_points": 39
+        }
+      ],
+      "verification": "Rundenwerte gegen handschriftliche Totals abgeglichen"
+    }
+  ],
+  "coverage": {
+    "tournaments": 15,
+    "years_with_rounds": 15,
+    "player_seasons": 144,
+    "unresolved_round_sum_conflicts": 1
+  },
+  "note": "2007: Alle 7 Runden und Sonntag eingerechnet. 2008 Turi bleibt prüfpflichtig. Schlussrang historisch aus Originalblatt, auch bei Punktgleichheit."
+}
