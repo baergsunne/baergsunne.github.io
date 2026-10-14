@@ -1,0 +1,7 @@
+BÄRGSUNNE POKER – 2.2.0
+Globale flache, einzeilige, horizontal scrollbar sortierbare Smart Tables.
+Neue Dateien: smart-tables.js und smart-tables.css.
+Entfernt: Karten-Transformation 2.1.8; CDN-Tabulator-Prototyp 2.1.9.
+Die vorhandene app.js-Sortierung bleibt maßgeblich; nur Tabellen ohne eigene Sortierknöpfe erhalten zusätzliche Sortierknöpfe.
+Keine Änderung an data.js und historische-ergebnisse.json.
+Statisch geprüft: Syntax und Paketintegrität. Browser/Safari noch nicht verifiziert. Kein GitHub-Deploy.

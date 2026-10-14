@@ -1,0 +1,17 @@
+/* Bärgsunne Poker 2.2.0 – universal compact one-row data grids */
+#app .bp-smart-scroll,#app .table-scroll,#app .lab-heat-scroll{max-width:100%;overflow-x:auto;overflow-y:visible;-webkit-overflow-scrolling:touch;overscroll-behavior-inline:contain}
+#app table.bp-smart-table{width:max-content;min-width:100%;border-collapse:separate!important;border-spacing:0 5px!important;table-layout:auto!important;background:transparent!important;color:#f5eddf!important;font-variant-numeric:tabular-nums}
+#app table.bp-smart-table thead th{position:relative!important;white-space:nowrap!important;vertical-align:middle!important;border:0!important;background:#102b22!important;color:#d8bb81!important;padding:10px 12px!important;font-size:12px!important;line-height:1.2!important;text-align:left!important}
+#app table.bp-smart-table tbody tr{background:linear-gradient(105deg,#294c39 0%,#1e4132 49%,#123126 100%)!important;box-shadow:inset 3px 0 #3b6550;transition:filter .16s ease}
+#app table.bp-smart-table tbody tr:hover{filter:brightness(1.12)}
+#app table.bp-smart-table tbody td,#app table.bp-smart-table tbody th{background:transparent!important;white-space:nowrap!important;overflow-wrap:normal!important;word-break:normal!important;border-top:1px solid #456a51!important;border-bottom:1px solid #456a51!important;border-left:0!important;border-right:0!important;padding:11px 12px!important;line-height:1.3!important;vertical-align:middle!important;font-size:13px!important}
+#app table.bp-smart-table tbody tr> :first-child{border-left:1px solid #456a51!important;border-radius:7px 0 0 7px!important}
+#app table.bp-smart-table tbody tr> :last-child{border-right:1px solid #456a51!important;border-radius:0 7px 7px 0!important}
+#app table.bp-smart-table tbody tr:first-child{background:linear-gradient(105deg,#45543b 0%,#294c39 46%,#143328 100%)!important}
+#app table.bp-smart-table a{color:#e8c688!important;white-space:nowrap!important}
+#app table.bp-smart-table .bp-smart-sort{display:inline-flex;align-items:center;gap:4px;background:transparent;border:0;padding:0;color:inherit;font:inherit;font-weight:750;white-space:nowrap;cursor:pointer;min-height:28px}
+#app table.bp-smart-table .bp-smart-sort span{color:#e5bd78}
+#app table.bp-smart-table button:focus-visible,#app table.bp-smart-table a:focus-visible{outline:2px solid #efd18f!important;outline-offset:3px!important}
+#app .bp-smart-table th .thbutton{white-space:nowrap!important;min-height:28px}
+#app .bp-smart-table td *{max-width:none}
+@media(prefers-reduced-motion:reduce){#app table.bp-smart-table tbody tr{transition:none}}

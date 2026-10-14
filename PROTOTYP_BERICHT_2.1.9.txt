@@ -1,0 +1,10 @@
+BÄRGSUNNE POKER 2.1.9 – TABULATOR PROTOTYP
+
+Basis: lokaler Kandidat 2.1.8; GitHub main wurde nicht verändert.
+Drei angepasste Ansichten: Gesamtübersicht, Historie/Schlussrangliste, Meisterschafts-Faktor/Rundenwirkung.
+Tabulator 6.3.1 wird zur Laufzeit von jsDelivr geladen (MIT). Keine Bibliotheksdatei lokal eingebettet.
+Bei fehlender Internetverbindung/CDN steht die bisherige sortierbare Quelltabelle weiterhin bereit.
+Tabulator zeigt kompakte sortierbare Spalten und eingeklappte mobile Zusatzwerte.
+Historische Links bleiben in der Originaltabelle nutzbar.
+Offen: Tatsächliche Browser-/iPhone-Abnahme und externe CDN-Zuverlässigkeit; Prototyp nicht publiziert.
+ACHTUNG: Die Tabulator-Ansicht selbst zeigt derzeit Spielernamen als Text, ohne Profilnavigation.
