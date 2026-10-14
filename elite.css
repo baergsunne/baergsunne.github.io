@@ -1,0 +1,26 @@
+/* Bärgsunne Poker 2.0.3 — Unified Premium Elite presentation.
+   Open-source native HTML/CSS (zero dependency) and existing data engine.
+   No changes to historical points, identities or analysis formulae. */
+:root{--elite-cream:#f3ebd9;--elite-ink:#102e24;--elite-rule:#b9a37e;--elite-brass:#d2a968}
+.page:not(.page--home){background:var(--elite-cream);color:var(--elite-ink);border:1px solid #806e51;min-height:300px;padding-bottom:24px}
+.page:not(.page--home) .premium-masthead{position:relative;overflow:hidden;isolation:isolate;min-height:250px;display:flex;align-items:flex-end;padding:clamp(22px,4vw,44px);background:#0a2a20 url('assets/alpine-hero.webp') 55% 49%/cover no-repeat;color:#fff}
+.premium-masthead:before{content:'';position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,#071e18f2 0%,#08271fbb 49%,#09221966 100%)}
+.premium-masthead-copy{position:relative;z-index:1;max-width:690px}.premium-masthead-copy>span{color:#e6ba76;font-weight:800;letter-spacing:.18em;font-size:10px}.premium-masthead h1{font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif!important;font-weight:850;font-size:clamp(32px,5vw,62px);line-height:1.06;letter-spacing:-.05em;margin:12px 0}.premium-masthead p{color:#f2e9d8;font-size:clamp(13px,2vw,18px);line-height:1.5;margin:0}.premium-masthead>img{position:absolute;right:5%;bottom:-45px;height:230px;max-width:26%;object-fit:contain;opacity:.47;filter:drop-shadow(0 10px 15px #0008)}
+.page:not(.page--home)>.hero{display:none!important}
+.page:not(.page--home)>.datawarn,.page:not(.page--home)>.tabrail,.page:not(.page--home)>.yearrail,.page:not(.page--home)>.two-col,.page:not(.page--home)>.card,.page:not(.page--home)>.sectiontitle,.page:not(.page--home)>.playergrid,.page:not(.page--home)>.podium,.page:not(.page--home)>.metrics,.page:not(.page--home)>.filterbar,.page:not(.page--home)>.stat-content,.page:not(.page--home)>.buttonrow,.page:not(.page--home)>.backrow,.page:not(.page--home)>.champ-statline,.page:not(.page--home)>.champ-era,.page:not(.page--home)>.champ-timeline,.page:not(.page--home)>.standard-catalog,.page:not(.page--home)>.story-panel,.page:not(.page--home)>.story-finding{margin-left:clamp(14px,3vw,32px);margin-right:clamp(14px,3vw,32px)}
+.page:not(.page--home) .sectiontitle{border-color:var(--elite-rule)!important}.page:not(.page--home) .sectiontitle h2,.page:not(.page--home) .sectiontitle p{color:var(--elite-ink)!important}.page:not(.page--home) .sectiontitle .overline{color:#966e3b!important}
+.page:not(.page--home) .card,.page:not(.page--home) .feature,.page:not(.page--home) .record,.page:not(.page--home) .playercard,.page:not(.page--home) .podium-card,.page:not(.page--home) .champ-tile,.page:not(.page--home) .kpi{background:#13382c!important;border:1px solid #315447!important;color:#f4efdf!important;box-shadow:none!important;border-radius:3px!important}
+.page:not(.page--home) .card .sectiontitle h2{color:#f5eddb!important}
+.page:not(.page--home) .datawarn{border:1px solid #d2b47e;background:#eee0bf;color:#54452d;border-radius:2px}
+.page:not(.page--home) .tabrail,.page:not(.page--home) .yearrail{margin-top:20px!important;padding-top:2px;padding-bottom:7px}
+.page:not(.page--home) .tab,.page:not(.page--home) .yearcard{background:#153d2e!important;color:#f3ebd9!important;border:1px solid #68806a!important;border-radius:2px!important}
+.page:not(.page--home) .tab.active,.page:not(.page--home) .yearcard.current{background:#d4b074!important;color:#132e24!important}
+.page:not(.page--home) .playergrid,.page:not(.page--home) .podium{margin-top:20px}
+.page:not(.page--home) .datatable{font-variant-numeric:tabular-nums}.page:not(.page--home) .datatable th{background:#092a20!important;color:#f5dcad!important}.page:not(.page--home) .datatable tbody tr:nth-child(even){background:#f9f1e80e!important}
+.page:not(.page--home) .filterbar{background:#e6d5b8!important;border:1px solid #b8a37b!important;color:#1a382b!important;border-radius:2px!important}.page:not(.page--home) .filterbar .filter-intro,.page:not(.page--home) .filterbar label,.page:not(.page--home) .filterbar .subtle{color:#4a4c3d!important}.page:not(.page--home) .filterbar .filtertop{color:#7a572d!important}
+.page:not(.page--home) .champion-summary{background:linear-gradient(125deg,#143a2d,#245140);color:#f5ead5}
+.page:not(.page--home) .premium-masthead+.datawarn{margin-top:20px}
+.page:not(.page--home) .playerlink{color:#e6bf81}
+.page:not(.page--home) .card .hint,.page:not(.page--home) .card .subtle{color:#b9cdbd!important}
+.page:not(.page--home) details{border-color:#516c59}.page:not(.page--home) details summary{cursor:pointer}
+@media(max-width:640px){.page:not(.page--home) .premium-masthead{min-height:208px;background-position:58% center;padding:20px}.page:not(.page--home) .premium-masthead>img{height:165px;max-width:31%;opacity:.37;right:0;bottom:-29px}.page:not(.page--home)>.two-col{display:grid;grid-template-columns:minmax(0,1fr)}.page:not(.page--home) .premium-masthead h1{font-size:37px}.page:not(.page--home) .datawarn{font-size:12px}}

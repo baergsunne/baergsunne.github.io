@@ -76,3 +76,7 @@ Keine Änderungen an historischen Resultaten, Spielermapping, Rangsummen, Formel
 - `prefers-reduced-motion`, Tastaturfokus, ausreichende Kontraste, mobile Touchziele berücksichtigt.
 - Kein unbeabsichtigtes Backend/Production/anderes Repository verändert.
 - Version und Live-Seite sind erst dann «abgenommen», wenn entsprechende Prüfungen dokumentiert sind.
+
+
+## Bildregie 2.0.1
+Die neuen, erwachsenen Premium-Grafiken ersetzen die stark vereinfachten SVG-Motive. Das alte Grafiksystem bleibt technisch als Fallback im Paket.
