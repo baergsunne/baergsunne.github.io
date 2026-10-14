@@ -1,0 +1,28 @@
+/* 2.0.4 – final layout normalization; overrides legacy fixed tile dimensions.
+   One border per component; no conflicting pseudo-borders or overflowing grids. */
+.page,.page *{box-sizing:border-box}
+.page :is(.metrics,.featuregrid,.playergrid,.record-grid,.champ-timeline,.podium,.two-col,.split,.standard-grid,.studio-columns,.alpine-storygrid){min-width:0;max-width:100%;align-items:stretch;grid-auto-flow:row;grid-auto-rows:auto;gap:clamp(10px,2vw,18px)}
+.page :is(.metrics,.featuregrid,.playergrid,.record-grid,.champ-timeline,.podium,.two-col,.split,.standard-grid,.studio-columns,.alpine-storygrid)>*{min-width:0;max-width:100%;height:auto!important;min-height:0!important;margin:0!important;align-self:stretch}
+.page :is(.kpi,.feature,.playercard,.record,.champ-tile,.podium-card,.yearcard,.card,.round-detail,.filterbar){box-shadow:none!important;background-clip:padding-box;outline:0;overflow-wrap:anywhere}
+.page :is(.kpi,.feature,.playercard,.record,.champ-tile,.podium-card,.yearcard,.card,.round-detail,.filterbar)::before,.page :is(.kpi,.feature,.playercard,.record,.champ-tile,.podium-card,.yearcard,.card,.round-detail,.filterbar)::after{box-shadow:none!important}
+.page .champ-tile{display:flex!important;flex-direction:column!important;align-items:flex-start!important;justify-content:flex-start!important;text-align:left!important;gap:9px!important;padding:clamp(15px,2.4vw,22px)!important;grid-template-rows:none!important;min-width:0}
+.page .champ-tile .champ-crown{position:static!important;font-size:24px!important;line-height:1!important;margin:0!important}
+.page .champ-tile .champ-year,.page .champ-tile .champ-name,.page .champ-tile .champ-caption,.page .champ-tile .champ-score,.page .champ-tile .champ-badge-slot{position:static!important;margin:0!important;align-self:flex-start!important;max-width:100%}
+.page .champ-tile .champ-name{font-size:clamp(20px,3vw,28px)!important;line-height:1.2!important}
+.page .champ-tile .champ-go{position:static!important;align-self:flex-end!important;margin-top:auto!important}
+.page:not(.page--home) .premium-masthead{width:100%;max-width:100%}
+.page:not(.page--home)>:not(.premium-masthead){min-width:0}
+.page .card,.page .filterbar,.page .sectiontitle,.page .stat-content{max-width:100%;min-width:0}
+.page .stat-content>.card,.page .standard-catalog>.card{margin-block:clamp(12px,2vw,22px)!important}
+.page .table-scroll{max-width:100%;min-width:0;overflow-x:auto!important}
+.page .datatable{width:100%}
+.page .card:has(.table-scroll){overflow:visible!important}
+.page .alpine-storygrid button{min-width:0;max-width:100%;height:auto!important;overflow:hidden;border:1px solid #cbb994!important}
+.page .alpine-storyart{min-width:0}
+.page .alpine-rank-list,.page .alpine-numbers,.page .alpine-champion{max-width:100%;min-width:0}
+.page .alpine-numbers>div{padding-inline:8px}
+.page :is(.feature,.record,.playercard,.podium-card):focus-visible{outline:2px solid #d8a354;outline-offset:2px}
+@media(min-width:900px){.page .featuregrid,.page .playergrid,.page .record-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}.page .champ-timeline{grid-template-columns:repeat(3,minmax(0,1fr))!important}}
+@media(min-width:641px) and (max-width:899px){.page .featuregrid,.page .playergrid,.page .record-grid,.page .champ-timeline{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+@media(max-width:640px){.page :is(.featuregrid,.playergrid,.record-grid,.champ-timeline,.standard-grid,.studio-columns){grid-template-columns:minmax(0,1fr)!important}.page .metrics{grid-template-columns:repeat(2,minmax(0,1fr))!important}.page .metrics>.kpi{min-width:0;padding:14px!important;border:1px solid #465c4d!important}.page .champ-tile{min-height:0!important;padding:16px!important}.page .feature{min-height:0!important;padding:17px!important}.page .alpine-storygrid{grid-template-columns:minmax(0,1fr)!important}.page .alpine-storygrid button{grid-template-columns:36% minmax(0,1fr);padding-right:10px;min-height:120px!important}.page .alpine-storygrid b{font-size:16px;padding-inline:10px}.page .alpine-storygrid small{font-size:12px;padding-inline:10px}}
+@media(max-width:370px){.page .alpine-storygrid button{grid-template-columns:32% minmax(0,1fr)}.page .alpine-heading{flex-wrap:wrap}.page .champ-tile{padding:14px!important}}

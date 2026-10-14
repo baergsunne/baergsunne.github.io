@@ -14,7 +14,7 @@ const clone=v=>JSON.parse(JSON.stringify(v));
 let db=clone(seed); // Historische Originaldaten sind verbindlich, keine alten Browser-Testdaten laden.
 function loadCustom(){return null;} // deaktiviert: früherer Demo-Cache
 function persist(){/* Historisches Archiv bleibt unveränderlich; Änderungen nur nach Quellenprüfung. */}
-const APP_VERSION='2.0.3';
+const APP_VERSION='2.0.4';
 const state={hiddenSeries:[],page:'home',year:'all',selectedYears:[],selected:[],tab:'overview',chart:'lines',metric:'avg',sort:{},tablePages:{},historyYear:2025,rivalA:'Mike',rivalB:'Fösu',profile:'Mike',simRule:'classic',manageRound:1,raceRound:1,onlyActive:false,navStack:[],menuOpen:false};
 const navs=[['home','⌂','Start'],['history','◷','Historie'],['stats','◈','Statistiken'],['players','♙','Spieler'],['live','♠','Live']];
 function eyear(y){return db.editions.find(e=>e.year===Number(y))}
