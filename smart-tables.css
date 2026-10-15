@@ -47,3 +47,18 @@
  #app table.bp-smart-table.bp-compact-rank:not(:has(thead th:nth-child(6))) .bp-smart-sort{font-size:10px!important;white-space:normal!important;overflow-wrap:anywhere}
  #app table.bp-smart-table.bp-compact-rank:not(:has(thead th:nth-child(6))) tbody td{font-size:12px!important;padding:8px 3px!important;line-height:1.25!important}
 }
+
+/* Profile season rankings: year, rank, points, rounds, wins. */
+@media(max-width:600px){
+ #app .page--profile table.bp-compact-rank:has(thead th:nth-child(5):last-child){width:100%!important;min-width:0!important;table-layout:fixed!important}
+ #app .page--profile table.bp-compact-rank:has(thead th:nth-child(5):last-child) th:first-child,
+ #app .page--profile table.bp-compact-rank:has(thead th:nth-child(5):last-child) td:first-child{width:24%}
+ #app .page--profile table.bp-compact-rank:has(thead th:nth-child(5):last-child) th:nth-child(2),
+ #app .page--profile table.bp-compact-rank:has(thead th:nth-child(5):last-child) td:nth-child(2){width:18%}
+ #app .page--profile table.bp-compact-rank:has(thead th:nth-child(5):last-child) th:nth-child(3),
+ #app .page--profile table.bp-compact-rank:has(thead th:nth-child(5):last-child) td:nth-child(3){width:22%}
+ #app .page--profile table.bp-compact-rank:has(thead th:nth-child(5):last-child) th:nth-child(4),
+ #app .page--profile table.bp-compact-rank:has(thead th:nth-child(5):last-child) td:nth-child(4){width:18%}
+ #app .page--profile table.bp-compact-rank:has(thead th:nth-child(5):last-child) th:nth-child(5),
+ #app .page--profile table.bp-compact-rank:has(thead th:nth-child(5):last-child) td:nth-child(5){width:18%}
+}
