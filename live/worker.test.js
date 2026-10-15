@@ -51,3 +51,30 @@ test('GitHub Pages can read public results but cannot use cross-origin admin wri
  const write=await worker.fetch(new Request(base+'/api/admin/config',{method:'PUT',headers:{origin,'content-type':'application/json'},body:'{}'}),env);
  assert.equal(write.status,403);assert.equal(write.headers.get('access-control-allow-origin'),null);db.close();
 });
+test('login lockout and logout revoke access on the isolated database',async()=>{
+ const {env,db}=fixture(),c=client(env);
+ assert.equal((await c.send('/api/setup','POST',{secret:env.BOOTSTRAP_SECRET,username:'owner',password:'a-very-strong-password'})).status,200);
+ for(let i=0;i<5;i++)assert.equal((await c.send('/api/login','POST',{username:'owner',password:'wrong'})).status,401);
+ assert.equal((await c.send('/api/login','POST',{username:'owner',password:'a-very-strong-password'})).status,429);
+ assert.equal(db.prepare('SELECT failures FROM login_attempts').get().failures,5);
+ db.prepare('UPDATE login_attempts SET blocked_until=0,window_start=0').run();
+ const login=await c.send('/api/login','POST',{username:'owner',password:'a-very-strong-password'});
+ assert.equal(login.status,200);c.setToken(login.data.token);
+ assert.equal((await c.send('/api/admin/state')).status,200);
+ assert.equal((await c.send('/api/admin/logout','POST',{})).status,200);
+ assert.equal((await c.send('/api/admin/state')).status,401);
+ assert.equal(db.prepare('SELECT count(*) AS n FROM sessions').get().n,0);db.close();
+});
+test('incomplete season cannot be archived and public draft remains empty',async()=>{
+ const {env,db}=fixture(),c=client(env);
+ await c.send('/api/setup','POST',{secret:env.BOOTSTRAP_SECRET,username:'owner',password:'a-very-strong-password'});
+ c.setToken((await c.send('/api/login','POST',{username:'owner',password:'a-very-strong-password'})).data.token);
+ const config={year:2026,roundCount:2,players:['A','B'],points:[10,8]};
+ assert.equal((await c.send('/api/admin/config','PUT',{revision:null,document:config})).status,200);
+ assert.equal((await c.send('/api/admin/round','PUT',{year:2026,round:1,places:['A','B'],revision:0,action:'draft'})).status,200);
+ assert.equal((await c.send('/api/live')).data.status,'planned');
+ assert.equal((await c.send('/api/editions')).data.editions.length,0);
+ assert.equal((await c.send('/api/admin/finalize','POST',{year:2026,revision:1,confirmation:''})).status,400);
+ assert.equal(db.prepare('SELECT count(*) AS n FROM audit WHERE action=?').get('finalize').n,0);
+ db.close();
+});
