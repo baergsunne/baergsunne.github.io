@@ -1,9 +1,14 @@
 import {publicSnapshot,finalizedEdition} from './live/core.js';
-const $=id=>document.getElementById(id);let token='',state=null,year=2026;
+const $=id=>document.getElementById(id);let token='',state=null,year=2026,pending=false;
 if(!window.BAERGSUNNE_API_URL){document.querySelector('#login-form button').disabled=true;document.querySelector('#login a').hidden=true;document.getElementById('message').textContent='Administration noch nicht aktiviert.';}
 function note(s){$('message').textContent=s}
 async function api(path,method='GET',value){const response=await fetch(path,{method,headers:{'content-type':'application/json',...(token?{authorization:'Bearer '+token}:{})},body:value===undefined?undefined:JSON.stringify(value),cache:'no-store'});const result=await response.json();if(!response.ok)throw Error(result.error||`HTTP ${response.status}`);return result}
-async function attempt(fn){try{await fn()}catch(e){note(e.message);if(e.message==='Anmeldung erforderlich.'){$('panel').hidden=true;$('login').hidden=false;token=''}}}
+async function attempt(fn){if(pending)return;pending=true;try{await fn()}catch(e){
+ if(e.message==='Stand veraltet.'||e.message.startsWith('Zwischenzeitlich geändert.')){
+  try{await reload();note('Stand aktualisiert. Platzierungen prüfen und erneut veröffentlichen.')}catch(loadError){note(loadError.message)}
+ }else note(e.message);
+ if(e.message==='Anmeldung erforderlich.'){$('panel').hidden=true;$('login').hidden=false;token=''}
+}finally{pending=false}}
 function selected(){return [...document.querySelectorAll('[data-place]')].map(x=>x.value)}
 function render(){const t=state.document,round=Number($('round').value)||1,$round=$('round');
  $('heading').textContent=`${t.year} · ${t.status} · Version ${state.revision??'neu'}`;$('year').value=year;
