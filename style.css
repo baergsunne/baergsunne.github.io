@@ -283,3 +283,13 @@ main{width:min(100%,1240px);margin-inline:auto}
 .page--profile .buttonrow{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px!important}
 .page--profile .buttonrow .btn{min-height:56px;white-space:normal;line-height:1.2}
 @media(max-width:390px){.page--players .playercard--dense .playercard-top{gap:5px}.page--players .playercard--dense .playercard-avatar{width:30px;height:30px;flex-basis:30px}.page--profile .profile-stagebar{top:calc(env(safe-area-inset-top) + 64px)}}
+
+/* Compact one-column player cards with five consistent metrics */
+.page--players .playergrid{display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:9px!important}
+.page--players .playercard.playercard--summary{display:flex!important;flex-direction:column!important;align-items:stretch!important;justify-content:center!important;gap:12px!important;min-height:112px!important;padding:16px 12px!important;border-radius:13px!important;border:1px solid #65795d!important;background:linear-gradient(145deg,#214937,#102a20)!important;text-align:center!important}
+.page--players .playercard--summary .playercard-summary-name{display:block;width:100%;font-size:clamp(23px,6.5vw,33px)!important;line-height:1.12;color:#fff1d8;font-weight:850;overflow-wrap:anywhere}
+.page--players .playercard--summary .playercard-summary-stats{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr));gap:2px;width:100%;min-width:0;max-width:100%;text-align:center!important}
+.page--players .playercard--summary .playercard-summary-stats>span{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:6px 1px;min-width:0;border-right:1px solid #b8a27740}
+.page--players .playercard--summary .playercard-summary-stats>span:last-child{border-right:0}
+.page--players .playercard--summary .playercard-summary-stats b{font-size:clamp(17px,5vw,23px)!important;line-height:1.05;color:#eac788;font-variant-numeric:tabular-nums}
+.page--players .playercard--summary .playercard-summary-stats small{font-size:clamp(9px,2.6vw,12px);font-weight:600;line-height:1.2;color:#d9e0d4;white-space:nowrap}
