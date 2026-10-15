@@ -584,7 +584,7 @@ function draw(){
    catch(retryError){console.error('Statistik-Wiederherstellung fehlgeschlagen',retryError);content='<section class="card"><h2>Statistik derzeit nicht verfügbar</h2><p>Bitte versuche die Seite neu zu laden. Deine historischen Ergebnisse bleiben erhalten.</p><button class="btn" data-action="go" data-value="home">Zur Startseite</button></section>';}
   }else{content='<section class="card"><h2>Ansicht nicht verfügbar</h2><button class="btn" data-action="go" data-value="home">Zur Startseite</button></section>';}
  }
- div.innerHTML=header()+navigation()+`<main>${!['home','live','stats','history'].includes(state.page)?filter():''}<div class="page page--${state.page}" id="page">${premiumMasthead(state.page)}${content}</div></main><footer class="premium-footer"><b>BÄRGSUNNE POKER</b><span>Lenk · Seit 2007</span></footer>`+(modal?pickerModal():'');
+ div.innerHTML=header()+navigation()+`<main>${!['home','live','stats','history','players','profile'].includes(state.page)?filter():''}<div class="page page--${state.page}" id="page">${premiumMasthead(state.page)}${content}</div></main><footer class="premium-footer"><b>BÄRGSUNNE POKER</b><span>Lenk · Seit 2007</span></footer>`+(modal?pickerModal():'');
  const rail=document.getElementById('yearrail');if(rail){const item=rail.querySelector('.current');if(item)item.scrollIntoView({block:'nearest',inline:'center'});}
  document.title='Bärgsunne Poker — '+state.page.toUpperCase();
 }
