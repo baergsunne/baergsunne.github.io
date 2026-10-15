@@ -1,0 +1,26 @@
+/* Bärgsunne Poker – ONE table system across every page/tool. Overrides legacy themes. */
+#app :is(.table-scroll,.history-table-shell,.bp-smart-scroll,.lab-heat-scroll){max-width:100%;min-width:0;-webkit-overflow-scrolling:touch}
+#app table:not(.heat-grid){font-variant-numeric:tabular-nums}
+#app table:is(.datatable,.bp-smart-table,.history-table,.bp-unified-table){border-collapse:separate!important;border-spacing:0 5px!important;background:transparent!important;color:#f7efdb!important;box-shadow:none!important}
+#app table:is(.datatable,.bp-smart-table,.history-table,.bp-unified-table) thead th{position:static!important;background:transparent!important;border:0!important;box-shadow:none!important;color:#dfbd82!important;font-size:11px!important;font-weight:750!important;line-height:1.2!important;letter-spacing:0!important;padding:7px 4px!important;vertical-align:middle!important}
+#app table:is(.datatable,.bp-smart-table,.history-table,.bp-unified-table) tbody tr,
+#app table:is(.datatable,.bp-smart-table,.history-table,.bp-unified-table) tbody tr:first-child{background:linear-gradient(90deg,#315540,#244836 55%,#1b382d)!important;box-shadow:none!important}
+#app table:is(.datatable,.bp-smart-table,.history-table,.bp-unified-table) tbody :is(td,th){background:transparent!important;color:#f7efdb!important;border:0!important;box-shadow:none!important;border-radius:0!important;padding:9px 4px!important;line-height:1.25!important;font-size:clamp(12px,3.4vw,15px)!important;vertical-align:middle!important}
+#app table:is(.datatable,.bp-smart-table,.history-table,.bp-unified-table) tbody tr>:first-child{border-radius:8px 0 0 8px!important}
+#app table:is(.datatable,.bp-smart-table,.history-table,.bp-unified-table) tbody tr>:last-child{border-radius:0 8px 8px 0!important}
+#app table:is(.datatable,.bp-smart-table,.history-table,.bp-unified-table) :is(.bp-smart-sort,.thbutton){min-height:0!important;padding:0!important;background:none!important;color:inherit!important;font:inherit!important;line-height:1.2!important;white-space:normal!important;text-align:inherit}
+#app table:is(.datatable,.bp-smart-table,.history-table,.bp-unified-table) :is(.bp-smart-sort,.thbutton) span{display:none!important}
+#app table:is(.datatable,.bp-smart-table,.history-table,.bp-unified-table) tbody td:nth-child(n+3),
+#app table:is(.datatable,.bp-smart-table,.history-table,.bp-unified-table) thead th:nth-child(n+3){text-align:right!important}
+#app table:is(.datatable,.bp-smart-table,.history-table,.bp-unified-table) a{color:#f7efdb!important;text-underline-offset:3px}
+#app .bp-rank-sortbar,#app .history-rank-toolbar{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:6px!important;margin:10px 0 8px!important;font-size:12px!important;letter-spacing:0!important;text-transform:none!important;color:#d4b47b!important}
+#app :is(.bp-rank-sortgroup,.history-rank-sort){display:flex;flex-wrap:wrap;justify-content:flex-end;gap:4px}
+#app :is(.bp-rank-sortgroup,.history-rank-sort) button{border:1px solid #5f7863;border-radius:8px;background:#204536;color:#f2e9d7;padding:6px 9px;min-height:34px;font-size:12px}
+#app :is(.bp-rank-sortgroup,.history-rank-sort) button:is(.active,[aria-pressed="true"]){background:#bd9b62!important;color:#102820!important;border-color:#c4a775!important;font-weight:800}
+@media(max-width:600px){
+ #app table:is(.datatable,.bp-smart-table,.history-table,.bp-unified-table):not(:has(thead th:nth-child(6))){width:100%!important;max-width:100%!important;min-width:0!important;table-layout:fixed!important}
+ #app table:is(.datatable,.bp-smart-table,.history-table,.bp-unified-table):not(:has(thead th:nth-child(6))) :is(th,td){padding-inline:3px!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;overflow-wrap:normal!important}
+ #app table:is(.datatable,.bp-smart-table,.history-table,.bp-unified-table):has(thead th:nth-child(6)){width:max-content!important;min-width:100%!important;table-layout:auto!important}
+ #app :is(.table-scroll,.history-table-shell,.bp-smart-scroll):has(> table:has(thead th:nth-child(6))){overflow-x:auto!important}
+ #app table:is(.datatable,.bp-smart-table,.history-table,.bp-unified-table):not(:has(thead th:nth-child(6))) thead th{font-size:10px!important}
+}
