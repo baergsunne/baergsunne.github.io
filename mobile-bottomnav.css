@@ -1,0 +1,17 @@
+/* Mobile bottom navigation: keep existing icons, labels and links. */
+@media (max-width:800px) {
+  .bottomnav {
+    padding-top: 0;
+    padding-bottom: env(safe-area-inset-bottom);
+    transition: transform .22s ease, visibility .22s ease;
+    will-change: transform;
+  }
+  body.bp-bottomnav-hidden .bottomnav {
+    transform: translateY(calc(100% + 2px));
+    visibility: hidden;
+    pointer-events: none;
+  }
+}
+@media (prefers-reduced-motion:reduce) {
+  .bottomnav { transition: none !important; }
+}
