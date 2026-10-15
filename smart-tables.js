@@ -30,6 +30,27 @@ function enhance(t){if(t.dataset.bpSmart==='1'||!t.tHead||!t.tBodies.length)retu
       [...t.tHead.querySelectorAll('th')].forEach(other=>{other.setAttribute('aria-sort',other===th?(asc?'ascending':'descending'):'none');const icon=other.querySelector('.bp-smart-sort span');if(icon)icon.textContent=other===th?(asc?' ↑':' ↓'):' ↕'});
     });
   });
+  if(isRanking && head.length<=5 && !t.dataset.bpSortDetached){
+    const ths=[...t.tHead.querySelectorAll('th')];
+    const opts=ths.map((th,i)=>({th,i,label:clean(th.textContent).replace(/\\s*[↑↓↕]\\s*/g,' ').trim()}))
+      .filter(x=>/rang|platz|^#|spieler|punkte|pkt|siege|titel|final/i.test(x.label)).slice(0,4);
+    if(opts.length){
+      const bar=document.createElement('div');bar.className='bp-rank-sortbar';
+      const title=document.createElement('span');title.textContent='Sortieren';bar.appendChild(title);
+      const group=document.createElement('div');group.className='bp-rank-sortgroup';bar.appendChild(group);
+      opts.forEach(({th,label})=>{
+        const button=document.createElement('button');button.type='button';button.textContent=label.replace(/\\*/g,'');
+        button.addEventListener('click',()=>{
+          const sortButton=th.querySelector('.bp-smart-sort,.thbutton,[data-action="sort"]');
+          sortButton?.click();
+          group.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));
+        });
+        button.setAttribute('aria-pressed','false');group.appendChild(button);
+      });
+      t.parentElement?.insertAdjacentElement('beforebegin',bar);
+      t.dataset.bpSortDetached='1';
+    }
+  }
 }
 let queued=false;function scan(){queued=false;document.querySelectorAll('#app table, main table, body > table').forEach(enhance)}
 function schedule(){if(queued)return;queued=true;requestAnimationFrame(scan)}
