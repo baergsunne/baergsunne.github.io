@@ -1,6 +1,8 @@
-/* Bärgsunne Poker – mobile SVG navigation and tools */
-.bp-icon{display:inline-block;width:24px;height:24px;vertical-align:middle;flex-shrink:0;object-fit:contain}
-.bottomitem .bp-icon{width:25px;height:25px;filter:brightness(0) saturate(100%) invert(94%) sepia(12%) saturate(247%) hue-rotate(335deg)}
-.bottomitem.active .bp-icon{filter:brightness(0) saturate(100%) invert(76%) sepia(26%) saturate(484%) hue-rotate(354deg)}
+/* Bärgsunne Poker: sitewide icon colours. Pictograms gold; navigation may be white. */
+.bp-icon{display:inline-block;width:24px;height:24px;vertical-align:middle;flex-shrink:0;object-fit:contain;filter:brightness(0) saturate(100%) invert(79%) sepia(31%) saturate(571%) hue-rotate(350deg) brightness(97%) contrast(92%)!important}
+.bottomitem .bp-icon{width:25px;height:25px;filter:brightness(0) invert(98%) sepia(15%) saturate(410%) hue-rotate(328deg)!important}
+.bottomitem.active .bp-icon,.desktopnav .bp-icon,.heritage-menu-panel .bp-icon,.tool-tile-symbol .bp-icon,.filterbar .bp-icon,.tool-choice-set .bp-icon{filter:brightness(0) saturate(100%) invert(79%) sepia(31%) saturate(571%) hue-rotate(350deg) brightness(97%) contrast(92%)!important}
 .tool-tile-symbol .bp-icon{width:28px;height:28px}
+/* Fallback icons rendered via CSS or monochrome vector elements */
+.heritage-menu-panel button .bp-icon,.navbutton .bp-icon,.tool-tile .bp-icon,.filterrow .bp-icon,.sectiontitle .bp-icon{filter:brightness(0) saturate(100%) invert(79%) sepia(31%) saturate(571%) hue-rotate(350deg) brightness(97%) contrast(92%)!important}
 button:focus-visible,select:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid #e8c37e;outline-offset:3px}
