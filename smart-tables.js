@@ -32,14 +32,14 @@ function enhance(t){if(t.dataset.bpSmart==='1'||!t.tHead||!t.tBodies.length)retu
   });
   if(isRanking && head.length<=5 && !t.dataset.bpSortDetached){
     const ths=[...t.tHead.querySelectorAll('th')];
-    const opts=ths.map((th,i)=>({th,i,label:clean(th.textContent).replace(/\\s*[↑↓↕]\\s*/g,' ').trim()}))
+    const opts=ths.map((th,i)=>({th,i,label:clean(th.textContent).replace(/[↑↓↕]/g,' ').trim()}))
       .filter(x=>/rang|platz|^#|spieler|punkte|pkt|siege|titel|final/i.test(x.label)).slice(0,4);
     if(opts.length){
       const bar=document.createElement('div');bar.className='bp-rank-sortbar';
       const title=document.createElement('span');title.textContent='Sortieren';bar.appendChild(title);
       const group=document.createElement('div');group.className='bp-rank-sortgroup';bar.appendChild(group);
       opts.forEach(({th,label})=>{
-        const button=document.createElement('button');button.type='button';button.textContent=label.replace(/\\*/g,'');
+        const button=document.createElement('button');button.type='button';button.textContent=label.replaceAll('*','');
         button.addEventListener('click',()=>{
           const sortButton=th.querySelector('.bp-smart-sort,.thbutton,[data-action="sort"]');
           sortButton?.click();
