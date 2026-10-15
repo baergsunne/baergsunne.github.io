@@ -3,7 +3,13 @@
 const clean=s=>String(s??'').replace(/[↑↓↕]/g,'').trim();
 const val=s=>{let v=clean(s).replace(/[’'\s]/g,'').replace('%','').replace(',','.');return /^[-+]?\d+(?:\.\d+)?$/.test(v)?Number(v):null};
 function enhance(t){if(t.dataset.bpSmart==='1'||!t.tHead||!t.tBodies.length)return;
+  // Independent history ranking has a detached sort bar; preserve that UI.
+  if(t.classList.contains('history-table--rank'))return;
   t.dataset.bpSmart='1';t.classList.add('bp-smart-table');
+  const head=[...t.tHead.querySelectorAll('th')].map(h=>h.textContent.trim().toLowerCase());
+  const isRanking=head.length>=3&&head.length<=5&&head.some(h=>/rang|platz|^#/.test(h))&&head.some(h=>/spieler|name/.test(h));
+  if(isRanking)t.classList.add('bp-compact-rank');
+
   const parent=t.parentElement;
   if(parent&&!parent.classList.contains('bp-smart-scroll')&&!parent.classList.contains('table-scroll')&&!parent.classList.contains('lab-heat-scroll')){const wrap=document.createElement('div');wrap.className='bp-smart-scroll';parent.insertBefore(wrap,t);wrap.appendChild(t)}
   [...t.tHead.querySelectorAll('th')].forEach((th,index)=>{
