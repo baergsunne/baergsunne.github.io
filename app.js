@@ -223,9 +223,9 @@ function normalizeToolPlayers(t,previousEligible){
  if(t.players.includes('__none__'))return;
  if(!t.players.length)return;
  // A previously complete selection still means all players after a year change.
- if(previousEligible&&previousEligible.length&&previousEligible.every(p=>t.players.includes(p))){t.players=[];return;}
+ if(previousEligible&&previousEligible.length&&previousEligible.every(p=>t.players.includes(p))){t.players=eligible.slice();return;}
  t.players=t.players.filter(p=>eligible.includes(p));
- if(t.players.length===eligible.length)t.players=[];
+ if(t.players.length===eligible.length)t.players=eligible.slice();
  if(!t.players.length&&eligible.length&&previousEligible)t.players=['__none__'];
 }
 function redrawToolChoice(){
@@ -243,11 +243,11 @@ function redrawToolChoice(){
 }
 function toolChoicePanel(){
  if(state.tab==='studio'||state.tab==='simulator'||state.tab==='rivals')return '';
- const t=activeToolChoice(),allPlayers=t.years.length&&!t.years.includes('__none__')?eligibleToolPlayers(t):[];
+ const t=activeToolChoice(),allPlayers=eligibleToolPlayers(t);
  const yearList=db.editions.map(e=>e.year).sort((a,b)=>b-a);
  const yearOptions=yearList.map(y=>`<option value="${y}">${y}</option>`).join('');
  const checkbox=(kind,value,label,checked)=>`<label class="local-choice"><input type="checkbox" data-tool-choice="${kind}" value="${esc(value)}" ${checked?'checked':''}><span>${esc(label)}</span></label>`;
- return `<details class="tool-choice-panel"><summary><span><strong>Jahr und Spieler auswählen</strong><small>${t.years.includes('__none__')?'Keine Turniere':t.years.length?t.years.length+' Turniere':'Jahr auswählen'} · ${t.players.includes('__none__')?'Keine Spieler':t.players.length?t.players.length+' Spieler':'Spieler auswählen'}</small></span><span aria-hidden="true">⌄</span></summary><div class="tool-choice-body"><div class="tool-choice-set"><strong>${icon('calendar-year')} 1 · Jahr auswählen</strong><p class="tool-choice-caption">Wähle zuerst ein oder mehrere Turnierjahre.</p><div class="tool-choice-actions"><button type="button" data-tool-pick="years" data-tool-mode="all">Alle</button><button type="button" data-tool-pick="years" data-tool-mode="none">Keine</button></div><div class="tool-year-range"><label>Von <select id="tool-year-from"><option value="">Jahr</option>${yearOptions}</select></label><label>Bis <select id="tool-year-to"><option value="">Jahr</option>${yearOptions}</select></label><button type="button" data-tool-range="years">Anwenden</button></div><div class="tool-choice-list tool-year-list">${yearList.map(v=>checkbox('years',v,String(v),t.years.includes(v))).join('')}</div></div><div class="tool-choice-set"><strong>${icon('filter-players')} 2 · Spieler auswählen</strong><p class="tool-choice-caption">Nur Spieler, die in den gewählten Jahren teilgenommen haben (${allPlayers.length}).</p><div class="tool-choice-actions"><button type="button" data-tool-pick="players" data-tool-mode="all">Alle</button><button type="button" data-tool-pick="players" data-tool-mode="none">Keine</button></div><div class="tool-choice-list">${allPlayers.length?allPlayers.map(v=>checkbox('players',v,v,t.players.includes(v))).join(''):'<span class="tool-choice-caption">Keine Spieler für diesen Zeitraum vorhanden.</span>'}</div></div></div><div class="tool-choice-footer"><button type="button" data-tool-reset="true">Dieses Werkzeug zurücksetzen</button></div><p class="tool-choice-help">Alle Werkzeuge nutzen dieselbe Auswahl. Einstellungen gelten ausschliesslich für dieses Werkzeug.</p></details>`;
+ return `<details class="tool-choice-panel"><summary><span><strong>Jahr und Spieler auswählen</strong><small>${t.years.includes('__none__')?'Keine Turniere':t.years.length?t.years.length+' Turniere':'Jahr auswählen'} · ${t.players.includes('__none__')?'Keine Spieler':t.players.length?t.players.length+' Spieler':'Spieler auswählen'}</small></span><span aria-hidden="true">⌄</span></summary><div class="tool-choice-body"><div class="tool-choice-set"><strong>${icon('calendar-year')} 1 · Jahr auswählen</strong><p class="tool-choice-caption">Wähle zuerst ein oder mehrere Turnierjahre.</p><div class="tool-choice-actions"><button type="button" data-tool-pick="years" data-tool-mode="all">Alle</button><button type="button" data-tool-pick="years" data-tool-mode="none">Keine</button></div><div class="tool-year-range"><label>Von <select id="tool-year-from"><option value="">Jahr</option>${yearOptions}</select></label><label>Bis <select id="tool-year-to"><option value="">Jahr</option>${yearOptions}</select></label><button type="button" data-tool-range="years">Anwenden</button></div><div class="tool-choice-list tool-year-list">${yearList.map(v=>checkbox('years',v,String(v),(t.years.length===0||t.years.includes(v)))).join('')}</div></div><div class="tool-choice-set"><strong>${icon('filter-players')} 2 · Spieler auswählen</strong><p class="tool-choice-caption">Nur Spieler, die in den gewählten Jahren teilgenommen haben (${allPlayers.length}).</p><div class="tool-choice-actions"><button type="button" data-tool-pick="players" data-tool-mode="all">Alle</button><button type="button" data-tool-pick="players" data-tool-mode="none">Keine</button></div><div class="tool-choice-list">${allPlayers.length?allPlayers.map(v=>checkbox('players',v,v,(t.players.length===0||t.players.includes(v)))).join(''):'<span class="tool-choice-caption">Keine Spieler für diesen Zeitraum vorhanden.</span>'}</div></div></div><div class="tool-choice-footer"><button type="button" data-tool-reset="true">Dieses Werkzeug zurücksetzen</button></div><p class="tool-choice-help">Alle Werkzeuge nutzen dieselbe Auswahl. Einstellungen gelten ausschliesslich für dieses Werkzeug.</p></details>`;
 }
 function statsPage(){
  const tools={overview:overviewTab,career:careerTab,rounds:roundTab,rivals:rivalsTab,heatmap:heatmapTab,race:raceTab,simulator:simulatorTab,records:legacyRecordsTab,lab:labTab,insights:insightsTab,studio:studioTab,patterns:patternsTab,standard:standardTab};
@@ -603,7 +603,7 @@ document.addEventListener('click',e=>{
  const b=e.target.closest('[data-tool-pick]');if(!b)return;
  e.preventDefault();e.stopImmediatePropagation();
  const t=activeToolChoice(),k=b.dataset.toolPick,previous=eligibleToolPlayers(t);
- t[k]=b.dataset.toolMode==='all'?[]:['__none__'];
+ t[k]=b.dataset.toolMode==='all'?(k==='years'?db.editions.map(e=>e.year):previous.slice()):['__none__'];
  if(k==='years')normalizeToolPlayers(t,previous);
  saveToolChoices();redrawToolChoice();
 },true);
@@ -613,9 +613,9 @@ document.addEventListener('change',e=>{
  const t=activeToolChoice(),k=target.dataset.toolChoice,v=k==='years'?Number(target.value):target.value;
  const previous=eligibleToolPlayers(t);
  const full=k==='years'?db.editions.map(e=>e.year):previous;
- let values=t[k].includes('__none__')?[]:t[k].length?t[k].slice():[];
+ let values=t[k].includes('__none__')?[]:t[k].length?t[k].slice():full.slice();
  values=target.checked?[...new Set([...values,v])]:values.filter(x=>x!==v);
- t[k]=values.length===full.length?[]:values.length?values:['__none__'];
+ t[k]=values.length?values:['__none__'];
  if(k==='years')normalizeToolPlayers(t,previous);
  saveToolChoices();redrawToolChoice();
 },true);
