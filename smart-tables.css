@@ -26,3 +26,13 @@
  #app table.bp-smart-table.bp-compact-rank th:nth-child(2),#app table.bp-smart-table.bp-compact-rank td:nth-child(2){width:40%}
  #app table.bp-smart-table.bp-compact-rank th:nth-child(n+3),#app table.bp-smart-table.bp-compact-rank td:nth-child(n+3){text-align:right}
 }
+
+/* Unified ranking 3.0: short headings, numbers right-aligned, compact repeated rows. */
+#app table.bp-smart-table.bp-compact-rank{border-spacing:0 4px!important}
+#app table.bp-smart-table.bp-compact-rank thead th{padding:7px 4px!important;font-size:11px!important}
+#app table.bp-smart-table.bp-compact-rank tbody td,#app table.bp-smart-table.bp-compact-rank tbody th{padding:9px 4px!important;font-size:12px!important}
+#app table.bp-smart-table.bp-compact-rank thead th:nth-child(n+3),#app table.bp-smart-table.bp-compact-rank tbody td:nth-child(n+3){text-align:right!important}
+@media(max-width:600px){
+ #app table.bp-smart-table.bp-compact-rank:has(thead th:nth-child(6)){width:max-content!important;min-width:100%!important;table-layout:auto!important}
+ #app .table-scroll:has(> table.bp-compact-rank:has(thead th:nth-child(6))),#app .bp-smart-scroll:has(> table.bp-compact-rank:has(thead th:nth-child(6))){overflow-x:auto}
+}
