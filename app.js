@@ -231,12 +231,15 @@ function normalizeToolPlayers(t,previousEligible){
 function redrawToolChoice(){
  const y=window.scrollY,x=window.scrollX;
  const panel=document.querySelector('.tool-choice-panel');const wasOpen=!!panel?.open;
+ const anchor=panel?.querySelector('[data-tool-choice]:focus')||panel;const anchorTop=anchor?.getBoundingClientRect().top??0;
  const scrolls=[...document.querySelectorAll('.tool-choice-list')].map(e=>e.scrollTop);
  const active=document.activeElement;const type=active?.dataset?.toolChoice, value=active?.value;
  draw();const next=document.querySelector('.tool-choice-panel');if(next)next.open=wasOpen;
  [...document.querySelectorAll('.tool-choice-list')].forEach((e,i)=>{e.scrollTop=scrolls[i]||0});
  if(type){const match=[...document.querySelectorAll('[data-tool-choice]')].find(e=>e.dataset.toolChoice===type&&e.value===value);match?.focus({preventScroll:true});}
- window.scrollTo({top:y,left:x,behavior:'instant'});
+ const nextAnchor=type?[...document.querySelectorAll('[data-tool-choice]')].find(e=>e.dataset.toolChoice===type&&e.value===value):next;
+ const newTop=nextAnchor?.getBoundingClientRect().top??anchorTop;
+ window.scrollTo({top:Math.max(0,window.scrollY+newTop-anchorTop),left:x,behavior:'instant'});
 }
 function toolChoicePanel(){
  if(state.tab==='studio'||state.tab==='simulator'||state.tab==='rivals')return '';
