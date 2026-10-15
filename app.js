@@ -109,6 +109,25 @@ function dataExplanation(title){
 }
 function card(title,content,extra=''){return `<section class="card ${extra}">${title?`<h3>${title}</h3>`:''}${content}${content.includes('bp-table-short-explain')?'':dataExplanation(title)}</section>`}
 function pill(name,v){return `<button class="pill ${v?'active':''}" data-action="pillyear" data-value="${name}">${name}</button>`}
+function explainColumn(title){
+ const t=String(title).toLowerCase().replace(/\s+/g,' ').trim();
+ if(/anteil max|maximalpunkt/.test(t))return '100 % bedeutet: alle möglichen Punkte geholt. 54 % bedeutet: 54 % der möglichen Punkte. Je höher, desto besser.';
+ if(/ø im feld|relativ|platzierung im verhältnis/.test(t))return '100 % bedeutet: immer Erster. 0 % bedeutet: immer Letzter. 54 % liegt etwas über der Mitte des Teilnehmerfelds. Je höher, desto besser.';
+ if(/ø rang|durchschnitt.*rang|ø platz/.test(t))return 'Der durchschnittliche Platz. 2,4 bedeutet: im Schnitt zwischen Platz 2 und 3. Je kleiner, desto besser.';
+ if(/pkt\.\/r|punkte pro runde/.test(t))return 'So viele Punkte holte dieser Spieler im Durchschnitt pro Runde. Je höher, desto besser.';
+ if(/sieg %|siegquote/.test(t))return 'Wie oft der Spieler eine Runde gewann. 25 % bedeutet etwa jede vierte Runde.';
+ if(/podest %|top.?3.?%/.test(t))return 'Wie oft der Spieler unter den ersten drei war. 50 % bedeutet jede zweite Runde.';
+ if(/streuung/.test(t))return 'Wie stark die Punkte von Runde zu Runde schwanken. Ein kleiner Wert bedeutet gleichmässigere Ergebnisse.';
+ if(/teilnehmer|feldgrösse/.test(t))return 'So viele Spieler waren beim Turnier dabei.';
+ if(/titel/.test(t))return 'So viele Turniere hat der Spieler gewonnen.';
+ if(/punkte|pkt\./.test(t))return 'Die Punkte nach den Regeln des jeweiligen Turniers.';
+ if(/rang|platz|^#$/.test(t))return 'Die Platzierung. Platz 1 ist am besten.';
+ if(/runde/.test(t))return 'Die Anzahl gespielter oder ausgewerteter Runden.';
+ if(/jahr/.test(t))return 'Das Jahr der Ergebnisse.';
+ if(/sieg/.test(t))return 'So viele Runden hat der Spieler gewonnen.';
+ if(/spieler|name/.test(t))return 'Der Name des Spielers.';
+ return '';
+}
 function table(id,columns,data,opts={}){
  const st=state.sort[id]||{key:columns[0]?.key||'',dir:'asc'};
  const sorted=[...data].sort((a,b)=>{let av=a[st.key],bv=b[st.key];if(av==null&&bv!=null)return 1;if(bv==null&&av!=null)return -1;if(av==null&&bv==null)return 0;const cmp=typeof av==='number'&&typeof bv==='number'?av-bv:String(av).localeCompare(String(bv),'de-CH',{numeric:true});return cmp*(st.dir==='asc'?1:-1)});
@@ -127,6 +146,8 @@ function table(id,columns,data,opts={}){
  let summary=visible.length?'Hier siehst du die '+dataLabel.toLowerCase()+' mit '+sorted.length+' Einträgen.':'Für diese Auswahl gibt es noch keine Ergebnisse.';
  if(leadName){summary='Hier siehst du die '+dataLabel.toLowerCase()+' der gewählten Spieler und Jahre. '+leadName+(leadPlace?' liegt auf Platz '+leadPlace:'')+(leadPoints?' mit '+leadPoints+' Punkten':'')+'.';}
  else if(lead){summary='Hier siehst du die Werte der gewählten Spieler und Jahre. Die erste Zeile zeigt '+columns.slice(0,3).map(c=>esc(c.title)+': '+esc(lead[c.key]??'–')).join(', ')+'.';}
+ const columnHelp=columns.map(c=>({name:c.title,meaning:explainColumn(c.title)})).filter(c=>c.meaning);
+ const glossaryHtml=columnHelp.length?'<p><strong>So liest du die Spalten:</strong></p><dl class="bp-simple-glossary">'+columnHelp.map(c=>'<dt>'+esc(c.name)+'</dt><dd>'+esc(c.meaning)+'</dd>').join('')+'</dl>':'';
  const shortExplanation='<details class="explain-detail bp-table-short-explain"><summary>Einfach erklärt <span aria-hidden="true">▾</span></summary><div class="explain-body"><p>'+esc(summary)+'</p></div></details>';
  return top+(body||'<tr><td colspan="'+columns.length+'" class="subtle">Keine Daten im ausgewählten Filter.</td></tr>')+'</tbody></table></div>'+(ranking?'<p class="ranking-caption">'+sorted.length+' Spieler · Platzierungen der Turniere.</p>':'')+(pageSize?'<div class="pager"><button class="btn outline" data-action="tablepage" data-table="'+esc(id)+'" data-value="-1" '+(realPage===0?'disabled':'')+'>← Zurück</button><span>Seite '+(realPage+1)+' / '+pages+' · '+sorted.length+' Datensätze</span><button class="btn outline" data-action="tablepage" data-table="'+esc(id)+'" data-value="1" '+(realPage===pages-1?'disabled':'')+'>Weiter →</button></div>':'')+(opts.note?'<p class="hint">'+opts.note+'</p>':'')+shortExplanation;
 }
