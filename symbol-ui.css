@@ -1,0 +1,6 @@
+/* Semantische Symbole, ohne Änderungen an der bestehenden Bildgestaltung. */
+.bp-icon{display:inline-block;width:22px;height:22px;vertical-align:middle;flex-shrink:0;color:inherit}
+.bottomitem .bp-icon,.tool-tile-symbol .bp-icon{width:24px;height:24px}
+.filterbar label>.bp-icon,.tool-choice-set strong>.bp-icon{width:18px;height:18px;margin-right:5px}
+.navbutton,.bottomitem,.heritage-menu-panel button,.tool-choice-actions button,.tool-choice-footer button,.chip,.ab-chip{min-height:44px}
+button:focus-visible,select:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid #e8c37e;outline-offset:3px}

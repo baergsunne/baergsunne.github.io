@@ -1,0 +1,14 @@
+BÄRGSUNNE POKER – 25 semantische SVG-Symbole, Stand 2026-10-15
+
+Designsystem: 24x24 SVG, currentColor, 1.8px Strich, linecap=linejoin round. Einheitlich, minimalistisch, ohne Schatten, Glow, Verzierungen oder willkürliche Dekoration.
+
+Verbindliche Einbauregeln für Work:
+1) Nicht alle 25 Symbole zwanghaft verbauen. NUR ersetzen/ergänzen, wenn ein vorhandenes Navigationselement, Tool, Filter, Kennwert oder eine Erklärung dadurch leichter zu verstehen ist.
+2) Jedes Symbol hat genau den im CSV beschriebenen semantischen Einsatz. Pro Komponente höchstens ein bedeutungstragendes Symbol; Textlabels nicht entfernen.
+3) Bei Kennzahlen kein erfundener Wert. Keine Symbol-Farbgebung als Beweis für Gewinn, Risiko oder Leistungsfähigkeit ohne echte Daten. Fish/Shark ist lediglich ein Motiv, KEINE automatische Spielerwertung.
+4) Accessibility: Wenn der Text daneben die Bedeutung nennt, SVG aria-hidden=true; sonst ein sinnvoller zugänglicher Name. Touch-Ziele mindestens 44x44px; visuelle Icons 18–24px.
+5) Farben über currentColor/Website-CSS erben. Kein hartes Gold, keine Neonfarben; Dark-Mode-Kontrast prüfen.
+6) SVGs gehören als statische Assets in assets/icons/; alternativ inline SVG für CSS currentColor. Bei <img> currentColor nicht als Themefarbe erzwingen; ohne Bedarf einfarbige CSS-/mask-Lösung verwenden.
+7) Weder Originaldaten noch Rechenlogik anfassen. Existierende Symbolik nicht unnötig verdoppeln.
+8) Keine Layout-Bedingung, dass alle Icons auf jeder Seite vorkommen. Sparsam, wiederverwendbar und konsistent über Desktop & iPhone.
+9) Alle 25 SVGs sind einfache lokale Vektorgrafiken, keine externen Abhängigkeiten, keine Kosten.
