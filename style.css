@@ -259,3 +259,27 @@ main{width:min(100%,1240px);margin-inline:auto}
 
 /* v1.8.2: readable findings on narrow screens */
 .story-section{margin:24px 0}.story-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,270px),1fr));gap:14px}.story-finding{background:rgba(20,46,35,.85);border:1px solid rgba(218,182,107,.23);border-radius:15px;padding:18px;min-width:0;overflow-wrap:anywhere}.story-finding h3{color:#e8c37e;margin:0 0 12px}.story-finding p{line-height:1.6;margin:10px 0}.story-finding .hint{font-size:.88rem}
+
+/* Premium player pages · mobile first */
+.page--players .playergrid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important}
+.page--players .playercard.playercard--dense{position:relative;display:flex!important;flex-direction:column!important;align-items:stretch!important;justify-content:space-between!important;text-align:left!important;gap:7px!important;min-height:122px!important;padding:12px 10px!important;border:1px solid #617356!important;border-radius:14px!important;background:linear-gradient(145deg,#24503d,#112d23)!important;box-shadow:inset 0 1px #ffffff18!important;overflow:hidden}
+.page--players .playercard--dense .playercard-top{display:flex;align-items:center;gap:7px;min-width:0}
+.page--players .playercard--dense .playercard-avatar{width:34px;height:34px;flex:0 0 34px;display:grid;place-items:center;border-radius:50%;background:linear-gradient(#eed4a0,#b78f50);color:#132b20;font-weight:900}
+.page--players .playercard--dense .playercard-copy{display:grid;gap:2px;min-width:0}
+.page--players .playercard--dense .playercard-copy b{font-size:clamp(17px,5vw,25px)!important;line-height:1.05!important;overflow-wrap:anywhere}
+.page--players .playercard--dense .playercard-copy small{font-size:10px;line-height:1.2}
+.page--players .playercard--dense .playercard-meta{display:flex;gap:5px;flex-wrap:wrap}
+.page--players .playercard--dense .playercard-meta small{padding:3px 7px;background:#dbc18e20;border:1px solid #dbc18e55;border-radius:15px;font-size:10px;color:#f6e5bf}
+.page--players .playercard--dense em{align-self:flex-end;margin:0!important;font-size:17px!important;color:#e8c37e}
+.page--profile>.hero{background:radial-gradient(circle at 80% 10%,#be965133,transparent 50%),linear-gradient(145deg,#183f30,#0c251c)!important;border-bottom:2px solid #c9a568!important}
+.page--profile .profile-stagebar{position:sticky;top:calc(env(safe-area-inset-top) + 68px);z-index:29;display:flex;align-items:center;justify-content:space-between;gap:10px;background:#102a21f5;border:1px solid #ac8e5c;border-radius:12px;padding:10px 12px;margin:12px 0 18px;backdrop-filter:blur(12px);box-shadow:0 8px 20px #0007}
+.page--profile .profile-stagebar span{font-size:11px;font-weight:800;letter-spacing:.11em;text-transform:uppercase;color:#ddb777}
+.page--profile .profile-stagebar strong{font-size:clamp(18px,5vw,25px);color:#fff0d8;overflow-wrap:anywhere;text-align:right}
+.page--profile>.metrics{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important;border:0!important;margin:12px 0 18px!important}
+.page--profile>.metrics>.kpi{padding:13px 9px!important;border:1px solid #627257!important;border-radius:12px!important;background:linear-gradient(145deg,#1b4232,#102a21)!important}
+.page--profile>.metrics>.kpi strong{font-size:clamp(22px,7vw,34px)!important;font-weight:850!important;color:#fff0d8!important}
+.page--profile>.card{border-radius:15px!important;border:1px solid #64765a!important;background:linear-gradient(145deg,#1b4132,#122d23)!important;padding:15px 12px!important;margin-bottom:13px!important}
+.page--profile>.card h3{color:#f4e2be!important;font-size:clamp(19px,5.5vw,27px)}
+.page--profile .buttonrow{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px!important}
+.page--profile .buttonrow .btn{min-height:56px;white-space:normal;line-height:1.2}
+@media(max-width:390px){.page--players .playercard--dense .playercard-top{gap:5px}.page--players .playercard--dense .playercard-avatar{width:30px;height:30px;flex-basis:30px}.page--profile .profile-stagebar{top:calc(env(safe-area-inset-top) + 64px)}}
