@@ -1,0 +1,30 @@
+BÄRGSUNNE POKER 2.2.4 — MUSTER-FINDER
+Datum: 15.10.2026
+Basis: lokaler Kandidat 2.2.3
+Status: lokaler Entwicklungskandidat, keine GitHub- oder öffentliche Veröffentlichung.
+
+INTEGRATION
+- Eigenständiges Modul pattern-finder.js und pattern-finder.css.
+- Existierende Muster-Finder-Ansicht wird durch neuen Finder ersetzt.
+- Übrige Statistikwerkzeuge und Originaldaten bleiben unverändert.
+- 5 Modi: Runden-Detektiv, Serien-Jäger, Spieler-Fingerabdruck, Muster-Ketten, Überraschungs-Scanner.
+- Jahre (absteigend), Datenbank-Spieler, beliebige Rundennummern und Presets (3–5; 3 und 5).
+- Ergebnisse: pro Spieler-Jahr, Rundenstreifen, tatsächliche Platzierungen, nachprüfbare Tabellen mit Punkten und Teilnehmerzahlen.
+- Muster-Kompass navigiert zwischen Suchmethoden und erhält die Auswahl.
+- Lokale Sammlung der letzten 10 Suchkonfigurationen im Browser.
+- Keine Eingabe freier Spielernamen; keine externen APIs.
+
+BERECHNUNGSGRENZEN
+- Datenbasis umfasst ausschliesslich dokumentierte Originalrunden.
+- Serien überschreiten keine Turnierjahre.
+- Ketten benötigen dokumentierte Ausgangs- und Zielrunde.
+- Überraschungssuche basiert auf expliziten Häufigkeitsschwellen, nicht auf statistischer Signifikanz.
+- Feldunterschiede beim Fingerabdruck berücksichtigt; Originalränge bleiben sichtbar.
+- Umfangreiche statistische Hypothesentests, automatische Muster-Zwillinge und echte Konfidenzbewertung sind noch NICHT implementiert; Muster-Kompass bietet passende Folgeuntersuchungen.
+
+PRÜFSTATUS
+- node --check aller JS Dateien: bestanden.
+- SHA-256 der beiden Originaldatendateien gegenüber Version 2.2.3: unverändert.
+- Visuelle Browser- und iPhone-Safari-Prüfung: ausstehend.
+- Suchlogik noch nicht vollständig mit End-to-End-Browserinteraktionen abgenommen.
+- GitHub main und GitHub Pages: nicht verändert.

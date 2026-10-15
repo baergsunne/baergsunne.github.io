@@ -1,0 +1,15 @@
+BÄRGSUNNE POKER 2.2.5 – HISTORIE / INTERAKTIVE TURNIERCHRONIK
+STATUS: LOKALER ENTWICKLUNGSKANDIDAT. NICHT DEPLOYED.
+Basis: 2.2.4 Muster-Finder.
+Umsetzung:
+- Jahrbuch je dokumentiertem Jahr, Champion, Teilnehmer und Rundenzahl
+- Jahresnavigation jüngstes Turnier zuerst
+- Replay Runde für Runde, berechnete Zwischenstände + originale Rundenergebnisse
+- Schlüsselmomente: berechnete Führungswechsel, Rundensiege, offizielles Finale
+- Originalarchiv mit offiziellen Schlussrängen und allen dokumentierten Einzelrunden
+- Separates, mobiles dunkelgrün-goldenes History-Design
+- Keine künstlich erzeugten Ereignisberichte oder Fotos
+Hinweis: rekonstruierte Zwischenrangliste sortiert nach Punkten, Rundensiegen, Name. Historische Zwischenrangregeln sind nicht dokumentiert. Offizielle Schlussränge stets separat angezeigt.
+Prüfungen: JavaScript Syntax, Rendering aller 16 Jahrgänge im isolierten Node-Test, Prüfsummen Originaldaten gegenüber 2.2.4 identisch.
+Offen: visuelle und echte iPhone-Safari Browserabnahme, komplexe Regression, Prüfung und ggf. Reparatur bestehender Filterüberlagerungen.
+Github / Produktion: Keine Änderungen.

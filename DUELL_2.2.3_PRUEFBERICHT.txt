@@ -1,0 +1,23 @@
+BÄRGSUNNE POKER 2.2.3 – DUELL BUTTERFLY
+
+BASIS: 2.2.2 lokaler Entwicklungskandidat.
+UMSETZUNG:
+- Genau zwei Datenbankspieler, kein übergeordneter Statistikfilter.
+- Eigene Jahrgangs-Mehrfachauswahl, absteigend nach Jahr; optional nur gemeinsame Turniere.
+- Kategorien Karriere, Runden, Direktvergleich.
+- Spiegelbildliche Butterfly-Balken, je Kennzahl gleicher Massstab.
+- Drilldown pro Kennzahl -> Jahr -> Runde -> Originalresultat (Platz, Punkte, Teilnehmer).
+- Zeitreise mit kumuliertem Auswahljahre-Filter.
+- Jahreswerte ohne Teilnahme werden nicht fälschlich als Nullergebnisse angezeigt.
+- Bei Veränderungen Wiederherstellung der geöffneten Detailbereiche und Scrollposition bestmöglich.
+
+PRÜFUNGEN:
+JavaScript-Syntax mit node --check: bestanden.
+Historische Originaldateien data.js / historische-ergebnisse.json: SHA-256 gegenüber 2.2.2 identisch.
+Browser-Versuch Chromium headless: Timeout; nicht erfolgreich abgeschlossen.
+Echte Funktions-/iPhone-Safari-Abnahme: OFFEN.
+GitHub/öffentliche Website: NICHT VERÄNDERT.
+
+GRENZEN:
+Die Detailwerte werden anhand der historischen Resultate berechnet. Die Zusatzebene zu einer Runde zeigt Ursprung (Platz, Punkte, Teilnehmer), nicht eine unabhängige Punkteformel. Quoten werden aus Gesamtereignissen berechnet, nicht aus Jahresquoten addiert.
+Keine vollständige End-to-End-Browserabnahme; isolierter lokaler Release-Kandidat.

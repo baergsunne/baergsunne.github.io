@@ -1,1 +1,1 @@
-Bärgsunne Poker 2.2.2 – einheitliche Statistikwerkzeuge, Mehrspielerduelle, Rang-Heatmap, Diagramme
+Bärgsunne Poker 2.2.5 – Interaktive Turnierchronik (lokaler Entwicklungskandidat)
