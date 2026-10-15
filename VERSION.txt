@@ -1,1 +1,1 @@
-Bärgsunne Poker 2.2.5 – Interaktive Turnierchronik (lokaler Entwicklungskandidat)
+Bärgsunne Poker 2.2.6 – Discovery Startseite und sichere Live-Leseansicht (Entwicklungskandidat)
