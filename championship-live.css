@@ -13,3 +13,5 @@
 .page--live .cl-table td,.page--live .cl-round,.page--live .cl-form{color:#f4efdf}
 .page--live .cl-table small{color:#c8d6c9}
 .page--live .cl-chart,.page--live .cl-legend{color:#dce7dc}
+.page--live .cl-player-link{border:0;background:transparent;padding:6px 0;color:#f4efdf;font-weight:750;text-decoration:underline;text-decoration-color:#e8c37e;text-underline-offset:3px;cursor:pointer;text-align:left}
+.page--live .cl-player-link:focus-visible{outline:2px solid #e8c37e;outline-offset:3px;border-radius:3px}
