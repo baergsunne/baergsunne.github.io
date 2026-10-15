@@ -15,3 +15,14 @@
 #app .bp-smart-table th .thbutton{white-space:nowrap!important;min-height:28px}
 #app .bp-smart-table td *{max-width:none}
 @media(prefers-reduced-motion:reduce){#app table.bp-smart-table tbody tr{transition:none}}
+
+/* Ranglisten 3.0: compact widths on small screens without modifying general data grids. */
+@media(max-width:600px){
+ #app .table-scroll:has(> table.bp-compact-rank),#app .bp-smart-scroll:has(> table.bp-compact-rank){overflow-x:visible;min-width:0}
+ #app table.bp-smart-table.bp-compact-rank{width:100%!important;min-width:0!important;table-layout:fixed!important;max-width:100%}
+ #app table.bp-smart-table.bp-compact-rank th,#app table.bp-smart-table.bp-compact-rank td{white-space:normal!important;overflow-wrap:anywhere!important;padding:8px 3px!important;font-size:11px!important}
+ #app table.bp-smart-table.bp-compact-rank th .bp-smart-sort{white-space:normal!important;min-width:0;text-align:left;gap:2px;font-size:10px}
+ #app table.bp-smart-table.bp-compact-rank th:first-child,#app table.bp-smart-table.bp-compact-rank td:first-child{width:14%}
+ #app table.bp-smart-table.bp-compact-rank th:nth-child(2),#app table.bp-smart-table.bp-compact-rank td:nth-child(2){width:40%}
+ #app table.bp-smart-table.bp-compact-rank th:nth-child(n+3),#app table.bp-smart-table.bp-compact-rank td:nth-child(n+3){text-align:right}
+}
