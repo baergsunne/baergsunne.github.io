@@ -28,6 +28,15 @@ for(const p of ['history','stats','players','fame']){const x=boot('#'+p);assert(
 const x=boot();x.location.hash='#stats';x.winEvents.hashchange.forEach(f=>f());assert(x.div.innerHTML.includes('page--stats'));x.location.hash='#history';x.winEvents.popstate.forEach(f=>f());assert(x.div.innerHTML.includes('page--history'));pass('hash and browser back/forward routing');
 c=boot();for(const e of c.run('db.editions')){c.action('openyear',String(e.year));assert(c.div.innerHTML.includes('page--history'));assert.equal(c.errors.length,0);}pass('all 16 historical editions');
 c.action('profile','Fösu');assert(c.div.innerHTML.includes('Fösu'));pass('player profile');
+const debuts=boot('#players');
+debuts.run(`window.BAERGSUNNE_PUBLIC_LIVE={status:'planned',year:2026,players:['Frauchi','König','Fösu'],rounds:[],standings:[]};draw()`);
+assert.match(debuts.div.innerHTML,/Vorläufiges Spielerprofil Frauchi öffnen/);
+assert.match(debuts.div.innerHTML,/Vorläufiges Spielerprofil König öffnen/);
+assert.doesNotMatch(debuts.div.innerHTML,/Vorläufiges Spielerprofil Fösu öffnen/);
+debuts.action('profile','Frauchi');assert.match(debuts.div.innerHTML,/Noch keine Runde veröffentlicht/);assert.doesNotMatch(debuts.div.innerHTML,/Live-Rang/);
+debuts.run(`window.BAERGSUNNE_PUBLIC_LIVE={status:'live',year:2026,players:['Frauchi','König'],rounds:[{number:1,results:[{player:'Frauchi',place:2,points:8},{player:'König',place:1,points:10}]}],standings:[{player:'König',rank:1,points:10},{player:'Frauchi',rank:2,points:8}]};draw()`);
+assert.match(debuts.div.innerHTML,/Platz 2 · 8 Punkte/);assert.match(debuts.div.innerHTML,/Live-Rang/);assert.doesNotMatch(debuts.div.innerHTML,/Karriere-Entwicklung/);
+debuts.run(`window.BAERGSUNNE_PUBLIC_LIVE.status='final';draw()`);assert.equal(debuts.run('provisionalPlayers().length'),0);pass('new player profiles use published live rounds only and leave archive statistics separate');
 const data=c.run('JSON.stringify(db)');assert.equal(data,c.run('JSON.stringify(seed)'));pass('original data unchanged after actions');
 c=boot();c.action('go','stats');c.action('tab','lab');
 for(const chart of c.run('labTypes.map(x=>x[0])')){c.run(`labPrefs.chart=${JSON.stringify(chart)};draw()`);assert.equal(c.errors.length,0);}pass('six diagram types');
