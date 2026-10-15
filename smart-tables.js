@@ -30,10 +30,10 @@ function enhance(t){if(t.dataset.bpSmart==='1'||!t.tHead||!t.tBodies.length)retu
       [...t.tHead.querySelectorAll('th')].forEach(other=>{other.setAttribute('aria-sort',other===th?(asc?'ascending':'descending'):'none');const icon=other.querySelector('.bp-smart-sort span');if(icon)icon.textContent=other===th?(asc?' ↑':' ↓'):' ↕'});
     });
   });
-  if(isRanking && head.length<=5 && !t.dataset.bpSortDetached){
+  if(!t.dataset.bpSortDetached && !t.closest('.history-chronicle') && !t.closest('.lab-heat-scroll,.heat-scroll')){
     const ths=[...t.tHead.querySelectorAll('th')];
     const opts=ths.map((th,i)=>({th,i,label:clean(th.textContent).replace(/[↑↓↕]/g,' ').trim()}))
-      .filter(x=>/rang|platz|^#|spieler|punkte|pkt|siege|titel|final/i.test(x.label)).slice(0,4);
+      .filter(x=>x.label && x.th.querySelector('.bp-smart-sort,.thbutton,[data-action="sort"]')).slice(0,4);
     if(opts.length){
       const bar=document.createElement('div');bar.className='bp-rank-sortbar';
       const title=document.createElement('span');title.textContent='Sortieren';bar.appendChild(title);
