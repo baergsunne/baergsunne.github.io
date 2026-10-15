@@ -13,3 +13,24 @@
 #app .history-table th:nth-child(5),#app .history-table td:nth-child(5){width:19%}
 #app .history-table td:nth-child(2){overflow-wrap:break-word}
 }
+
+/* Ranglisten 3.0: flexible, small-screen tables without heading-driven overflow */
+#app .history-rank-toolbar{display:flex;align-items:center;justify-content:space-between;gap:6px;margin:12px 0 8px;font-size:12px;color:#dbbc84}
+#app .history-rank-sort{display:flex;gap:3px;flex-wrap:wrap}
+#app .history-rank-sort button{border:1px solid #647966;border-radius:7px;background:#1c3b2f;color:#eee2ce;padding:6px 9px;min-height:34px;font-size:12px}
+#app .history-rank-sort button.active{background:#bd9b62;color:#102820;border-color:#bd9b62;font-weight:800}
+#app .history-table--rank{min-width:0;width:100%;table-layout:fixed}
+#app .history-table--rank .history-col-rank{width:11%}
+#app .history-table--rank .history-col-player{width:48%}
+#app .history-table--rank .history-col-points{width:23%}
+#app .history-table--rank .history-col-wins{width:18%}
+#app .history-table--final .history-col-rank{width:11%}
+#app .history-table--final .history-col-player{width:40%}
+#app .history-table--final .history-col-points{width:18%}
+#app .history-table--final .history-col-wins{width:13%}
+#app .history-table--final .history-col-final{width:18%}
+#app .history-table--rank th,#app .history-table--rank td{padding:8px 3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#app .history-table--rank th{font-size:11px}
+#app .history-table--rank th:nth-child(n+3),#app .history-table--rank td:nth-child(n+3){text-align:right}
+#app .history-table--rank tbody td{font-size:clamp(12px,3.4vw,15px)}
+@media(max-width:600px){#app .history-table--rank th,#app .history-table--rank td{padding:9px 3px;white-space:nowrap;overflow:hidden;overflow-wrap:normal}}
