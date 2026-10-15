@@ -122,12 +122,18 @@ function pill(name,v){return `<button class="pill ${v?'active':''}" data-action=
 function explainColumn(title){
  const t=String(title).toLowerCase().replace(/\s+/g,' ').trim();
  if(/anteil max|maximalpunkt/.test(t))return '100 % bedeutet: alle möglichen Punkte geholt. 54 % bedeutet: 54 % der möglichen Punkte. Je höher, desto besser.';
- if(/ø im feld|relativ|platzierung im verhältnis/.test(t))return '100 % bedeutet: immer Erster. 0 % bedeutet: immer Letzter. 54 % liegt etwas über der Mitte des Teilnehmerfelds. Je höher, desto besser.';
- if(/ø rang|durchschnitt.*rang|ø platz/.test(t))return 'Der durchschnittliche Platz. 2,4 bedeutet: im Schnitt zwischen Platz 2 und 3. Je kleiner, desto besser.';
- if(/pkt\.\/r|punkte pro runde/.test(t))return 'So viele Punkte holte dieser Spieler im Durchschnitt pro Runde. Je höher, desto besser.';
+ if(/ø im feld|durchschnitt im feld|feldschnitt|relativ|platzierung im verhältnis/.test(t))return '100 % bedeutet: immer Erster. 0 % bedeutet: immer Letzter. 54 % liegt etwas über der Mitte des Teilnehmerfelds. Je höher, desto besser.';
+ if(/ø rang|durchschnitt.*rang|ø platz|mittlerer rang/.test(t))return 'Der durchschnittliche Platz. 2,4 bedeutet: im Schnitt zwischen Platz 2 und 3. Je kleiner, desto besser.';
+ if(/pkt\.\/r|punkte pro runde|punkte\/runde/.test(t))return 'So viele Punkte holte dieser Spieler im Durchschnitt pro Runde. Je höher, desto besser.';
  if(/sieg %|siegquote/.test(t))return 'Wie oft der Spieler eine Runde gewann. 25 % bedeutet etwa jede vierte Runde.';
  if(/podest %|top.?3.?%/.test(t))return 'Wie oft der Spieler unter den ersten drei war. 50 % bedeutet jede zweite Runde.';
  if(/streuung/.test(t))return 'Wie stark die Punkte von Runde zu Runde schwanken. Ein kleiner Wert bedeutet gleichmässigere Ergebnisse.';
+ if(/rundenwirkung|rangbewegungen|summe rangbewegungen/.test(t))return 'So viele Plätze haben sich durch diese Runde insgesamt verändert. Je höher, desto grösser die Bewegung in der Rangliste.';
+ if(/anderer erster|titelwechsel/.test(t))return 'Ja bedeutet: Ohne diese Runde hätte eine andere Person die Gesamtwertung angeführt. Es ist nur ein Vergleich; das echte Ergebnis bleibt gleich.';
+ if(/hochgerechneter sieger|prognose/.test(t))return 'Wer nach dem bisherigen Punkteschnitt am Ende vorne gelegen hätte. Das ist eine Rechnung, keine sichere Vorhersage.';
+ if(/traf zu/.test(t))return 'Ja bedeutet: Die damalige Hochrechnung stimmt mit dem späteren Sieger überein.';
+ if(/win.?rate|gewonnen %|siege %/.test(t))return 'Anteil gewonnener Runden. 100 % bedeutet jede Runde gewonnen, 0 % keine. Mehr ist besser.';
+ if(/quote|anteil|%/.test(t))return 'Anteil in Prozent: 100 % bedeutet alle passenden Fälle, 0 % keinen. Was gezählt wird, steht beim jeweiligen Tool.';
  if(/teilnehmer|feldgrösse/.test(t))return 'So viele Spieler waren beim Turnier dabei.';
  if(/titel/.test(t))return 'So viele Turniere hat der Spieler gewonnen.';
  if(/punkte|pkt\./.test(t))return 'Die Punkte nach den Regeln des jeweiligen Turniers.';
@@ -153,12 +159,12 @@ function table(id,columns,data,opts={}){
  const leadName=lead&&playerKey?String(lead[playerKey.key]??''):'';
  const leadPoints=lead&&pointKey&&lead[pointKey.key]!=null?String(lead[pointKey.key]):'';
  const leadPlace=lead&&placeKey&&lead[placeKey.key]!=null?String(lead[placeKey.key]):'';
- let summary=visible.length?'Hier siehst du die '+dataLabel.toLowerCase()+' mit '+sorted.length+' Einträgen.':'Für diese Auswahl gibt es noch keine Ergebnisse.';
- if(leadName){summary='Hier siehst du die '+dataLabel.toLowerCase()+' der gewählten Spieler und Jahre. '+leadName+(leadPlace?' liegt auf Platz '+leadPlace:'')+(leadPoints?' mit '+leadPoints+' Punkten':'')+'.';}
+ let summary=visible.length?'Hier siehst du die '+dataLabel.toLowerCase()+' mit '+sorted.length+' Einträgen.':'Für diese Auswahl gibt es noch keine Ergebnisse.'; if(visible.length&&realPage>0)summary+=' Du betrachtest Seite '+(realPage+1)+'.';
+ if(leadName){summary='Hier siehst du die '+dataLabel.toLowerCase()+' der gewählten Spieler und Jahre. '+(leadPlace?leadName+' hat in dieser Zeile Platz '+leadPlace+(leadPoints?' und '+leadPoints+' Punkte':'')+'.': 'Die aktuell erste Zeile zeigt '+leadName+(leadPoints?' mit '+leadPoints+' Punkten':'')+'.')+(st.key&&st.key!==(placeKey?.key||'')?' Die Reihenfolge richtet sich nach „'+(columns.find(c=>c.key===st.key)?.title||'der gewählten Spalte')+'“, nicht unbedingt nach dem besten Gesamtrang.':'');}
  else if(lead){summary='Hier siehst du die Werte der gewählten Spieler und Jahre. Die erste Zeile zeigt '+columns.slice(0,3).map(c=>esc(c.title)+': '+esc(lead[c.key]??'–')).join(', ')+'.';}
  const columnHelp=columns.map(c=>({name:c.title,meaning:explainColumn(c.title)})).filter(c=>c.meaning);
  const glossaryHtml=columnHelp.length?'<p><strong>So liest du die Spalten:</strong></p><dl class="bp-simple-glossary">'+columnHelp.map(c=>'<dt>'+esc(c.name)+'</dt><dd>'+esc(c.meaning)+'</dd>').join('')+'</dl>':'';
- const shortExplanation='<details class="explain-detail bp-table-short-explain"><summary>Einfach erklärt <span aria-hidden="true">▾</span></summary><div class="explain-body"><p>'+esc(summary)+'</p></div></details>';
+ const shortExplanation='<details class="explain-detail bp-table-short-explain"><summary>Einfach erklärt <span aria-hidden="true">▾</span></summary><div class="explain-body"><p>'+esc(summary)+'</p>'+glossaryHtml+'</div></details>';
  return top+(body||'<tr><td colspan="'+columns.length+'" class="subtle">Keine Daten im ausgewählten Filter.</td></tr>')+'</tbody></table></div>'+(ranking?'<p class="ranking-caption">'+sorted.length+' Spieler · Platzierungen der Turniere.</p>':'')+(pageSize?'<div class="pager"><button class="btn outline" data-action="tablepage" data-table="'+esc(id)+'" data-value="-1" '+(realPage===0?'disabled':'')+'>← Zurück</button><span>Seite '+(realPage+1)+' / '+pages+' · '+sorted.length+' Datensätze</span><button class="btn outline" data-action="tablepage" data-table="'+esc(id)+'" data-value="1" '+(realPage===pages-1?'disabled':'')+'>Weiter →</button></div>':'')+(opts.note?'<p class="hint">'+opts.note+'</p>':'')+shortExplanation;
 }
 const playerLink=p=>`<button class="playerlink" data-action="profile" data-value="${esc(p)}">${esc(p)}</button>`;
