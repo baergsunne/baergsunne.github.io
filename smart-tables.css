@@ -62,3 +62,26 @@
  #app .page--profile table.bp-compact-rank:has(thead th:nth-child(5):last-child) th:nth-child(5),
  #app .page--profile table.bp-compact-rank:has(thead th:nth-child(5):last-child) td:nth-child(5){width:18%}
 }
+
+/* Ranglisten 3.1: one visual language matching Historie → Replay.
+   Keep data links, semantic headers and existing sort controls accessible. */
+#app table.bp-smart-table.bp-compact-rank{border-collapse:separate!important;border-spacing:0 5px!important;background:transparent!important}
+#app table.bp-smart-table.bp-compact-rank tbody tr{background:linear-gradient(90deg,#315540 0%,#244836 55%,#1b382d 100%)!important;box-shadow:none!important}
+#app table.bp-smart-table.bp-compact-rank tbody tr:first-child{background:linear-gradient(90deg,#315540 0%,#244836 55%,#1b382d 100%)!important}
+#app table.bp-smart-table.bp-compact-rank tbody td,#app table.bp-smart-table.bp-compact-rank tbody th{background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;padding:9px 5px!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;overflow-wrap:normal!important;color:#f7efdb!important}
+#app table.bp-smart-table.bp-compact-rank tbody tr>:first-child{border:0!important;border-radius:8px 0 0 8px!important}
+#app table.bp-smart-table.bp-compact-rank tbody tr>:last-child{border:0!important;border-radius:0 8px 8px 0!important}
+#app table.bp-smart-table.bp-compact-rank thead th{background:transparent!important;color:#dfbd82!important;border:0!important;position:static!important;padding:7px 4px!important;font-size:11px!important;white-space:nowrap!important}
+#app table.bp-smart-table.bp-compact-rank .bp-smart-sort,
+#app table.bp-smart-table.bp-compact-rank .thbutton{min-height:0!important;padding:0!important;color:inherit!important;font-size:inherit!important;font-weight:750!important;white-space:nowrap!important}
+#app table.bp-smart-table.bp-compact-rank .bp-smart-sort span,
+#app table.bp-smart-table.bp-compact-rank .thbutton span{display:none!important}
+#app table.bp-smart-table.bp-compact-rank a{color:#f7efdb!important;text-decoration:underline;text-decoration-color:#7d987f;text-underline-offset:3px}
+#app .bp-rank-sortbar{letter-spacing:normal!important;text-transform:none!important;font-size:12px!important;font-weight:400!important}
+#app .bp-rank-sortgroup button[aria-pressed="true"]{background:#bd9b62!important;color:#102820!important}
+@media(max-width:600px){
+ #app table.bp-smart-table.bp-compact-rank:not(:has(thead th:nth-child(6))){width:100%!important;min-width:0!important;max-width:100%!important;table-layout:fixed!important}
+ #app table.bp-smart-table.bp-compact-rank:not(:has(thead th:nth-child(6))) tbody td{font-size:clamp(12px,3.4vw,15px)!important}
+ #app table.bp-smart-table.bp-compact-rank:not(:has(thead th:nth-child(6))) th,
+ #app table.bp-smart-table.bp-compact-rank:not(:has(thead th:nth-child(6))) td{padding-inline:3px!important}
+}
