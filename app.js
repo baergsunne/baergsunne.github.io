@@ -78,17 +78,36 @@ function exampleForExplanation(title, edition, player){
  const first=candidateRounds[0],x=resultFor(first);return `Ein nachprüfbares Einzelresultat aus den Originaldaten: ${edition.year}, Runde ${first.number}: ${who(x)}. Dies ist nur ein Beispiel für die gespeicherten Daten. Es beweist für sich allein noch keine allgemeine Aussage.`;
 }
 function dataExplanation(title){
- if(!title||/Administration|Cockpit|aufbewahren|auswählen|Analysen entdecken|Alle zehn Methoden|Geschichte des Jahres|Das untersuchst du gerade/i.test(title))return '';
- const rule=EXPLAIN_RULES.find(([re])=>re.test(title));if(!rule)return '';
- const [question,method,example,caution]=rule[1];
- const yr=state.page==='history'?Number(state.historyYear):state.page==='stats'&&state.tab==='race'?Number(state.year):null;
- const edition=Number.isFinite(yr)?db.editions.find(x=>x.year===yr):null;
- const player=state.page==='profile'?state.profile:null;
- const selected=edition||eds().find(e=>e.players.some(p=>!player||p===player));
- const selection=(player?`Spieler ${esc(player)}. `:'')+(edition?`Jahr ${edition.year}.`:`${state.selectedYears.length?'Ausgewählte Jahre: '+state.selectedYears.join(', '):'Alle Jahre'}.`);
- return `<details class="explain-detail"><summary>Einfach erklärt – mit Beispiel <span aria-hidden="true">▾</span></summary><div class="explain-body"><h4>Worum geht es?</h4><p>${esc(question)}</p><h4>Welche Ergebnisse schauen wir uns an?</h4><p>${selection} Wenn du die Auswahl änderst, werden die Zahlen neu berechnet.</p><h4>Wie funktioniert das?</h4><p>${esc(method)}</p><h4>Ein einfaches Rechenbeispiel</h4><p>${esc(example)} Dieses Rechenbeispiel ist erfunden und dient nur zum Verstehen.</p><h4>Ein Beispiel aus den gespeicherten Runden</h4><p>${exampleForExplanation(title,selected,player)}</p><h4>Was bedeutet das – und was nicht?</h4><p>${esc(caution)} Ein einzelnes Beispiel erklärt die Berechnung, ersetzt aber nicht die Auswertung aller ausgewählten Ergebnisse.</p><p><strong>Wichtig:</strong> Die angezeigten historischen Ergebnisse stammen aus den fotografierten Turnierblättern. Die Korrektur für Turi 2008 ist bestätigt: Runde 5 brachte 6 Punkte (Rang 3), Total 61.</p></div></details>`;
+ if(!title||/Administration|Cockpit|aufbewahren|auswählen|Analysen entdecken|Alle zehn Methoden|Das untersuchst du gerade/i.test(title))return '';
+ const label=String(title).replace(/<[^>]+>/g,'').trim();
+ const ed=state.page==='history'?eyear(state.historyYear):null;
+ let summary='Hier siehst du die Ergebnisse zu „'+label+'“ für die gewählten Spieler und Jahre.';
+ if(ed&&/Rundenresultate|Rangliste|Schlussrang/i.test(label)){
+  const result=ed.official_standings[0];
+  summary='Hier siehst du die Rangliste des Turniers '+ed.year+'. '+(result?'Auf Platz 1 liegt '+result.player_id+' mit '+pointsFmt(result.points)+' Punkten.':'Für dieses Jahr gibt es keine Ergebnisse.');
+ }else if(/Duelle|Rival|Head to Head/i.test(label)){
+  summary='Hier siehst du, welcher Spieler in gemeinsamen Runden häufiger vorne lag. Eine höhere Zahl bedeutet, dass dieser Spieler öfter besser platziert war.';
+ }else if(/Punkte pro Runde/i.test(label)){
+  summary='Hier siehst du, wie viele Punkte die ausgewählten Spieler pro Runde geholt haben. Je höher der Wert, desto mehr Punkte haben sie im Schnitt gesammelt.';
+ }else if(/Meister|Champions|Titelträger/i.test(label)){
+  const standings=eds().flatMap(e=>e.official_standings.filter(x=>x.place===1));
+  const counts={};standings.forEach(x=>counts[x.player_id]=(counts[x.player_id]||0)+1);
+  const top=Object.entries(counts).sort((x,y)=>y[1]-x[1])[0];
+  summary='Hier siehst du, wer die Turniere gewonnen hat.'+(top?' '+top[0]+' hat in deiner Auswahl '+top[1]+' Titel geholt.':'');
+ }else if(/Karriere|Formkurve/i.test(label)){
+  summary='Hier siehst du, wie sich die Spieler über die Jahre geschlagen haben. Du erkennst, wann es für sie besonders gut und wann weniger gut lief.';
+ }else if(/Rekord|Bestleistung/i.test(label)){
+  summary='Hier siehst du die besten Ergebnisse aus den gewählten Turnieren. Die höchsten Werte zeigen, wer den jeweiligen Rekord hält.';
+ }else if(/Teilnehmerfeld|Konkurrenz/i.test(label)){
+  summary='Hier siehst du, wie gut die Spieler bei unterschiedlich vielen Teilnehmern abgeschnitten haben. Ein höherer Wert bedeutet eine bessere Platzierung im Vergleich zu den anderen.';
+ }else if(/Championship Drama|Führung|Meisterschaft/i.test(label)){
+  summary='Hier siehst du, wie sich das Rennen um den Turniersieg verändert hat. Du erkennst, wer vorne lag und wann die Führung wechselte.';
+ }else if(/Punkte|Runden/i.test(label)){
+  summary='Hier siehst du die Punkte und Platzierungen der ausgewählten Spieler. Die Zahlen stammen aus den gespeicherten Turnierrunden.';
+ }
+ return '<details class="explain-detail"><summary>Einfach erklärt <span aria-hidden="true">▾</span></summary><div class="explain-body"><p>'+esc(summary)+'</p></div></details>';
 }
-function card(title,content,extra=''){return `<section class="card ${extra}">${title?`<h3>${title}</h3>`:''}${content}${dataExplanation(title)}</section>`}
+function card(title,content,extra=''){return `<section class="card ${extra}">${title?`<h3>${title}</h3>`:''}${content}${content.includes('bp-table-short-explain')?'':dataExplanation(title)}</section>`}
 function pill(name,v){return `<button class="pill ${v?'active':''}" data-action="pillyear" data-value="${name}">${name}</button>`}
 function table(id,columns,data,opts={}){
  const st=state.sort[id]||{key:columns[0]?.key||'',dir:'asc'};
@@ -100,7 +119,16 @@ function table(id,columns,data,opts={}){
  const pageSize=opts.perPage||0,pageNum=state.tablePages[id]||0,pages=pageSize?Math.max(1,Math.ceil(sorted.length/pageSize)):1,realPage=Math.max(0,Math.min(pageNum,pages-1));
  const visible=pageSize?sorted.slice(realPage*pageSize,(realPage+1)*pageSize):sorted;
  const body=visible.map((row,i)=>'<tr>'+columns.map(c=>'<td class="'+(c.align||'')+'">'+(c.render?c.render(row,i):esc(row[c.key]??'–'))+'</td>').join('')+'</tr>').join('');
- return top+(body||'<tr><td colspan="'+columns.length+'" class="subtle">Keine Daten im ausgewählten Filter.</td></tr>')+'</tbody></table></div>'+(ranking?'<p class="ranking-caption">'+sorted.length+' Spieler · Platzierungen der Turniere.</p>':'')+(pageSize?'<div class="pager"><button class="btn outline" data-action="tablepage" data-table="'+esc(id)+'" data-value="-1" '+(realPage===0?'disabled':'')+'>← Zurück</button><span>Seite '+(realPage+1)+' / '+pages+' · '+sorted.length+' Datensätze</span><button class="btn outline" data-action="tablepage" data-table="'+esc(id)+'" data-value="1" '+(realPage===pages-1?'disabled':'')+'>Weiter →</button></div>':'')+(opts.note?'<p class="hint">'+opts.note+'</p>':'');
+ const lead=visible[0], playerKey=columns.find(c=>/^(Spieler|Name)$/i.test(c.title)||/player_id|name/i.test(c.key)), pointKey=columns.find(c=>/Punkt|Pkt\./i.test(c.title)), placeKey=columns.find(c=>/Platz|Rang|^#$/i.test(c.title));
+ const dataLabel=ranking?'Rangliste':'Tabelle';
+ const leadName=lead&&playerKey?String(lead[playerKey.key]??''):'';
+ const leadPoints=lead&&pointKey&&lead[pointKey.key]!=null?String(lead[pointKey.key]):'';
+ const leadPlace=lead&&placeKey&&lead[placeKey.key]!=null?String(lead[placeKey.key]):'';
+ let summary=visible.length?'Hier siehst du die '+dataLabel.toLowerCase()+' mit '+sorted.length+' Einträgen.':'Für diese Auswahl gibt es noch keine Ergebnisse.';
+ if(leadName){summary='Hier siehst du die '+dataLabel.toLowerCase()+' der gewählten Spieler und Jahre. '+leadName+(leadPlace?' liegt auf Platz '+leadPlace:'')+(leadPoints?' mit '+leadPoints+' Punkten':'')+'.';}
+ else if(lead){summary='Hier siehst du die Werte der gewählten Spieler und Jahre. Die erste Zeile zeigt '+columns.slice(0,3).map(c=>esc(c.title)+': '+esc(lead[c.key]??'–')).join(', ')+'.';}
+ const shortExplanation='<details class="explain-detail bp-table-short-explain"><summary>Einfach erklärt <span aria-hidden="true">▾</span></summary><div class="explain-body"><p>'+esc(summary)+'</p></div></details>';
+ return top+(body||'<tr><td colspan="'+columns.length+'" class="subtle">Keine Daten im ausgewählten Filter.</td></tr>')+'</tbody></table></div>'+(ranking?'<p class="ranking-caption">'+sorted.length+' Spieler · Platzierungen der Turniere.</p>':'')+(pageSize?'<div class="pager"><button class="btn outline" data-action="tablepage" data-table="'+esc(id)+'" data-value="-1" '+(realPage===0?'disabled':'')+'>← Zurück</button><span>Seite '+(realPage+1)+' / '+pages+' · '+sorted.length+' Datensätze</span><button class="btn outline" data-action="tablepage" data-table="'+esc(id)+'" data-value="1" '+(realPage===pages-1?'disabled':'')+'>Weiter →</button></div>':'')+(opts.note?'<p class="hint">'+opts.note+'</p>':'')+shortExplanation;
 }
 const playerLink=p=>`<button class="playerlink" data-action="profile" data-value="${esc(p)}">${esc(p)}</button>`;
 const yearLink=y=>`<button class="playerlink" data-action="openyear" data-value="${y}">${y}</button>`;
