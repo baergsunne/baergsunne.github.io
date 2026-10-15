@@ -19,7 +19,7 @@ function sameOrigin(req){const origin=req.headers.get('origin'),here=new URL(req
 async function update(env,row,document,action,ctx){const at=new Date().toISOString();const result=await env.DB.prepare('UPDATE tournaments SET document=?,revision=revision+1,updated_at=?,actor=?,action=? WHERE year=? AND revision=?').bind(JSON.stringify(document),at,'owner',action,row.year,row.revision).run();if(result.meta.changes!==1)return fail('Zwischenzeitlich geändert. Bitte neu laden.',409);
 // This is intentionally non-blocking: login and committed writes NEVER wait for event delivery.
 // Only authenticated publish/withdraw/finalize routes call this after D1 commit.
-if (ctx && env.LIVE_EVENTS && /^(publish|withdraw|finalize)(:|$)/.test(action)) {
+if (typeof ctx?.waitUntil === 'function' && env.LIVE_EVENTS && /^(publish|withdraw|finalize)(:|$)/.test(action)) {
  const kind=action.split(':')[0],revision=row.revision+1;
  ctx.waitUntil(Promise.resolve().then(() =>
    env.LIVE_EVENTS.getByName('tournament-'+row.year)
