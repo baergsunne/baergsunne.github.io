@@ -1,0 +1,1 @@
+{"private":true,"type":"module","scripts":{"test":"node --test live/*.test.js && node test-ui.cjs && node test-hall.cjs","build:live":"node live/build.mjs"}}
