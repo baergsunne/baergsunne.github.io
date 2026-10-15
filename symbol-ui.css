@@ -1,0 +1,6 @@
+/* Bärgsunne Poker – mobile SVG navigation and tools */
+.bp-icon{display:inline-block;width:24px;height:24px;vertical-align:middle;flex-shrink:0;object-fit:contain}
+.bottomitem .bp-icon{width:25px;height:25px;filter:brightness(0) saturate(100%) invert(94%) sepia(12%) saturate(247%) hue-rotate(335deg)}
+.bottomitem.active .bp-icon{filter:brightness(0) saturate(100%) invert(76%) sepia(26%) saturate(484%) hue-rotate(354deg)}
+.tool-tile-symbol .bp-icon{width:28px;height:28px}
+button:focus-visible,select:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid #e8c37e;outline-offset:3px}

@@ -1,11 +1,1 @@
-BÄRGSUNNE POKER – VOLLSTÄNDIGES DATEI-UPLOAD-PAKET
-Stand: 2026-10-15
-
-Grundlage: vom Owner bereitgestellte vollständige Website 2.2.6.
-Enthält: mobile Historienranglisten-Korrektur und Championship-Live-Bausteine (öffentlich, lesend) sowie SVG-Symbole.
-
-WICHTIG: NICHT identisch mit dem aktuellen privaten Cloudflare-Preview-Deployment.
-Keine geschützte Live-Admin-Funktionalität und keine Cloudflare-Datenbank im ZIP.
-backend-config.js hat möglicherweise eine leere Live-API-URL. Die neuen Championship-Live-Module können ohne veröffentlichte API-Daten keine Live-Rangliste anzeigen.
-
-Alle Dateien und Ordner liegen DIREKT in der ZIP-Wurzel. Auf GitHub main in die Repository-Wurzel hochladen (nicht die ZIP als Datei).
+Bärgsunne Poker GitHub-Dateiupload, 15.10.2026. Grundlage: bisheriges Komplettpaket; Reparatur der sichtbaren SVG-Symbole, Versionswechsel in index.html und Fehlertoleranz im Statistikbereich. NICHT identisch mit dem isolierten Cloudflare-Preview-Bundle; Live-Backend bleibt gesondert. Alle Dateien und Unterordner ins GitHub-Repository (main) laden. Keine Secrets enthalten.
