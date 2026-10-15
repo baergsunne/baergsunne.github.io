@@ -36,3 +36,14 @@
  #app table.bp-smart-table.bp-compact-rank:has(thead th:nth-child(6)){width:max-content!important;min-width:100%!important;table-layout:auto!important}
  #app .table-scroll:has(> table.bp-compact-rank:has(thead th:nth-child(6))),#app .bp-smart-scroll:has(> table.bp-compact-rank:has(thead th:nth-child(6))){overflow-x:auto}
 }
+
+/* Ranglisten 3.0: uniform detached sort bar on all compact rank tables */
+#app .bp-rank-sortbar{display:flex;align-items:center;justify-content:space-between;gap:7px;margin:9px 0 7px;color:#d6b77f;font-size:11px;font-weight:700}
+#app .bp-rank-sortgroup{display:flex;flex-wrap:wrap;gap:4px;justify-content:flex-end}
+#app .bp-rank-sortgroup button{border:1px solid #5d775f;background:#1e4334;color:#f2e5cb;border-radius:7px;min-height:33px;padding:6px 8px;font-size:11px;cursor:pointer}
+#app .bp-rank-sortgroup button[aria-pressed="true"]{background:#bd9b62;color:#102820;border-color:#e0c18b;font-weight:800}
+@media(max-width:600px){
+ #app table.bp-smart-table.bp-compact-rank:not(:has(thead th:nth-child(6))) thead th{font-size:10px!important;padding:6px 3px!important}
+ #app table.bp-smart-table.bp-compact-rank:not(:has(thead th:nth-child(6))) .bp-smart-sort{font-size:10px!important;white-space:normal!important;overflow-wrap:anywhere}
+ #app table.bp-smart-table.bp-compact-rank:not(:has(thead th:nth-child(6))) tbody td{font-size:12px!important;padding:8px 3px!important;line-height:1.25!important}
+}
