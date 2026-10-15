@@ -7,7 +7,7 @@ function enhance(t){if(t.dataset.bpSmart==='1'||!t.tHead||!t.tBodies.length)retu
   if(t.classList.contains('history-table--rank'))return;
   t.dataset.bpSmart='1';t.classList.add('bp-smart-table');
   const head=[...t.tHead.querySelectorAll('th')].map(h=>h.textContent.trim().toLowerCase());
-  const isRanking=head.length>=3&&head.length<=5&&head.some(h=>/rang|platz|^#/.test(h))&&head.some(h=>/spieler|name/.test(h));
+  const isRanking=head.length>=2 && (head.some(h=>/rang|platz|^#|spieler|champion|teilnehmer|name/.test(h)) || t.closest('.page--players,.page--profile,.page--stats,.page--history,.page--fame,.page--live,.bp-rank-detail')) && !t.closest('.lab-heat-scroll,.heat-scroll') && !t.classList.contains('heat-grid');
   if(isRanking)t.classList.add('bp-compact-rank');
 
   const parent=t.parentElement;
