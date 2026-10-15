@@ -34,3 +34,8 @@
 #app .history-table--rank th:nth-child(n+3),#app .history-table--rank td:nth-child(n+3){text-align:right}
 #app .history-table--rank tbody td{font-size:clamp(12px,3.4vw,15px)}
 @media(max-width:600px){#app .history-table--rank th,#app .history-table--rank td{padding:9px 3px;white-space:nowrap;overflow:hidden;overflow-wrap:normal}}
+
+/* Original result lists use the same compact ranking component, three columns. */
+#app .history-table--rank:has(thead th:nth-child(3):last-child) .history-col-rank{width:13%}
+#app .history-table--rank:has(thead th:nth-child(3):last-child) .history-col-player{width:62%}
+#app .history-table--rank:has(thead th:nth-child(3):last-child) .history-col-points{width:25%}
