@@ -16,7 +16,7 @@ Weitere Korrekturen: Initialisierung der Seite nach dem Laden der ergänzenden S
 
 `node test-ui.cjs` prüft sieben Routen, alle 13 Statistikwerkzeuge, 39 Werkzeug-/Filterkombinationen, Direktaufrufe ohne die gelieferten Hero-Bilder, Hash-Navigation, ungültige Einstellungen, blockierten Browserspeicher, sechs Diagrammtypen, alle 16 historischen Jahrgänge mit Rundenwechseln und die Schnellwahl im Analyse-Studio. `node test-hall.cjs` prüft 26 Rekorde. Originaldaten sind bytegenau gegenüber dem Ausgangsstand unverändert. Diese Tests simulieren den DOM in Node und beweisen keine echte iPhone-, Tablet- oder Desktop-Darstellung.
 
-Die private HTTPS-Vorschau ist unter https://baergsunne-poker-work06.p-sch547537.chatgpt.site verfügbar. Der Owner hat die Darstellung und Bedienung auf seinem Smartphone als bislang gut zurückgemeldet. Eine dokumentierte, vollständige iPhone-Safari-Abnahme mit Screenshots der Hauptseiten und Statistikfilter fehlt noch. Tablet- und Desktop-Abnahmen sind für die ausschliesslich auf Smartphones genutzte App nicht erforderlich.
+Die private HTTPS-Vorschau ist unter https://baergsunne-poker-work06.p-sch547537.chatgpt.site verfügbar. Der Owner hat die Darstellung und Bedienung auf seinem Smartphone selbst angesehen und für gut befunden. Screenshots sind für diese visuelle Owner-Abnahme nicht erforderlich. Die automatisierten Funktionstests ergänzen diese Rückmeldung; eine unabhängige, instrumentierte Safari-Prüfung ist hier nicht verfügbar. Tablet- und Desktop-Abnahmen sind für die ausschliesslich auf Smartphones genutzte App nicht erforderlich.
 
 ## GitHub und Übergabe
 
@@ -24,4 +24,4 @@ Repository: https://github.com/baergsunne/baergsunne.github.io. Ausgangsstand `m
 
 Das aktuelle ZIP enthält die Website ohne die fünf unerwünschten Bilder, Tests, Bericht und einen Patch gegenüber `main`. Das frühere Paket `BAERGSUNNE_POKER_WORK06_2.2.7_PRUEFPAKET.zip` ist durch dieses korrigierte Paket überholt und darf nicht zur Integration verwendet werden.
 
-Nächste Schritte: iPhone-Safari-Abnahme der privaten Vorschau mit Screenshots der Hauptseiten, Statistikwerkzeuge und Filter; bei gefundenen Fehlern den Entwurfs-PR aktualisieren. Vor einer Übernahme nach `main` und damit öffentlicher Veröffentlichung Owner-Freigabe einholen. Budget CHF 0.
+Nächster Schritt: Vor einer Übernahme nach `main` und damit öffentlicher Veröffentlichung ausdrückliche Owner-Freigabe einholen. Bei später gemeldeten Fehlern den Entwurfs-PR aktualisieren. Budget CHF 0.
