@@ -5,6 +5,7 @@ test('official rounds are separate from drafts, revision safe, archived only aft
  assert.equal((await c.send('/api/admin/state')).status,401);
  assert.equal((await c.send('/api/setup','POST',{secret:'wrong',username:'pascal',password:'a-very-strong-password'})).status,403);
  assert.equal((await c.send('/api/setup','POST',{secret:env.BOOTSTRAP_SECRET,username:'pascal',password:'a-very-strong-password'})).status,200);
+ assert.equal(db.prepare('SELECT iterations FROM owner WHERE id=1').get().iterations,100000);
  assert.equal((await c.send('/api/setup','POST',{secret:env.BOOTSTRAP_SECRET,username:'other',password:'another-long-password'})).status,409);
  assert.equal((await c.send('/api/login','POST',{username:'pascal',password:'wrong'})).status,401);
  const login=await c.send('/api/login','POST',{username:'pascal',password:'a-very-strong-password'});assert.equal(login.status,200);c.setToken(login.data.token);

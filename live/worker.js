@@ -60,7 +60,10 @@ export default {async fetch(req,env){
     if(current)return fail('Bereits eingerichtet.',409);
     if(!equal(await digest(String(b.secret||'')),await digest(bootstrap)))return fail('Einrichtung abgelehnt.',403);
     if(!/^[a-zA-Z0-9_-]{3,30}$/.test(b.username)||typeof b.password!=='string'||b.password.length<14||b.password.length>200)return fail('Benutzername oder Passwort ungültig (mindestens 14 Zeichen).',400);
-    const salt=random(),iterations=220000,hash=await derive(b.password,salt,iterations);
+    // Cloudflare's production WebCrypto caps a single PBKDF2 derivation at 100,000 rounds.
+    // The independently stored RATE_SALT also peppers the password hash.
+    if(!env.RATE_SALT)return fail('Sicherheitskonfiguration fehlt.',503);
+    const salt=random(),iterations=100000,hash=await derive(b.password+':'+env.RATE_SALT,salt,iterations);
     const result=await env.DB.prepare('INSERT OR IGNORE INTO owner(id,username,salt,password_hash,iterations) VALUES(1,?,?,?,?)').bind(b.username,salt,hash,iterations).run();
     return result.meta.changes===1?json({ok:true}):fail('Bereits eingerichtet.',409);
    }
@@ -69,7 +72,7 @@ export default {async fetch(req,env){
     const attempt=await env.DB.prepare('SELECT * FROM login_attempts WHERE client_hash=?').bind(client).first();
     if(attempt?.blocked_until>now)return fail('Zu viele Versuche. Bitte später erneut anmelden.',429);
     const owner=await env.DB.prepare('SELECT * FROM owner WHERE id=1').first();
-    const good=owner&&b.username===owner.username&&typeof b.password==='string'&&equal(await derive(b.password,owner.salt,owner.iterations),owner.password_hash);
+    const good=owner&&b.username===owner.username&&typeof b.password==='string'&&env.RATE_SALT&&equal(await derive(b.password+':'+env.RATE_SALT,owner.salt,owner.iterations),owner.password_hash);
     if(!good){const recent=attempt&&now-attempt.window_start<600000,failures=recent?attempt.failures+1:1,block=failures>=5?now+900000:0;
       await env.DB.prepare('INSERT INTO login_attempts(client_hash,failures,window_start,blocked_until) VALUES(?,?,?,?) ON CONFLICT(client_hash) DO UPDATE SET failures=excluded.failures,window_start=excluded.window_start,blocked_until=excluded.blocked_until').bind(client,failures,recent?attempt.window_start:now,block).run();return fail('Anmeldung fehlgeschlagen.',401);}
     await env.DB.prepare('DELETE FROM login_attempts WHERE client_hash=?').bind(client).run();
