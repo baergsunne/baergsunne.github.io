@@ -16,9 +16,19 @@ async function body(req){if(Number(req.headers.get('content-length'))>12000)thro
 const entry=async(env,year)=>env.DB.prepare('SELECT * FROM tournaments WHERE year=?').bind(year).first();
 async function auth(req,env){const token=req.headers.get('authorization')?.match(/^Bearer ([a-f0-9]{64})$/)?.[1];if(!token)return null;const hash=await digest(token),now=Date.now();const row=await env.DB.prepare('SELECT token_hash FROM sessions WHERE token_hash=? AND expires_at>?').bind(hash,now).first();return row?hash:null;}
 function sameOrigin(req){const origin=req.headers.get('origin'),here=new URL(req.url).origin;return origin===here;}
-async function update(env,row,document,action){const at=new Date().toISOString();const result=await env.DB.prepare('UPDATE tournaments SET document=?,revision=revision+1,updated_at=?,actor=?,action=? WHERE year=? AND revision=?').bind(JSON.stringify(document),at,'owner',action,row.year,row.revision).run();if(result.meta.changes!==1)return fail('Zwischenzeitlich geändert. Bitte neu laden.',409);return json({revision:row.revision+1,updated_at:at});}
+async function update(env,row,document,action,ctx){const at=new Date().toISOString();const result=await env.DB.prepare('UPDATE tournaments SET document=?,revision=revision+1,updated_at=?,actor=?,action=? WHERE year=? AND revision=?').bind(JSON.stringify(document),at,'owner',action,row.year,row.revision).run();if(result.meta.changes!==1)return fail('Zwischenzeitlich geändert. Bitte neu laden.',409);
+// This is intentionally non-blocking: login and committed writes NEVER wait for event delivery.
+// Only authenticated publish/withdraw/finalize routes call this after D1 commit.
+if (typeof ctx?.waitUntil === 'function' && env.LIVE_EVENTS && /^(publish|withdraw|finalize)(:|$)/.test(action)) {
+ const kind=action.split(':')[0],revision=row.revision+1;
+ ctx.waitUntil(Promise.resolve().then(() =>
+   env.LIVE_EVENTS.getByName('tournament-'+row.year)
+     .broadcast({year:row.year,revision,action:kind})
+ ).catch(error => console.error('Optional live notification failed',error)));
+}
+return json({revision:row.revision+1,updated_at:at});}
 
-export default {async fetch(req,env){
+export default {async fetch(req,env,ctx){
  try {
   const url=new URL(req.url),path=url.pathname,method=req.method;
   if(env.PREVIEW_REQUIRED==='true'&&!env.PREVIEW_GATE_SECRET)return fail('Private Vorschau noch nicht freigeschaltet.',503);
@@ -96,22 +106,22 @@ export default {async fetch(req,env){
     if(!row){if(b.revision!==null)return fail('Stand veraltet.',409);const t={...freshTournament(c.year),...c};
       const at=new Date().toISOString(),result=await env.DB.prepare('INSERT OR IGNORE INTO tournaments(year,revision,document,updated_at,actor,action) VALUES(?,0,?,?,?,?)').bind(c.year,JSON.stringify(t),at,'owner','create').run();return result.meta.changes===1?json({revision:0}):fail('Stand veraltet.',409);}
     const t=JSON.parse(row.document);if(t.status!=='planned'||Object.keys(t.published).length||Object.keys(t.rounds).length)return fail('Konfiguration nach Rundenerfassung gesperrt.',409);
-    if(b.revision!==row.revision)return fail('Stand veraltet.',409);return update(env,row,{...t,...c},'config');
+    if(b.revision!==row.revision)return fail('Stand veraltet.',409);return update(env,row,{...t,...c},'config',ctx);
    }
    if(path==='/api/admin/round'&&method==='PUT'){
     const b=await body(req),year=Number(b.year),row=await entry(env,year);if(!row)return fail('Turnier zuerst einrichten.',404);
     if(b.revision!==row.revision)return fail('Stand veraltet.',409);const t=JSON.parse(row.document),number=Number(b.round);
     if(t.status==='final')return fail('Turnier abgeschlossen.',409);
     if(!Number.isInteger(number)||number<1||number>t.roundCount)return fail('Runde ungültig.',400);
-    if(b.action==='draft'){validatePlaces(b.places,t);t.rounds[number]=b.places;return update(env,row,t,'draft:'+number);}
+    if(b.action==='draft'){validatePlaces(b.places,t);t.rounds[number]=b.places;return update(env,row,t,'draft:'+number,ctx);}
     if(b.action==='publish'){
       validatePlaces(b.places,t);if(!Object.keys(t.published).length&&number!==1||number>1&&!t.published[number-1])return fail('Vorherige Runde zuerst veröffentlichen.',409);
-      t.rounds[number]=b.places;t.published[number]=b.places;t.status='live';return update(env,row,t,'publish:'+number);
+      t.rounds[number]=b.places;t.published[number]=b.places;t.status='live';return update(env,row,t,'publish:'+number,ctx);
     }
     if(b.action==='withdraw'){
       if(!t.published[number])return fail('Runde nicht veröffentlicht.',409);
       if(Object.keys(t.published).some(n=>Number(n)>number))return fail('Spätere Runden zuerst zurückziehen.',409);
-      delete t.published[number];t.status=Object.keys(t.published).length?'live':'planned';return update(env,row,t,'withdraw:'+number);
+      delete t.published[number];t.status=Object.keys(t.published).length?'live':'planned';return update(env,row,t,'withdraw:'+number,ctx);
     }
     return fail('Aktion ungültig.',400);
    }
@@ -121,7 +131,7 @@ export default {async fetch(req,env){
     if(t.status==='final')return fail('Bereits abgeschlossen.',409);
     const edition=finalizedEdition(t),signature=edition.official_standings.map(x=>`${x.place}. ${x.player_id} ${x.points}`).join(' | ');
     if(b.confirmation!==signature)return fail('Schlussrangliste neu prüfen und bestätigen.',409);
-    t.status='final';t.final={confirmed_at:new Date().toISOString(),signature};return update(env,row,t,'finalize');
+    t.status='final';t.final={confirmed_at:new Date().toISOString(),signature};return update(env,row,t,'finalize',ctx);
    }
    return fail('Route nicht vorhanden.',404);
   }
