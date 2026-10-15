@@ -13,3 +13,32 @@
 #app .history-table th:nth-child(5),#app .history-table td:nth-child(5){width:19%}
 #app .history-table td:nth-child(2){overflow-wrap:break-word}
 }
+
+/* Premium chronicle: unified mobile stages, compact yearbook and readable navigation */
+.history-chronicle{background:linear-gradient(150deg,#102d23,#0b211b);border-color:#6f674b;box-shadow:0 12px 36px rgba(0,0,0,.18)}
+.history-years,.history-tabs{gap:8px;scroll-snap-type:x proximity;scroll-padding:12px;padding:9px 0 12px;-webkit-overflow-scrolling:touch}
+.history-years button,.history-tabs button{flex:0 0 auto;scroll-snap-align:start;border-radius:12px;min-height:47px;padding:11px 16px;font-size:15px;transition:background-color .15s,border-color .15s}
+.history-years button.active,.history-tabs button.active{box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 5px 16px rgba(0,0,0,.15)}
+.history-feature{border-radius:18px;box-shadow:0 9px 25px rgba(0,0,0,.12)}
+.history-feature--yearbook{padding:10px;background:linear-gradient(145deg,#14382a,#10261f)}
+.history-yearbook-card{position:relative;overflow:hidden;text-align:center;background:radial-gradient(circle at 50% 0%,#245341,#163629 47%,#10271f 100%);border:1px solid rgba(221,187,123,.38);border-radius:18px;padding:17px 12px 13px;box-shadow:inset 0 1px 0 rgba(255,255,255,.06)}
+.history-yearbook-head{display:flex;flex-direction:column;align-items:center;gap:9px;margin-bottom:13px}
+.history-yearbook-head h3{font-size:clamp(27px,7vw,40px);margin:0;font-weight:850;line-height:1.1;letter-spacing:-.035em}
+.history-yearbook-cup{display:grid;place-items:center;width:58px;height:58px;border-radius:50%;background:linear-gradient(160deg,#e5ca91,#b99354);font-size:28px;box-shadow:0 6px 22px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.35)}
+.history-podium{display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:0;gap:7px;border:1px solid rgba(227,192,131,.25);border-radius:14px;padding:13px 8px;background:rgba(255,255,255,.04)}
+.history-podium small{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:#dfbc82;font-weight:750}
+.history-podium strong{color:#fff4df;line-height:1.12;overflow-wrap:anywhere}
+.history-podium--champion{margin-bottom:10px;background:linear-gradient(180deg,rgba(221,186,122,.16),rgba(255,255,255,.02));border-color:rgba(221,186,122,.45);padding:18px 12px}
+.history-podium--champion strong{font-size:clamp(33px,9vw,52px);letter-spacing:-.035em}
+.history-podium-pairs{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:9px;margin-bottom:11px}
+.history-podium-pairs strong{font-size:clamp(20px,5.5vw,30px)}
+.history-podium--second{background:linear-gradient(160deg,rgba(211,220,219,.13),rgba(255,255,255,.02));border-color:rgba(211,220,219,.29)}
+.history-podium--third{background:linear-gradient(160deg,rgba(190,122,77,.15),rgba(255,255,255,.02));border-color:rgba(202,142,86,.36)}
+.history-shortcuts--yearbook{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);overflow:visible;gap:9px;padding:0;scrollbar-width:none}
+.history-shortcuts--yearbook button{min-width:0;min-height:66px;white-space:normal;text-align:center;border-radius:13px;padding:10px 8px;line-height:1.2;font-size:clamp(13px,3.8vw,18px);font-weight:750;background:linear-gradient(180deg,#2b5040,#1b392d)}
+.history-replay-controls{background:#16382c;border:1px solid #5d7055;border-radius:13px;padding:10px;gap:8px}
+.history-replay-controls button{flex-shrink:0;border-radius:10px}.history-round-pills{scroll-snap-type:x proximity;padding:12px 0}.history-round-pills button{scroll-snap-align:start}
+.history-panel-header{margin-bottom:13px}.history-panel-header h3{margin:6px 0;font-size:clamp(24px,6vw,34px)}.history-scene-list{gap:10px}
+.history-scene-list button{border-radius:13px;padding:14px 12px;box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}
+.history-scene-list button strong{line-height:1.25}.history-scene-list button b{align-self:end}
+@media(max-width:480px){.history-chronicle{padding:11px}.history-feature{padding:11px}.history-feature--yearbook{padding:8px}.history-yearbook-card{padding:15px 10px 11px}.history-years button,.history-tabs button{padding:10px 14px}.history-shortcuts--yearbook button{font-size:14px;min-height:62px}}
