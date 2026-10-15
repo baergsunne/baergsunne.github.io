@@ -1,0 +1,35 @@
+/* Bärgsunne Poker: unified flat ranking and data-table visual language. Loaded after legacy styles. */
+#app .bp-unified-toolbar{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin:10px 0 12px;color:#d9bb84;font-size:12px}
+#app .bp-unified-toolbar>span{padding-top:10px;white-space:nowrap}
+#app .bp-unified-sort{display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end}
+#app .bp-unified-sort button{min-height:38px;padding:8px 12px;border-radius:12px;border:1px solid #d7be8859;background:#ffffff0a;color:#f1e5cf;font-size:12px;font-weight:650}
+#app .bp-unified-sort button.is-active{background:#c8a15e;border-color:#c8a15e;color:#143126}
+#app .bp-unified-shell,#app .history-table-shell,#app .bp-smart-scroll{width:100%;max-width:100%;min-width:0;overflow-x:auto;-webkit-overflow-scrolling:touch;overscroll-behavior-inline:contain}
+#app table.bp-unified-table,#app table.history-table,#app table.bp-smart-table{width:100%;min-width:0;border-collapse:separate!important;border-spacing:0 7px!important;background:transparent!important;box-shadow:none!important;font-variant-numeric:tabular-nums}
+#app table.bp-unified-table thead th,#app table.history-table thead th,#app table.bp-smart-table thead th{position:static!important;border:0!important;box-shadow:none!important;background:transparent!important;color:#d9bb84!important;font-size:11px!important;font-weight:750!important;padding:0 10px 7px!important;white-space:nowrap!important;text-align:left!important;line-height:1.25!important}
+#app table.bp-unified-table tbody tr,#app table.history-table tbody tr,#app table.bp-smart-table tbody tr{background:linear-gradient(90deg,#315540,#234735 55%,#1c392d)!important;box-shadow:none!important;filter:none!important}
+#app table.bp-unified-table tbody td,#app table.history-table tbody td,#app table.bp-smart-table tbody td,#app table.bp-smart-table tbody th{background:transparent!important;border:0!important;box-shadow:none!important;color:#f5eddc!important;font-size:14px!important;line-height:1.25!important;padding:12px 10px!important;vertical-align:middle!important;white-space:nowrap!important}
+#app table.bp-unified-table tbody td:first-child,#app table.history-table tbody td:first-child,#app table.bp-smart-table tbody tr>:first-child{border-radius:12px 0 0 12px!important}
+#app table.bp-unified-table tbody td:last-child,#app table.history-table tbody td:last-child,#app table.bp-smart-table tbody tr>:last-child{border-radius:0 12px 12px 0!important}
+#app table.bp-unified-table .playerlink,#app table.bp-smart-table .playerlink{font-size:inherit;color:#f5eddc;max-width:100%;text-align:left;white-space:normal;overflow-wrap:anywhere}
+#app table.bp-unified-table--rank{table-layout:auto!important}
+#app table.bp-unified-table--rank thead th:nth-child(n+3),#app table.bp-unified-table--rank tbody td:nth-child(n+3){text-align:right!important}
+#app table.bp-unified-table--rank thead th:nth-child(2),#app table.bp-unified-table--rank tbody td:nth-child(2){min-width:105px}
+#app table.bp-unified-table--wide{min-width:max-content;table-layout:auto!important}
+#app table.bp-unified-table--wide tbody td{min-width:65px}
+#app table.bp-unified-table .bp-smart-sort{background:none;border:0;color:inherit;padding:0;font-weight:750}
+#app table.bp-smart-table tbody tr:first-child{background:linear-gradient(90deg,#315540,#234735 55%,#1c392d)!important}
+#app .history-chronicle .history-table-shell{overflow-x:auto!important}
+#app .discovery-live-row:not(.heading){background:linear-gradient(90deg,#315540,#234735 55%,#1c392d)!important;border-radius:12px}
+#app .discovery-live-row.heading{background:transparent!important;color:#d9bb84}
+@media(max-width:600px){
+ #app .bp-unified-toolbar{align-items:flex-start;flex-wrap:wrap}
+ #app .bp-unified-sort{justify-content:flex-start}
+ #app table.bp-unified-table thead th,#app table.history-table thead th,#app table.bp-smart-table thead th{font-size:10px!important;padding:0 7px 6px!important}
+ #app table.bp-unified-table tbody td,#app table.history-table tbody td,#app table.bp-smart-table tbody td{font-size:12px!important;padding:11px 7px!important}
+ #app table.bp-unified-table--rank{min-width:0!important;width:100%!important}
+ #app .history-table{table-layout:fixed!important}
+ #app table.history-table th,#app table.history-table td{white-space:normal!important;overflow-wrap:normal!important;word-break:normal!important}
+ #app table.history-table td:nth-child(2){overflow-wrap:anywhere!important}
+}
+@media(prefers-reduced-motion:reduce){#app table.bp-unified-table *,#app table.bp-smart-table *{transition:none!important}}
