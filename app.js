@@ -488,7 +488,24 @@ function premiumMasthead(page){
  const v=labels[page];if(!v)return '';
  return `<section class="premium-masthead premium-masthead--${page}"><div class="premium-masthead-copy"><span>${v[0]} · BÄRGSUNNE POKER</span><h1>${v[1]}</h1><p>${v[2]}</p></div><img src="assets/trophy-premium.webp" alt="" loading="lazy"/></section>`;
 }
-function draw(){const div=document.querySelector('#app');let content=({home,history:historyPage,stats:statsPage,players:playersPage,live:livePage,admin:adminPage,profile:profilePage,fame:famePage})[state.page]();div.innerHTML=header()+navigation()+`<main>${state.page!=='home'&&state.page!=='live'&&state.page!=='stats'?filter():''}<div class="page page--${state.page}" id="page">${premiumMasthead(state.page)}${content}</div></main><footer class="premium-footer"><b>BÄRGSUNNE POKER</b><span>Lenk · Seit 2007</span></footer>`+(modal?pickerModal():'');let rail=document.getElementById('yearrail');if(rail){let item=rail.querySelector('.current');if(item)item.scrollIntoView({block:'nearest',inline:'center'});}document.title='Bärgsunne Poker — '+state.page.toUpperCase()}
+function draw(){
+ const div=document.querySelector('#app');
+ const pages={home,history:historyPage,stats:statsPage,players:playersPage,live:livePage,admin:adminPage,profile:profilePage,fame:famePage};
+ if(!pages[state.page])state.page='home';
+ let content;
+ try{content=pages[state.page]();}
+ catch(err){
+  console.error('Bärgsunne Poker: Seitenaufbau fehlgeschlagen',state.page,err);
+  if(state.page==='stats'){
+   state.tab='overview';
+   try{content=statsPage();}
+   catch(retryError){console.error('Statistik-Wiederherstellung fehlgeschlagen',retryError);content='<section class="card"><h2>Statistik derzeit nicht verfügbar</h2><p>Bitte versuche die Seite neu zu laden. Deine historischen Ergebnisse bleiben erhalten.</p><button class="btn" data-action="go" data-value="home">Zur Startseite</button></section>';}
+  }else{content='<section class="card"><h2>Ansicht nicht verfügbar</h2><button class="btn" data-action="go" data-value="home">Zur Startseite</button></section>';}
+ }
+ div.innerHTML=header()+navigation()+`<main>${state.page!=='home'&&state.page!=='live'&&state.page!=='stats'?filter():''}<div class="page page--${state.page}" id="page">${premiumMasthead(state.page)}${content}</div></main><footer class="premium-footer"><b>BÄRGSUNNE POKER</b><span>Lenk · Seit 2007</span></footer>`+(modal?pickerModal():'');
+ const rail=document.getElementById('yearrail');if(rail){const item=rail.querySelector('.current');if(item)item.scrollIntoView({block:'nearest',inline:'center'});}
+ document.title='Bärgsunne Poker — '+state.page.toUpperCase();
+}
 function redrawStudioChoice(){
  const y=window.scrollY,x=window.scrollX;
  const open=[...document.querySelectorAll('.studio-group')].map(group=>[...group.querySelectorAll('details.studio-details')].map(d=>d.open));
