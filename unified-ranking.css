@@ -1,0 +1,26 @@
+/* One visual language for result tables, history, statistics and Championship Live. */
+#app .table-scroll,#app .history-table-shell,#app .cl-table-wrap{max-width:100%;min-width:0;overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:12px}
+#app table.datatable,#app table.history-table,#app table.cl-table{border-collapse:separate;border-spacing:0 5px;background:transparent;color:#f5eddf;font-variant-numeric:tabular-nums}
+#app table.datatable thead th,#app table.history-table thead th,#app table.cl-table thead th{border:0;background:#102b22;color:#dfbd82;text-align:left;white-space:nowrap;padding:9px 10px;font-size:11px}
+#app table.datatable tbody tr,#app table.history-table tbody tr,#app table.cl-table tbody tr{background:linear-gradient(105deg,#294c39,#1e4132 49%,#123126);box-shadow:inset 3px 0 #3b6550}
+#app table.datatable tbody tr:first-child,#app table.history-table tbody tr:first-child,#app table.cl-table tbody tr:first-child{background:linear-gradient(105deg,#45543b,#294c39 46%,#143328)}
+#app table.datatable tbody td,#app table.history-table tbody td,#app table.cl-table tbody td{background:transparent;border-top:1px solid #456a51;border-bottom:1px solid #456a51;border-left:0;border-right:0;padding:10px 11px;white-space:nowrap;vertical-align:middle;font-size:13px}
+#app table.datatable tbody tr>:first-child,#app table.history-table tbody tr>:first-child,#app table.cl-table tbody tr>:first-child{border-left:1px solid #456a51;border-radius:8px 0 0 8px}
+#app table.datatable tbody tr>:last-child,#app table.history-table tbody tr>:last-child,#app table.cl-table tbody tr>:last-child{border-right:1px solid #456a51;border-radius:0 8px 8px 0}
+#app .discovery-live-row{grid-template-columns:2.5rem minmax(0,1fr) 4.5rem;white-space:normal;gap:6px;min-width:0}
+#app .discovery-live-row strong{min-width:0;overflow-wrap:anywhere}
+#app .discovery-live-row strong small,#app .discovery-live-row>span:last-child small{display:block;color:#b9cbbf;font-size:11px;font-weight:400}
+#app .discovery-livepage>.card .btn{display:inline-flex;max-width:100%;white-space:normal;overflow-wrap:anywhere;line-height:1.35}
+@media(max-width:600px){
+ #app table.datatable--ranking.bp-smart-table,#app table.cl-table.bp-smart-table{width:100%!important;min-width:0!important;table-layout:fixed!important}
+ #app table.datatable--ranking th,#app table.datatable--ranking td,#app table.cl-table th,#app table.cl-table td{white-space:normal!important;overflow-wrap:anywhere!important;padding:9px 5px!important;line-height:1.2}
+ #app table.datatable--ranking th:first-child,#app table.datatable--ranking td:first-child{width:16%}
+ #app table.datatable--ranking th:nth-child(2),#app table.datatable--ranking td:nth-child(2){width:48%}
+ #app table.datatable--ranking th:last-child,#app table.datatable--ranking td:last-child{width:36%}
+ #app table.cl-table th:first-child,#app table.cl-table td:first-child{width:16%}
+ #app table.cl-table th:nth-child(2),#app table.cl-table td:nth-child(2){width:42%}
+ #app table.cl-table th:nth-child(3),#app table.cl-table td:nth-child(3){width:24%}
+ #app table.cl-table th:last-child,#app table.cl-table td:last-child{width:18%}
+ #app table.history-table.bp-smart-table{width:100%!important;min-width:0!important;table-layout:fixed!important}
+ #app table.history-table th,#app table.history-table td{white-space:normal!important;overflow-wrap:anywhere!important;padding:9px 4px!important}
+}

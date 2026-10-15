@@ -1,0 +1,1 @@
+{"private":true,"type":"module","scripts":{"test":"node --test live/*.test.js && node test-ui.cjs && node test-hall.cjs && node test-championship.cjs && node test-live-simulator.cjs","build:live":"node live/build.mjs","build:preview":"npm run build:live && node live/build-preview-embedded.mjs"}}

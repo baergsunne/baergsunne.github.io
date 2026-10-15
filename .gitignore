@@ -1,0 +1,6 @@
+dist-live/
+dist-live-preview-worker.mjs
+.wrangler/
+node_modules/
+wrangler.live.toml
+WORK06_TEST_RESULT.json
