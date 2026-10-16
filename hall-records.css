@@ -5,3 +5,8 @@
 .hof-extended>.eyebrow{color:#85643a}
 .hof-extended>h2{color:#122d24}
 .hof-extended>p,.hof-extended>.hof-source{color:#354f43}
+
+/* Hall of Fame cream panel: enforce readable text even against global theme rules. */
+section.hof-extended>.eyebrow{color:#85643a!important;-webkit-text-fill-color:#85643a!important}
+section.hof-extended>h2{color:#132f26!important;-webkit-text-fill-color:#132f26!important}
+section.hof-extended>p,section.hof-extended>p.hof-source{color:#345044!important;-webkit-text-fill-color:#345044!important}
