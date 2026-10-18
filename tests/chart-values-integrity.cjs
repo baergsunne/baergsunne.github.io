@@ -21,7 +21,7 @@ const check=await page.evaluate(()=>{
  const career=document.querySelector('.chart-svg');
  for(const p of db.players.map(x=>x.name)){const actual=[...career.querySelectorAll('circle title')].map(x=>x.textContent).filter(x=>x.startsWith(p+' · '));const expected=db.editions.filter(e=>e.players.includes(p)).length;if(actual.length!==expected)failures.push(p+': career chart marker count '+actual.length+' != '+expected)}
  state.tab='lab';draw();const lab=document.querySelector('#page');
- const selected=lab.querySelector('#metric')?.value;if(selected!=='rounds')failures.push('lab metric unexpectedly '+selected+' '+JSON.stringify({tab:state.tab,labMetric:state.labMetric,explanation:lab.innerText.slice(-850)}));
+ const selected=lab.querySelector('#metric')?.value;if(selected!=='rounds')failures.push('lab metric unexpectedly '+selected+' '+JSON.stringify({tab:state.tab,labMetric:state.labMetric,explanation:lab.querySelector('#selected-stat-tool')?.innerText.slice(0,1200),hasError:lab.innerText.includes('Dieses Werkzeug konnte nicht geladen werden')}));
  state.tab='career';draw();if(document.querySelector('#metric')?.value!=='rank')failures.push('career metric changed after diagram tab');
  return{failures,playerCount:db.players.length,editions:db.editions.length,profileSeries:db.players.length,metricSeparated:true};
 });assert.deepEqual(check.failures,[],'Chart/table discrepancies');assert.deepEqual(errors,[],'Browser exceptions');console.log('CHART_VALUES_INTEGRITY_SUCCESS',JSON.stringify(check));}finally{await browser.close()}})().catch(e=>{console.error('CHART_VALUES_INTEGRITY_FAILURE',e);process.exit(1)});
