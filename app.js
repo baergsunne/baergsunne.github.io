@@ -3,15 +3,25 @@
 const seed=window.POKER_SEED;
 const apiBase=(window.BAERGSUNNE_API_URL||'').replace(/\/$/,'');
 let remoteRounds=null;
+function validateArchiveEdition(e){
+ if(!e||!Number.isInteger(e.year)||!Array.isArray(e.players)||!Array.isArray(e.rounds)||!Array.isArray(e.official_standings)||e.rounds.length!==e.round_count) return false;
+ const totals=new Map(e.players.map(p=>[p,0]));
+ if(totals.size!==e.players.length||e.official_standings.length!==e.players.length)return false;
+ for(const round of e.rounds){if(!Array.isArray(round.results)||round.results.length!==e.players.length)return false;const unique=new Set();for(const x of round.results){if(!totals.has(x.player_id)||unique.has(x.player_id)||!Number.isFinite(x.points)||!Number.isInteger(x.place))return false;unique.add(x.player_id);totals.set(x.player_id,totals.get(x.player_id)+x.points)}}
+ if(!e.official_standings.every(x=>totals.has(x.player_id)&&totals.get(x.player_id)===x.points&&Number.isInteger(x.place)))return false;
+ if(e.year===2026){const expected={Frauchi:[1,50],König:[2,39],Mike:[3,29],Schnarre:[4,28],Bröne:[5,27],Keel:[6,26],Niko:[7,23],Mänu:[8,20],Chopfi:[9,17],Fösu:[10,11]};return e.official_standings.length===10&&e.official_standings.every(x=>expected[x.player_id]?.[0]===x.place&&expected[x.player_id]?.[1]===x.points)}
+ return true;
+}
 async function refreshLive(){if(!apiBase)return;try{const r=await fetch(apiBase+'/api/live',{cache:'no-store'});if(!r.ok)throw Error('Live-Service nicht verfügbar');const d=await r.json();if(!d||!Array.isArray(d.standings))throw Error('Ungültige API-Antwort');const previous=window.BAERGSUNNE_PUBLIC_LIVE;window.BAERGSUNNE_PUBLIC_LIVE=d;
  const editionsResponse=await fetch(apiBase+'/api/editions',{cache:'no-store'});
  if(!editionsResponse.ok)throw Error('Archiv-Service nicht verfügbar');
  const archived=(await editionsResponse.json()).editions;
  let archiveChanged=false;
- for(const edition of archived){if(db.editions.some(x=>x.year===edition.year))continue;db.editions.push(edition);seed.editions.push(edition);archiveChanged=true;years.push(edition.year);for(const player of edition.players)if(!names.includes(player)){names.push(player);seed.players.push({id:player,name:player,initials:player.slice(0,1)})}db.players=clone(seed.players);}
+ if(!Array.isArray(archived))throw Error('Ungültiges Archivformat');
+ for(const edition of archived){if(db.editions.some(x=>x.year===edition.year))continue;if(!validateArchiveEdition(edition))throw Error('Archivprüfung fehlgeschlagen für Jahr '+edition.year);db.editions.push(edition);seed.editions.push(edition);archiveChanged=true;years.push(edition.year);for(const player of edition.players)if(!names.includes(player)){names.push(player);seed.players.push({id:player,name:player,initials:player.slice(0,1)})}db.players=clone(seed.players);}
  if(archiveChanged){state.selectedYears=state.selectedYears.filter(y=>db.editions.some(e=>e.year===y));db.editions.sort((a,b)=>a.year-b.year);seed.editions.sort((a,b)=>a.year-b.year);years.sort((a,b)=>a-b);if(db.editions.some(e=>e.year===2026))state.historyYear=2026;}
  window.BAERGSUNNE_LIVE_UNAVAILABLE=false;
- if(archiveChanged||state.page==='live'||state.page==='home'||d.status==='final'||(['players','profile'].includes(state.page)&&JSON.stringify([previous?.players,previous?.rounds,previous?.standings,previous?.status])!==JSON.stringify([d.players,d.rounds,d.standings,d.status])))draw();
+ if(archiveChanged||state.page==='live'||state.page==='home'||(['players','profile'].includes(state.page)&&JSON.stringify([previous?.players,previous?.rounds,previous?.standings,previous?.status])!==JSON.stringify([d.players,d.rounds,d.standings,d.status])))draw();
  }catch(err){if(!window.BAERGSUNNE_LIVE_UNAVAILABLE){window.BAERGSUNNE_LIVE_UNAVAILABLE=true;if(state.page==='live'||state.page==='home')draw();}}}
 const years=seed.editions.map(e=>e.year);
 const names=seed.players.map(p=>p.name);
