@@ -1,0 +1,23 @@
+name: Statistics regression audit
+on:
+  push:
+    branches:
+      - audit/statistics-2026-20261018
+  pull_request:
+    paths:
+      - 'app.js'
+      - 'data.js'
+      - 'analyse-studio.js'
+      - 'tests/**'
+      - '.github/workflows/statistics-audit.yml'
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node tests/statistics-regression.cjs

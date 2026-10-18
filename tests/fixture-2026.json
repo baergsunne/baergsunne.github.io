@@ -1,0 +1,476 @@
+{
+  "editions": [
+    {
+      "year": 2026,
+      "status": "HISTORICAL_REAL",
+      "source": "2026 test fixture from archived published results",
+      "players": [
+        "Frauchi",
+        "König",
+        "Mike",
+        "Schnarre",
+        "Bröne",
+        "Keel",
+        "Niko",
+        "Mänu",
+        "Chopfi",
+        "Fösu"
+      ],
+      "round_count": 7,
+      "scoring": {
+        "name": "Originalpunktzahl",
+        "points_by_place": [
+          10,
+          8,
+          6,
+          5,
+          4,
+          3,
+          2,
+          1,
+          0,
+          0
+        ]
+      },
+      "rounds": [
+        {
+          "number": 1,
+          "results": [
+            {
+              "player_id": "König",
+              "place": 1,
+              "points": 10
+            },
+            {
+              "player_id": "Schnarre",
+              "place": 2,
+              "points": 8
+            },
+            {
+              "player_id": "Mike",
+              "place": 3,
+              "points": 6
+            },
+            {
+              "player_id": "Frauchi",
+              "place": 4,
+              "points": 5
+            },
+            {
+              "player_id": "Fösu",
+              "place": 5,
+              "points": 4
+            },
+            {
+              "player_id": "Bröne",
+              "place": 6,
+              "points": 3
+            },
+            {
+              "player_id": "Mänu",
+              "place": 7,
+              "points": 2
+            },
+            {
+              "player_id": "Niko",
+              "place": 8,
+              "points": 1
+            },
+            {
+              "player_id": "Chopfi",
+              "place": 9,
+              "points": 0
+            },
+            {
+              "player_id": "Keel",
+              "place": 10,
+              "points": 0
+            }
+          ]
+        },
+        {
+          "number": 2,
+          "results": [
+            {
+              "player_id": "Frauchi",
+              "place": 1,
+              "points": 10
+            },
+            {
+              "player_id": "Mike",
+              "place": 2,
+              "points": 8
+            },
+            {
+              "player_id": "Bröne",
+              "place": 3,
+              "points": 6
+            },
+            {
+              "player_id": "Schnarre",
+              "place": 4,
+              "points": 5
+            },
+            {
+              "player_id": "Niko",
+              "place": 5,
+              "points": 4
+            },
+            {
+              "player_id": "König",
+              "place": 6,
+              "points": 3
+            },
+            {
+              "player_id": "Fösu",
+              "place": 7,
+              "points": 2
+            },
+            {
+              "player_id": "Keel",
+              "place": 8,
+              "points": 1
+            },
+            {
+              "player_id": "Chopfi",
+              "place": 9,
+              "points": 0
+            },
+            {
+              "player_id": "Mänu",
+              "place": 10,
+              "points": 0
+            }
+          ]
+        },
+        {
+          "number": 3,
+          "results": [
+            {
+              "player_id": "Keel",
+              "place": 1,
+              "points": 10
+            },
+            {
+              "player_id": "Niko",
+              "place": 2,
+              "points": 8
+            },
+            {
+              "player_id": "Frauchi",
+              "place": 3,
+              "points": 6
+            },
+            {
+              "player_id": "König",
+              "place": 4,
+              "points": 5
+            },
+            {
+              "player_id": "Chopfi",
+              "place": 5,
+              "points": 4
+            },
+            {
+              "player_id": "Mänu",
+              "place": 6,
+              "points": 3
+            },
+            {
+              "player_id": "Bröne",
+              "place": 7,
+              "points": 2
+            },
+            {
+              "player_id": "Schnarre",
+              "place": 8,
+              "points": 1
+            },
+            {
+              "player_id": "Mike",
+              "place": 9,
+              "points": 0
+            },
+            {
+              "player_id": "Fösu",
+              "place": 10,
+              "points": 0
+            }
+          ]
+        },
+        {
+          "number": 4,
+          "results": [
+            {
+              "player_id": "Frauchi",
+              "place": 1,
+              "points": 10
+            },
+            {
+              "player_id": "König",
+              "place": 2,
+              "points": 8
+            },
+            {
+              "player_id": "Bröne",
+              "place": 3,
+              "points": 6
+            },
+            {
+              "player_id": "Niko",
+              "place": 4,
+              "points": 5
+            },
+            {
+              "player_id": "Keel",
+              "place": 5,
+              "points": 4
+            },
+            {
+              "player_id": "Chopfi",
+              "place": 6,
+              "points": 3
+            },
+            {
+              "player_id": "Schnarre",
+              "place": 7,
+              "points": 2
+            },
+            {
+              "player_id": "Mike",
+              "place": 8,
+              "points": 1
+            },
+            {
+              "player_id": "Mänu",
+              "place": 9,
+              "points": 0
+            },
+            {
+              "player_id": "Fösu",
+              "place": 10,
+              "points": 0
+            }
+          ]
+        },
+        {
+          "number": 5,
+          "results": [
+            {
+              "player_id": "Frauchi",
+              "place": 1,
+              "points": 10
+            },
+            {
+              "player_id": "Bröne",
+              "place": 2,
+              "points": 8
+            },
+            {
+              "player_id": "Keel",
+              "place": 3,
+              "points": 6
+            },
+            {
+              "player_id": "Mänu",
+              "place": 4,
+              "points": 5
+            },
+            {
+              "player_id": "Chopfi",
+              "place": 5,
+              "points": 4
+            },
+            {
+              "player_id": "Mike",
+              "place": 6,
+              "points": 3
+            },
+            {
+              "player_id": "König",
+              "place": 7,
+              "points": 2
+            },
+            {
+              "player_id": "Schnarre",
+              "place": 8,
+              "points": 1
+            },
+            {
+              "player_id": "Niko",
+              "place": 9,
+              "points": 0
+            },
+            {
+              "player_id": "Fösu",
+              "place": 10,
+              "points": 0
+            }
+          ]
+        },
+        {
+          "number": 6,
+          "results": [
+            {
+              "player_id": "Mänu",
+              "place": 1,
+              "points": 10
+            },
+            {
+              "player_id": "Chopfi",
+              "place": 3,
+              "points": 6
+            },
+            {
+              "player_id": "Frauchi",
+              "place": 3,
+              "points": 6
+            },
+            {
+              "player_id": "Mike",
+              "place": 4,
+              "points": 5
+            },
+            {
+              "player_id": "Fösu",
+              "place": 5,
+              "points": 4
+            },
+            {
+              "player_id": "König",
+              "place": 6,
+              "points": 3
+            },
+            {
+              "player_id": "Keel",
+              "place": 7,
+              "points": 2
+            },
+            {
+              "player_id": "Schnarre",
+              "place": 8,
+              "points": 1
+            },
+            {
+              "player_id": "Niko",
+              "place": 9,
+              "points": 0
+            },
+            {
+              "player_id": "Bröne",
+              "place": 10,
+              "points": 0
+            }
+          ]
+        },
+        {
+          "number": 7,
+          "results": [
+            {
+              "player_id": "Schnarre",
+              "place": 1,
+              "points": 10
+            },
+            {
+              "player_id": "König",
+              "place": 2,
+              "points": 8
+            },
+            {
+              "player_id": "Mike",
+              "place": 3,
+              "points": 6
+            },
+            {
+              "player_id": "Niko",
+              "place": 4,
+              "points": 5
+            },
+            {
+              "player_id": "Keel",
+              "place": 6,
+              "points": 3
+            },
+            {
+              "player_id": "Frauchi",
+              "place": 6,
+              "points": 3
+            },
+            {
+              "player_id": "Bröne",
+              "place": 7,
+              "points": 2
+            },
+            {
+              "player_id": "Fösu",
+              "place": 8,
+              "points": 1
+            },
+            {
+              "player_id": "Chopfi",
+              "place": 9,
+              "points": 0
+            },
+            {
+              "player_id": "Mänu",
+              "place": 10,
+              "points": 0
+            }
+          ]
+        }
+      ],
+      "official_standings": [
+        {
+          "player_id": "Frauchi",
+          "place": 1,
+          "points": 50
+        },
+        {
+          "player_id": "König",
+          "place": 2,
+          "points": 39
+        },
+        {
+          "player_id": "Mike",
+          "place": 3,
+          "points": 29
+        },
+        {
+          "player_id": "Schnarre",
+          "place": 4,
+          "points": 28
+        },
+        {
+          "player_id": "Bröne",
+          "place": 5,
+          "points": 27
+        },
+        {
+          "player_id": "Keel",
+          "place": 6,
+          "points": 26
+        },
+        {
+          "player_id": "Niko",
+          "place": 7,
+          "points": 23
+        },
+        {
+          "player_id": "Mänu",
+          "place": 8,
+          "points": 20
+        },
+        {
+          "player_id": "Chopfi",
+          "place": 9,
+          "points": 17
+        },
+        {
+          "player_id": "Fösu",
+          "place": 10,
+          "points": 11
+        }
+      ]
+    }
+  ]
+}
