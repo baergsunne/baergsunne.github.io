@@ -28,3 +28,4 @@ jobs:
       - run: node tests/real-cloudflare-audit.cjs
       - run: node tests/all-pages-audit.cjs
       - run: node tests/chart-values-integrity.cjs
+      - run: node tests/public-site-chart-check.cjs
