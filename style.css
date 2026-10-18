@@ -311,3 +311,17 @@ main{width:min(100%,1240px);margin-inline:auto}
 /* Only player profiles: column headers already provide sorting. */
 .page--profile .bp-unified-toolbar,
 .page--profile .bp-unified-sort { display: none !important; }
+
+/* Player-specific, modern expandable result explanations */
+#app .bp-profile-explain{margin-top:1rem;border:1px solid rgba(194,157,92,.47);border-radius:18px;background:linear-gradient(135deg,#183c30,#10291f);overflow:hidden;box-shadow:0 7px 24px rgba(0,0,0,.12)}
+#app .bp-profile-explain>summary{cursor:pointer;display:flex;align-items:center;gap:12px;padding:18px 17px;list-style:none;min-height:72px}
+#app .bp-profile-explain>summary::-webkit-details-marker{display:none}
+#app .bp-profile-explain .bp-explain-mark{display:grid;place-items:center;width:37px;height:37px;flex:none;border-radius:12px;background:rgba(198,159,89,.16);color:#e0b871;font-size:25px}
+#app .bp-profile-explain .bp-explain-heading{display:flex;flex-direction:column;gap:4px;flex:1;min-width:0;color:#f6ead0}
+#app .bp-profile-explain .bp-explain-heading strong{font-size:1.05rem}
+#app .bp-profile-explain .bp-explain-heading small{font-size:.78rem;font-weight:400;color:#b9d2c4;line-height:1.4}
+#app .bp-profile-explain .bp-explain-chevron{color:#e0b871;font-size:1.7rem;transition:transform .2s}
+#app .bp-profile-explain[open] .bp-explain-chevron{transform:rotate(180deg)}
+#app .bp-profile-explain .explain-body{border-top:1px solid rgba(194,157,92,.25);padding:16px 18px 20px;line-height:1.65}
+#app .bp-profile-explain .bp-insight-story{font-weight:550;font-size:1rem;color:#f1e8d4;margin:0 0 12px}
+#app .bp-profile-explain .bp-insight-key{color:#b9d2c4;font-size:.9rem}
