@@ -24,3 +24,5 @@ jobs:
       - run: npm install --no-save playwright
       - run: npx playwright install --with-deps chromium
       - run: node tests/public-site-chart-check.cjs
+
+# GitHub Pages public iPhone chart verification after release
