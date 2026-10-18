@@ -131,7 +131,7 @@ function dataExplanation(title){
  }else if(/Punkte|Runden/i.test(label)){
   summary='Hier siehst du die Punkte und Platzierungen der ausgewählten Spieler. Die Zahlen stammen aus den gespeicherten Turnierrunden.';
  }
- return '<details class="explain-detail"><summary>Einfach erklärt <span aria-hidden="true">▾</span></summary><div class="explain-body"><p>'+esc(summary)+'</p></div></details>';
+ return '<details class="explain-detail bp-unified-explain"><summary><span class="bp-explain-mark" aria-hidden="true">✦</span><span class="bp-explain-heading"><strong>Einfach erklärt</strong><small>Was sagt diese Auswertung aus?</small></span><span class="bp-explain-chevron" aria-hidden="true">⌄</span></summary><div class="explain-body"><p>'+esc(summary)+'</p></div></details>';
 }
 function card(title,content,extra=''){
  let body=content;
@@ -157,11 +157,11 @@ function explainColumn(title){
  if(/traf zu/.test(t))return 'Ja bedeutet: Die damalige Hochrechnung stimmt mit dem späteren Sieger überein.';
  if(/win.?rate|gewonnen %|siege %/.test(t))return 'Anteil gewonnener Runden. 100 % bedeutet jede Runde gewonnen, 0 % keine. Mehr ist besser.';
  if(/quote|anteil|%/.test(t))return 'Anteil in Prozent: 100 % bedeutet alle passenden Fälle, 0 % keinen. Was gezählt wird, steht beim jeweiligen Tool.';
- if(/teilnehmer|feldgrösse/.test(t))return 'So viele Spieler waren beim Turnier dabei.';
+ if(/teilnehmer|feldgrösse/.test(t))return 'Die Anzahl der Spieler, die im betreffenden Turnier mitgespielt haben.';
  if(/titel/.test(t))return 'So viele Turniere hat der Spieler gewonnen.';
  if(/punkte|pkt\./.test(t))return 'Die Punkte nach den Regeln des jeweiligen Turniers.';
  if(/rang|platz|^#$/.test(t))return 'Die Platzierung. Platz 1 ist am besten.';
- if(/runde/.test(t))return 'Die Anzahl gespielter oder ausgewerteter Runden.';
+ if(/^(runden|rundenzahl|anzahl runden)$/.test(t))return 'So viele Runden wurden für diese Zeile ausgewertet.';
  if(/jahr/.test(t))return 'Das Jahr der Ergebnisse.';
  if(/sieg/.test(t))return 'So viele Runden hat der Spieler gewonnen.';
  if(/spieler|name/.test(t))return 'Der Name des Spielers.';
@@ -204,7 +204,7 @@ function table(id,columns,data,opts={}){
  if(leadName){summary='Hier siehst du die '+dataLabel.toLowerCase()+' der gewählten Spieler und Jahre. '+(leadPlace?leadName+' hat in dieser Zeile Platz '+leadPlace+(leadPoints?' und '+leadPoints+' Punkte':'')+'.': 'Die aktuell erste Zeile zeigt '+leadName+(leadPoints?' mit '+leadPoints+' Punkten':'')+'.')+(st.key&&st.key!==(placeKey?.key||'')?' Die Reihenfolge richtet sich nach „'+(columns.find(c=>c.key===st.key)?.title||'der gewählten Spalte')+'“, nicht unbedingt nach dem besten Gesamtrang.':'');}
  else if(lead){summary='Hier siehst du die Werte der gewählten Spieler und Jahre. Die erste Zeile zeigt '+columns.slice(0,3).map(c=>esc(c.title)+': '+esc(lead[c.key]??'–')).join(', ')+'.';}
  const columnHelp=columns.map(c=>({name:c.title,meaning:explainColumn(c.title),example:lead&&lead[c.key]!=null&&(['string','number'].includes(typeof lead[c.key]))?(typeof lead[c.key]==='number'?pointsFmt(Math.round(lead[c.key]*10)/10):String(lead[c.key])):''})).filter(c=>c.meaning&&!(state.page==='profile'&&/^(Spieler|Spielername|Name|Jahr|Rang|Platz|Runden|Siege|Abschnitt|Anzahl Spieler|Punkte)$/i.test(c.name.trim())));
- const glossaryHtml=columnHelp.length?'<p><strong>So liest du die Spalten:</strong></p><dl class="bp-simple-glossary">'+columnHelp.map(c=>'<dt>'+esc(c.name)+'</dt><dd>'+esc(c.meaning)+(c.example!==''?' Beispiel aus der ersten angezeigten Zeile: '+esc(c.example)+'.':'')+'</dd>').join('')+'</dl>':'';
+ const glossaryHtml=columnHelp.length?'<h4 class="bp-explain-subtitle">Begriffe kurz erklärt</h4><dl class="bp-simple-glossary">'+columnHelp.map(c=>'<dt>'+esc(c.name)+'</dt><dd>'+esc(c.meaning)+'</dd>').join('')+'</dl>':'';
  const personalStory=state.page==='profile'?profileResultExplanation(id,data):'';
  const isPointsShare=id.startsWith('eff');
  const interpretation=isPointsShare
@@ -212,7 +212,7 @@ function table(id,columns,data,opts={}){
  :'Ein höherer Prozentwert bedeutet eine bessere durchschnittliche Platzierung. 100 % wäre immer Platz 1, 0 % immer der letzte Platz.';
  const shortExplanation=personalStory
  ?'<details class="explain-detail bp-table-short-explain bp-profile-explain"><summary><span class="bp-explain-mark" aria-hidden="true">✦</span><span class="bp-explain-heading"><strong>Einfach erklärt</strong><small>Was bedeuten diese Ergebnisse für '+esc(state.profile)+'?</small></span><span class="bp-explain-chevron" aria-hidden="true">⌄</span></summary><div class="explain-body"><p class="bp-insight-story">'+esc(personalStory)+'</p><p class="bp-insight-key">'+esc(interpretation)+'</p>'+(columnHelp.length?glossaryHtml:'')+'</div></details>'
- :'<details class="explain-detail bp-table-short-explain"><summary>Einfach erklärt <span aria-hidden="true">▾</span></summary><div class="explain-body"><p>'+esc(summary)+'</p>'+glossaryHtml+'</div></details>';
+  :'<details class="explain-detail bp-table-short-explain bp-unified-explain"><summary><span class="bp-explain-mark" aria-hidden="true">✦</span><span class="bp-explain-heading"><strong>Einfach erklärt</strong><small>So verstehst du diese Auswertung</small></span><span class="bp-explain-chevron" aria-hidden="true">⌄</span></summary><div class="explain-body"><p>'+esc(summary)+'</p>'+glossaryHtml+'</div></details>';
  return top+(body||'<tr><td colspan="'+columns.length+'" class="subtle">Keine Daten im ausgewählten Filter.</td></tr>')+'</tbody></table></div>'+(ranking?'<p class="ranking-caption">'+sorted.length+' Spieler · Platzierungen der Turniere.</p>':'')+(pageSize?'<div class="pager"><button class="btn outline" data-action="tablepage" data-table="'+esc(id)+'" data-value="-1" '+(realPage===0?'disabled':'')+'>← Zurück</button><span>Seite '+(realPage+1)+' / '+pages+' · '+sorted.length+' Datensätze</span><button class="btn outline" data-action="tablepage" data-table="'+esc(id)+'" data-value="1" '+(realPage===pages-1?'disabled':'')+'>Weiter →</button></div>':'')+(opts.note?'<p class="hint">'+opts.note+'</p>':'')+shortExplanation;
 }
 const playerLink=p=>`<button class="playerlink" data-action="profile" data-value="${esc(p)}">${esc(p)}</button>`;
