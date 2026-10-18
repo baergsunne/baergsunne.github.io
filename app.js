@@ -167,6 +167,25 @@ function explainColumn(title){
  if(/spieler|name/.test(t))return 'Der Name des Spielers.';
  return '';
 }
+function profileResultExplanation(id,data){
+ const p=state.profile,kind=id.startsWith('phase')?'phase':id.startsWith('pressure')?'pressure':id.startsWith('fields')?'fields':id.startsWith('strength')?'strength':id.startsWith('eff')?'eff':'';
+ if(!kind)return '';
+ const metric=kind==='phase'?'avg':kind==='eff'?'score':'mean';
+ const valid=data.filter(x=>Number.isFinite(x[metric])&&Number(x.n)>0);
+ if(!valid.length)return p+' hat in dieser Auswertung keine passenden Runden.';
+ const ordered=[...valid].sort((a,b)=>b[metric]-a[metric]),best=ordered[0],last=ordered[ordered.length-1];
+ const label=x=>kind==='phase'?x.phase:kind==='pressure'||kind==='strength'?x.label:kind==='fields'?x.field+' Spielern':String(x.year);
+ const percent=x=>pointsFmt(x[metric])+' %';
+ let sentence='';
+ if(kind==='phase')sentence=p+' schneidet im Turnierabschnitt «'+label(best)+'» am besten ab: '+percent(best)+' aus '+best.n+' Runden.';
+ if(kind==='pressure')sentence=p+' schneidet vor einer Runde in der Ausgangslage «'+label(best)+'» am besten ab: '+percent(best)+' aus '+best.n+' Runden.';
+ if(kind==='fields')sentence=p+' erreicht bei '+label(best)+' seine beste durchschnittliche Platzierung: '+percent(best)+' aus '+best.n+' Runden.';
+ if(kind==='strength')sentence=p+' erreicht gegen «'+label(best)+'» seinen besten Vergleichswert: '+percent(best)+' aus '+best.n+' Runden.';
+ if(kind==='eff')sentence=p+' hat '+best.year+' den grössten Anteil der möglichen Punkte erreicht: '+percent(best)+' in '+best.n+' Runden.';
+ if(last!==best)sentence+=' Der niedrigste Wert liegt bei '+percent(last)+' («'+label(last)+'»).';
+ if(best.n<5)sentence+=' Für den besten Wert liegen weniger als fünf Runden vor; daraus lässt sich kein sicherer Trend ableiten.';
+ return sentence;
+}
 function table(id,columns,data,opts={}){
  const st=state.sort[id]||{key:columns[0]?.key||'',dir:'asc'};
  const sorted=[...data].sort((a,b)=>{let av=a[st.key],bv=b[st.key];if(av==null&&bv!=null)return 1;if(bv==null&&av!=null)return -1;if(av==null&&bv==null)return 0;const cmp=typeof av==='number'&&typeof bv==='number'?av-bv:String(av).localeCompare(String(bv),'de-CH',{numeric:true});return cmp*(st.dir==='asc'?1:-1)});
@@ -187,7 +206,10 @@ function table(id,columns,data,opts={}){
  else if(lead){summary='Hier siehst du die Werte der gewählten Spieler und Jahre. Die erste Zeile zeigt '+columns.slice(0,3).map(c=>esc(c.title)+': '+esc(lead[c.key]??'–')).join(', ')+'.';}
  const columnHelp=columns.map(c=>({name:c.title,meaning:explainColumn(c.title),example:lead&&lead[c.key]!=null&&(['string','number'].includes(typeof lead[c.key]))?String(lead[c.key]):''})).filter(c=>c.meaning);
  const glossaryHtml=columnHelp.length?'<p><strong>So liest du die Spalten:</strong></p><dl class="bp-simple-glossary">'+columnHelp.map(c=>'<dt>'+esc(c.name)+'</dt><dd>'+esc(c.meaning)+(c.example!==''?' Beispiel aus der ersten angezeigten Zeile: '+esc(c.example)+'.':'')+'</dd>').join('')+'</dl>':'';
- const shortExplanation='<details class="explain-detail bp-table-short-explain"><summary>Einfach erklärt <span aria-hidden="true">▾</span></summary><div class="explain-body"><p>'+esc(summary)+'</p>'+glossaryHtml+'</div></details>';
+ const personalStory=state.page==='profile'?profileResultExplanation(id,data):'';
+ const shortExplanation=personalStory
+ ?'<details class="explain-detail bp-table-short-explain bp-profile-explain"><summary><span class="bp-explain-mark" aria-hidden="true">✦</span><span class="bp-explain-heading"><strong>Einfach erklärt</strong><small>Was bedeuten diese Ergebnisse für '+esc(state.profile)+'?</small></span><span class="bp-explain-chevron" aria-hidden="true">⌄</span></summary><div class="explain-body"><p class="bp-insight-story">'+esc(personalStory)+'</p><p class="bp-insight-key">Ein höherer Prozentwert bedeutet eine bessere durchschnittliche Platzierung. 100 % wäre immer Platz 1, 0 % immer der letzte Platz.</p></div></details>'
+ :'<details class="explain-detail bp-table-short-explain"><summary>Einfach erklärt <span aria-hidden="true">▾</span></summary><div class="explain-body"><p>'+esc(summary)+'</p>'+glossaryHtml+'</div></details>';
  return top+(body||'<tr><td colspan="'+columns.length+'" class="subtle">Keine Daten im ausgewählten Filter.</td></tr>')+'</tbody></table></div>'+(ranking?'<p class="ranking-caption">'+sorted.length+' Spieler · Platzierungen der Turniere.</p>':'')+(pageSize?'<div class="pager"><button class="btn outline" data-action="tablepage" data-table="'+esc(id)+'" data-value="-1" '+(realPage===0?'disabled':'')+'>← Zurück</button><span>Seite '+(realPage+1)+' / '+pages+' · '+sorted.length+' Datensätze</span><button class="btn outline" data-action="tablepage" data-table="'+esc(id)+'" data-value="1" '+(realPage===pages-1?'disabled':'')+'>Weiter →</button></div>':'')+(opts.note?'<p class="hint">'+opts.note+'</p>':'')+shortExplanation;
 }
 const playerLink=p=>`<button class="playerlink" data-action="profile" data-value="${esc(p)}">${esc(p)}</button>`;
