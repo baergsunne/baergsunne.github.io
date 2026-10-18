@@ -20,7 +20,9 @@ const check=await page.evaluate(()=>{
  state.page='stats';state.tab='career';state.metric='rank';draw();
  const career=document.querySelector('.chart-svg');
  for(const p of db.players.map(x=>x.name)){const actual=[...career.querySelectorAll('circle title')].map(x=>x.textContent).filter(x=>x.startsWith(p+' · '));const expected=db.editions.filter(e=>e.players.includes(p)).length;if(actual.length!==expected)failures.push(p+': career chart marker count '+actual.length+' != '+expected)}
- state.tab='lab';draw();const lab=document.querySelector('#page');
+ state.tab='rounds';draw();const roundMarkers=[...document.querySelectorAll('#selected-stat-tool .chart-svg circle title')].map(x=>x.textContent);for(const p of db.players.map(x=>x.name)){let total=0;for(const e of db.editions){const st=e.official_standings.find(x=>x.player_id===p);if(!st)continue;total+=st.points;if(!roundMarkers.includes(p+' · '+e.year+': '+String(total)))failures.push(p+': yearly accumulated points mismatch '+e.year+' = '+total);}}
+ state.tab='lab';labPrefs.metric='rank';labPrefs.chart='lines';draw();const rankSvg=document.querySelector('.lab-visual-svg');const rankPoint=p=>[...rankSvg.querySelectorAll('circle')].find(c=>c.querySelector('title')?.textContent.startsWith(p+' · 2026:'));const good=rankPoint('Frauchi'),bad=rankPoint('Schnarre');if(!good||!bad||!(Number(good.getAttribute('cy'))<Number(bad.getAttribute('cy'))))failures.push('Premium rank chart puts poorer position above better position');labPrefs.metric='avg';draw();
+ const lab=document.querySelector('#page');
  const selected=lab.querySelector('#labMetricSelect')?.value;if(selected!=='avg'||labPrefs.metric!=='avg')failures.push('premium diagram metric unexpectedly '+selected);
  state.tab='career';draw();if(document.querySelector('#metric')?.value!=='rank')failures.push('career metric changed after diagram tab');
  return{failures,playerCount:db.players.length,editions:db.editions.length,profileSeries:db.players.length,metricSeparated:true};
