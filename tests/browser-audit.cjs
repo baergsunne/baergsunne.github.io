@@ -3,7 +3,7 @@ const {chromium}=require('playwright');const assert=require('node:assert/strict'
 const page=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
 const exceptions=[];page.on('pageerror',err=>exceptions.push(err.message));
 await page.goto('http://127.0.0.1:8765/#stats',{waitUntil:'domcontentloaded'});
-await page.waitForFunction(()=>typeof db!=='undefined'&&db.editions.some(e=>e.year===2026),{timeout:45000});
+await page.waitForFunction(()=>typeof db!=='undefined'&&db.editions.some(e=>e.year===2026),null,{timeout:20000}).catch(async err=>{const diagnostics=await page.evaluate(()=>({api:window.BAERGSUNNE_API_URL,live:window.BAERGSUNNE_PUBLIC_LIVE?.status,unavailable:window.BAERGSUNNE_LIVE_UNAVAILABLE,years:typeof db!=='undefined'?db.editions.map(e=>e.year):null,html:document.querySelector('#page')?.textContent.slice(0,250)}));console.error('ARCHIVE_DIAGNOSTICS',JSON.stringify({diagnostics,exceptions}));throw err});
 const result=await page.evaluate(()=>{
 const e=db.editions.find(x=>x.year===2026);
 const s=yearly('Schnarre').find(x=>x.year===2026);
