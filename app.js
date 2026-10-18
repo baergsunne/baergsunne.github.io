@@ -183,6 +183,7 @@ function profileResultExplanation(id,data){
  if(kind==='fields')message='«Anzahl Spieler» ist die Zahl aller Teilnehmer eines Turniers. Die Prozentwerte machen Resultate aus Turnieren mit unterschiedlich vielen Spielern vergleichbar. '+(close?'Die Ergebnisse sind bei den verschiedenen Spielerzahlen ähnlich.':p+' platziert sich bei '+name(best)+' durchschnittlich besser als bei '+name(worst)+'.')+' Bei nur wenigen Runden sind solche Vergleiche unsicher.';
  if(kind==='strength')message='«Stärkere Mitspieler» bezeichnet Turniere, in denen die anderen Spieler anhand ihrer bisherigen Rundenplatzierungen im Datenbestand besser abgeschnitten haben; «schwächere» entsprechend umgekehrt. '+(close?'Bei '+p+' ist zwischen beiden Gruppen kaum ein Unterschied erkennbar.':p+' platziert sich in der Gruppe «'+name(best)+'» im Durchschnitt besser.')+' Das ist ein Vergleich vergangener Ergebnisse, keine Messung von Spielstärke.';
  if(kind==='eff')message='«Anteil der möglichen Punkte» vergleicht die tatsächlich erhaltenen Punkte mit der maximal möglichen Punktzahl in den gespielten Runden. 100 % heisst: Jede Runde die Höchstpunktzahl erzielt. '+(close?'Die Jahreswerte liegen nahe beieinander.':p+' hat im Jahr '+best.year+' den grössten Anteil der möglichen Punkte geholt ('+pct(best.score)+').');
+ if(!message.includes(p))message='Für '+p+' gilt: '+message;
  return message;
 }
 function table(id,columns,data,opts={}){
