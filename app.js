@@ -133,7 +133,14 @@ function dataExplanation(title){
  }
  return '<details class="explain-detail"><summary>Einfach erklärt <span aria-hidden="true">▾</span></summary><div class="explain-body"><p>'+esc(summary)+'</p></div></details>';
 }
-function card(title,content,extra=''){return `<section class="card ${extra}">${title?`<h3>${title}</h3>`:''}${content}${content.includes('bp-table-short-explain')?'':dataExplanation(title)}</section>`}
+function card(title,content,extra=''){
+ let body=content;
+ if(state.page==='profile'&&/<p class="hint">/.test(body)){
+  const hints=[...body.matchAll(/<p class="hint">[\s\S]*?<\/p>/g)].map(m=>m[0]);
+  if(hints.length){body=body.replace(/<p class="hint">[\s\S]*?<\/p>/g,'');body=hints.join('')+body;}
+ }
+ return `<section class="card ${extra}">${title?`<h3>${title}</h3>`:''}${body}${body.includes('bp-table-short-explain')?'':dataExplanation(title)}</section>`;
+}
 function pill(name,v){return `<button class="pill ${v?'active':''}" data-action="pillyear" data-value="${name}">${name}</button>`}
 function explainColumn(title){
  const t=String(title).toLowerCase().replace(/\s+/g,' ').trim();
