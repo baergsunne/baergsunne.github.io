@@ -42,3 +42,6 @@
 .history-scene-list button{border-radius:13px;padding:14px 12px;box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}
 .history-scene-list button strong{line-height:1.25}.history-scene-list button b{align-self:end}
 @media(max-width:480px){.history-chronicle{padding:11px}.history-feature{padding:11px}.history-feature--yearbook{padding:8px}.history-yearbook-card{padding:15px 10px 11px}.history-years button,.history-tabs button{padding:10px 14px}.history-shortcuts--yearbook button{font-size:14px;min-height:62px}}
+
+/* Native iPhone dropdowns for history filters */
+.history-dropdown-controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:12px 0 18px}.history-dropdown-controls label{display:block;color:#e8c37e;font-size:13px;font-weight:750;letter-spacing:.04em}.history-dropdown-controls select{display:block;width:100%;min-width:0;min-height:49px;margin-top:7px;padding:10px 28px 10px 12px;border:1px solid #698274;border-radius:12px;background:#102d23;color:#f5edde;font:600 16px system-ui,-apple-system,sans-serif}.history-dropdown-controls select:focus-visible{outline:2px solid #e8c37e;outline-offset:2px}@media(max-width:400px){.history-dropdown-controls{gap:8px}}
