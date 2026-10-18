@@ -2,7 +2,7 @@ name: Browser statistics audit
 on:
   push:
     branches:
-      - fix/profile-sort-toolbar-20261018
+      - fix/profile-sort-buttons-hidden-20261019
   pull_request:
     paths:
       - 'app.js'
