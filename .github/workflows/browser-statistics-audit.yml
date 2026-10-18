@@ -2,7 +2,7 @@ name: Browser statistics audit
 on:
   push:
     branches:
-      - fix/career-charts-20261018
+      - fix/statistics-chart-integrity-20261018
   pull_request:
     paths:
       - 'app.js'
@@ -27,3 +27,4 @@ jobs:
       - run: node tests/browser-audit.cjs
       - run: node tests/real-cloudflare-audit.cjs
       - run: node tests/all-pages-audit.cjs
+      - run: node tests/chart-values-integrity.cjs

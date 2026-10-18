@@ -2,7 +2,7 @@ name: Statistics regression audit
 on:
   push:
     branches:
-      - fix/career-charts-20261018
+      - fix/statistics-chart-integrity-20261018
   pull_request:
     paths:
       - 'app.js'

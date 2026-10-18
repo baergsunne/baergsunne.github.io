@@ -1,0 +1,26 @@
+name: Public site statistics verification
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'app.js'
+      - 'lab-premium.js'
+      - 'index.html'
+      - 'tests/public-site-chart-check.cjs'
+      - '.github/workflows/public-site-statistics.yml'
+  workflow_dispatch:
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-save playwright
+      - run: npx playwright install --with-deps chromium
+      - run: node tests/public-site-chart-check.cjs
