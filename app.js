@@ -9,7 +9,7 @@ async function refreshLive(){if(!apiBase)return;try{const r=await fetch(apiBase+
  const archived=(await editionsResponse.json()).editions;
  let archiveChanged=false;
  for(const edition of archived){if(db.editions.some(x=>x.year===edition.year))continue;db.editions.push(edition);seed.editions.push(edition);archiveChanged=true;years.push(edition.year);for(const player of edition.players)if(!names.includes(player)){names.push(player);seed.players.push({id:player,name:player,initials:player.slice(0,1)})}db.players=clone(seed.players);}
- if(archiveChanged){db.editions.sort((a,b)=>a.year-b.year);seed.editions.sort((a,b)=>a.year-b.year);years.sort((a,b)=>a-b);if(db.editions.some(e=>e.year===2026))state.historyYear=2026;}
+ if(archiveChanged){state.selectedYears=state.selectedYears.filter(y=>db.editions.some(e=>e.year===y));db.editions.sort((a,b)=>a.year-b.year);seed.editions.sort((a,b)=>a.year-b.year);years.sort((a,b)=>a-b);if(db.editions.some(e=>e.year===2026))state.historyYear=2026;}
  window.BAERGSUNNE_LIVE_UNAVAILABLE=false;
  if(archiveChanged||state.page==='live'||state.page==='home'||d.status==='final'||(['players','profile'].includes(state.page)&&JSON.stringify([previous?.players,previous?.rounds,previous?.standings,previous?.status])!==JSON.stringify([d.players,d.rounds,d.standings,d.status])))draw();
  }catch(err){if(!window.BAERGSUNNE_LIVE_UNAVAILABLE){window.BAERGSUNNE_LIVE_UNAVAILABLE=true;if(state.page==='live'||state.page==='home')draw();}}}
