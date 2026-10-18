@@ -20,6 +20,7 @@ assert.equal(result.s?.place,4,'Schnarre: official 2026 placement');
 assert.equal(result.s?.points,28,'Schnarre: official 2026 points');
 assert(result.ranks,'Every 2026 official final result');
 assert(result.profileIncludesYear&&result.profileIncludesPlace,'2026 shown on player profile');
+const actualCharts=await page.evaluate(()=>{state.page='profile';state.profile='Schnarre';draw();const profile=document.querySelector('#page').innerHTML;state.page='stats';state.tab='career';state.metric='rank';draw();const career=document.querySelector('#page').innerHTML;return {profileOfficial:profile.includes('Karriere-Entwicklung · offizieller Jahresrang'),profileExplained:profile.includes('offiziellen Schlussrang'),careerExplicit:career.includes('Jahresplatzierung = offizieller Schlussrang'),profileHas2026:profile.includes('2026: 4'),careerHas2026:career.includes('2026: 4')};});assert(actualCharts.profileOfficial&&actualCharts.profileExplained&&actualCharts.careerExplicit&&actualCharts.profileHas2026&&actualCharts.careerHas2026,'Career chart ranks and labels inconsistent');
 assert(result.careerIncludes2026&&result.careerIncludesSchnarre,'2026 shown on career page');
 assert.deepEqual(exceptions,[],'No uncaught browser errors');
 console.log('BROWSER_AUDIT_FIXTURE_SUCCESS',JSON.stringify(result));
