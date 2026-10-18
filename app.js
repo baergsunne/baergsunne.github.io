@@ -175,7 +175,7 @@ function profileResultExplanation(id,data){
  if(!valid.length)return p+' hat in dieser Auswertung keine passenden Runden.';
  const ordered=[...valid].sort((a,b)=>b[metric]-a[metric]),best=ordered[0],last=ordered[ordered.length-1];
  const label=x=>kind==='phase'?x.phase:kind==='pressure'||kind==='strength'?x.label:kind==='fields'?x.field+' Spielern':String(x.year);
- const percent=x=>pointsFmt(x[metric])+' %';
+ const percent=x=>aPct(x[metric]);
  let sentence='';
  if(kind==='phase')sentence=p+' schneidet im Turnierabschnitt «'+label(best)+'» am besten ab: '+percent(best)+' aus '+best.n+' Runden.';
  if(kind==='pressure')sentence=p+' schneidet vor einer Runde in der Ausgangslage «'+label(best)+'» am besten ab: '+percent(best)+' aus '+best.n+' Runden.';
