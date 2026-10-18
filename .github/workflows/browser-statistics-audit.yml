@@ -2,7 +2,7 @@ name: Browser statistics audit
 on:
   push:
     branches:
-      - fix/profile-plain-language-insights-20261019
+      - fix/explanations-meaning-unified-20261019
   pull_request:
     paths:
       - 'app.js'

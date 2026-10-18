@@ -325,3 +325,18 @@ main{width:min(100%,1240px);margin-inline:auto}
 #app .bp-profile-explain .explain-body{border-top:1px solid rgba(194,157,92,.25);padding:16px 18px 20px;line-height:1.65}
 #app .bp-profile-explain .bp-insight-story{font-weight:550;font-size:1rem;color:#f1e8d4;margin:0 0 12px}
 #app .bp-profile-explain .bp-insight-key{color:#b9d2c4;font-size:.9rem}
+
+/* A consistent accordion for explanations on all pages */
+#app .bp-unified-explain{margin-top:1rem;border:1px solid rgba(194,157,92,.47);border-radius:18px;background:linear-gradient(135deg,#183c30,#10291f);overflow:hidden}
+#app .bp-unified-explain>summary{display:flex;align-items:center;gap:12px;list-style:none;cursor:pointer;min-height:72px;padding:18px 17px}
+#app .bp-unified-explain>summary::-webkit-details-marker{display:none}
+#app .bp-unified-explain .bp-explain-mark{display:grid;place-items:center;flex:none;width:37px;height:37px;border-radius:12px;background:rgba(198,159,89,.16);color:#e0b871;font-size:25px}
+#app .bp-unified-explain .bp-explain-heading{display:flex;flex:1;flex-direction:column;min-width:0;gap:4px;color:#f6ead0}
+#app .bp-unified-explain .bp-explain-heading strong{font-size:1.05rem}
+#app .bp-unified-explain .bp-explain-heading small{font-size:.78rem;line-height:1.4;font-weight:400;color:#b9d2c4}
+#app .bp-unified-explain .bp-explain-chevron{font-size:1.7rem;color:#e0b871;transition:transform .2s}
+#app .bp-unified-explain[open] .bp-explain-chevron{transform:rotate(180deg)}
+#app .bp-unified-explain .explain-body{padding:16px 18px 20px;border-top:1px solid rgba(194,157,92,.25);line-height:1.65}
+#app .bp-explain-subtitle{margin:1rem 0 .5rem;font-size:1rem;color:#f3e7ce}
+#app .bp-simple-glossary dt{font-weight:650;margin-top:.7rem}
+#app .bp-simple-glossary dd{margin:.25rem 0 .65rem 0}
