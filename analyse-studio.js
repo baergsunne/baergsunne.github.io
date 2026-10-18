@@ -1,7 +1,7 @@
 'use strict';
 /* Bärgsunne Poker – lokaler Fragenbaukasten, ohne fremde Dienste. */
 const AB_KEY='baergsunne-analyse-baukasten-v1';
-const AB_YEARS=[2007,2008,2009,2010,2011,2012,2013,2015,2016,2017,2018,2019,2021,2022,2024,2025];
+const AB_YEARS=new Proxy([], {get(_target,key){const years=db.editions.map(e=>e.year).sort((a,b)=>a-b);const value=years[key];return typeof value==='function'?value.bind(years):value;}});
 const AB_OPS=[['ge','Mindestens'],['gt','Mehr als'],['eq','Genau'],['le','Höchstens'],['lt','Weniger als'],['ne','Nicht genau']];
 const AB_EVENTS=[['win','Rundensiege'],['podium','Rundenpodeste'],['rank','Bestimmte Rundenplatzierungen'],['points','Runden mit mindestens X Punkten'],['last','Letzter Platz einer Runde'],['final','Schlussplatzierungen'],['total','Gesamtpunkte']];
 let abNextId=2;
