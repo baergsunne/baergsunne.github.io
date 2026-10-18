@@ -2,6 +2,9 @@ const {chromium}=require('playwright');const assert=require('node:assert/strict'
 (async()=>{const browser=await chromium.launch({headless:true});try{
 const page=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
 const exceptions=[];page.on('pageerror',err=>exceptions.push(err.message));
+const fixture=require('./fixture-2026.json');
+await page.route('**/api/live',route=>route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({status:'final',year:2026,players:fixture.editions[0].players,rounds:[],standings:fixture.editions[0].official_standings.map(x=>({player:x.player_id,rank:x.place,points:x.points}))})}));
+await page.route('**/api/editions',route=>route.fulfill({status:200,contentType:'application/json',body:JSON.stringify(fixture)}));
 await page.goto('http://127.0.0.1:8765/#stats',{waitUntil:'domcontentloaded'});
 await page.waitForFunction(()=>typeof db!=='undefined'&&db.editions.some(e=>e.year===2026),null,{timeout:20000}).catch(async err=>{const diagnostics=await page.evaluate(()=>({api:window.BAERGSUNNE_API_URL,live:window.BAERGSUNNE_PUBLIC_LIVE?.status,unavailable:window.BAERGSUNNE_LIVE_UNAVAILABLE,years:typeof db!=='undefined'?db.editions.map(e=>e.year):null,html:document.querySelector('#page')?.textContent.slice(0,250)}));console.error('ARCHIVE_DIAGNOSTICS',JSON.stringify({diagnostics,exceptions}));throw err});
 const result=await page.evaluate(()=>{
@@ -19,5 +22,5 @@ assert(result.ranks,'Every 2026 official final result');
 assert(result.profileIncludesYear&&result.profileIncludesPlace,'2026 shown on player profile');
 assert(result.careerIncludes2026&&result.careerIncludesSchnarre,'2026 shown on career page');
 assert.deepEqual(exceptions,[],'No uncaught browser errors');
-console.log('BROWSER_AUDIT_SUCCESS',JSON.stringify(result));
+console.log('BROWSER_AUDIT_FIXTURE_SUCCESS',JSON.stringify(result));
 }finally{await browser.close()}})().catch(e=>{console.error(e);process.exit(1)});
