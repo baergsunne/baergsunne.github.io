@@ -172,19 +172,18 @@ function profileResultExplanation(id,data){
  if(!kind)return '';
  const metric=kind==='phase'?'avg':kind==='eff'?'score':'mean';
  const valid=data.filter(x=>Number.isFinite(x[metric])&&Number(x.n)>0);
- if(!valid.length)return p+' hat in dieser Auswertung keine passenden Runden.';
- const ordered=[...valid].sort((a,b)=>b[metric]-a[metric]),best=ordered[0],last=ordered[ordered.length-1];
- const label=x=>kind==='phase'?x.phase:kind==='pressure'||kind==='strength'?x.label:kind==='fields'?x.field+' Spielern':String(x.year);
- const percent=x=>aPct(x[metric]);
- let sentence='';
- if(kind==='phase')sentence=p+' schneidet im Turnierabschnitt «'+label(best)+'» am besten ab: '+percent(best)+' aus '+best.n+' Runden.';
- if(kind==='pressure')sentence=p+' schneidet vor einer Runde in der Ausgangslage «'+label(best)+'» am besten ab: '+percent(best)+' aus '+best.n+' Runden.';
- if(kind==='fields')sentence=p+' erreicht bei '+label(best)+' seine beste durchschnittliche Platzierung: '+percent(best)+' aus '+best.n+' Runden.';
- if(kind==='strength')sentence=p+' erreicht gegen «'+label(best)+'» seinen besten Vergleichswert: '+percent(best)+' aus '+best.n+' Runden.';
- if(kind==='eff')sentence=p+' hat '+best.year+' den grössten Anteil der möglichen Punkte erreicht: '+percent(best)+' in '+best.n+' Runden.';
- if(last!==best)sentence+=' Der niedrigste Wert liegt bei '+percent(last)+' («'+label(last)+'»).';
- if(best.n<5)sentence+=' Für den besten Wert liegen weniger als fünf Runden vor; daraus lässt sich kein sicherer Trend ableiten.';
- return sentence;
+ if(!valid.length)return p+' hat für diesen Vergleich noch keine passenden Runden.';
+ const ordered=[...valid].sort((a,b)=>b[metric]-a[metric]),best=ordered[0],worst=ordered[ordered.length-1],difference=best[metric]-worst[metric];
+ const pct=x=>aPct(x);
+ const name=x=>kind==='phase'?x.phase:kind==='pressure'||kind==='strength'?x.label:kind==='fields'?x.field+' Spielern':String(x.year);
+ const close=difference<5;
+ let message='';
+ if(kind==='phase')message='«Start» sind die ersten Runden eines Turniers, «Mitte» die mittleren und «Schluss» die letzten Runden. Für '+p+' ist der Unterschied zwischen Anfang und Ende '+pct(Math.abs(valid.find(x=>x.phase==='Schluss')?.avg-valid.find(x=>x.phase==='Start')?.avg||0))+' gross. '+(close?'Die Platzierungen unterscheiden sich insgesamt nur wenig.':best.phase==='Schluss'?'Die Ergebnisse werden gegen Turnierende besser.':best.phase==='Start'?'Die Ergebnisse sind am Anfang stärker.':'Die mittleren Runden liegen vorne.');
+ if(kind==='pressure')message='«Vor der Runde» meint den Tabellenplatz, den '+p+' vor Beginn dieser Runde hatte – nicht seine Platzierung am Ende. «Ab Platz 3» umfasst Platz 3 und alle dahinter. '+(close?'In den drei Ausgangslagen unterscheiden sich die durchschnittlichen Platzierungen nur wenig.':'Die beste durchschnittliche Platzierung erreicht '+p+' mit der Ausgangslage «'+name(best)+'».')+' Das beweist keinen psychischen Druck.';
+ if(kind==='fields')message='«Anzahl Spieler» ist die Zahl aller Teilnehmer eines Turniers. Die Prozentwerte machen Resultate aus Turnieren mit unterschiedlich vielen Spielern vergleichbar. '+(close?'Die Ergebnisse sind bei den verschiedenen Spielerzahlen ähnlich.':p+' platziert sich bei '+name(best)+' durchschnittlich besser als bei '+name(worst)+'.')+' Bei nur wenigen Runden sind solche Vergleiche unsicher.';
+ if(kind==='strength')message='«Stärkere Mitspieler» bezeichnet Turniere, in denen die anderen Spieler anhand ihrer bisherigen Rundenplatzierungen im Datenbestand besser abgeschnitten haben; «schwächere» entsprechend umgekehrt. '+(close?'Bei '+p+' ist zwischen beiden Gruppen kaum ein Unterschied erkennbar.':p+' platziert sich in der Gruppe «'+name(best)+'» im Durchschnitt besser.')+' Das ist ein Vergleich vergangener Ergebnisse, keine Messung von Spielstärke.';
+ if(kind==='eff')message='«Anteil der möglichen Punkte» vergleicht die tatsächlich erhaltenen Punkte mit der maximal möglichen Punktzahl in den gespielten Runden. 100 % heisst: Jede Runde die Höchstpunktzahl erzielt. '+(close?'Die Jahreswerte liegen nahe beieinander.':p+' hat im Jahr '+best.year+' den grössten Anteil der möglichen Punkte geholt ('+pct(best.score)+').');
+ return message;
 }
 function table(id,columns,data,opts={}){
  const st=state.sort[id]||{key:columns[0]?.key||'',dir:'asc'};
