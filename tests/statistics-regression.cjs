@@ -1,0 +1,9 @@
+const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
+const ctx={window:{}};vm.runInNewContext(fs.readFileSync('data.js','utf8'),ctx);
+const data=ctx.window.POKER_SEED;assert(data?.editions?.length>=16);
+let totalRounds=0,totalResults=0;const years=new Set();
+for(const e of data.editions){assert(!years.has(e.year),'duplicate year '+e.year);years.add(e.year);assert.equal(e.rounds.length,e.round_count);assert.equal(new Set(e.players).size,e.players.length);assert.equal(e.official_standings.length,e.players.length);const points=new Map(e.players.map(p=>[p,0]));const numbers=new Set();for(const r of e.rounds){assert(!numbers.has(r.number));numbers.add(r.number);assert.equal(r.results.length,e.players.length);const seen=new Set();for(const x of r.results){assert(points.has(x.player_id));assert(!seen.has(x.player_id));seen.add(x.player_id);assert(Number.isFinite(x.points));assert(Number.isInteger(x.place));points.set(x.player_id,points.get(x.player_id)+x.points);totalResults++;}totalRounds++;}for(const s of e.official_standings){assert.equal(points.get(s.player_id),s.points,'points '+e.year+' '+s.player_id);}}
+assert(years.has(2021),'2021 must be present');
+const studio=fs.readFileSync('analyse-studio.js','utf8');assert(studio.includes('function abYears()'),'dynamic year selector absent');assert(!studio.includes('const AB_YEARS=['),'hardcoded year selector remains');
+const app=fs.readFileSync('app.js','utf8');assert(app.includes('validateArchiveEdition(edition)'),'archive validation absent');assert(app.includes('archiveChanged||state.page'),'archive redraw absent');
+console.log(JSON.stringify({success:true,years:years.size,rounds:totalRounds,player_rounds:totalResults,year2021:true,archiveValidation:true,dynamicYearSelection:true}));
