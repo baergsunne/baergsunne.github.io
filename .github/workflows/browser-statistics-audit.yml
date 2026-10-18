@@ -2,7 +2,7 @@ name: Browser statistics audit
 on:
   push:
     branches:
-      - fix/profile-sort-buttons-hidden-20261019
+      - fix/profile-description-order-20261019
   pull_request:
     paths:
       - 'app.js'
@@ -29,3 +29,4 @@ jobs:
       - run: node tests/all-pages-audit.cjs
       - run: node tests/chart-values-integrity.cjs
       - run: node tests/profile-toolbar-audit.cjs
+      - run: node tests/profile-card-order.cjs
