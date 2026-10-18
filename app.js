@@ -17,7 +17,7 @@ async function refreshLive(){if(!apiBase)return;try{const r=await fetch(apiBase+
  if(!editionsResponse.ok)throw Error('Archiv-Service nicht verfügbar');
  const archived=(await editionsResponse.json()).editions;
  let archiveChanged=false;
- if(!Array.isArray(archived))throw Error('Ungültiges Archivformat');
+ if(!Array.isArray(archived)||archived.some(e=>!validateArchiveEdition(e)))throw Error('Archivprüfung fehlgeschlagen');
  for(const edition of archived){if(db.editions.some(x=>x.year===edition.year))continue;if(!validateArchiveEdition(edition))throw Error('Archivprüfung fehlgeschlagen für Jahr '+edition.year);db.editions.push(edition);seed.editions.push(edition);archiveChanged=true;years.push(edition.year);for(const player of edition.players)if(!names.includes(player)){names.push(player);seed.players.push({id:player,name:player,initials:player.slice(0,1)})}db.players=clone(seed.players);}
  if(archiveChanged){state.selectedYears=state.selectedYears.filter(y=>db.editions.some(e=>e.year===y));db.editions.sort((a,b)=>a.year-b.year);seed.editions.sort((a,b)=>a.year-b.year);years.sort((a,b)=>a-b);if(db.editions.some(e=>e.year===2026))state.historyYear=2026;}
  window.BAERGSUNNE_LIVE_UNAVAILABLE=false;
