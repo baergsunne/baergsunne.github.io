@@ -1,11 +1,10 @@
 /* Historie uses the existing Statistik tool-tile and tool-grid styles without
    custom dimensions, icons, font sizes or positioning. */
-/* Four data-driven yearbooks still use their dedicated cards below. */
-/* Generic year-based perspectives: wider than the original Jahrbuch for useful reading. */
+/* Rekordbuch, Teilnehmerfeld und Jahresvergleich share the precise Jahrbuch
+   carousel slide width and viewport geometry (including 350/620px breakpoints).
+   Do not override .history-carousel-slide in this stylesheet: neighboring years
+   must peek out on both sides just as they do in the three original Historie views. */
 #app .page.page--history .history-feature--insights{border:0!important;background:transparent!important;box-shadow:none!important}
-#app .page.page--history .history-feature--insights .history-carousel-slide{
- width:calc(min(100vw - 60px, 700px));min-width:0;
-}
 #app .page.page--history .history-feature--insights .history-insight-card{
  box-sizing:border-box;height:100%;padding:clamp(13px,3.4vw,29px);
  border:1px solid #4d6752!important;border-radius:19px;
@@ -52,12 +51,8 @@
 .history-insight-versus strong{font-size:clamp(13px,3.6vw,18px);color:#fff1d9;line-height:1.24;overflow-wrap:anywhere}
 #app .page.page--history .history-insight-compare>p{margin:10px 0 0;color:#c3d5c8;font-size:11px;line-height:1.4}
 @media(max-width:600px){
- #app .page.page--history .history-feature--insights .history-carousel-slide{width:calc(100vw - 48px)}
  .history-insight-grid,.history-insight-compare-grid{grid-template-columns:minmax(0,1fr)}
  .history-insight-section{margin-top:19px}
  .history-insight-metric{padding:13px 10px}
  .history-insight-compare{padding:12px 9px}
-}
-@media(max-width:350px){
- #app .page.page--history .history-feature--insights .history-carousel-slide{width:calc(100vw - 44px)}
 }
