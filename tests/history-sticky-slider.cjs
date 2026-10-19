@@ -99,6 +99,20 @@ const assert=require('node:assert/strict');
     assert.equal(await page.locator('#history-chronicle > .history-sticky-group > .history-sticky-title h3').count(),1);
     assert.equal(await page.locator('#history-year-slider,#history-round-slider').count(),1);
     assert.equal(await page.locator('.history-entry-tile[aria-pressed="true"]').getAttribute('data-view'),view);
+    if(width===390){
+     // The shared title must follow live slider movement, not only final selection.
+     const range=page.locator('#history-year-slider,#history-round-slider');
+     const original=Number(await range.inputValue());
+     const next=(view==='replay'||view==='moments')?original+1:original-1;
+     await range.evaluate((el,value)=>{el.value=String(value);el.dispatchEvent(new Event('input',{bubbles:true}));},next);
+     const preview=await page.locator('#history-sticky-heading').innerText();
+     if(view==='replay'||view==='moments')assert.match(preview,/Runde 2$/,view+' updates round immediately during slider drag');
+     else assert.equal(preview,({yearbook:'Jahrbuch',records:'Rekordbuch',field:'Teilnehmerfeld',compare:'Jahresvergleich'})[view]+' 2025',view+' previews correct year during slider drag');
+     await range.evaluate(el=>el.dispatchEvent(new Event('change',{bubbles:true})));
+     await page.waitForTimeout(1050);
+     assert.equal(await page.locator('#history-sticky-heading').innerText(),preview,view+' sticky title persists after slider snap');
+     if(view!=='replay'&&view!=='moments')await page.locator('#history-year-select').selectOption('2026');
+    }
    }
    assert.deepEqual(errors,[],width+' browser runtime errors');
    console.log('HISTORIE_STICKY_SLIDER_PASS',JSON.stringify({width,views:views.length,sticky:true,halfCenteredYear:true}));
