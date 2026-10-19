@@ -109,3 +109,8 @@
 @media(max-width:350px){.history-carousel-slide{width:calc(100vw - 76px)}.history-carousel-track{gap:10px}}
 @media(min-width:620px){.history-carousel-slide{width:min(78vw,520px)}}
 @media(prefers-reduced-motion:reduce){.history-carousel-track,.history-carousel-slide{transition:none!important}}
+
+/* Smooth physical settle after release, without changing finger-follow behaviour */
+.history-carousel-slide{transition:opacity .32s ease,transform .52s cubic-bezier(.16,1,.3,1)!important}
+.history-carousel-track{will-change:transform;backface-visibility:hidden}
+@media(prefers-reduced-motion:reduce){.history-carousel-slide{transition:none!important}}
