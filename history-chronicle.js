@@ -152,8 +152,9 @@ function historyEntry(){
   ['compare','Jahresvergleich','Was hat sich verändert?','⇄'],
   ['aftermath','Das Nachspiel','Was geschah danach?','↗']
  ];
- return '<section class="history-entry" aria-label="Historie entdecken"><div class="history-entry-head"><span class="history-entry-kicker">DEIN EINSTIEG</span><h2>Was möchtest du entdecken?</h2></div><div class="history-entry-grid">'+entries.map(([view,title,detail,symbol])=>
-  '<button type="button" class="discovery-feature history-entry-tile'+(memory.view===view?' is-current':'')+'" data-his="entry" data-view="'+view+'" aria-pressed="'+(memory.view===view?'true':'false')+'"><span class="discovery-feature-icon" aria-hidden="true">'+symbol+'</span><span class="discovery-feature-copy"><strong>'+e(title)+'</strong><small>'+e(detail)+'</small></span><span class="discovery-feature-arrow" aria-hidden="true">↓</span></button>'
+ const icons={yearbook:'podium',replay:'rounds',moments:'pattern',records:'record',field:'players',compare:'compare',aftermath:'alpine-timeline'};
+ return '<section class="history-entry" aria-label="Historie entdecken"><div class="history-entry-head"><span class="history-entry-kicker">DEIN EINSTIEG</span><h2>Was möchtest du entdecken?</h2></div><div class="tool-grid history-entry-grid">'+entries.map(([view,title,detail])=>
+  '<button type="button" class="tool-tile history-entry-tile'+(memory.view===view?' is-active is-current':'')+'" data-his="entry" data-view="'+view+'" aria-pressed="'+(memory.view===view?'true':'false')+'"><span class="tool-tile-symbol" aria-hidden="true"><img class="bp-icon" src="assets/icons/'+icons[view]+'.svg" alt="" aria-hidden="true"></span><span class="tool-tile-copy"><strong>'+e(title)+'</strong><small>'+e(detail)+'</small></span><span class="tool-tile-arrow" aria-hidden="true">↓</span></button>'
  ).join('')+'</div></section>';
 }
 /* Separate site-navigation links; never presented as Historie tools. */
