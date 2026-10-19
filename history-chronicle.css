@@ -226,3 +226,73 @@
 
 /* Match browser-default input margins too, including iOS Safari. */
 .history-chronicle > .history-carousel-control input[type=range]{margin:0}
+
+
+/* History uses the identical dark-green framing language of the Discovery homepage.
+   Gold remains a highlight for text, podium positions and actual key moments. */
+#app .page.page--history{
+ background:#071f19;
+ color:#f6eddb;
+ border-color:#395d46;
+}
+#app .page.page--history > .premium-masthead{
+ border-bottom:1px solid #395d46;
+}
+#app .page.page--history .history-chronicle{
+ background:linear-gradient(150deg,#102d23,#0b211b);
+ border:1px solid #395d46;
+ box-shadow:none;
+}
+#app .page.page--history .history-chronicle :is(.history-feature,.history-replay-card,.history-yearbook-card){
+ border-color:#4d6752;
+}
+#app .page.page--history .history-feature--yearbook .history-yearbook-card:before{
+ border-color:rgba(105,143,111,.3);
+}
+#app .page.page--history .history-chronicle :is(.history-carousel-control,.history-replay-control,.history-dropdown-controls select){
+ border-color:#4d6752;
+}
+#app .page.page--history .history-moment-event{
+ border-color:#4d6752;
+}
+#app .page.page--history .history-moment-winner{
+ border-color:#b89b62;
+}
+
+/* Historie landing cards reuse the actual Startseite discovery-feature components. */
+.history-entry{margin:0 0 23px;min-width:0}
+.history-entry-head{margin-bottom:12px}
+.history-entry-kicker{display:block;color:#e6bd7f;font-size:11px;letter-spacing:.11em;font-weight:800}
+.history-entry-head h2{font-size:clamp(23px,5vw,34px);line-height:1.18;color:#fff0d5!important;margin:7px 0 0}
+.history-entry-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+#app .page.page--history .history-entry-tile{
+ box-sizing:border-box;
+ width:100%;
+ min-width:0;
+ min-height:108px;
+ padding:16px;
+ border:1px solid #4d6752;
+ border-radius:12px;
+ background:linear-gradient(110deg,#254736,#17382c);
+ color:#f9efde;
+ text-align:left;
+ display:flex;
+ align-items:center;
+ gap:11px;
+}
+#app .page.page--history .history-entry-tile .discovery-feature-copy{min-width:0;overflow-wrap:anywhere}
+#app .page.page--history .history-entry-tile .discovery-feature-icon,
+#app .page.page--history .history-entry-tile .discovery-feature-arrow{color:#e3be7e}
+#app .page.page--history .history-entry-tile.is-current{background:linear-gradient(110deg,#2b503c,#193e30);border-color:#739175}
+#app .page.page--history .history-entry-tile:focus-visible{outline:3px solid #eac382;outline-offset:2px}
+.history-workspace-marker{height:0;width:100%;scroll-margin-top:115px}
+@media(max-width:760px){
+ .history-entry-grid{grid-template-columns:1fr;gap:9px}
+ #app .page.page--history .history-entry-tile{min-height:66px;padding:12px;gap:10px}
+ #app .page.page--history .history-entry-tile .discovery-feature-copy strong{font-size:15px}
+ #app .page.page--history .history-entry-tile .discovery-feature-copy small{font-size:12px}
+}
+@media(prefers-reduced-motion:no-preference){
+ #app .page.page--history .history-entry-tile{transition:background-color .16s,border-color .16s}
+ #app .page.page--history .history-entry-tile:hover{border-color:#739175;background:#305941}
+}

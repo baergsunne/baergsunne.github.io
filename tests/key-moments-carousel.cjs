@@ -10,6 +10,54 @@ const assert=require('node:assert/strict');
   await page.goto('http://127.0.0.1:8765/#history',{waitUntil:'domcontentloaded'});
   await page.waitForFunction(()=>typeof db!=='undefined'&&db.editions.some(x=>x.year===2026),null,{timeout:30000});
 
+  // Same green palette and navigation-card vocabulary as Startseite.
+  const landing=await page.evaluate(()=>{
+   const root=document.getElementById('history-chronicle'),p=document.querySelector('.page--history');
+   const cards=[...root.querySelectorAll('.history-entry-grid .history-entry-tile')];
+   const allLabels=cards.map(x=>x.querySelector('.discovery-feature-copy strong')?.textContent);
+   const rootColor=getComputedStyle(root).borderColor,frame=getComputedStyle(p);
+   const tile=cards[0]&&getComputedStyle(cards[0]);
+   return {count:cards.length,labels:allLabels,order:cards.map(x=>x.dataset.view),
+    homeClasses:cards.every(x=>x.classList.contains('discovery-feature')),
+    sectionBeforeFilters:root.querySelector('.history-entry').compareDocumentPosition(root.querySelector('.history-dropdown-controls'))&Node.DOCUMENT_POSITION_FOLLOWING,
+    pageBg:frame.backgroundColor,pageBorder:frame.borderTopColor,rootColor,
+    tileBorder:tile?.borderColor,links:cards.every(x=>x.getAttribute('aria-pressed')!==null),
+    horizontalOverflow:document.documentElement.scrollWidth>innerWidth+2
+   };
+  });
+  assert.equal(landing.count,3,'Landing needs exactly three entry tiles');
+  assert.deepEqual(landing.order,['yearbook','replay','moments'],'Correct tile order');
+  assert.deepEqual(landing.labels,['Jahrbuch','Runden','Schlüsselmomente']);
+  assert.equal(landing.homeClasses,true,'Reuse genuine homepage card class');
+  assert.ok(landing.sectionBeforeFilters,'Entry cards precede unchanged selectors');
+  assert.equal(landing.pageBg,'rgb(7, 31, 25)','History uses dark homepage background');
+  assert.equal(landing.pageBorder,'rgb(57, 93, 70)','History frame must be green');
+  assert.equal(landing.rootColor,'rgb(57, 93, 70)','Chronicle frame must be green');
+  assert.equal(landing.tileBorder,'rgb(115, 145, 117)','Selected entry uses green accent');
+  assert.equal(landing.links,true);
+  assert.equal(landing.horizontalOverflow,false,'No mobile overflow');
+  for(const view of ['moments','replay','yearbook']){
+   await page.locator('.history-entry-tile[data-view="'+view+'"]').click();
+   assert.equal(await page.locator('#history-view-select').inputValue(),view,'Entry tile opens matching explorer');
+   assert.equal(await page.locator('.history-entry-tile[aria-pressed="true"]').count(),1,'One selected tile');
+   await page.waitForTimeout(1050);
+   const scrollProbe=await page.evaluate(()=>{
+    const node=document.getElementById('history-workspace'),header=document.querySelector('.heritage-header');
+    const offset=(header?.getBoundingClientRect().height||0)+12;
+    const target=Math.max(0,window.scrollY+node.getBoundingClientRect().top-offset);
+    const max=Math.max(0,document.documentElement.scrollHeight-innerHeight);
+    return {actual:window.scrollY,expected:Math.min(target,max),max,target,anchorRect:node.getBoundingClientRect().top,headerHeight:offset,docHeight:document.documentElement.scrollHeight,innerHeight,bodyHeight:document.body.scrollHeight,scrollingHeight:document.scrollingElement.scrollHeight};
+   });
+   console.log('HISTORY_ENTRY_SCROLL_PROBE',JSON.stringify({width,view,...scrollProbe}));
+   assert.ok(scrollProbe.actual>40&&Math.abs(scrollProbe.actual-scrollProbe.expected)<30,view+' must scroll to explorer after entry');
+   assert.equal(await page.locator('.history-entry').count(),1,'Entry remains available after opening explorer');
+   assert.equal(await page.locator('.history-dropdown-controls').count(),1,'Dropdowns remain accessible');
+  }
+  await page.locator('#history-view-select').selectOption('replay');
+  assert.equal(await page.locator('.history-feature--replay').count(),1,'Dropdown can still switch after tile navigation');
+  await page.locator('#history-view-select').selectOption('moments');
+  assert.equal(await page.locator('.history-feature--moments').count(),1,'Existing Schlüsselmomente remain available');
+
   // Validate that replay and moment sliders match the exact Jahrbuch slider layout.
   let baselineSliderStyle=null;
   for(const view of ['yearbook','replay','moments']){
