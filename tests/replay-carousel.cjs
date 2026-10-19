@@ -83,8 +83,11 @@ const assert=require('node:assert/strict');
 
   // Native touchscreen: noticeably diagonal gestures must still follow the card.
   const activeHead=page.locator('.history-replay-slide[aria-hidden="false"] .history-replay-card-head');
-  await activeHead.scrollIntoViewIfNeeded();
+  await activeHead.evaluate(el=>el.scrollIntoView({block:'center',inline:'nearest',behavior:'instant'}));
+  await page.waitForTimeout(100);
   const pos=await activeHead.boundingBox(),tx=pos.x+pos.width/2,ty=pos.y+pos.height/2;
+  const hit=await page.evaluate(([x,y])=>document.elementFromPoint(x,y)?.closest('.history-replay-card-head')!==null,[tx,ty]);
+  assert(hit,'Mobile touch should start on visible card header');
   const session=await page.context().newCDPSession(page);
   const beforeTouch=await page.locator('.history-replay-track').evaluate(el=>el.style.transform);
   await session.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{id:7,x:tx,y:ty}]});
@@ -97,7 +100,8 @@ const assert=require('node:assert/strict');
   await page.waitForTimeout(1020);
   assert.equal(await page.locator('.history-replay-track').getAttribute('data-index'),'4','Diagonal touch commits exactly one round');
   // Predominantly vertical motion is not mistaken for a round change.
-  await activeHead.scrollIntoViewIfNeeded();
+  await activeHead.evaluate(el=>el.scrollIntoView({block:'center',inline:'nearest',behavior:'instant'}));
+  await page.waitForTimeout(60);
   const v=await activeHead.boundingBox(),vx=v.x+v.width/2,vy=v.y+v.height/2;
   await session.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{id:8,x:vx,y:vy}]});
   await session.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{id:8,x:vx+14,y:vy-95}]});
