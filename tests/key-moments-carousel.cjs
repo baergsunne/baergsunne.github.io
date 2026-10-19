@@ -14,11 +14,11 @@ const assert=require('node:assert/strict');
   const landing=await page.evaluate(()=>{
    const root=document.getElementById('history-chronicle'),p=document.querySelector('.page--history');
    const cards=[...root.querySelectorAll('.history-entry-grid .history-entry-tile')];
-   const allLabels=cards.map(x=>x.querySelector('.discovery-feature-copy strong')?.textContent);
+   const allLabels=cards.map(x=>x.querySelector('.tool-tile-copy strong')?.textContent);
    const rootColor=getComputedStyle(root).borderColor,frame=getComputedStyle(p);
    const tile=cards[0]&&getComputedStyle(cards[0]);
    return {count:cards.length,labels:allLabels,order:cards.map(x=>x.dataset.view),
-    homeClasses:cards.every(x=>x.classList.contains('discovery-feature')),
+    toolClasses:cards.every(x=>x.classList.contains('tool-tile')),
     sectionBeforeFilters:root.querySelector('.history-entry').compareDocumentPosition(root.querySelector('.history-dropdown-controls'))&Node.DOCUMENT_POSITION_FOLLOWING,
     pageBg:frame.backgroundColor,pageBorder:frame.borderTopWidth,rootColor: getComputedStyle(root).borderTopWidth,
     tileBorder:tile?.borderColor,links:cards.every(x=>x.getAttribute('aria-pressed')!==null),
@@ -28,12 +28,12 @@ const assert=require('node:assert/strict');
   assert.equal(landing.count,7,'Landing needs seven distinct Historie entry tiles');
   assert.deepEqual(landing.order,['yearbook','replay','moments','records','field','compare','aftermath'],'Correct tile order');
   assert.deepEqual(landing.labels,['Jahrbuch','Runden','Schlüsselmomente','Rekordbuch','Teilnehmerfeld','Jahresvergleich','Das Nachspiel']);
-  assert.equal(landing.homeClasses,true,'Reuse genuine homepage card class');
+  assert.equal(landing.toolClasses,true,'Reuse genuine statistics tool tile class');
   assert.ok(landing.sectionBeforeFilters,'Entry cards precede unchanged selectors');
   assert.equal(landing.pageBg,'rgb(7, 31, 25)','History uses dark homepage background');
   assert.equal(landing.pageBorder,'0px','History must have no outer page frame');
   assert.equal(landing.rootColor,'0px','Chronicle must be frameless and airy');
-  assert.equal(landing.tileBorder,'rgb(115, 145, 117)','Selected entry uses green accent');
+  assert.equal(landing.tileBorder,'rgb(214, 176, 109)','Selected entry uses statistics gold border');
   assert.equal(landing.links,true);
   assert.equal(landing.horizontalOverflow,false,'No mobile overflow');
   for(const view of ['moments','replay','yearbook']){
