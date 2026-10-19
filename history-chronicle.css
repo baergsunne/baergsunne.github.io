@@ -223,3 +223,6 @@
   gap:6px;
  }
 }
+
+/* Match browser-default input margins too, including iOS Safari. */
+.history-chronicle > .history-carousel-control input[type=range]{margin:0}
