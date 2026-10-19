@@ -111,6 +111,6 @@
 @media(prefers-reduced-motion:reduce){.history-carousel-track,.history-carousel-slide{transition:none!important}}
 
 /* Smooth physical settle after release, without changing finger-follow behaviour */
-.history-carousel-slide{transition:opacity .65s ease,transform 1.1s cubic-bezier(.25,.46,.35,1)!important}
+.history-carousel-slide{transition:opacity .65s ease,transform .85s cubic-bezier(.25,.46,.35,1)!important}
 .history-carousel-track{will-change:transform;backface-visibility:hidden}
 @media(prefers-reduced-motion:reduce){.history-carousel-slide{transition:none!important}}
