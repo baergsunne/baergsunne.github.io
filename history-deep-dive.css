@@ -1,0 +1,89 @@
+/* Bärgsunne Historie — seven views, four data-driven yearbooks.
+   Existing carousel drag/snap classes remain the sole interaction engine. */
+#app .page.page--history .history-entry-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+#app .page.page--history .history-entry-tile{
+ display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+ min-height:120px;gap:7px;padding:13px 8px;border:1px solid #4d6752;
+ background:linear-gradient(135deg,#254736,#17382c);border-radius:12px;
+}
+#app .page.page--history .history-entry-tile .discovery-feature-copy{
+ flex:0 1 auto;width:100%;text-align:center;gap:6px;min-width:0;
+}
+#app .page.page--history .history-entry-tile .discovery-feature-copy strong{
+ font-size:clamp(11px,1.35vw,16px);line-height:1.2;overflow-wrap:anywhere;
+}
+#app .page.page--history .history-entry-tile .discovery-feature-copy small{
+ font-size:clamp(10px,1.05vw,12px);line-height:1.3;overflow-wrap:anywhere;
+}
+#app .page.page--history .history-entry-tile .discovery-feature-icon{font-size:clamp(22px,2vw,28px);line-height:1}
+#app .page.page--history .history-entry-tile .discovery-feature-arrow{font-size:13px;line-height:1}
+#app .page.page--history .history-entry-tile.is-current{border-color:#739175;background:linear-gradient(145deg,#305a43,#1b4332)}
+@media(max-width:800px){
+ #app .page.page--history .history-entry-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+ #app .page.page--history .history-entry-tile{min-height:118px;padding:12px 7px}
+ #app .page.page--history .history-entry-tile .discovery-feature-copy strong{font-size:clamp(12px,3.5vw,16px)}
+ #app .page.page--history .history-entry-tile .discovery-feature-copy small{font-size:clamp(10px,2.8vw,12px)}
+}
+@media(max-width:350px){
+ #app .page.page--history .history-entry-grid{gap:7px}
+ #app .page.page--history .history-entry-tile{min-height:112px;padding:9px 6px}
+}
+/* Generic year-based perspectives: wider than the original Jahrbuch for useful reading. */
+#app .page.page--history .history-feature--insights{border:0!important;background:transparent!important;box-shadow:none!important}
+#app .page.page--history .history-feature--insights .history-carousel-slide{
+ width:calc(min(100vw - 60px, 700px));min-width:0;
+}
+#app .page.page--history .history-feature--insights .history-insight-card{
+ box-sizing:border-box;height:100%;padding:clamp(13px,3.4vw,29px);
+ border:1px solid #4d6752!important;border-radius:19px;
+ background:radial-gradient(ellipse at 50% 0,rgba(226,193,128,.13),transparent 43%),linear-gradient(148deg,#214938,#123428 58%,#0d271e)!important;
+ box-shadow:0 12px 30px rgba(0,0,0,.15)!important;color:#fff4df;
+}
+#app .page.page--history .history-feature--insights .history-insight-card:before{display:none}
+#app .page.page--history .history-feature--insights .history-insight-card:after{display:none}
+.history-insight-head{text-align:center;margin:0 0 21px;padding-bottom:17px;border-bottom:1px solid rgba(125,157,129,.35)}
+.history-insight-head>span{display:block;color:#e6c28a;font-size:11px;font-weight:800;letter-spacing:.14em}
+.history-insight-head h3{margin:7px 0;color:#fff2da;font-size:clamp(25px,6vw,37px);line-height:1.14;letter-spacing:-.03em;overflow-wrap:anywhere;text-wrap:balance}
+.history-insight-head h3 em{color:#edc786;font-style:normal;white-space:nowrap}
+#app .page.page--history .history-insight-head p{margin:4px 0 0;color:#c8d7c8;font-size:13px;line-height:1.45}
+.history-insight-section{margin-top:22px}
+.history-insight-section>h4{margin:0 0 6px;color:#f2d198;font-size:clamp(18px,4.7vw,23px);line-height:1.18;text-align:center;text-wrap:balance}
+#app .page.page--history .history-insight-section>p{margin:0 0 12px;color:#c5d4c6;font-size:12px;line-height:1.45;text-align:center;text-wrap:pretty}
+.history-insight-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.history-insight-metric{
+ box-sizing:border-box;display:flex;flex-direction:column;align-items:center;gap:5px;
+ text-align:center;min-width:0;padding:15px 10px;
+ border:1px solid #4d6752;border-radius:13px;background:linear-gradient(145deg,#2a5340,#15382b);
+}
+.history-insight-metric--negative{background:linear-gradient(145deg,#364c3c,#183529);border-color:#6e775e}
+.history-insight-metric--neutral{background:linear-gradient(145deg,#284a3a,#15382d)}
+.history-insight-metric-title{color:#eac789;font-size:11px;font-weight:850;line-height:1.28;letter-spacing:.02em;text-wrap:balance}
+.history-insight-metric-value{display:block;font-size:clamp(18px,4.9vw,25px);line-height:1.15;letter-spacing:-.02em;color:#fff4dd;overflow-wrap:anywhere;text-wrap:balance}
+.history-insight-metric-players{font-size:clamp(12px,3.2vw,15px);font-weight:750;line-height:1.3;color:#f5dcaa;overflow-wrap:anywhere;text-wrap:balance}
+#app .page.page--history .history-insight-metric p{margin:4px 0 0;color:#ccdbcc;font-size:11px;line-height:1.42;text-wrap:pretty}
+.history-insight-facts{display:grid;gap:9px}
+.history-insight-fact{min-width:0;padding:13px 12px;background:#1a3c2e;border:1px solid #45634d;border-radius:12px;overflow-wrap:anywhere}
+.history-insight-fact>strong{display:block;color:#f0c98e;font-size:13px;line-height:1.3;margin-bottom:7px}
+#app .page.page--history .history-insight-fact p{font-size:12px;line-height:1.5;color:#cdd9ca;margin:5px 0 0}
+.history-insight-names{display:block;color:#fff1d6;font-size:clamp(13px,3.6vw,17px);line-height:1.34;font-weight:780}
+.history-insight-name-list{display:flex;flex-wrap:wrap;gap:6px}
+.history-insight-name-list>span{display:inline-block;color:#f5e9cf;font-size:12px;padding:7px 9px;border:1px solid #5d795d;border-radius:8px;background:#244634}
+.history-insight-empty{font-style:italic}
+.history-insight-compare-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.history-insight-compare{min-width:0;padding:13px 10px;text-align:center;border:1px solid #4a6955;border-radius:12px;background:#193d2e}
+.history-insight-compare h4{color:#e6c489;font-size:clamp(12px,3vw,14px);margin:0 0 9px;line-height:1.28;text-wrap:balance}
+.history-insight-versus{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+.history-insight-versus>span{min-width:0;display:flex;flex-direction:column;gap:4px}
+.history-insight-versus small{font-size:11px;color:#c9d8cb}
+.history-insight-versus strong{font-size:clamp(13px,3.6vw,18px);color:#fff1d9;line-height:1.24;overflow-wrap:anywhere}
+#app .page.page--history .history-insight-compare>p{margin:10px 0 0;color:#c3d5c8;font-size:11px;line-height:1.4}
+@media(max-width:600px){
+ #app .page.page--history .history-feature--insights .history-carousel-slide{width:calc(100vw - 48px)}
+ .history-insight-grid,.history-insight-compare-grid{grid-template-columns:minmax(0,1fr)}
+ .history-insight-section{margin-top:19px}
+ .history-insight-metric{padding:13px 10px}
+ .history-insight-compare{padding:12px 9px}
+}
+@media(max-width:350px){
+ #app .page.page--history .history-feature--insights .history-carousel-slide{width:calc(100vw - 44px)}
+}
