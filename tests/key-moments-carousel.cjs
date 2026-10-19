@@ -10,6 +10,38 @@ const assert=require('node:assert/strict');
   await page.goto('http://127.0.0.1:8765/#history',{waitUntil:'domcontentloaded'});
   await page.waitForFunction(()=>typeof db!=='undefined'&&db.editions.some(x=>x.year===2026),null,{timeout:30000});
 
+  // Validate that replay and moment sliders match the exact Jahrbuch slider layout.
+  let baselineSliderStyle=null;
+  for(const view of ['yearbook','replay','moments']){
+   await page.locator('#history-view-select').selectOption(view);
+   const visual=await page.evaluate(view=>{
+    const root=document.getElementById('history-chronicle');
+    const control=root.querySelector(view==='yearbook'?'.history-carousel-control':'.history-replay-control');
+    const slider=control?.querySelector('input[type=range]');
+    if(!control||!slider)return {missing:true};
+    const box=control.getBoundingClientRect(),sb=slider.getBoundingClientRect(),s=getComputedStyle(control),t=getComputedStyle(slider);
+    return {
+     missing:false,
+     design:{display:s.display,gap:s.gap,padding:s.padding,color:s.color,fontSize:s.fontSize,fontWeight:s.fontWeight,borderRadius:s.borderRadius,backgroundImage:s.backgroundImage,
+       sliderMargin:t.margin,sliderAccent:t.accentColor,sliderMinHeight:t.minHeight},
+     labels:[...control.querySelectorAll(':scope > span')].map(x=>x.textContent.trim()),
+     rows:control.querySelectorAll(':scope > input[type=range]').length,
+     sameLine:Math.abs(sb.y+sb.height/2-(box.y+box.height/2))<3,
+     visibleSlider:sb.width>35&&sb.height>=35,
+     offscreenReadout:view==='yearbook'||!!control.querySelector('#history-replay-count.history-slider-sr-only'),
+     missingNumbers:!slider.getAttribute('aria-valuetext')&&view!=='yearbook'
+    };
+   },view);
+   assert.equal(visual.missing,false,view+' missing visual slider');
+   assert.equal(visual.rows,1,view+' must have one range in one row');
+   assert.equal(visual.labels.length,2,view+' needs two captions as in Jahrbuch');
+   assert.equal(visual.sameLine,true,view+' range must align vertically with captions');
+   assert.equal(visual.visibleSlider,true,view+' range too small');
+   assert.equal(visual.offscreenReadout,true,view+' accessible round count missing');
+   assert.equal(visual.missingNumbers,false,view+' aria-valuetext missing');
+   if(view==='yearbook')baselineSliderStyle=visual.design;
+   else assert.deepEqual(visual.design,baselineSliderStyle,view+' slider must match Jahrbuch styling');
+  }
   // Top navigation order and actual measured layout across all three modes.
   for(const [view,control,slider,feature] of [
    ['yearbook','.history-carousel-control','#history-year-slider','.history-feature--yearbook'],
