@@ -2,7 +2,7 @@ name: Browser statistics audit
 on:
   push:
     branches:
-      - feat/epic-yearbook-mobile-20261019
+      - fix/yearbook-swipe-peek-20261019
   pull_request:
     paths:
       - 'app.js'
