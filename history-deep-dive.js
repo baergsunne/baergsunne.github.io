@@ -53,7 +53,7 @@
  }
  const maxima=(items,key)=>{const high=Math.max(...items.map(x=>Number(x[key])));return {value:high,names:items.filter(x=>x[key]===high).map(x=>x.player)};};
  const metric=(title,value,names,explanation,kind='positive')=>
-  '<article class="history-insight-metric history-insight-metric--'+esc(kind)+'"><span class="history-insight-metric-title">'+esc(title)+'</span><strong class="history-insight-metric-value">'+esc(value)+'</strong><span class="history-insight-metric-players">'+people(names)+'</span><p>'+esc(explanation)+'</p></article>';
+  '<article class="history-insight-metric history-insight-metric--'+esc(kind)+'"><span class="history-insight-metric-title">'+esc(title)+'</span><strong class="history-insight-metric-value">'+esc(value)+'</strong>'+(names.length?'<span class="history-insight-metric-players">'+people(names)+'</span>':'')+'<p>'+esc(explanation)+'</p></article>';
  const section=(title,description,cards)=>'<section class="history-insight-section"><h4>'+esc(title)+'</h4><p>'+esc(description)+'</p><div class="history-insight-grid">'+cards.join('')+'</div></section>';
  const label=(title,body)=>'<div class="history-insight-fact"><strong>'+esc(title)+'</strong><p>'+body+'</p></div>';
  const namesSpan=xs=>'<strong class="history-insight-names">'+people(xs)+'</strong>';
@@ -61,7 +61,7 @@
  function records(ed){
   const stats=playerStats(ed),rank=rankings(ed),rr=results(ed);
   const choose=(data,key,title,unit,explanation,kind='positive')=>{
-   const m=maxima(data,key);return metric(title,fmt(m.value)+' '+unit,m.value||kind==='positive'?m.names:[],m.value?explanation:'Dieser Rekord trat in diesem Turnier nicht auf.',kind);
+   const m=maxima(data,key);return metric(title,fmt(m.value)+' '+unit,m.value>0?m.names:[],m.value?explanation:'Dieser Rekord trat in diesem Turnier nicht auf.',kind);
   };
   const pos=[
    choose(stats,'wins','Meiste Rundensiege','Siege','Anzahl Runden mit Platz 1.'),
