@@ -2,7 +2,7 @@ name: Browser statistics audit
 on:
   push:
     branches:
-      - fix/history-rounds-diagonal-swipe-20261019
+      - fix/rounds-original-results-persistent-20261019
   pull_request:
     paths:
       - 'app.js'
