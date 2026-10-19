@@ -146,21 +146,27 @@
 @media(min-width:620px){.history-replay-slide{width:min(78vw,510px)}}
 @media(prefers-reduced-motion:reduce){.history-replay-track,.history-replay-slide{transition:none!important}}
 
-/* Schlüsselmomente: compact editorial scenes on the proven Runden carousel */
+/* Schlüsselmomente: Premium editorial A + B, centered and mobile-first */
 .history-feature--moments .history-replay-head{padding:10px 17px 14px}
 .history-feature--moments .history-replay-head h3{font-size:clamp(24px,6.1vw,34px)}
-.history-feature--moments .history-moment-card{padding:clamp(12px,3.6vw,19px);background:radial-gradient(ellipse at 50% 0%,rgba(219,166,85,.19),transparent 48%),linear-gradient(148deg,#285340,#14382e 60%,#102920)}
+.history-feature--moments .history-moment-card{padding:clamp(11px,3.3vw,18px);background:radial-gradient(ellipse at 50% 0%,rgba(219,166,85,.19),transparent 48%),linear-gradient(148deg,#285340,#14382e 60%,#102920)}
 .history-feature--moments .history-replay-card-head{padding:7px 4px 15px;margin-bottom:13px}
 .history-feature--moments .history-moment-winner{margin:0 0 16px;padding:clamp(16px,5vw,26px) 10px;border:1px solid rgba(242,200,126,.75);border-radius:16px;text-align:center;background:radial-gradient(ellipse at 50% 0%,rgba(240,190,104,.28),transparent 94%),linear-gradient(160deg,#325844,#193b30);box-shadow:0 9px 22px rgba(0,0,0,.19),inset 0 1px rgba(255,245,199,.25)}
 .history-feature--moments .history-moment-winner small{display:block;color:#e5c18a;font-weight:850;letter-spacing:.14em;text-transform:uppercase;font-size:clamp(11px,2.7vw,13px)}
 .history-feature--moments .history-moment-winner strong{display:block;margin-top:8px;color:#fff5df;font-size:clamp(22px,6.5vw,34px);line-height:1.13;letter-spacing:-.025em;overflow-wrap:anywhere;text-wrap:balance}
-.history-moment-events{display:grid;gap:9px;min-width:0}
-.history-moment-event{min-width:0;overflow:hidden;padding:13px 12px;border-radius:13px;border:1px solid rgba(188,212,191,.24);background:linear-gradient(145deg,rgba(255,255,255,.09),rgba(4,27,18,.16));box-shadow:inset 0 1px rgba(255,255,255,.05)}
-.history-moment-event strong{display:block;color:#eac78b;font-size:clamp(13px,3.7vw,17px);font-weight:800;line-height:1.28;overflow-wrap:anywhere;text-wrap:balance}
-.history-moment-event p{margin:6px 0 0;color:#f5efdf;font-size:clamp(12px,3.1vw,14px);line-height:1.45;overflow-wrap:anywhere;text-wrap:pretty}
-.history-moment-event--leader,.history-moment-event--up,.history-moment-event--reaction,.history-moment-event--streak,.history-moment-event--final{border-color:rgba(229,192,116,.52);background:linear-gradient(145deg,rgba(220,171,91,.15),rgba(21,50,35,.2))}
-.history-moment-event--lantern,.history-moment-event--down,.history-moment-event--slump{border-color:rgba(218,138,108,.43)}
-.history-moment-event--lantern strong,.history-moment-event--down strong,.history-moment-event--slump strong{color:#f3c6ae}
-.history-moment-event--steady{border-color:rgba(185,203,192,.23);background:rgba(12,46,35,.36)}
-.history-moment-event--steady strong{color:#c2d5c8}
-@media(max-width:350px){.history-feature--moments .history-moment-card{padding:10px}.history-moment-event{padding:11px 9px}.history-moment-event p{font-size:12px}}
+.history-moment-events{display:grid;gap:11px;min-width:0}
+.history-moment-event{display:flex;flex-direction:column;align-items:center;gap:9px;min-width:0;overflow:hidden;text-align:center;padding:clamp(15px,4.2vw,23px) clamp(9px,3.2vw,17px);border-radius:16px;border:1px solid rgba(188,212,191,.28);background:radial-gradient(ellipse at 50% 0%,rgba(241,202,130,.1),transparent 75%),linear-gradient(150deg,rgba(255,255,255,.09),rgba(4,27,18,.16));box-shadow:inset 0 1px rgba(255,255,255,.07),0 5px 18px rgba(2,19,13,.13)}
+.history-moment-event .history-moment-label{display:inline-block;box-sizing:border-box;max-width:100%;margin:0;padding:6px 10px;border:1px solid rgba(233,194,120,.6);border-radius:999px;background:rgba(234,193,122,.11);color:#f3d49c;font-size:clamp(10px,2.65vw,12px);font-weight:850;line-height:1.35;letter-spacing:.055em;text-transform:uppercase;overflow-wrap:anywhere;text-wrap:balance}
+.history-moment-event .history-moment-headline{display:block;width:100%;margin:1px 0 0;color:#fff6e8;font-size:clamp(17px,5.1vw,25px);font-weight:830;line-height:1.22;letter-spacing:-.018em;overflow-wrap:anywhere;text-wrap:balance}
+.history-moment-chips{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:6px;width:100%;min-width:0;margin-top:1px}
+.history-moment-chip{display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;min-width:0;max-width:100%;padding:6px 9px;border-radius:9px;border:1px solid rgba(235,200,139,.38);background:rgba(20,46,34,.82);color:#f1d79e;font-size:clamp(11px,2.9vw,13px);font-weight:800;line-height:1.3;letter-spacing:.01em;overflow-wrap:anywhere;text-align:center}
+.history-moment-event .history-moment-description{display:block;width:100%;margin:0;color:#d6e0d4;font-size:clamp(12px,3vw,13px);line-height:1.48;overflow-wrap:anywhere;text-wrap:pretty}
+.history-moment-event--leader,.history-moment-event--up,.history-moment-event--reaction,.history-moment-event--streak,.history-moment-event--final{border-color:rgba(229,192,116,.56);background:radial-gradient(ellipse at 50% 0%,rgba(238,190,106,.13),transparent 85%),linear-gradient(145deg,rgba(220,171,91,.12),rgba(21,50,35,.25))}
+.history-moment-event--lantern,.history-moment-event--down,.history-moment-event--slump{border-color:rgba(218,155,122,.52)}
+.history-moment-event--steady{border-color:rgba(185,203,192,.28);background:rgba(12,46,35,.36)}
+@media(max-width:350px){
+ .history-feature--moments .history-moment-card{padding:10px}
+ .history-moment-event{padding:13px 8px;gap:8px}
+ .history-moment-event .history-moment-label{padding:6px 7px;font-size:10px;letter-spacing:.015em}
+ .history-moment-chip{padding:5px 7px}
+}
