@@ -66,8 +66,6 @@
  border-color:var(--bp-soft)!important;
 }
 #app .page.page--history .history-chronicle .history-entry{margin-bottom:24px}
-#app .page.page--history .history-entry-tile{border-color:var(--bp-soft)!important}
-#app .page.page--history .history-entry-tile.is-current{border-color:#739175!important}
 /* Navigation outside Historie: simple lines instead of additional function tiles. */
 #app .page.page--history .history-related{
  margin:0 0 27px;
