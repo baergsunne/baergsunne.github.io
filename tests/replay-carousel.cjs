@@ -56,7 +56,8 @@ const assert=require('node:assert/strict');
 
   const viewport=page.locator('.history-replay-viewport');await viewport.scrollIntoViewIfNeeded();
   async function gesture(dx){
-    const rect=await viewport.boundingBox(),x=rect.x+rect.width*.5,y=rect.y+110;
+    const head=page.locator('.history-replay-slide[aria-hidden="false"] .history-replay-card-head');await head.scrollIntoViewIfNeeded();
+    const rect=await head.boundingBox(),x=rect.x+rect.width*.5,y=rect.y+rect.height*.5;
     await page.mouse.move(x,y);await page.mouse.down();await page.mouse.move(x+dx,y,{steps:12});
     const inMotion=await page.locator('.history-replay-track').evaluate(el=>el.style.transform);
     await page.mouse.up();
