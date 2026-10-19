@@ -66,40 +66,6 @@
  border-color:var(--bp-soft)!important;
 }
 #app .page.page--history .history-chronicle .history-entry{margin-bottom:24px}
-/* Navigation outside Historie: simple lines instead of additional function tiles. */
-#app .page.page--history .history-related{
- margin:0 0 27px;
- padding:18px 0 16px;
- border-top:1px solid var(--bp-line);
- border-bottom:1px solid var(--bp-line);
- background:transparent;
-}
-.history-related-heading>span{
- display:block;color:var(--bp-gold);font-size:11px;font-weight:800;letter-spacing:.11em
-}
-#app .page.page--history .history-related-heading p{
- color:var(--bp-muted);font-size:13px;margin:5px 0 13px
-}
-.history-related-links{
- display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(12px,4vw,35px)
-}
-#app .page.page--history .history-related-link{
- display:flex;align-items:center;min-width:0;gap:10px;
- padding:6px 0;box-sizing:border-box;
- color:var(--bp-light);background:transparent;border:0;
- border-radius:0;text-align:left;font:inherit;cursor:pointer
-}
-.history-related-link>span:nth-child(2){flex:1;min-width:0;display:grid;gap:4px}
-.history-related-link strong{font-size:clamp(14px,3.9vw,17px);line-height:1.2}
-.history-related-link small{color:var(--bp-muted);font-size:clamp(11px,2.9vw,13px);line-height:1.3}
-.history-related-glyph{flex:0 0 auto;color:var(--bp-gold);font-size:23px}
-.history-related-arrow{flex:0 0 auto;color:var(--bp-gold);font-size:20px}
-#app .page.page--history .history-related-link:focus-visible{
- outline:2px solid var(--bp-gold);outline-offset:5px;border-radius:4px
-}
-@media(min-width:701px){
- #app .page.page--history .history-related-link:hover :is(strong,.history-related-arrow){color:#f4d396}
-}
 @media(max-width:640px){
  #app .page:not(.page--home) > .premium-masthead{
   margin:0 10px 24px!important;
@@ -107,8 +73,6 @@
   min-height:252px;
   padding:clamp(20px,5vw,28px);
  }
- .history-related-links{grid-template-columns:minmax(0,1fr);gap:10px}
- #app .page.page--history .history-related{margin-bottom:23px}
 }
 @media(max-width:350px){
  #app .page:not(.page--home) > .premium-masthead{

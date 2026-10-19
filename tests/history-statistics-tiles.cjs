@@ -47,7 +47,7 @@ const assert=require('node:assert/strict');
      separateLinks:document.querySelectorAll('.history-related-link').length};
    });
    assert.equal(actual.count,6,width+' exactly six Historie choices');
-   assert.equal(actual.separateLinks,2,width+' Hall of Fame/Spieler links preserved');
+   assert.equal(actual.separateLinks,0,width+' removed Hall of Fame/Spieler crosslinks');
    assert.equal(actual.scrollOverflow,false,width+' unexpected horizontal overflow');
    assert.equal(actual.beyondHist,false,width+' Historie entries too narrow');
    assert.deepEqual(actual.hist,actual.stats,width+' must use precisely same computed layout and typography as Statistik tiles');

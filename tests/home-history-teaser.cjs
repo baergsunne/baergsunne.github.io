@@ -61,7 +61,7 @@ const assert=require('node:assert/strict');
     assert.equal(await page.locator('.history-entry-tile[aria-pressed="true"]').getAttribute('data-view'),view,view+' tile should become active');
     assert.equal(await page.locator('.history-dropdown-controls').count(),1,'Existing dropdown intact');
     assert.equal(await page.locator('.history-carousel-control,.history-replay-control').count()>0,true,'Existing slider intact');
-    assert.equal(await page.locator('.history-related-link').count(),2,'Hall of Fame and Spieler links intact');
+    assert.equal(await page.locator('.history-related').count(),0,'No separate Hall of Fame/Spieler section on Historie');
    }
    // Verify that a teaser leads down to the existing work area, not merely to page top.
    await page.evaluate(()=>{state.page='home';draw();window.scrollTo(0,0)});

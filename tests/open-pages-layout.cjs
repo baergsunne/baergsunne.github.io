@@ -40,13 +40,13 @@ const assert=require('node:assert/strict');
     }
     state.page='history';draw();
     const root=document.querySelector('.history-chronicle');
-    const related=[...document.querySelectorAll('.history-related-link')];
+    const removedSection=document.querySelector('.history-related');
     const first=[...document.querySelectorAll('.history-entry-tile')];
     const border=getComputedStyle(root).borderTopWidth;
     const histFeature=document.querySelector('.history-feature');
     const featureBorder=getComputedStyle(histFeature).borderTopWidth;
-    return {report,border,featureBorder,related:related.map(x=>({page:x.dataset.value,label:x.querySelector('strong')?.textContent})),
-     linkInsideEntry:related.some(x=>x.closest('.history-entry')),firstCount:first.length,
+    return {report,border,featureBorder,removedSection:!!removedSection,
+     crossLinkCount:document.querySelectorAll('.history-related-link').length,firstCount:first.length,
      preserved:before===JSON.stringify(db.editions.find(x=>x.year===2026).official_standings)};
    });
    for(const r of audit.report){
@@ -61,22 +61,16 @@ const assert=require('node:assert/strict');
    assert.equal(audit.border,'0px','History chronicle must have no box around all tools');
    assert.equal(audit.featureBorder,'0px','Jahrbuch theatre must have no outer box');
    assert.equal(audit.firstCount,6,'Preserve exactly six Historie function cards');
-   assert.deepEqual(audit.related,[{page:'fame',label:'Hall of Fame'},{page:'players',label:'Spieler'}]);
-   assert.equal(audit.linkInsideEntry,false,'Other destinations must be visually separate');
+   assert.equal(audit.removedSection,false,'Weitere Bereiche section must be removed from Historie');
+   assert.equal(audit.crossLinkCount,0,'Hall of Fame and Spieler crosslinks removed from Historie');
    assert.equal(audit.preserved,true,'Historic standings must be untouched');
-   await page.locator('.history-related-link[data-value="fame"]').click();
-   assert.equal(await page.evaluate(()=>state.page),'fame','Hall of Fame must open from History');
-   await page.evaluate(()=>{state.page='history';draw()});
-   await page.locator('.history-related-link[data-value="players"]').click();
-   assert.equal(await page.evaluate(()=>state.page),'players','Spieler must open from History');
-   await page.evaluate(()=>{state.page='history';draw()});
    await page.locator('.history-entry-tile[data-view="moments"]').click();
    assert.equal(await page.locator('#history-view-select').inputValue(),'moments','Existing moment chooser works');
    assert.equal(await page.locator('#history-round-slider').count(),1,'Carousel regulator remains');
    await page.locator('#history-view-select').selectOption('replay');
    assert.equal(await page.locator('#history-round-slider').count(),1,'Round regulator remains');
    assert.deepEqual(errors,[],'No runtime errors');
-   console.log('OPEN_PAGES_PASS',JSON.stringify({width,pages:audit.report.map(x=>x.page),related:audit.related.length,preserved:audit.preserved}));
+   console.log('OPEN_PAGES_PASS',JSON.stringify({width,pages:audit.report.map(x=>x.page),crossLinks:audit.crossLinkCount,preserved:audit.preserved}));
    await page.close();
   }
  } finally {await browser.close();}
