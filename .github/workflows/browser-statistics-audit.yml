@@ -11,6 +11,8 @@ on:
       - 'index.html'
       - 'history-chronicle.js'
       - 'history-chronicle.css'
+      - 'open-pages.css'
+      - 'tests/open-pages-layout.cjs'
       - 'tests/key-moments-carousel.cjs'
       - 'tests/browser-audit.cjs'
       - '.github/workflows/browser-statistics-audit.yml'
@@ -40,3 +42,4 @@ jobs:
       - run: node tests/yearbook-finger-drag.cjs
       - run: node tests/replay-carousel.cjs
       - run: node tests/key-moments-carousel.cjs
+      - run: node tests/open-pages-layout.cjs
