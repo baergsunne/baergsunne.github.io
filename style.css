@@ -340,3 +340,12 @@ main{width:min(100%,1240px);margin-inline:auto}
 #app .bp-explain-subtitle{margin:1rem 0 .5rem;font-size:1rem;color:#f3e7ce}
 #app .bp-simple-glossary dt{font-weight:650;margin-top:.7rem}
 #app .bp-simple-glossary dd{margin:.25rem 0 .65rem 0}
+
+/* Compact, touch-friendly dropdown selectors */
+#app .bp-selection-panel{display:grid;gap:8px;margin:16px 0 18px;padding:15px;border:1px solid rgba(202,165,96,.4);border-radius:16px;background:linear-gradient(145deg,#193a2e,#10281f)}
+#app .bp-selection-panel label{font-size:.86rem;font-weight:700;color:#e2bd77}
+#app .bp-selection-panel select{width:100%;min-height:49px;padding:11px 38px 11px 13px;border-radius:10px;border:1px solid rgba(216,182,113,.58);background:#142e24;color:#f4eedf;font-size:1rem;appearance:auto}
+#app .bp-tool-browse,#app .bp-history-browse,#app .bp-round-browse{margin:12px 0 18px}
+#app .bp-tool-browse>summary,#app .bp-history-browse>summary,#app .bp-round-browse>summary{cursor:pointer;list-style:none;padding:12px 14px;border:1px solid rgba(216,182,113,.4);border-radius:12px;color:#e2bd77}
+#app .bp-tool-browse>summary::-webkit-details-marker,#app .bp-history-browse>summary::-webkit-details-marker,#app .bp-round-browse>summary::-webkit-details-marker{display:none}
+#app .bp-tool-browse[open]>summary,#app .bp-history-browse[open]>summary,#app .bp-round-browse[open]>summary{margin-bottom:12px}
