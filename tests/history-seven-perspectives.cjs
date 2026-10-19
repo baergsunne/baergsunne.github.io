@@ -18,11 +18,11 @@ const assert=require('node:assert/strict');
    assert.equal(years.includes(2014),false,'2014 missing event not to be invented');
    assert.equal(years.includes(2020),false,'2020 missing event not to be invented');
    const list=await page.locator('.history-entry-tile').evaluateAll(cards=>cards.map(c=>c.dataset.view));
-   assert.deepEqual(list,['yearbook','replay','moments','records','field','compare','aftermath']);
+   assert.deepEqual(list,['yearbook','replay','moments','records','field','compare']);
    const modes=await page.locator('#history-view-select option').evaluateAll(opts=>opts.map(x=>x.value));
-   assert.deepEqual(modes,list,'Dropdown has the same seven views, no Originalarchiv');
+   assert.deepEqual(modes,list,'Dropdown has the same six views, no Originalarchiv');
    assert.equal(await page.locator('#history-view-select option:text("Originalarchiv")').count(),0);
-   for(const view of ['records','field','compare','aftermath']){
+   for(const view of ['records','field','compare']){
     await page.locator('.history-entry-tile[data-view="'+view+'"]').click();
     assert.equal(await page.locator('#history-view-select').inputValue(),view,'Tile selected '+view);
     assert.equal(await page.locator('.history-feature--insights').count(),1,'No duplicate theater '+view);
@@ -50,8 +50,9 @@ const assert=require('node:assert/strict');
     assert.ok(viewAudit.center<5,view+' active card must be centered');
     assert.equal(viewAudit.styles,'rgb(77, 103, 82)','Green premium border '+view);
    }
-   const finalText=await page.locator('.history-carousel-slide:not([inert])').innerText();
-   assert.match(finalText,/noch keine späteren dokumentierten/i,'Latest 2026 must not invent a future');
+   assert.equal(await page.locator('.history-entry-tile[data-view="aftermath"]').count(),0,'Nachspiel entry must be removed');
+   assert.equal(await page.locator('#history-view-select option[value="aftermath"]').count(),0,'Nachspiel option must be removed');
+   assert.equal(await page.locator('.history-feature--aftermath').count(),0,'Nachspiel view must be removed');
    // 2015 must compare with the last actually held tournament (2013), not absent 2014.
    await page.locator('#history-view-select').selectOption('compare');
    await page.locator('#history-year-select').selectOption('2015');
@@ -94,7 +95,7 @@ const assert=require('node:assert/strict');
      const failures=[];
      for(const season of db.editions){
       state.page='history';state.historyYear=season.year;draw();
-      for(const view of ['records','field','compare','aftermath']){
+      for(const view of ['records','field','compare']){
        document.querySelector('#history-view-select').value=view;
        document.querySelector('#history-view-select').dispatchEvent(new Event('change',{bubbles:true}));
        const card=document.querySelector('.history-carousel-slide:not([inert]) .history-insight-card');
@@ -108,7 +109,7 @@ const assert=require('node:assert/strict');
     assert.deepEqual(audit,[],'All documented editions must render for each new perspective');
    }
    assert.deepEqual(errors,[],'No browser errors');
-   console.log('SEVEN_HISTORIE_PASS',JSON.stringify({width,yearbooks:years.length,modes:list.length,records:true,preserved:true}));
+   console.log('SIX_HISTORIE_PASS',JSON.stringify({width,yearbooks:years.length,modes:list.length,records:true,preserved:true}));
    await page.close();
   }
  }finally{await browser.close()}
