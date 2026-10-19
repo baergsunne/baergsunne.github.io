@@ -14,7 +14,8 @@
 }
 #app .page.page--history .history-feature--insights .history-insight-card:before{display:none}
 #app .page.page--history .history-feature--insights .history-insight-card:after{display:none}
-.history-insight-head{text-align:center;margin:0 0 21px;padding-bottom:17px;border-bottom:1px solid rgba(125,157,129,.35)}
+/* This card title is not a site <header>: keep it on the same green card surface. */
+.history-insight-head{position:static;z-index:auto;box-sizing:border-box;background:transparent!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;box-shadow:none!important;text-align:center;margin:0 0 21px;padding-bottom:17px;border-bottom:1px solid rgba(125,157,129,.35)}
 .history-insight-head>span{display:block;color:#e6c28a;font-size:11px;font-weight:800;letter-spacing:.14em}
 .history-insight-head h3{margin:7px 0;color:#fff2da;font-size:clamp(25px,6vw,37px);line-height:1.14;letter-spacing:-.03em;overflow-wrap:anywhere;text-wrap:balance}
 .history-insight-head h3 em{color:#edc786;font-style:normal;white-space:nowrap}
