@@ -42,7 +42,11 @@ const assert=require('node:assert/strict');
    assert.equal(await page.locator('.history-entry-tile[aria-pressed="true"]').count(),1,'One selected tile');
    await page.waitForFunction(()=>{
     const node=document.getElementById('history-workspace'),header=document.querySelector('.heritage-header');
-    return !!node&&window.scrollY>40&&Math.abs(node.getBoundingClientRect().top-(header?.getBoundingClientRect().height||0)-12)<25;
+    if(!node)return false;
+    const offset=(header?.getBoundingClientRect().height||0)+12;
+    const target=Math.max(0,window.scrollY+node.getBoundingClientRect().top-offset);
+    const bottomLimit=Math.max(0,document.documentElement.scrollHeight-window.innerHeight);
+    return window.scrollY>40&&Math.abs(window.scrollY-Math.min(target,bottomLimit))<25;
    },null,{timeout:7000});
    assert.equal(await page.locator('.history-entry').count(),1,'Entry remains available after opening explorer');
    assert.equal(await page.locator('.history-dropdown-controls').count(),1,'Dropdowns remain accessible');
