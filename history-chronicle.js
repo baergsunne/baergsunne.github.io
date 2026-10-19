@@ -4,7 +4,72 @@ const memory={year:null,round:0,view:'yearbook',perspective:'all',person:'',orig
 const e=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&quot;'}[c]));
 const fmt=n=>Number(n).toLocaleString('de-CH',{maximumFractionDigits:2});
 function reconstruct(ed,round){const scores=new Map(ed.players.map(p=>[p,{player:p,points:0,wins:0,results:[]}]));for(const r of ed.rounds.filter(r=>r.number<=round))for(const x of r.results){const o=scores.get(x.player_id);if(!o)continue;o.points+=x.points;o.wins+=x.place===1?1:0;o.results.push(x)}return [...scores.values()].sort((a,b)=>b.points-a.points||b.wins-a.wins||a.player.localeCompare(b.player,'de'));}
-function moments(ed){const out=[];let last=null;for(const r of ed.rounds){const ranks=reconstruct(ed,r.number);const leaders=ranks.filter(x=>x.points===ranks[0]?.points).map(x=>x.player);if(last&&leaders.join('|')!==last.join('|'))out.push({round:r.number,title:'Führungswechsel / Gleichstand an der Spitze',desc:`Nach Runde ${r.number}: ${leaders.join(', ')} ${leaders.length>1?'liegen punktgleich vorne':'liegt vorne'}.`});last=leaders;const winner=r.results.filter(x=>x.place===1).map(x=>x.player_id);if(winner.length)out.push({round:r.number,title:`Runde ${r.number}: Rundensieg`,desc:`${winner.join(', ')} ${winner.length>1?'belegen':'belegt'} den ersten Rundenplatz.`})}const official=ed.official_standings.filter(x=>x.place===1).map(x=>x.player_id);out.push({round:ed.round_count,title:'Offizielles Finale',desc:`Offizieller Schlussrang 1: ${official.join(', ')||'nicht dokumentiert'}. Die Schlussrangliste bleibt die verbindliche Quelle.`});return out;}
+// All moments are computed from documented rounds, never from invented stories.
+// "Vorrunde" comparisons begin with round 2; the leader and the red lantern
+// are groups of all players with the same top / bottom point totals.
+function moments(ed){
+ const rounds=[...ed.rounds].sort((a,b)=>a.number-b.number);
+ const same=(a,b)=>a.length===b.length&&a.every(x=>b.includes(x));
+ const people=xs=>xs.map(x=>x.player).join(', ');
+ const top=ranking=>ranking.filter(x=>x.points===ranking[0]?.points);
+ const bottom=ranking=>ranking.filter(x=>x.points===ranking.at(-1)?.points);
+ return rounds.map((round,index)=>{
+  const current=reconstruct(ed,round.number),previous=index?reconstruct(ed,rounds[index-1].number):null;
+  const oldRound=index?rounds[index-1]:null;
+  const cards=[];
+  const add=(type,title,detail)=>cards.push({type,title,detail});
+  const winners=round.results.filter(x=>x.place===1).map(x=>x.player_id);
+  const oldTop=previous?top(previous):[],nowTop=top(current);
+  const oldBottom=previous?bottom(previous):[],nowBottom=bottom(current);
+  const leaderChanged=previous&&!same(nowTop.map(x=>x.player),oldTop.map(x=>x.player));
+  const bottomChanged=previous&&!same(nowBottom.map(x=>x.player),oldBottom.map(x=>x.player));
+  add('leader',leaderChanged?'Führungswechsel':previous?'Führung verteidigt':'An der Spitze',
+    (leaderChanged?'Neu vorne: ':'Vorne: ')+people(nowTop)+'.');
+  add('lantern',bottomChanged?'Rote Laterne wechselt':previous?'Rote Laterne bleibt':'Rote Laterne',
+    (bottomChanged?'Neu am Tabellenende: ':'Am Tabellenende: ')+people(nowBottom)+'.');
+  let ups=[],downs=[];
+  if(previous){
+   const oldRanks=new Map(previous.map((x,i)=>[x.player,i+1]));
+   for(let i=0;i<current.length;i++){
+    const x=current[i],difference=oldRanks.get(x.player)-(i+1);
+    if(difference>=3)ups.push({name:x.player,steps:difference});
+    if(difference<=-3)downs.push({name:x.player,steps:-difference});
+   }
+   ups.sort((a,b)=>b.steps-a.steps||a.name.localeCompare(b.name,'de'));
+   downs.sort((a,b)=>b.steps-a.steps||a.name.localeCompare(b.name,'de'));
+   if(ups.length)add('up','Grosse Sprünge nach oben',ups.map(x=>x.name+' +'+x.steps+' Plätze').join(' · '));
+   if(downs.length)add('down','Grosse Abstürze',downs.map(x=>x.name+' −'+x.steps+' Plätze').join(' · '));
+   if(!ups.length&&!downs.length)add('steady','Keine grossen Rangbewegungen','Niemand ist um mindestens 3 Plätze gestiegen oder gefallen.');
+   const oldPoints=new Map(oldRound.results.map(x=>[x.player_id,x.points]));
+   const change=round.results.filter(x=>oldPoints.has(x.player_id)).map(x=>({name:x.player_id,diff:x.points-oldPoints.get(x.player_id),points:x.points,previous:oldPoints.get(x.player_id)}));
+   if(change.length){
+    const high=Math.max(...change.map(x=>x.diff)),low=Math.min(...change.map(x=>x.diff));
+    if(high>0)add('reaction','Stärkste Reaktion auf die Vorrunde',
+      change.filter(x=>x.diff===high).map(x=>x.name).join(', ')+' · '+fmt(high)+' Punkte mehr als in Runde '+oldRound.number+'.');
+    else add('reaction','Keine Steigerung zur Vorrunde','Niemand erzielte mehr Punkte als in der vorherigen Runde.');
+    if(low<0)add('slump','Schwächste Reaktion auf die Vorrunde',
+      change.filter(x=>x.diff===low).map(x=>x.name).join(', ')+' · '+fmt(-low)+' Punkte weniger als in Runde '+oldRound.number+'.');
+    else add('slump','Kein Rückgang zur Vorrunde','Niemand erzielte weniger Punkte als in der vorherigen Runde.');
+   }
+   const oldPodium=new Set(previous.slice(0,3).map(x=>x.player));
+   const arrivals=current.slice(0,3).filter(x=>!oldPodium.has(x.player));
+   if(arrivals.length)add('podium','Neu in den Top 3',people(arrivals)+' hat den Sprung unter die ersten drei geschafft.');
+   const lastWinners=oldRound.results.filter(x=>x.place===1).map(x=>x.player_id);
+   const repeat=winners.filter(x=>lastWinners.includes(x));
+   if(repeat.length)add('streak','Zweiter Rundensieg in Folge',repeat.join(', ')+ ' gewinnt auch diese Runde.');
+  }
+  if(current.length>1){
+   const gap=current[0].points-current[1].points;
+   if(gap===0)add('tight','Punktgleich an der Spitze',people(nowTop)+' liegen punktgleich vorne.');
+   else if(gap<=2)add('tight','Enges Rennen an der Spitze','Zwischen Platz 1 und 2 liegen nur '+fmt(gap)+' Punkte.');
+  }
+  if(index===rounds.length-1){
+   const champions=ed.official_standings.filter(x=>x.place===1).map(x=>x.player_id);
+   if(champions.length)add('final','Offizieller Turniersieg',champions.join(', ')+' gewinnt das Turnier '+ed.year+'.');
+  }
+  return {round:round.number,winners,cards,leaderChanged,bottomChanged,ups,downs};
+ });
+}
 function table(ed,round){const final=round===ed.round_count;const ranks=reconstruct(ed,round);const official=new Map(ed.official_standings.map(x=>[x.player_id,x]));return `<div class="history-table-shell"><table class="history-table"><thead><tr><th scope="col" title="Rang nach dieser Runde">Rang</th><th scope="col">Spieler</th><th scope="col" title="Punkte bis Runde ${round}">Pkt.</th><th scope="col" title="Rundensiege">Siege</th>${final?'<th scope="col" title="Offizieller Schlussrang">Final</th>':''}</tr></thead><tbody>${ranks.map((x,i)=>`<tr><td>${i+1}</td><td>${e(x.player)}</td><td>${fmt(x.points)}</td><td>${x.wins}</td>${final?`<td>${official.get(x.player)?.place??'–'}</td>`:''}</tr>`).join('')}</tbody></table></div>`;}
 function replay(ed){
  const rounds=[...ed.rounds].sort((a,b)=>a.number-b.number);
@@ -17,9 +82,18 @@ function yearbook(ed,editions){
  const panel=x=>{const standing=x.official_standings;const name=n=>standing.filter(z=>z.place===n).map(z=>z.player_id).join(', ')||'Nicht dokumentiert';return `<div class="history-yearbook-card" data-year="${x.year}"><div class="history-yearbook-head"><span class="history-yearbook-eyebrow">BÄRGSUNNE · DIE CHRONIK</span><h3>Jahrbuch <span>${x.year}</span></h3><div class="history-yearbook-cup" aria-hidden="true">🏆</div><span class="history-yearbook-divider" aria-hidden="true"></span></div><div class="history-podium history-podium--champion"><small>Champion</small><strong>${e(name(1))}</strong></div><div class="history-podium-pairs"><div class="history-podium history-podium--second"><small>Platz 2</small><strong>${e(name(2))}</strong></div><div class="history-podium history-podium--third"><small>Platz 3</small><strong>${e(name(3))}</strong></div></div><div class="history-shortcuts history-shortcuts--yearbook"><button type="button" data-his="view" data-view="replay">Turnier anschauen</button><button type="button" data-his="view" data-view="moments"><span>Schlüsselmomente</span><span>entdecken</span></button></div></div>`;};
  return `<section class="history-feature history-feature--yearbook"><div class="history-carousel-viewport"><div class="history-carousel-track" data-index="${index}">${years.map((x,i)=>'<div class="history-carousel-slide" data-index="'+i+'" '+(i!==index?'inert aria-hidden="true"':'')+'>'+panel(x)+'</div>').join('')}</div></div></section><div class="history-carousel-control"><span>‹ Älter</span><input id="history-year-slider" type="range" min="0" max="${years.length-1}" value="${index}" step="0.01" aria-label="Jahrbuch wechseln"/><span>Neuer ›</span></div><p class="history-carousel-hint">Karte mit dem Finger verschieben oder den Regler ziehen. Beim Wischen wechselt jeweils ein Jahrbuch.</p>`;
 }
-function scenes(ed){return `<section class="history-feature"><div class="history-panel-header"><span>DIE CHRONIK</span><h3>Belegte Turniermomente</h3><p>Diese Ereignisse werden aus den tatsächlich gespeicherten Platzierungen und Punkten rekonstruiert, nicht frei erfunden.</p></div><div class="history-scene-list">${moments(ed).map((m,i)=>`<button type="button" data-his="scene" data-number="${m.round}"><span>R${m.round}</span><strong>${e(m.title)}</strong><small>${e(m.desc)}</small><b>Runde öffnen ↗</b></button>`).join('')}</div></section>`;}
+function scenes(ed){
+ const rounds=moments(ed);
+ const selected=Math.max(0,Math.min(rounds.length-1,rounds.findIndex(x=>x.round===(memory.round||1))));
+ const card=item=>{
+  const winner=item.winners.length?item.winners.join(', '):'Kein Rundensieg dokumentiert';
+  const items=item.cards.map(m=>`<div class="history-moment-event history-moment-event--${m.type}"><strong>${e(m.title)}</strong><p>${e(m.detail)}</p></div>`).join('');
+  return `<article class="history-replay-card history-moment-card" data-round="${item.round}"><div class="history-replay-card-head"><span>SCHLÜSSELMOMENTE · ${ed.year}</span><h4>Runde ${item.round}</h4></div><div class="history-moment-winner"><small>Rundensieg</small><strong>${e(winner)}</strong></div><div class="history-moment-events">${items}</div></article>`;
+ };
+ return `<section class="history-feature history-feature--replay history-feature--moments"><div class="history-replay-head"><span>DIE SCHLÜSSELMOMENTE · ${ed.year}</span><h3>Runde für Runde</h3><p>Wische durch die Ereignisse oder ziehe den Regler.</p></div><div class="history-replay-viewport"><div class="history-replay-track" data-index="${selected}">${rounds.map((item,i)=>`<div class="history-replay-slide" data-index="${i}" aria-hidden="${i!==selected}">${card(item)}</div>`).join('')}</div></div><div class="history-replay-control"><div class="history-replay-control-head"><label for="history-round-slider">Runde auswählen</label><strong id="history-replay-count" aria-live="polite">Runde ${rounds[selected].round} von ${rounds.length}</strong></div><input type="range" id="history-round-slider" min="0" max="${rounds.length-1}" step="0.01" value="${selected}" aria-label="Runde der Schlüsselmomente wählen" aria-valuetext="Runde ${rounds[selected].round} von ${rounds.length}"/></div></section>`;
+}
 function archive(ed){return `<section class="history-feature"><div class="history-panel-header"><span>QUELLEN & RESULTATE</span><h3>Originalarchiv ${ed.year}</h3><p>Die gespeicherten historischen Resultate bleiben unverändert. Fehlende Dokumente werden nicht ergänzt.</p></div><p><b>Erfasste Quelle:</b> ${e(ed.source||'Keine Quellenbezeichnung hinterlegt')}</p><p><b>Dokumentationsstatus:</b> ${e(ed.status||'nicht angegeben')}</p><h4>Offizielle Schlussrangliste</h4><div class="history-table-shell"><table class="history-table"><thead><tr><th>Offizieller Rang</th><th>Spieler</th><th>Offizielle Punkte</th></tr></thead><tbody>${[...ed.official_standings].sort((a,b)=>a.place-b.place).map(x=>`<tr><td>${x.place}</td><td>${e(x.player_id)}</td><td>${fmt(x.points)}</td></tr>`).join('')}</tbody></table></div><h4>Originale Rundenresultate</h4>${ed.rounds.map(r=>`<details class="history-proof"><summary>Runde ${r.number}</summary><div class="history-table-shell"><table class="history-table"><thead><tr><th>Rang</th><th>Spieler</th><th>Punkte</th></tr></thead><tbody>${[...r.results].sort((a,b)=>a.place-b.place).map(x=>`<tr><td>${x.place}</td><td>${e(x.player_id)}</td><td>${fmt(x.points)}</td></tr>`).join('')}</tbody></table></div></details>`).join('')}</section>`;}
-function render(editions,year){requestAnimationFrame(()=>{initCarousel();initReplayCarousel();});const ed=editions.find(x=>x.year===Number(year))||editions.at(-1);if(!ed)return '';if(memory.year!==ed.year){memory.year=ed.year;memory.round=1;memory.view='yearbook'}const tabs=[['yearbook','Jahrbuch'],['replay','Runden'],['moments','Schlüsselmomente'],['archive','Originalarchiv']];return `<div class="history-chronicle" id="history-chronicle">${(memory.view==='yearbook'||memory.view==='replay')?'':'<div class="history-chronicle-top"><span>BÄRGSUNNE POKER · ZEITREISE</span><h2>Die Turnierchronik</h2><p>Geschichte erleben statt Statistik wiederholen.</p></div>'}<div class="history-dropdown-controls"><label for="history-year-select">Turnierjahr<select id="history-year-select" data-history-select="year" aria-label="Turnierjahr wählen">${[...editions].sort((a,b)=>b.year-a.year).map(x=>`<option value="${x.year}" ${x.year===ed.year?'selected':''}>${x.year}</option>`).join('')}</select></label><label for="history-view-select">Ansicht<select id="history-view-select" data-history-select="view" aria-label="Historische Ansicht wählen">${tabs.map(([id,name])=>`<option value="${id}" ${id===memory.view?'selected':''}>${name}</option>`).join('')}</select></label></div>${memory.view==='replay'?replay(ed):memory.view==='moments'?scenes(ed):memory.view==='archive'?archive(ed):yearbook(ed,editions)}${(memory.view==='yearbook'||memory.view==='replay')?'':'<p class="history-note">Historische Quelle: '+e(ed.source||'Quellenbezeichnung nicht hinterlegt')+'. Die Darstellung unterscheidet offizielle Schlussresultate von rechnerisch rekonstruierten Zwischenständen.</p>'}</div>`;}
+function render(editions,year){requestAnimationFrame(()=>{initCarousel();initReplayCarousel();});const ed=editions.find(x=>x.year===Number(year))||editions.at(-1);if(!ed)return '';if(memory.year!==ed.year){memory.year=ed.year;memory.round=1;memory.view='yearbook'}const tabs=[['yearbook','Jahrbuch'],['replay','Runden'],['moments','Schlüsselmomente'],['archive','Originalarchiv']];return `<div class="history-chronicle" id="history-chronicle">${(memory.view==='yearbook'||memory.view==='replay'||memory.view==='moments'||memory.view==='moments')?'':'<div class="history-chronicle-top"><span>BÄRGSUNNE POKER · ZEITREISE</span><h2>Die Turnierchronik</h2><p>Geschichte erleben statt Statistik wiederholen.</p></div>'}<div class="history-dropdown-controls"><label for="history-year-select">Turnierjahr<select id="history-year-select" data-history-select="year" aria-label="Turnierjahr wählen">${[...editions].sort((a,b)=>b.year-a.year).map(x=>`<option value="${x.year}" ${x.year===ed.year?'selected':''}>${x.year}</option>`).join('')}</select></label><label for="history-view-select">Ansicht<select id="history-view-select" data-history-select="view" aria-label="Historische Ansicht wählen">${tabs.map(([id,name])=>`<option value="${id}" ${id===memory.view?'selected':''}>${name}</option>`).join('')}</select></label></div>${memory.view==='replay'?replay(ed):memory.view==='moments'?scenes(ed):memory.view==='archive'?archive(ed):yearbook(ed,editions)}${(memory.view==='yearbook'||memory.view==='replay')?'':'<p class="history-note">Historische Quelle: '+e(ed.source||'Quellenbezeichnung nicht hinterlegt')+'. Die Darstellung unterscheidet offizielle Schlussresultate von rechnerisch rekonstruierten Zwischenständen.</p>'}</div>`;}
 window.POKER_HISTORY_CHRONICLE={render};
 requestAnimationFrame(()=>{initCarousel();initReplayCarousel();});
 let carouselBusy=false,drag=null,sliderDrag=null;
