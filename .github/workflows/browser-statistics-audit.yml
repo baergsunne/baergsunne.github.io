@@ -2,7 +2,7 @@ name: Browser statistics audit
 on:
   push:
     branches:
-      - fix/stats-tool-tiles-20261019
+      - fix/home-year-dropdown-20261019
   pull_request:
     paths:
       - 'app.js'
