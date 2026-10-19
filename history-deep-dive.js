@@ -156,7 +156,7 @@
  const types={records:['Rekordbuch','Bestleistungen und Negativrekorde','♛'],field:['Teilnehmerfeld','Neulinge, Rückkehrer und Stammgäste','♙'],compare:['Jahresvergleich','Was hat sich zum letzten Turnier verändert?','⇄']};
  function viewPanel(type,ed,editions){
   const info=types[type],body=type==='records'?records(ed):type==='field'?field(ed,editions):seasonCompare(ed,editions);
-  return '<article class="history-yearbook-card history-insight-card" data-year="'+ed.year+'" data-insight="'+type+'"><header class="history-insight-head"><span>HISTORIE · '+esc(info[0].toUpperCase())+'</span><h3>'+esc(info[0])+' <em>'+ed.year+'</em></h3><p>'+esc(info[1])+'</p></header>'+body+'</article>';
+  return '<article class="history-yearbook-card history-insight-card" data-year="'+ed.year+'" data-insight="'+type+'"><div class="history-insight-head"><span>HISTORIE · '+esc(info[0].toUpperCase())+'</span><h3>'+esc(info[0])+' <em>'+ed.year+'</em></h3><p>'+esc(info[1])+'</p></div>'+body+'</article>';
  }
  function render(type,ed,editions){
   if(!types[type])return '';
