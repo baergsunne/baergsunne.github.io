@@ -14,6 +14,10 @@ const assert=require('node:assert/strict');
   const yearbookMotion=await page.locator('.history-carousel-slide').first().evaluate(el=>({duration:getComputedStyle(el).transitionDuration,easing:getComputedStyle(el).transitionTimingFunction}));
   await page.locator('#history-view-select').selectOption('replay');
   await page.waitForTimeout(150);
+  assert.equal((await page.locator('#history-view-select option[value="replay"]').innerText()).trim(),'Runden','Visible navigation label must be Runden');
+  assert.equal(await page.locator('.history-feature--replay .history-note').count(),0,'No technical ranking explanation inside round cards');
+  assert.equal(await page.locator('#history-chronicle > .history-note').count(),0,'No technical archive explanation under Runden');
+  assert.equal((await page.locator('.history-replay-head > span').innerText()).split(' · ')[0],'RUNDEN','Replay heading renamed');
   const replayMotion=await page.locator('.history-replay-slide').first().evaluate(el=>({duration:getComputedStyle(el).transitionDuration,easing:getComputedStyle(el).transitionTimingFunction}));
   assert.deepEqual(replayMotion,yearbookMotion,'Replay must match yearbook opacity and scale timing');
   const data=await page.evaluate(()=>{
@@ -56,6 +60,29 @@ const assert=require('node:assert/strict');
   await gesture(70);assert.equal(await page.locator('.history-replay-track').getAttribute('data-index'),'4','Below 50 percent returns');
   await gesture(190);assert.equal(await page.locator('.history-replay-track').getAttribute('data-index'),'3','50 percent passes exactly one round');
   assert.equal(await page.locator('.history-replay-slide[aria-hidden="false"] .history-replay-card').getAttribute('data-round'),'4');
+  // Native touchscreen: noticeably diagonal gestures must still follow the card.
+  const activeHead=page.locator('.history-replay-slide[aria-hidden="false"] .history-replay-card-head');
+  await activeHead.scrollIntoViewIfNeeded();
+  const pos=await activeHead.boundingBox(),tx=pos.x+pos.width/2,ty=pos.y+pos.height/2;
+  const session=await page.context().newCDPSession(page);
+  const beforeTouch=await page.locator('.history-replay-track').evaluate(el=>el.style.transform);
+  await session.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{id:7,x:tx,y:ty}]});
+  for(const [dx,dy] of [[-40,16],[-90,35],[-185,72]]) {
+   await session.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{id:7,x:tx+dx,y:ty+dy}]});
+  }
+  const duringTouch=await page.locator('.history-replay-track').evaluate(el=>el.style.transform);
+  assert.notEqual(duringTouch,beforeTouch,'Diagonal touch must actively move the carousel');
+  await session.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
+  await page.waitForTimeout(1020);
+  assert.equal(await page.locator('.history-replay-track').getAttribute('data-index'),'4','Diagonal touch commits exactly one round');
+  // Predominantly vertical motion is not mistaken for a round change.
+  await activeHead.scrollIntoViewIfNeeded();
+  const v=await activeHead.boundingBox(),vx=v.x+v.width/2,vy=v.y+v.height/2;
+  await session.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{id:8,x:vx,y:vy}]});
+  await session.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{id:8,x:vx+14,y:vy-95}]});
+  await session.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
+  await page.waitForTimeout(100);
+  assert.equal(await page.locator('.history-replay-track').getAttribute('data-index'),'4','Vertical page scroll must not change rounds');
   assert.deepEqual(errors,[]);
   console.log('REPLAY_CAROUSEL_PASS',JSON.stringify({width,rounds:data.count,liveSlider:true,snap:true}));
   await page.close();
