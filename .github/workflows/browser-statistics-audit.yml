@@ -3,11 +3,15 @@ on:
   push:
     branches:
       - feat/keymoments-round-carousel-20261019
+      - feat/keymoments-premium-cards-20261019
   pull_request:
     paths:
       - 'app.js'
       - 'data.js'
       - 'index.html'
+      - 'history-chronicle.js'
+      - 'history-chronicle.css'
+      - 'tests/key-moments-carousel.cjs'
       - 'tests/browser-audit.cjs'
       - '.github/workflows/browser-statistics-audit.yml'
 jobs:
