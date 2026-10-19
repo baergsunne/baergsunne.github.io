@@ -31,6 +31,8 @@ const assert=require('node:assert/strict');
   assert.match(await page.locator('#history-replay-count').innerText(),/Runde 5/);
   await slider.evaluate(el=>el.dispatchEvent(new Event('change',{bubbles:true})));
   await page.waitForTimeout(1400);
+  const post=await page.evaluate(()=>({tracks:document.querySelectorAll('.history-replay-track').length,statePage:state.page,stateYear:state.historyYear,view:document.querySelector('#history-view-select')?.value,replayCards:document.querySelectorAll('.history-replay-card').length,appText:document.getElementById('app')?.textContent.slice(0,180)}));
+  assert.equal(post.tracks,1,'Replay vanished after slider: '+JSON.stringify(post));
   assert.equal(await page.locator('.history-replay-track').getAttribute('data-index'),'4');
   assert.equal(await page.locator('.history-replay-slide[aria-hidden="false"] .history-replay-card').getAttribute('data-round'),'5');
   const viewport=page.locator('.history-replay-viewport');await viewport.scrollIntoViewIfNeeded();
