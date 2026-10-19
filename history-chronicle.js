@@ -1,6 +1,6 @@
 /* Bärgsunne Poker 2.2.5: independent historical chronicle, read-only */
 (function(){'use strict';
-const memory={year:null,round:0,view:'yearbook',perspective:'all',person:''};
+const memory={year:null,round:0,view:'yearbook',perspective:'all',person:'',originalResultsOpen:false};
 const e=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&quot;'}[c]));
 const fmt=n=>Number(n).toLocaleString('de-CH',{maximumFractionDigits:2});
 function reconstruct(ed,round){const scores=new Map(ed.players.map(p=>[p,{player:p,points:0,wins:0,results:[]}]));for(const r of ed.rounds.filter(r=>r.number<=round))for(const x of r.results){const o=scores.get(x.player_id);if(!o)continue;o.points+=x.points;o.wins+=x.place===1?1:0;o.results.push(x)}return [...scores.values()].sort((a,b)=>b.points-a.points||b.wins-a.wins||a.player.localeCompare(b.player,'de'));}
@@ -9,7 +9,7 @@ function table(ed,round){const final=round===ed.round_count;const ranks=reconstr
 function replay(ed){
  const rounds=[...ed.rounds].sort((a,b)=>a.number-b.number);
  const selected=Math.min(rounds.length-1,Math.max(0,rounds.findIndex(x=>x.number===(memory.round||1))));
- const card=(round,i)=>`<article class="history-replay-card" data-round="${round.number}"><div class="history-replay-card-head"><span>TURNIER ${ed.year} · RUNDENCHRONIK</span><h4>Runde ${round.number}</h4><p>Stand nach Runde ${round.number}</p></div>${table(ed,round.number)}<details class="history-proof history-replay-proof"><summary>Originalergebnis dieser Runde</summary><div class="history-table-shell"><table class="history-table"><thead><tr><th>Rang</th><th>Spieler</th><th>Punkte</th></tr></thead><tbody>${[...round.results].sort((a,b)=>a.place-b.place).map(x=>`<tr><td>${x.place}</td><td>${e(x.player_id)}</td><td>${fmt(x.points)}</td></tr>`).join('')}</tbody></table></div></details></article>`;
+ const card=(round,i)=>`<article class="history-replay-card" data-round="${round.number}"><div class="history-replay-card-head"><span>TURNIER ${ed.year} · RUNDENCHRONIK</span><h4>Runde ${round.number}</h4><p>Stand nach Runde ${round.number}</p></div>${table(ed,round.number)}<details class="history-proof history-replay-proof" ${memory.originalResultsOpen?'open':''}><summary>Originalergebnis dieser Runde</summary><div class="history-table-shell"><table class="history-table"><thead><tr><th>Rang</th><th>Spieler</th><th>Punkte</th></tr></thead><tbody>${[...round.results].sort((a,b)=>a.place-b.place).map(x=>`<tr><td>${x.place}</td><td>${e(x.player_id)}</td><td>${fmt(x.points)}</td></tr>`).join('')}</tbody></table></div></details></article>`;
  return `<section class="history-feature history-feature--replay"><div class="history-replay-head"><span>RUNDEN · ${ed.year}</span><h3>Die Runden</h3><p>Wische durch die Runden oder ziehe den Regler.</p></div><div class="history-replay-viewport"><div class="history-replay-track" data-index="${selected}">${rounds.map((r,i)=>`<div class="history-replay-slide" data-index="${i}" aria-hidden="${i!==selected}">${card(r,i)}</div>`).join('')}</div></div><div class="history-replay-control"><div class="history-replay-control-head"><label for="history-round-slider">Runde auswählen</label><strong id="history-replay-count" aria-live="polite">Runde ${rounds[selected].number} von ${ed.round_count}</strong></div><input type="range" id="history-round-slider" min="0" max="${rounds.length-1}" step="0.01" value="${selected}" aria-label="Runde im Replay auswählen" aria-valuetext="Runde ${rounds[selected].number} von ${ed.round_count}"/></div></section>`;
 }
 function yearbook(ed,editions){
@@ -203,6 +203,19 @@ document.addEventListener('touchcancel',ev=>{
 
 document.addEventListener('input',ev=>{if(ev.target.id!=='history-round-slider'||replayBusy)return;const value=Number(ev.target.value);replaySliderParts=replaySliderParts||replayParts();replaySliderDrag=value;positionReplay(value,false,replaySliderParts);updateReplayReadout(value,replaySliderParts);});
 document.addEventListener('change',ev=>{if(ev.target.id!=='history-round-slider')return;const value=replaySliderDrag===null?Number(ev.target.value):replaySliderDrag;replaySliderDrag=null;replaySliderParts=null;commitReplay(value);});
+// The original round result is one shared display preference for every round.
+// A native summary click is intercepted so all cards expand/collapse together,
+// including those outside the visible viewport. Keep it through round switches
+// and chronicle re-renders until the user explicitly closes it.
+document.addEventListener('click',ev=>{
+ const summary=ev.target.closest('.history-feature--replay .history-replay-proof > summary');
+ if(!summary)return;
+ ev.preventDefault();
+ memory.originalResultsOpen=!memory.originalResultsOpen;
+ document.querySelectorAll('.history-feature--replay .history-replay-proof').forEach(detail=>{
+  detail.open=memory.originalResultsOpen;
+ });
+},true);
 document.addEventListener('change',ev=>{const select=ev.target.closest('[data-history-select]');if(!select)return;if(select.dataset.historySelect==='year'){const button=document.createElement('button');button.dataset.action='historyyear';button.dataset.value=select.value;button.style.display='none';select.after(button);button.click();requestAnimationFrame(()=>{initCarousel();initReplayCarousel();});return;}if(select.dataset.historySelect==='round'){memory.round=Number(select.value);}else{memory.view=select.value;}const node=document.getElementById('history-chronicle');if(node&&window.POKER_SEED)node.outerHTML=render(window.POKER_SEED.editions,memory.year);requestAnimationFrame(()=>{initCarousel();initReplayCarousel();});});
 document.addEventListener('click',ev=>{const b=ev.target.closest('[data-his]');if(!b)return;ev.preventDefault();const action=b.dataset.his;if(action==='view')memory.view=b.dataset.view;if(action==='round')memory.round=Number(b.dataset.number);if(action==='prev')memory.round=Math.max(1,memory.round-1);if(action==='next')memory.round+=1;if(action==='scene'){memory.round=Number(b.dataset.number);memory.view='replay'}const node=document.getElementById('history-chronicle');if(node&&window.POKER_SEED){const oldY=memory.year;node.outerHTML=render(window.POKER_SEED.editions,oldY);requestAnimationFrame(()=>{initCarousel();initReplayCarousel();})}},true);
 })();

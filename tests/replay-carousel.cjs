@@ -30,6 +30,14 @@ const assert=require('node:assert/strict');
   assert.equal(data.count,data.expected,'Every recorded round must have a card');
   assert.equal(data.active,'1');assert.equal(data.hasSlider,true);assert.equal(data.oldControls,false);
   assert.equal(data.hasOriginal,true);assert.equal(data.tableRows,data.sourcePlayers);assert.deepEqual(data.bad,[],'Card text overflow '+width);
+  // The original results are a single open/closed preference for the whole
+  // round carousel, not a separate accordion state for each round.
+  const allProofs=page.locator('.history-replay-proof');
+  assert.equal(await allProofs.count(),data.expected,'One original-result panel per round');
+  assert.equal(await page.locator('.history-replay-proof[open]').count(),0,'Initially collapsed');
+  await page.locator('.history-replay-slide[aria-hidden="false"] .history-replay-proof > summary').click();
+  assert.equal(await page.locator('.history-replay-proof[open]').count(),data.expected,'Opening a round expands originals in every round');
+  assert.equal(await page.locator('.history-replay-slide[aria-hidden="false"] .history-replay-proof[open] tbody tr').count(),data.sourcePlayers,'Opened round contains original table rows');
   const slider=page.locator('#history-round-slider');
   const prior=await page.locator('.history-replay-track').evaluate(el=>el.style.transform);
   await slider.evaluate(el=>{el.value='4.35';el.dispatchEvent(new Event('input',{bubbles:true}))});
@@ -43,9 +51,13 @@ const assert=require('node:assert/strict');
   assert.equal(post.tracks,1,'Replay vanished after slider: '+JSON.stringify(post));
   assert.equal(await page.locator('.history-replay-track').getAttribute('data-index'),'4');
   assert.equal(await page.locator('.history-replay-slide[aria-hidden="false"] .history-replay-card').getAttribute('data-round'),'5');
+  assert.equal(await page.locator('.history-replay-proof[open]').count(),data.expected,'Original tables stay open after dragging the round slider');
+  assert.equal(await page.locator('.history-replay-slide[aria-hidden="false"] .history-replay-proof[open] tbody tr').count(),data.sourcePlayers,'Visible new round keeps its original data');
+
   const viewport=page.locator('.history-replay-viewport');await viewport.scrollIntoViewIfNeeded();
   async function gesture(dx){
-    const rect=await viewport.boundingBox(),x=rect.x+rect.width*.5,y=rect.y+110;
+    const head=page.locator('.history-replay-slide[aria-hidden="false"] .history-replay-card-head');await head.scrollIntoViewIfNeeded();
+    const rect=await head.boundingBox(),x=rect.x+rect.width*.5,y=rect.y+rect.height*.5;
     await page.mouse.move(x,y);await page.mouse.down();await page.mouse.move(x+dx,y,{steps:12});
     const inMotion=await page.locator('.history-replay-track').evaluate(el=>el.style.transform);
     await page.mouse.up();
@@ -60,10 +72,22 @@ const assert=require('node:assert/strict');
   await gesture(70);assert.equal(await page.locator('.history-replay-track').getAttribute('data-index'),'4','Below 50 percent returns');
   await gesture(190);assert.equal(await page.locator('.history-replay-track').getAttribute('data-index'),'3','50 percent passes exactly one round');
   assert.equal(await page.locator('.history-replay-slide[aria-hidden="false"] .history-replay-card').getAttribute('data-round'),'4');
+  assert.equal(await page.locator('.history-replay-proof[open]').count(),data.expected,'Original tables stay open after swiping a round');
+  await page.locator('.history-replay-slide[aria-hidden="false"] .history-replay-proof > summary').click();
+  assert.equal(await page.locator('.history-replay-proof[open]').count(),0,'Closing in any round closes all originals');
+  await page.locator('#history-view-select').selectOption('yearbook');
+  await page.locator('#history-view-select').selectOption('replay');
+  assert.equal(await page.locator('.history-replay-proof[open]').count(),0,'Closed preference survives navigation');
+  await page.locator('.history-replay-slide[aria-hidden="false"] .history-replay-proof > summary').click();
+  assert.equal(await page.locator('.history-replay-proof[open]').count(),data.expected,'Preference can be reopened from another round');
+
   // Native touchscreen: noticeably diagonal gestures must still follow the card.
   const activeHead=page.locator('.history-replay-slide[aria-hidden="false"] .history-replay-card-head');
-  await activeHead.scrollIntoViewIfNeeded();
+  await activeHead.evaluate(el=>el.scrollIntoView({block:'center',inline:'nearest',behavior:'instant'}));
+  await page.waitForTimeout(100);
   const pos=await activeHead.boundingBox(),tx=pos.x+pos.width/2,ty=pos.y+pos.height/2;
+  const hit=await page.evaluate(([x,y])=>document.elementFromPoint(x,y)?.closest('.history-replay-card-head')!==null,[tx,ty]);
+  assert(hit,'Mobile touch should start on visible card header');
   const session=await page.context().newCDPSession(page);
   const beforeTouch=await page.locator('.history-replay-track').evaluate(el=>el.style.transform);
   await session.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{id:7,x:tx,y:ty}]});
@@ -76,7 +100,8 @@ const assert=require('node:assert/strict');
   await page.waitForTimeout(1020);
   assert.equal(await page.locator('.history-replay-track').getAttribute('data-index'),'4','Diagonal touch commits exactly one round');
   // Predominantly vertical motion is not mistaken for a round change.
-  await activeHead.scrollIntoViewIfNeeded();
+  await activeHead.evaluate(el=>el.scrollIntoView({block:'center',inline:'nearest',behavior:'instant'}));
+  await page.waitForTimeout(60);
   const v=await activeHead.boundingBox(),vx=v.x+v.width/2,vy=v.y+v.height/2;
   await session.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{id:8,x:vx,y:vy}]});
   await session.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{id:8,x:vx+14,y:vy-95}]});
