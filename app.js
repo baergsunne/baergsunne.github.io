@@ -247,7 +247,7 @@ function home(){
  ${feature('Analyse-Studio','Individuelle Auswertungen zusammenstellen','statsrounds','studio','◇')}
  ${feature('Schnellanalysen','Vorgefertigte Fragen untersuchen','statsrounds','standard','↗')}
  </div></section>
- <section class="discovery-section discovery-years"><div class="discovery-head"><span class="overline">DAS ARCHIV</span><h2>Die Turnierjahre</h2></div><div class="bp-selection-panel bp-home-year-select"><label for="bp-home-year">Turnierjahr auswählen</label><select id="bp-home-year" aria-label="Turnierjahr auswählen"><option value="">Jahr auswählen</option>${ordered.map(e=>`<option value="${e.year}">${e.year} · ${e.round_count} Runden</option>`).join('')}</select></div></section></div>`;
+ <section class="discovery-section discovery-years"><div class="discovery-head"><span class="overline">DAS ARCHIV</span><h2>Die Turnierjahre</h2><p>Wähle ein Turnierjahr aus. Du gelangst direkt zum entsprechenden Jahrbuch auf der Historie-Seite.</p></div><div class="bp-selection-panel bp-home-year-select"><label for="bp-home-year">Turnierjahr auswählen</label><select id="bp-home-year" aria-label="Turnierjahr auswählen"><option value="">Jahr auswählen</option>${ordered.map(e=>`<option value="${e.year}">${e.year} · ${esc(e.official_standings.find(x=>x.place===1)?.player_id||"Sieger nicht erfasst")}</option>`).join('')}</select></div></section></div>`;
 }
 const TOOL_CHOICES=Object.create(null);
 try{
