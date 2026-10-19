@@ -69,3 +69,20 @@
 .history-feature--yearbook .history-shortcuts--yearbook button:focus-visible{outline:2px solid #ffd58f;outline-offset:3px}
 @media(max-width:350px){.history-feature--yearbook .history-yearbook-card{padding:12px}.history-feature--yearbook .history-podium--champion strong{font-size:clamp(22px,8vw,34px)}.history-feature--yearbook .history-podium-pairs strong{font-size:clamp(14px,4.3vw,20px)}.history-feature--yearbook .history-shortcuts--yearbook button{padding:10px 5px;font-size:12px;min-height:70px}}
 @media(prefers-reduced-motion:reduce){.history-feature--yearbook .history-shortcuts--yearbook button{transition:none}}
+
+/* Yearbook carousel: centre spotlight, visible neighbouring spines and draggable timeline */
+.history-feature--yearbook{position:relative;isolation:isolate;overflow:visible!important;padding:0 13px;min-width:0}
+.history-feature--yearbook .history-yearbook-card{position:relative;z-index:2;width:100%;box-sizing:border-box}
+.history-feature--yearbook .history-carousel-side{position:absolute;top:13%;bottom:13%;width:33px;z-index:1;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;overflow:hidden;border:1px solid rgba(238,194,118,.58);border-radius:14px;background:linear-gradient(165deg,#2a5743,#10261e);box-shadow:0 8px 18px rgba(0,0,0,.3);color:#ebc58b;pointer-events:none}
+.history-feature--yearbook .history-carousel-side--prev{left:0;transform:rotate(-2deg)}
+.history-feature--yearbook .history-carousel-side--next{right:0;transform:rotate(2deg)}
+.history-feature--yearbook .history-carousel-side:empty{display:none}
+.history-feature--yearbook .history-side-year{font-size:12px;font-weight:850;writing-mode:vertical-rl;letter-spacing:.07em}
+.history-feature--yearbook .history-side-label{font-size:9px;writing-mode:vertical-rl;color:#e9dfc8}
+.history-feature--yearbook .history-shortcuts--yearbook button{word-break:normal!important;overflow-wrap:normal!important;hyphens:none!important;letter-spacing:-.035em!important;font-size:clamp(10px,2.65vw,14px)!important;line-height:1.26;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;padding:9px 5px}
+.history-feature--yearbook .history-shortcuts--yearbook button span{display:block;white-space:nowrap;max-width:100%;font-size:inherit}
+.history-carousel-control{display:flex;align-items:center;gap:9px;margin:16px 3px 5px;color:#edce9d;font-weight:700;font-size:clamp(10px,2.8vw,13px)}
+.history-carousel-control>span{white-space:nowrap;flex:none}
+.history-carousel-control input[type=range]{flex:1;width:100%;min-width:0;min-height:40px;accent-color:#dab675;touch-action:pan-x;cursor:pointer}
+.history-carousel-hint{text-align:center;font-size:.82rem;line-height:1.45;margin:3px 8px 14px;color:#c0cfbf}
+@media(max-width:350px){.history-feature--yearbook{padding:0 11px}.history-feature--yearbook .history-shortcuts--yearbook button{font-size:10px!important;padding:8px 3px}}
