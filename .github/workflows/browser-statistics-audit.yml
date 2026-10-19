@@ -2,7 +2,7 @@ name: Browser statistics audit
 on:
   push:
     branches:
-      - feat/history-replay-swipe-slider-20261019
+      - fix/replay-match-yearbook-motion-20261019
   pull_request:
     paths:
       - 'app.js'

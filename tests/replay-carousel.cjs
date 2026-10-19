@@ -10,8 +10,12 @@ const assert=require('node:assert/strict');
   await page.goto('http://127.0.0.1:8765/#history',{waitUntil:'domcontentloaded'});
   await page.waitForFunction(()=>typeof db!=='undefined'&&db.editions.some(e=>e.year===2026),null,{timeout:30000});
   await page.evaluate(()=>{state.page='history';state.historyYear=2018;draw()});
+  // Compare the same card animation curve in the Jahrbuch and Replay views.
+  const yearbookMotion=await page.locator('.history-carousel-slide').first().evaluate(el=>({duration:getComputedStyle(el).transitionDuration,easing:getComputedStyle(el).transitionTimingFunction}));
   await page.locator('#history-view-select').selectOption('replay');
   await page.waitForTimeout(150);
+  const replayMotion=await page.locator('.history-replay-slide').first().evaluate(el=>({duration:getComputedStyle(el).transitionDuration,easing:getComputedStyle(el).transitionTimingFunction}));
+  assert.deepEqual(replayMotion,yearbookMotion,'Replay must match yearbook opacity and scale timing');
   const data=await page.evaluate(()=>{
    const cards=[...document.querySelectorAll('.history-replay-card')],original=db.editions.find(x=>x.year===2018);
    const visible=document.querySelector('.history-replay-slide[aria-hidden="false"]');
@@ -36,7 +40,19 @@ const assert=require('node:assert/strict');
   assert.equal(await page.locator('.history-replay-track').getAttribute('data-index'),'4');
   assert.equal(await page.locator('.history-replay-slide[aria-hidden="false"] .history-replay-card').getAttribute('data-round'),'5');
   const viewport=page.locator('.history-replay-viewport');await viewport.scrollIntoViewIfNeeded();
-  async function gesture(dx){const rect=await viewport.boundingBox();const x=rect.x+rect.width*.5,y=rect.y+110;await page.mouse.move(x,y);await page.mouse.down();await page.mouse.move(x+dx,y,{steps:12});const inMotion=await page.locator('.history-replay-track').evaluate(el=>el.style.transform);await page.mouse.up();await page.waitForTimeout(1400);return inMotion}
+  async function gesture(dx){
+    const rect=await viewport.boundingBox(),x=rect.x+rect.width*.5,y=rect.y+110;
+    await page.mouse.move(x,y);await page.mouse.down();await page.mouse.move(x+dx,y,{steps:12});
+    const inMotion=await page.locator('.history-replay-track').evaluate(el=>el.style.transform);
+    await page.mouse.up();
+    const startPosition=await page.locator('.history-replay-track').evaluate(el=>getComputedStyle(el).transform);
+    await page.waitForTimeout(220);
+    const midway=await page.locator('.history-replay-track').evaluate(el=>getComputedStyle(el).transform);
+    assert.notEqual(startPosition,midway,'Track must visibly glide after finger release');
+    assert.match(await page.locator('.history-replay-track').evaluate(el=>el.style.transition),/850ms/);
+    await page.waitForTimeout(1180);
+    return inMotion;
+  }
   await gesture(70);assert.equal(await page.locator('.history-replay-track').getAttribute('data-index'),'4','Below 50 percent returns');
   await gesture(190);assert.equal(await page.locator('.history-replay-track').getAttribute('data-index'),'3','50 percent passes exactly one round');
   assert.equal(await page.locator('.history-replay-slide[aria-hidden="false"] .history-replay-card').getAttribute('data-round'),'4');
