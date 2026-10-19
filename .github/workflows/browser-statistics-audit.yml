@@ -14,6 +14,7 @@ on:
       - 'history-deep-dive.js'
       - 'history-deep-dive.css'
       - 'tests/history-seven-perspectives.cjs'
+      - 'tests/history-sticky-slider.cjs'
       - 'tests/home-history-teaser.cjs'
       - 'tests/history-statistics-tiles.cjs'
       - 'open-pages.css'
@@ -48,6 +49,7 @@ jobs:
       - run: node tests/replay-carousel.cjs
       - run: node tests/key-moments-carousel.cjs
       - run: node tests/history-seven-perspectives.cjs
+      - run: node tests/history-sticky-slider.cjs
       - run: node tests/home-history-teaser.cjs
       - run: node tests/history-statistics-tiles.cjs
       - run: node tests/open-pages-layout.cjs

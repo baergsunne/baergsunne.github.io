@@ -156,7 +156,24 @@ function historyEntry(){
   '<button type="button" class="tool-tile history-entry-tile'+(memory.view===view?' is-active is-current':'')+'" data-his="entry" data-view="'+view+'" aria-pressed="'+(memory.view===view?'true':'false')+'"><span class="tool-tile-symbol" aria-hidden="true"><img class="bp-icon" src="assets/icons/'+icons[view]+'.svg" alt="" aria-hidden="true"></span><span class="tool-tile-copy"><strong>'+e(title)+'</strong><small>'+e(detail)+'</small></span><span class="tool-tile-arrow" aria-hidden="true">↓</span></button>'
  ).join('')+'</div></section>';
 }
-function render(editions,year){requestAnimationFrame(()=>{initCarousel();initReplayCarousel();});const ed=editions.find(x=>x.year===Number(year))||editions.at(-1);if(!ed)return '';if(memory.year!==ed.year){memory.year=ed.year;memory.round=1;}if(!['yearbook','replay','moments','records','field','compare'].includes(memory.view))memory.view='yearbook';return `<div class="history-chronicle" id="history-chronicle">${true?'':'<div class="history-chronicle-top"><span>BÄRGSUNNE POKER · ZEITREISE</span><h2>Die Turnierchronik</h2><p>Geschichte erleben statt Statistik wiederholen.</p></div>'}${historyEntry()}<div class="history-workspace-marker" id="history-workspace"></div><div class="history-dropdown-controls"><label for="history-year-select">Turnierjahr<select id="history-year-select" data-history-select="year" aria-label="Turnierjahr wählen">${[...editions].sort((a,b)=>b.year-a.year).map(x=>`<option value="${x.year}" ${x.year===ed.year?'selected':''}>${x.year}</option>`).join('')}</select></label></div>${memory.view==='replay'?replay(ed):memory.view==='moments'?scenes(ed):memory.view==='yearbook'?yearbook(ed,editions):window.BAERGSUNNE_HISTORY_EXT?.render(memory.view,ed,editions)||yearbook(ed,editions)}${true?'':'<p class="history-note">Historische Quelle: '+e(ed.source||'Quellenbezeichnung nicht hinterlegt')+'. Die Darstellung unterscheidet offizielle Schlussresultate von rechnerisch rekonstruierten Zwischenständen.</p>'}</div>`;}
+function render(editions,year){requestAnimationFrame(()=>{syncHistorieStickyTop();initCarousel();initReplayCarousel();});const ed=editions.find(x=>x.year===Number(year))||editions.at(-1);if(!ed)return '';if(memory.year!==ed.year){memory.year=ed.year;memory.round=1;}if(!['yearbook','replay','moments','records','field','compare'].includes(memory.view))memory.view='yearbook';return `<div class="history-chronicle" id="history-chronicle">${true?'':'<div class="history-chronicle-top"><span>BÄRGSUNNE POKER · ZEITREISE</span><h2>Die Turnierchronik</h2><p>Geschichte erleben statt Statistik wiederholen.</p></div>'}${historyEntry()}<div class="history-workspace-marker" id="history-workspace"></div><div class="history-dropdown-controls"><label for="history-year-select">Turnierjahr<select id="history-year-select" data-history-select="year" aria-label="Turnierjahr wählen">${[...editions].sort((a,b)=>b.year-a.year).map(x=>`<option value="${x.year}" ${x.year===ed.year?'selected':''}>${x.year}</option>`).join('')}</select></label></div>${memory.view==='replay'?replay(ed):memory.view==='moments'?scenes(ed):memory.view==='yearbook'?yearbook(ed,editions):window.BAERGSUNNE_HISTORY_EXT?.render(memory.view,ed,editions)||yearbook(ed,editions)}${true?'':'<p class="history-note">Historische Quelle: '+e(ed.source||'Quellenbezeichnung nicht hinterlegt')+'. Die Darstellung unterscheidet offizielle Schlussresultate von rechnerisch rekonstruierten Zwischenständen.</p>'}</div>`;}
+/* Sticky controls stay below the actual site header across iPhone layouts,
+   including safe areas and rotations. Recalculation never adjusts scrollY. */
+let historienHeaderObserved=null;
+const historienHeaderObserver=typeof ResizeObserver==='function'?new ResizeObserver(()=>syncHistorieStickyTop()):null;
+function syncHistorieStickyTop(){
+ const header=document.querySelector('.heritage-header');
+ if(!header)return;
+ if(historienHeaderObserver&&historienHeaderObserved!==header){
+  historienHeaderObserver.disconnect();
+  historienHeaderObserver.observe(header);
+  historienHeaderObserved=header;
+ }
+ document.documentElement.style.setProperty('--bp-history-sticky-top',
+  Math.ceil(header.getBoundingClientRect().height+8)+'px');
+}
+window.addEventListener('resize',syncHistorieStickyTop,{passive:true});
+
 window.POKER_HISTORY_CHRONICLE={render};
 requestAnimationFrame(()=>{initCarousel();initReplayCarousel();});
 let carouselBusy=false,drag=null,sliderDrag=null;
