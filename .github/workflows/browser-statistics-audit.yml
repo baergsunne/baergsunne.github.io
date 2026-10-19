@@ -2,7 +2,7 @@ name: Browser statistics audit
 on:
   push:
     branches:
-      - fix/yearbook-animated-one-step-20261019
+      - fix/yearbook-touch-drag-real-20261019
   pull_request:
     paths:
       - 'app.js'
@@ -33,3 +33,4 @@ jobs:
       - run: node tests/profile-personalized-explanations.cjs
       - run: node tests/mobile-dropdowns.cjs
       - run: node tests/yearbook-responsive.cjs
+      - run: node tests/yearbook-finger-drag.cjs
