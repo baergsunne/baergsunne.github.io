@@ -57,9 +57,10 @@ const assert=require('node:assert/strict');
     if(await page.evaluate(()=>state.page)!=='home')await page.evaluate(()=>{state.page='home';draw();window.scrollTo(0,0)});
     await page.locator('.discovery-history-teaser [data-value="'+view+'"]').click();
     assert.equal(await page.evaluate(()=>state.page),'history',view+' should navigate to Historie');
-    assert.equal(await page.locator('#history-view-select').inputValue(),view,view+' should activate matching view');
+    assert.equal(await page.locator('.history-entry-tile[aria-pressed="true"]').getAttribute('data-view'),view,view+' should activate matching view');
     assert.equal(await page.locator('.history-entry-tile[aria-pressed="true"]').getAttribute('data-view'),view,view+' tile should become active');
-    assert.equal(await page.locator('.history-dropdown-controls').count(),1,'Existing dropdown intact');
+    assert.equal(await page.locator('.history-dropdown-controls select').count(),1,'Only Turnierjahr dropdown intact');
+    assert.equal(await page.locator('#history-view-select').count(),0,'Redundant Ansicht dropdown removed');
     assert.equal(await page.locator('.history-carousel-control,.history-replay-control').count()>0,true,'Existing slider intact');
     assert.equal(await page.locator('.history-related').count(),0,'No separate Hall of Fame/Spieler section on Historie');
    }

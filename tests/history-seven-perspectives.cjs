@@ -19,12 +19,12 @@ const assert=require('node:assert/strict');
    assert.equal(years.includes(2020),false,'2020 missing event not to be invented');
    const list=await page.locator('.history-entry-tile').evaluateAll(cards=>cards.map(c=>c.dataset.view));
    assert.deepEqual(list,['yearbook','replay','moments','records','field','compare']);
-   const modes=await page.locator('#history-view-select option').evaluateAll(opts=>opts.map(x=>x.value));
-   assert.deepEqual(modes,list,'Dropdown has the same six views, no Originalarchiv');
-   assert.equal(await page.locator('#history-view-select option:text("Originalarchiv")').count(),0);
+   assert.equal(await page.locator('#history-view-select').count(),0,'No redundant Ansicht dropdown');
+   assert.equal(await page.locator('.history-dropdown-controls select').count(),1,'Only Turnierjahr dropdown remains');
+   assert.equal(await page.locator('#history-year-select option').count(),17,'All documented years remain selectable');
    for(const view of ['records','field','compare']){
     await page.locator('.history-entry-tile[data-view="'+view+'"]').click();
-    assert.equal(await page.locator('#history-view-select').inputValue(),view,'Tile selected '+view);
+    assert.equal(await page.locator('.history-entry-tile[aria-pressed="true"]').getAttribute('data-view'),view,'Tile selected '+view);
     assert.equal(await page.locator('.history-feature--insights').count(),1,'No duplicate theater '+view);
     assert.equal(await page.locator('.history-carousel-slide').count(),17,'Year-carousel for '+view);
     assert.equal(await page.locator('#history-year-slider').count(),1,'Year slider for '+view);
@@ -64,20 +64,20 @@ const assert=require('node:assert/strict');
     assert.ok(headerColors.sectionTitle?.length>5,view+' heading stays visible');
    }
    assert.equal(await page.locator('.history-entry-tile[data-view="aftermath"]').count(),0,'Nachspiel entry must be removed');
-   assert.equal(await page.locator('#history-view-select option[value="aftermath"]').count(),0,'Nachspiel option must be removed');
+   assert.equal(await page.locator('.history-entry-tile[data-view="archive"]').count(),0,'Originalarchiv tile must be removed');
    assert.equal(await page.locator('.history-feature--aftermath').count(),0,'Nachspiel view must be removed');
    // 2015 must compare with the last actually held tournament (2013), not absent 2014.
-   await page.locator('#history-view-select').selectOption('compare');
+   await page.locator('.history-entry-tile[data-view="compare"]').click();
    await page.locator('#history-year-select').selectOption('2015');
-   assert.equal(await page.locator('#history-view-select').inputValue(),'compare','Year switch preserves selected perspective');
+   assert.equal(await page.locator('.history-entry-tile[aria-pressed="true"]').getAttribute('data-view'),'compare','Year switch preserves selected perspective');
    const comparison=await page.locator('.history-carousel-slide:not([inert])').innerText();
    assert.match(comparison,/2013/, 'Compare against last actual tournament');
    assert.match(comparison,/2015/);
    assert.match(comparison,/vorherigen tatsächlich ausgetragenen Turnier/, 'Explanation of skipped years');
    // The original results are still accessible in Runden without separate archive page.
-   await page.locator('#history-view-select').selectOption('replay');
+   await page.locator('.history-entry-tile[data-view="replay"]').click();
    assert.equal(await page.locator('.history-replay-proof').count()>0,true,'Original result details remain in Runden');
-   await page.locator('#history-view-select').selectOption('records');
+   await page.locator('.history-entry-tile[data-view="records"]').click();
    await page.locator('#history-year-select').selectOption('2026');
    const highlights=await page.locator('.history-carousel-slide:not([inert])').innerText();
    for(const title of ['Meiste Rundensiege','Meiste Top-3-Plätze','Meiste Top-5-Plätze','Grösste Aufholjagd','Meiste Nullerrunden','Grösster Absturz','Turnier-DNA'])assert.ok(highlights.includes(title),title+' needs actual calculation');
@@ -102,15 +102,14 @@ const assert=require('node:assert/strict');
    },index);
    await page.waitForTimeout(1050);
    assert.equal(await page.locator('#history-year-select').inputValue(),'2025','Records slider navigates to older year');
-   assert.equal(await page.locator('#history-view-select').inputValue(),'records','Slider keeps perspective');
+   assert.equal(await page.locator('.history-entry-tile[aria-pressed="true"]').getAttribute('data-view'),'records','Slider keeps perspective');
    if(width===390){
     const audit=await page.evaluate(()=>{
      const failures=[];
      for(const season of db.editions){
       state.page='history';state.historyYear=season.year;draw();
       for(const view of ['records','field','compare']){
-       document.querySelector('#history-view-select').value=view;
-       document.querySelector('#history-view-select').dispatchEvent(new Event('change',{bubbles:true}));
+       document.querySelector('.history-entry-tile[data-view="'+view+'"]').click();
        const card=document.querySelector('.history-carousel-slide:not([inert]) .history-insight-card');
        if(!card||Number(card.dataset.year)!==season.year)failures.push(season.year+': '+view+' missing card');
        if(!card?.innerText?.trim())failures.push(season.year+': '+view+' blank card');
