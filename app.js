@@ -247,7 +247,7 @@ function home(){
  ${feature('Analyse-Studio','Individuelle Auswertungen zusammenstellen','statsrounds','studio','◇')}
  ${feature('Schnellanalysen','Vorgefertigte Fragen untersuchen','statsrounds','standard','↗')}
  </div></section>
- <section class="discovery-section discovery-years"><div class="discovery-head"><span class="overline">DAS ARCHIV</span><h2>Die Turnierjahre</h2></div><div class="discovery-year-grid">${ordered.map(e=>`<button data-action="openyear" data-value="${e.year}"><strong>${e.year}</strong><span>${e.round_count} Runden</span></button>`).join('')}</div></section></div>`;
+ <section class="discovery-section discovery-years"><div class="discovery-head"><span class="overline">DAS ARCHIV</span><h2>Die Turnierjahre</h2></div><div class="bp-selection-panel bp-home-year-select"><label for="bp-home-year">Turnierjahr auswählen</label><select id="bp-home-year" aria-label="Turnierjahr auswählen"><option value="">Jahr auswählen</option>${ordered.map(e=>`<option value="${e.year}">${e.year} · ${e.round_count} Runden</option>`).join('')}</select></div></section></div>`;
 }
 const TOOL_CHOICES=Object.create(null);
 try{
@@ -533,7 +533,7 @@ document.addEventListener('click',ev=>{const b=ev.target.closest('[data-insight-
 
 document.addEventListener('change',event=>{
  const el=event.target;
- if(!['bp-tool-select','bp-history-year','bp-history-round'].includes(el.id))return;
+ if(el.id==='bp-home-year'){const b=document.querySelector('[data-action="openyear"][data-value="'+el.value+'"]');if(b)b.click();else if(el.value){state.historyYear=Number(el.value);state.page='history';draw();}return;}if(!['bp-tool-select','bp-history-year','bp-history-round'].includes(el.id))return;
  const action=el.id==='bp-tool-select'?'tab':el.id==='bp-history-year'?'historyyear':'round';
  const button=[...document.querySelectorAll('[data-action="'+action+'"]')].find(b=>b.dataset.value===el.value);
  if(button){button.click();return;}
