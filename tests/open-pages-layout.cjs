@@ -60,7 +60,7 @@ const assert=require('node:assert/strict');
    }
    assert.equal(audit.border,'0px','History chronicle must have no box around all tools');
    assert.equal(audit.featureBorder,'0px','Jahrbuch theatre must have no outer box');
-   assert.equal(audit.firstCount,3,'Preserve exactly three function cards');
+   assert.equal(audit.firstCount,7,'Preserve exactly seven Historie function cards');
    assert.deepEqual(audit.related,[{page:'fame',label:'Hall of Fame'},{page:'players',label:'Spieler'}]);
    assert.equal(audit.linkInsideEntry,false,'Other destinations must be visually separate');
    assert.equal(audit.preserved,true,'Historic standings must be untouched');
