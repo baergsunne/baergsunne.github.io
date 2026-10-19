@@ -17,7 +17,7 @@ const assert=require('node:assert/strict');
    const visible=document.querySelector('.history-replay-slide[aria-hidden="false"]');
    const card=visible?.querySelector('.history-replay-card'),r=card?.getBoundingClientRect(),bad=[];
    if(card)for(const el of card.querySelectorAll('h4,.history-table th,.history-table td,summary')){const a=el.getBoundingClientRect();if(a.left<r.left-2||a.right>r.right+2)bad.push(el.textContent.slice(0,32))}
-   return {count:cards.length,expected:original.rounds.length,bad,active:card?.dataset.round,sourcePlayers:original.players.length,hasSlider:!!document.querySelector('#history-round-slider'),oldControls:!!document.querySelector('.history-replay-controls,.history-round-dropdown,.bp-round-browse'),hasOriginal:!!card?.querySelector('.history-replay-proof'),tableRows:card?.querySelectorAll('.history-table tbody tr').length};
+   return {count:cards.length,expected:original.rounds.length,bad,active:card?.dataset.round,sourcePlayers:original.players.length,hasSlider:!!document.querySelector('#history-round-slider'),oldControls:!!document.querySelector('.history-replay-controls,.history-round-dropdown,.bp-round-browse'),hasOriginal:!!card?.querySelector('.history-replay-proof'),tableRows:card?.querySelectorAll(':scope > .history-table-shell .history-table tbody tr').length};
   });
   assert.equal(data.count,data.expected,'Every recorded round must have a card');
   assert.equal(data.active,'1');assert.equal(data.hasSlider,true);assert.equal(data.oldControls,false);
