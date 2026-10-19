@@ -106,13 +106,13 @@ const assert=require('node:assert/strict');
     if(!filters||!c||!s||!stage)return {missing:true};
     const f=filters.getBoundingClientRect(),r=c.getBoundingClientRect(),g=stage.getBoundingClientRect();
     return {
-     order:filters.nextElementSibling===c&&c.nextElementSibling===stage,
-     parent:c.parentElement===root,
+     order:filters.nextElementSibling===c.parentElement&&c.parentElement.nextElementSibling===stage,
+     parent:c.parentElement?.classList.contains('history-sticky-group')&&c.parentElement.parentElement===root,
      duplicate:root.querySelectorAll(slider).length,
      insideCarousel:stage.contains(s),
      visible:r.width>100&&r.height>30&&getComputedStyle(c).display!=='none',
      dropdownGap:r.top-f.bottom,
-     carouselGap:g.top-r.bottom,
+     carouselGap:g.top-c.parentElement.getBoundingClientRect().bottom,
      overflow:r.left<root.getBoundingClientRect().left-2||r.right>root.getBoundingClientRect().right+2
     };
    },{control,slider,feature});
