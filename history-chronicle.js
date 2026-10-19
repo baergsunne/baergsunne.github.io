@@ -29,7 +29,7 @@ function positionCarousel(fraction,animate=false){
  const c=carouselParts();if(!c)return;
  c.track.style.transition=animate?'transform 260ms cubic-bezier(.22,.8,.24,1)':'none';
  c.track.style.transform='translate3d('+(c.center-fraction*c.step)+'px,0,0)';
- c.slides.forEach((slide,i)=>{const active=Math.abs(i-fraction)<.55;slide.style.opacity=active?'1':String(Math.max(.42,1-Math.abs(i-fraction)*.2));slide.style.transform='scale('+Math.max(.94,1-Math.abs(i-fraction)*.05)+')';slide.toggleAttribute('inert',!active);slide.setAttribute('aria-hidden',String(!active));});
+ c.slides.forEach((slide,i)=>{const active=Math.abs(i-fraction)<.55;slide.style.opacity=active?'1':String(Math.max(.42,1-Math.abs(i-fraction)*.2));slide.style.transform='scale('+Math.max(.94,1-Math.abs(i-fraction)*.05)+')';slide.setAttribute('aria-hidden',String(!active));});
 }
 function commitCarouselYear(index,animate=true){
  const c=carouselParts();if(!c||carouselBusy)return;
@@ -40,7 +40,7 @@ function commitCarouselYear(index,animate=true){
  const change=()=>{const year=c.slides[target].querySelector('.history-yearbook-card')?.dataset.year,select=document.getElementById('history-year-select');if(year&&select){select.value=year;select.dispatchEvent(new Event('change',{bubbles:true}));}carouselBusy=false;};
  setTimeout(change,animate&&!matchMedia('(prefers-reduced-motion: reduce)').matches?270:0);
 }
-function initCarousel(){positionCarousel(carouselParts()?.index||0);}
+function initCarousel(){positionCarousel(carouselParts()?.index||0);const slider=document.getElementById('history-year-slider');if(slider)sliderDrag=null;}
 document.addEventListener('pointerdown',ev=>{
  const viewport=ev.target.closest('.history-carousel-viewport');if(!viewport||ev.target.closest('button,select,input')||carouselBusy)return;
  const c=carouselParts();if(!c)return;
