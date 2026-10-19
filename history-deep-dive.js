@@ -153,46 +153,9 @@
    label(gone.length+' Spieler fehlen gegenüber '+older.year,gone.length?namesSpan(gone):empty('Niemand aus dem vorherigen Teilnehmerfeld fehlt.'))+
    label('So schnitt der vorherige Champion ab','<p>'+lastChamp+'</p>')+'</div></section>';
  }
- function aftermath(ed,editions){
-  const all=order(editions),index=all.findIndex(x=>x.year===ed.year),future=all.slice(index+1),next=future[0];
-  if(!future.length)return empty('Zu diesem Turnier gibt es noch keine späteren dokumentierten Bärgsunne-Turniere. Das Nachspiel wird erst mit neuen offiziellen Resultaten ergänzt.');
-  const before=all.slice(0,index),field=new Set(ed.players);
-  const rookies=ed.players.filter(p=>!before.some(x=>x.players.includes(p)));
-  const currentChamp=champion(ed);
-  const champResults=currentChamp.map(p=>{
-   const row=next.official_standings.find(x=>x.player_id===p);
-   return p+': '+(row?'Rang '+row.place+' im Turnier '+next.year:'nicht im Teilnehmerfeld '+next.year);
-  });
-  const laterWinners=future.flatMap(x=>x.official_standings.filter(s=>s.place===1&&field.has(s.player_id)).map(s=>({player:s.player_id,year:x.year})));
-  const laterFirst=new Map;
-  for(const x of future){for(const c of champion(x)){if(!laterFirst.has(c)&&field.has(c)&&!before.concat([ed]).some(t=>champion(t).includes(c)))laterFirst.set(c,x.year);}}
-  const rookiesChamp=[...new Set(laterWinners.filter(x=>rookies.includes(x.player)).map(x=>x.player+' · Titel '+x.year))];
-  const returnNext=ed.players.filter(p=>next.players.includes(p));
-  const comeback=next.official_standings.filter(x=>field.has(x.player_id)&&!ed.official_standings.some(old=>old.player_id===x.player_id&&old.place<=3)&&x.place<=3);
-  const recordBeaten=(key,title)=>{
-   const baseline=Math.max(...playerStats(ed).map(x=>x.count?x[key]/x.count:0));
-   const winners=future.flatMap(x=>playerStats(x).filter(p=>p.count&&p[key]/p.count>baseline+1e-9).map(p=>({name:p.player,year:x.year,rate:p[key]/p.count})));
-   if(!winners.length)return label(title,empty('In den dokumentierten Folgejahren nicht übertroffen.'));
-   const earliest=Math.min(...winners.map(x=>x.year));
-   const first=winners.filter(x=>x.year===earliest);
-   return label(title,'<p>Erstmals '+earliest+' übertroffen: '+namesSpan(first.map(x=>x.name))+'.</p><p>Massstab dieses Turniers: '+pct(baseline)+' der Runden. Verglichen werden Anteile, damit unterschiedliche Rundenzahlen berücksichtigt sind.</p>');
-  };
-  return section('Beim nächsten Turnier '+next.year,'Was ist beim ersten tatsächlich folgenden Turnier passiert?',[
-   metric('Teilnehmer wieder dabei',fmt(returnNext.length)+' von '+ed.players.length,returnNext,'Aus dem damaligen Teilnehmerfeld nahmen auch im nächsten Turnier Spieler teil.','neutral'),
-   metric('Neue Podestplätze',fmt(comeback.length)+' Spieler',comeback.map(x=>x.player_id),'Diese Spieler verpassten hier die Top 3, erreichten aber im nächsten Turnier das Podest.','positive')
-  ])+
-  '<section class="history-insight-section"><h4>Was wurde aus dem Champion?</h4><p>Der weitere Weg des damaligen Titelträgers im nächsten ausgetragenen Turnier.</p><div class="history-insight-facts">'+
-   label('Die Titelverteidigung',champResults.length?'<p>'+champResults.map(esc).join('; ')+'</p>':empty('Kein offizieller Titelträger dokumentiert.'))+
-   label('Spätere Champions aus diesem Teilnehmerfeld',laterWinners.length?'<div class="history-insight-name-list">'+laterWinners.map(x=>'<span>'+esc(x.player)+' · '+x.year+'</span>').join('')+'</div>':empty('Kein späterer Titelgewinn dokumentiert.'))+
-   label('Erstmals später Champion',[...laterFirst].length?namesSpan([...laterFirst].map(([player,year])=>player+' ('+year+')')):empty('Kein erster späterer Titelgewinn dokumentiert.'))+
-   label('Neulinge mit späterem Turniersieg',rookiesChamp.length?namesSpan(rookiesChamp):empty('Kein späterer Turniersieg der damaligen Neulinge dokumentiert.'))+
-   '</div></section>'+
-  '<section class="history-insight-section"><h4>Wurden Saisonbestwerte später überboten?</h4><p>Ein fairer Vergleich berücksichtigt unterschiedliche Rundenzahlen über den Anteil der gespielten Runden. Diese Bestwerte gelten für das ausgewählte Turnier, nicht als behauptete Allzeitrekorde.</p><div class="history-insight-facts">'+
-   recordBeaten('wins','Höchste Rundensiegquote')+recordBeaten('top3','Höchste Top-3-Quote')+'</div></section>';
- }
- const types={records:['Rekordbuch','Bestleistungen und Negativrekorde','♛'],field:['Teilnehmerfeld','Neulinge, Rückkehrer und Stammgäste','♙'],compare:['Jahresvergleich','Was hat sich zum letzten Turnier verändert?','⇄'],aftermath:['Das Nachspiel','Was geschah in den folgenden Turnieren?','↗']};
+ const types={records:['Rekordbuch','Bestleistungen und Negativrekorde','♛'],field:['Teilnehmerfeld','Neulinge, Rückkehrer und Stammgäste','♙'],compare:['Jahresvergleich','Was hat sich zum letzten Turnier verändert?','⇄']};
  function viewPanel(type,ed,editions){
-  const info=types[type],body=type==='records'?records(ed):type==='field'?field(ed,editions):type==='compare'?seasonCompare(ed,editions):aftermath(ed,editions);
+  const info=types[type],body=type==='records'?records(ed):type==='field'?field(ed,editions):seasonCompare(ed,editions);
   return '<article class="history-yearbook-card history-insight-card" data-year="'+ed.year+'" data-insight="'+type+'"><header class="history-insight-head"><span>HISTORIE · '+esc(info[0].toUpperCase())+'</span><h3>'+esc(info[0])+' <em>'+ed.year+'</em></h3><p>'+esc(info[1])+'</p></header>'+body+'</article>';
  }
  function render(type,ed,editions){
