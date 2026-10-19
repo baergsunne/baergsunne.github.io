@@ -25,9 +25,9 @@ const assert=require('node:assert/strict');
     horizontalOverflow:document.documentElement.scrollWidth>innerWidth+2
    };
   });
-  assert.equal(landing.count,3,'Landing needs exactly three entry tiles');
-  assert.deepEqual(landing.order,['yearbook','replay','moments'],'Correct tile order');
-  assert.deepEqual(landing.labels,['Jahrbuch','Runden','Schlüsselmomente']);
+  assert.equal(landing.count,7,'Landing needs seven distinct Historie entry tiles');
+  assert.deepEqual(landing.order,['yearbook','replay','moments','records','field','compare','aftermath'],'Correct tile order');
+  assert.deepEqual(landing.labels,['Jahrbuch','Runden','Schlüsselmomente','Rekordbuch','Teilnehmerfeld','Jahresvergleich','Das Nachspiel']);
   assert.equal(landing.homeClasses,true,'Reuse genuine homepage card class');
   assert.ok(landing.sectionBeforeFilters,'Entry cards precede unchanged selectors');
   assert.equal(landing.pageBg,'rgb(7, 31, 25)','History uses dark homepage background');
