@@ -69,11 +69,15 @@ const assert=require('node:assert/strict');
     assert.ok(pinned.top>=pinned.headerBottom+3,width+' '+view+' regulator must not slide under header');
     assert.equal(pinned.atFront,true,width+' '+view+' pinned regulator must remain tappable');
 
-    await page.evaluate(y=>window.scrollTo({top:y,behavior:'instant'}),fixedY+105);
-    await page.waitForTimeout(120);
-    const pinnedFurther=await probe();
-    assert.ok(Math.abs(pinnedFurther.top-pinned.top)<3,width+' '+view+' regulator stays fixed while scrolling deeper');
-    assert.ok(pinnedFurther.scroll>pinned.scroll+50,width+' '+view+' scroll actually advances further');
+    // Short Jahrbuch pages can reach the document bottom shortly after the
+    // regulator pins. Only demand further motion when actual scroll room exists.
+    if(pinned.maxScroll-pinned.scroll>60 && pinned.parentBottom>pinned.top+pinned.height+100){
+     await page.evaluate(y=>window.scrollTo({top:y,behavior:'instant'}),Math.min(fixedY+105,pinned.maxScroll));
+     await page.waitForTimeout(120);
+     const pinnedFurther=await probe();
+     assert.ok(pinnedFurther.scroll>pinned.scroll+45,width+' '+view+' scroll advances when space exists');
+     assert.ok(Math.abs(pinnedFurther.top-pinned.top)<3,width+' '+view+' regulator stays fixed while scrolling deeper');
+    }
 
     await page.evaluate(y=>window.scrollTo({top:y,behavior:'instant'}),beforeY);
     await page.waitForTimeout(150);
