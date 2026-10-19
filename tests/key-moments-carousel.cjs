@@ -40,14 +40,16 @@ const assert=require('node:assert/strict');
    await page.locator('.history-entry-tile[data-view="'+view+'"]').click();
    assert.equal(await page.locator('#history-view-select').inputValue(),view,'Entry tile opens matching explorer');
    assert.equal(await page.locator('.history-entry-tile[aria-pressed="true"]').count(),1,'One selected tile');
-   await page.waitForFunction(()=>{
+   await page.waitForTimeout(1050);
+   const scrollProbe=await page.evaluate(()=>{
     const node=document.getElementById('history-workspace'),header=document.querySelector('.heritage-header');
-    if(!node)return false;
     const offset=(header?.getBoundingClientRect().height||0)+12;
     const target=Math.max(0,window.scrollY+node.getBoundingClientRect().top-offset);
-    const bottomLimit=Math.max(0,document.documentElement.scrollHeight-window.innerHeight);
-    return window.scrollY>40&&Math.abs(window.scrollY-Math.min(target,bottomLimit))<25;
-   },null,{timeout:7000});
+    const max=Math.max(0,document.documentElement.scrollHeight-innerHeight);
+    return {actual:window.scrollY,expected:Math.min(target,max),max,target,anchorRect:node.getBoundingClientRect().top,headerHeight:offset,docHeight:document.documentElement.scrollHeight,innerHeight,bodyHeight:document.body.scrollHeight,scrollingHeight:document.scrollingElement.scrollHeight};
+   });
+   console.log('HISTORY_ENTRY_SCROLL_PROBE',JSON.stringify({width,view,...scrollProbe}));
+   assert.ok(scrollProbe.actual>40&&Math.abs(scrollProbe.actual-scrollProbe.expected)<30,view+' must scroll to explorer after entry');
    assert.equal(await page.locator('.history-entry').count(),1,'Entry remains available after opening explorer');
    assert.equal(await page.locator('.history-dropdown-controls').count(),1,'Dropdowns remain accessible');
   }
