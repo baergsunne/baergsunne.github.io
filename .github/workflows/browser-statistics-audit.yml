@@ -2,7 +2,7 @@ name: Browser statistics audit
 on:
   push:
     branches:
-      - fix/rounds-original-results-persistent-20261019
+      - feat/keymoments-round-carousel-20261019
   pull_request:
     paths:
       - 'app.js'
@@ -35,3 +35,4 @@ jobs:
       - run: node tests/yearbook-responsive.cjs
       - run: node tests/yearbook-finger-drag.cjs
       - run: node tests/replay-carousel.cjs
+      - run: node tests/key-moments-carousel.cjs
