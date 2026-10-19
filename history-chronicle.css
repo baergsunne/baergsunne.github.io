@@ -86,3 +86,11 @@
 .history-carousel-control input[type=range]{flex:1;width:100%;min-width:0;min-height:40px;accent-color:#dab675;touch-action:pan-x;cursor:pointer}
 .history-carousel-hint{text-align:center;font-size:.82rem;line-height:1.45;margin:3px 8px 14px;color:#c0cfbf}
 @media(max-width:350px){.history-feature--yearbook{padding:0 11px}.history-feature--yearbook .history-shortcuts--yearbook button{font-size:10px!important;padding:8px 3px}}
+
+/* Physical-looking single-card yearbook transitions */
+.history-feature--yearbook .history-yearbook-card{transition:transform .175s cubic-bezier(.35,0,.7,1),opacity .175s ease;will-change:transform}
+.history-feature--yearbook .history-yearbook-card.history-card-exit-left{transform:translateX(-105%) scale(.93);opacity:.12}
+.history-feature--yearbook .history-yearbook-card.history-card-exit-right{transform:translateX(105%) scale(.93);opacity:.12}
+.history-feature--yearbook .history-yearbook-card.history-card-enter-from-right{transform:translateX(90%) scale(.94);opacity:.1}
+.history-feature--yearbook .history-yearbook-card.history-card-enter-from-left{transform:translateX(-90%) scale(.94);opacity:.1}
+@media(prefers-reduced-motion:reduce){.history-feature--yearbook .history-yearbook-card{transition:none!important}}
