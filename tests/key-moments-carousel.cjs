@@ -9,6 +9,41 @@ const assert=require('node:assert/strict');
   for(const path of ['live','editions'])await page.route('**/api/'+path,async route=>{try{const r=await route.fetch({headers:{...route.request().headers(),origin:'https://baergsunne.github.io'}});await route.fulfill({response:r,headers:{...r.headers(),'access-control-allow-origin':'http://127.0.0.1:8765'}})}catch(e){if(!page.isClosed())try{await route.abort()}catch(_){}}});
   await page.goto('http://127.0.0.1:8765/#history',{waitUntil:'domcontentloaded'});
   await page.waitForFunction(()=>typeof db!=='undefined'&&db.editions.some(x=>x.year===2026),null,{timeout:30000});
+
+  // Top navigation order and actual measured layout across all three modes.
+  for(const [view,control,slider,feature] of [
+   ['yearbook','.history-carousel-control','#history-year-slider','.history-feature--yearbook'],
+   ['replay','.history-replay-control','#history-round-slider','.history-feature--replay'],
+   ['moments','.history-replay-control','#history-round-slider','.history-feature--moments']
+  ]){
+   await page.locator('#history-view-select').selectOption(view);
+   const position=await page.evaluate(({control,slider,feature})=>{
+    const root=document.getElementById('history-chronicle');
+    const filters=root.querySelector('.history-dropdown-controls');
+    const c=root.querySelector(control),s=root.querySelector(slider),stage=root.querySelector(feature);
+    if(!filters||!c||!s||!stage)return {missing:true};
+    const f=filters.getBoundingClientRect(),r=c.getBoundingClientRect(),g=stage.getBoundingClientRect();
+    return {
+     order:filters.nextElementSibling===c&&c.nextElementSibling===stage,
+     parent:c.parentElement===root,
+     duplicate:root.querySelectorAll(slider).length,
+     insideCarousel:stage.contains(s),
+     visible:r.width>100&&r.height>30&&getComputedStyle(c).display!=='none',
+     dropdownGap:r.top-f.bottom,
+     carouselGap:g.top-r.bottom,
+     overflow:r.left<root.getBoundingClientRect().left-2||r.right>root.getBoundingClientRect().right+2
+    };
+   },{control,slider,feature});
+   assert.equal(position.missing,undefined,view+' missing slider elements');
+   assert.equal(position.order,true,view+' slider must be directly after dropdowns and before carousel');
+   assert.equal(position.parent,true,view+' slider must be outside carousel');
+   assert.equal(position.duplicate,1,view+' must have exactly one slider');
+   assert.equal(position.insideCarousel,false,view+' must not have slider at bottom');
+   assert.equal(position.visible,true,view+' top slider must be visible');
+   assert.ok(position.dropdownGap>=-2&&position.dropdownGap<30,view+' top slider gap '+position.dropdownGap);
+   assert.ok(position.carouselGap>=-2&&position.carouselGap<30,view+' gap before carousel '+position.carouselGap);
+   assert.equal(position.overflow,false,view+' slider must not overflow');
+  }
   const audit=await page.evaluate(()=>{
    const problems=[],data=db.editions;
    for(const ed of data){
