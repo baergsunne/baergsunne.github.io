@@ -38,7 +38,7 @@ const assert=require('node:assert/strict');
   assert.equal(landing.horizontalOverflow,false,'No mobile overflow');
   for(const view of ['moments','replay','yearbook']){
    await page.locator('.history-entry-tile[data-view="'+view+'"]').click();
-   assert.equal(await page.locator('#history-view-select').inputValue(),view,'Entry tile opens matching explorer');
+   assert.equal(await page.locator('.history-entry-tile[aria-pressed="true"]').getAttribute('data-view'),view,'Entry tile opens matching explorer');
    assert.equal(await page.locator('.history-entry-tile[aria-pressed="true"]').count(),1,'One selected tile');
    await page.waitForTimeout(1050);
    const scrollProbe=await page.evaluate(()=>{
@@ -51,17 +51,19 @@ const assert=require('node:assert/strict');
    console.log('HISTORY_ENTRY_SCROLL_PROBE',JSON.stringify({width,view,...scrollProbe}));
    assert.ok(scrollProbe.actual>40&&Math.abs(scrollProbe.actual-scrollProbe.expected)<30,view+' must scroll to explorer after entry');
    assert.equal(await page.locator('.history-entry').count(),1,'Entry remains available after opening explorer');
-   assert.equal(await page.locator('.history-dropdown-controls').count(),1,'Dropdowns remain accessible');
+   assert.equal(await page.locator('.history-dropdown-controls').count(),1,'Turnierjahr dropdown remains accessible');
+   assert.equal(await page.locator('.history-dropdown-controls select').count(),1,'Only one dropdown remains');
+   assert.equal(await page.locator('#history-view-select').count(),0,'Ansicht dropdown must be removed');
   }
-  await page.locator('#history-view-select').selectOption('replay');
-  assert.equal(await page.locator('.history-feature--replay').count(),1,'Dropdown can still switch after tile navigation');
-  await page.locator('#history-view-select').selectOption('moments');
+  await page.locator('.history-entry-tile[data-view="replay"]').click();
+  assert.equal(await page.locator('.history-feature--replay').count(),1,'Runden tile still switches after tile navigation');
+  await page.locator('.history-entry-tile[data-view="moments"]').click();
   assert.equal(await page.locator('.history-feature--moments').count(),1,'Existing Schlüsselmomente remain available');
 
   // Validate that replay and moment sliders match the exact Jahrbuch slider layout.
   let baselineSliderStyle=null;
   for(const view of ['yearbook','replay','moments']){
-   await page.locator('#history-view-select').selectOption(view);
+   await page.locator('.history-entry-tile[data-view="'+view+'"]').click();
    const visual=await page.evaluate(view=>{
     const root=document.getElementById('history-chronicle');
     const control=root.querySelector(view==='yearbook'?'.history-carousel-control':'.history-replay-control');
@@ -96,7 +98,7 @@ const assert=require('node:assert/strict');
    ['replay','.history-replay-control','#history-round-slider','.history-feature--replay'],
    ['moments','.history-replay-control','#history-round-slider','.history-feature--moments']
   ]){
-   await page.locator('#history-view-select').selectOption(view);
+   await page.locator('.history-entry-tile[data-view="'+view+'"]').click();
    const position=await page.evaluate(({control,slider,feature})=>{
     const root=document.getElementById('history-chronicle');
     const filters=root.querySelector('.history-dropdown-controls');
@@ -128,8 +130,7 @@ const assert=require('node:assert/strict');
    const problems=[],data=db.editions;
    for(const ed of data){
     state.page='history';state.historyYear=ed.year;draw();
-    document.querySelector('#history-view-select').value='moments';
-    document.querySelector('#history-view-select').dispatchEvent(new Event('change',{bubbles:true}));
+    document.querySelector('.history-entry-tile[data-view="moments"]').click();
     const cards=[...document.querySelectorAll('.history-moment-card')],rounds=[...ed.rounds].sort((a,b)=>a.number-b.number);
     if(cards.length!==rounds.length)problems.push(ed.year+': wrong number of round cards');
     if(!document.querySelector('#history-round-slider'))problems.push(ed.year+': missing slider');
@@ -169,10 +170,10 @@ const assert=require('node:assert/strict');
   });
   assert.deepEqual(audit.problems,[],width+'px moments dataset and geometry audit');
   await page.evaluate(()=>{state.page='history';state.historyYear=2018;draw()});
-  await page.locator('#history-view-select').selectOption('moments');await page.waitForTimeout(130);
+  await page.locator('.history-entry-tile[data-view="moments"]').click();await page.waitForTimeout(130);
   const track=page.locator('.history-replay-track'),slider=page.locator('#history-round-slider');
   assert.equal(await page.locator('.history-moment-card').count(),7);
-  assert.equal((await page.locator('#history-view-select').inputValue()),'moments');
+  assert.equal((await page.locator('.history-entry-tile[aria-pressed="true"]').getAttribute('data-view')),'moments');
   const before=await track.evaluate(el=>el.style.transform);
   await slider.evaluate(el=>{el.value='3.4';el.dispatchEvent(new Event('input',{bubbles:true}))});
   const moving=await track.evaluate(el=>el.style.transform);
