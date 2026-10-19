@@ -46,7 +46,7 @@ const assert=require('node:assert/strict');
      beyondHist:hTiles.some(x=>x.getBoundingClientRect().width<70),
      separateLinks:document.querySelectorAll('.history-related-link').length};
    });
-   assert.equal(actual.count,7,width+' exactly seven Historie choices');
+   assert.equal(actual.count,6,width+' exactly six Historie choices');
    assert.equal(actual.separateLinks,2,width+' Hall of Fame/Spieler links preserved');
    assert.equal(actual.scrollOverflow,false,width+' unexpected horizontal overflow');
    assert.equal(actual.beyondHist,false,width+' Historie entries too narrow');
