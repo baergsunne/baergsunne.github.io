@@ -2,7 +2,7 @@ name: Browser statistics audit
 on:
   push:
     branches:
-      - fix/home-year-winner-dropdown-20261019
+      - feat/epic-yearbook-mobile-20261019
   pull_request:
     paths:
       - 'app.js'
@@ -32,3 +32,4 @@ jobs:
       - run: node tests/profile-card-order.cjs
       - run: node tests/profile-personalized-explanations.cjs
       - run: node tests/mobile-dropdowns.cjs
+      - run: node tests/yearbook-responsive.cjs
