@@ -279,13 +279,79 @@
  width:100%;
  min-width:0;
 }
-/* Native sticky positioning keeps the regulator in normal flow until its top
-   reaches the real, measured sticky site header, and releases on scrolling up.
-   Applies equally to yearbook, rounds, moments, and the three insight views. */
-#app .page.page--history .history-chronicle > :is(.history-carousel-control,.history-replay-control){
+/* A single native sticky unit (not a cloned overlay): slider and dynamic year
+   or round title travel together beneath the measured site header. */
+#app .page.page--history .history-chronicle > .history-sticky-group{
  position:sticky;
- top:var(--bp-history-sticky-top, 116px);
+ top:var(--bp-history-sticky-top,116px);
  z-index:19;
- background:linear-gradient(150deg,#254d3a,#0d2c21);
- box-shadow:0 7px 20px rgba(0,0,0,.28),inset 0 1px rgba(255,240,206,.08);
+ display:flex;
+ flex-direction:column;
+ gap:0;
+ box-sizing:border-box;
+ width:100%;
+ min-width:0;
+ margin:0 0 12px;
+ border:1px solid #4d6752;
+ border-radius:16px;
+ background:linear-gradient(155deg,#254d3a,#103126 75%,#0c281e);
+ box-shadow:0 7px 19px rgba(0,0,0,.26);
+ overflow:visible;
 }
+#app .page.page--history .history-sticky-group > .history-carousel-control{
+ box-sizing:border-box;
+ display:flex;
+ align-items:center;
+ flex-wrap:nowrap;
+ width:100%;
+ min-width:0;
+ margin:0;
+ padding:4px 10px;
+ gap:9px;
+ background:transparent;
+ border:0;
+ border-radius:0;
+ box-shadow:none;
+}
+#app .page.page--history .history-sticky-group > .history-carousel-control input[type=range]{
+ display:block;
+ flex:1 1 0%;
+ min-width:0;
+ width:100%;
+ min-height:40px;
+ margin:0;
+ accent-color:#dab675;
+ touch-action:auto;
+}
+#app .page.page--history .history-sticky-title{
+ display:flex;
+ justify-content:center;
+ align-items:center;
+ min-height:38px;
+ padding:2px 9px 9px;
+ text-align:center;
+ box-sizing:border-box;
+}
+#app .page.page--history .history-sticky-title h3{
+ font-size:clamp(19px,5vw,26px);
+ font-weight:850;
+ letter-spacing:-.025em;
+ line-height:1.16;
+ margin:0;
+ color:#fff0d6;
+ overflow-wrap:anywhere;
+ text-wrap:balance;
+}
+@media(max-width:350px){
+ #app .page.page--history .history-sticky-group > .history-carousel-control{gap:6px;padding:3px 7px}
+ #app .page.page--history .history-sticky-title h3{font-size:19px}
+}
+/* The per-round card still has its individual round identification, but no
+   second overline or explanatory subtitle. */
+.history-replay-card-head>span,
+.history-replay-card-head>p{display:none!important}
+.history-replay-card-head h4{margin:2px 0!important}
+/* The external title is the only title of each insight/yearbook; content starts
+   immediately after the shared controller and stays inside the carousel. */
+.history-feature--yearbook .history-yearbook-head{margin-bottom:11px}
+

@@ -17,7 +17,8 @@ const assert=require('node:assert/strict');
   assert.equal((await page.locator('.history-entry-tile[data-view="replay"] .tool-tile-copy strong').innerText()).trim(),'Runden','Visible navigation label must be Runden');
   assert.equal(await page.locator('.history-feature--replay .history-note').count(),0,'No technical ranking explanation inside round cards');
   assert.equal(await page.locator('#history-chronicle > .history-note').count(),0,'No technical archive explanation under Runden');
-  assert.equal((await page.locator('.history-replay-head > span').innerText()).split(' · ')[0],'RUNDEN','Replay heading renamed');
+  assert.match(await page.locator('.history-sticky-title h3').innerText(),/^Runden 2018 · Runde 1$/,'Only the Runden year/round title remains beside the slider');
+  assert.equal(await page.locator('.history-replay-head').count(),0,'Remove old subtitle over Runden carousel');
   const replayMotion=await page.locator('.history-replay-slide').first().evaluate(el=>({duration:getComputedStyle(el).transitionDuration,easing:getComputedStyle(el).transitionTimingFunction}));
   assert.deepEqual(replayMotion,yearbookMotion,'Replay must match yearbook opacity and scale timing');
   const data=await page.evaluate(()=>{

@@ -49,19 +49,12 @@ const assert=require('node:assert/strict');
     assert.equal(viewAudit.overflow,false,'No horizontal overflow '+width+' '+view);
     assert.ok(viewAudit.center<5,view+' active card must be centered');
     assert.equal(viewAudit.styles,'rgb(77, 103, 82)','Green premium border '+view);
-    const headerColors=await page.locator('.history-carousel-slide:not([inert]) .history-insight-head').evaluate(el=>{
-      const style=getComputedStyle(el);
-      const card=getComputedStyle(el.closest('.history-insight-card'));
-      return {tag:el.tagName,background:style.backgroundColor,image:style.backgroundImage,backdrop:style.backdropFilter,
-        position:style.position,cardBackground:card.backgroundImage,sectionTitle:el.querySelector('h3')?.textContent};
-    });
-    assert.equal(headerColors.tag,'DIV',view+' title must not inherit global site header styles');
-    assert.equal(headerColors.background,'rgba(0, 0, 0, 0)',view+' title must not have a separate dark background');
-    assert.equal(headerColors.image,'none',view+' title must not have a background image');
-    assert.equal(headerColors.backdrop,'none',view+' title must not have dark backdrop blur');
-    assert.equal(headerColors.position,'static',view+' title must not be sticky');
-    assert.match(headerColors.cardBackground,/gradient/,view+' retains full green card background');
-    assert.ok(headerColors.sectionTitle?.length>5,view+' heading stays visible');
+    const headline=await page.locator('.history-sticky-title h3').innerText();
+    const names={records:'Rekordbuch',field:'Teilnehmerfeld',compare:'Jahresvergleich'};
+    assert.equal(headline,names[view]+' 2026',view+' shared title should contain only function and year');
+    assert.equal(await page.locator('.history-insight-head').count(),0,view+' old kicker and subtitle removed');
+    assert.equal(await page.locator('.history-carousel-slide:not([inert]) .history-insight-card h3').count(),0,view+' duplicate card title removed');
+    assert.match(await page.locator('.history-carousel-slide:not([inert]) .history-insight-card').evaluate(el=>getComputedStyle(el).backgroundImage),/gradient/,view+' retains green background');
    }
    assert.equal(await page.locator('.history-entry-tile[data-view="aftermath"]').count(),0,'Nachspiel entry must be removed');
    assert.equal(await page.locator('.history-entry-tile[data-view="archive"]').count(),0,'Originalarchiv tile must be removed');

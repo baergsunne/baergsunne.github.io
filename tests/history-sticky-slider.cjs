@@ -21,11 +21,12 @@ const assert=require('node:assert/strict');
     const root=document.querySelector('.history-chronicle');
     const chosen=document.querySelector('.history-entry-tile[aria-pressed="true"]')?.dataset.view;
     const dropdown=root?.querySelector('.history-dropdown-controls');
-    const control=root?.querySelector(':scope > .history-carousel-control, :scope > .history-replay-control');
+    const control=root?.querySelector(':scope > .history-sticky-group > .history-carousel-control');
+    const group=root?.querySelector(':scope > .history-sticky-group');
     const header=document.querySelector('.heritage-header');
-    if(!root||!dropdown||!control||!header)return {missing:true,chosen};
-    const c=control.getBoundingClientRect(),b=dropdown.getBoundingClientRect(),r=root.getBoundingClientRect(),
-     style=getComputedStyle(control);
+    if(!root||!dropdown||!control||!group||!header)return {missing:true,chosen};
+    const c=group.getBoundingClientRect(),b=dropdown.getBoundingClientRect(),r=root.getBoundingClientRect(),
+     style=getComputedStyle(group);
     return {
      missing:false,view:chosen,year:root.querySelector('#history-year-select')?.value,
      yearInputs:dropdown.querySelectorAll('select').length,otherView:!!root.querySelector('#history-view-select'),
@@ -34,7 +35,11 @@ const assert=require('node:assert/strict');
      top:c.top,docTop:c.top+scrollY,height:c.height,headerBottom:header.getBoundingClientRect().bottom,
      expectedTop:parseFloat(style.top),position:style.position,
      parentBottom:r.bottom,visible:c.height>30&&c.width>180,
-     atFront:!!document.elementFromPoint(c.left+Math.min(28,c.width/4),Math.max(0,c.top)+c.height/2)?.closest('.history-carousel-control,.history-replay-control')
+     atFront:!!document.elementFromPoint(c.left+Math.min(28,c.width/4),Math.max(0,c.top)+c.height/2)?.closest('.history-sticky-group'),
+     title:group.querySelector('.history-sticky-title h3')?.textContent,
+     titleCount:group.querySelectorAll('h3').length,
+     sliderCount:group.querySelectorAll('input[type=range]').length,
+     titleBackground:getComputedStyle(group.querySelector('.history-sticky-title')).backgroundColor
     };
    });
    for(const view of views){
@@ -49,7 +54,11 @@ const assert=require('node:assert/strict');
     assert.equal(base.otherView,false,'Ansicht dropdown must remain removed');
     assert.ok(Math.abs(base.ratio-.5)<.025,width+' '+view+' year dropdown must be half available width ('+base.ratio+')');
     assert.ok(base.centerDelta<3,width+' '+view+' centered year dropdown ('+base.centerDelta+')');
-    assert.equal(base.position,'sticky',width+' '+view+' regulator uses native CSS sticky');
+    assert.equal(base.position,'sticky',width+' '+view+' combined regulator/title uses native CSS sticky');
+    assert.equal(base.titleCount,1,'Exactly one visible standalone title');
+    assert.equal(base.sliderCount,1,'One slider lives with the title');
+    assert.equal(base.titleBackground,'rgba(0, 0, 0, 0)','Title has no separate dark block');
+    assert.ok(base.title.startsWith(({yearbook:'Jahrbuch',replay:'Runden',moments:'Schlüsselmomente',records:'Rekordbuch',field:'Teilnehmerfeld',compare:'Jahresvergleich'})[view]+' 2026'),'Shared heading names selected function and year');
     assert.ok(Math.abs(base.expectedTop-base.headerBottom-8)<4,width+' '+view+' sticky offset matches site header');
     assert.equal(base.visible,true,'Regulator stays visible and readable');
     const natural=base.docTop, top=base.expectedTop;
@@ -86,9 +95,24 @@ const assert=require('node:assert/strict');
     assert.ok(Math.abs(released.docTop-natural)<4,width+' '+view+' regulator returns to its natural position');
 
     // Slider remains fully present throughout; no cloned duplicate and same selected mode.
-    assert.equal(await page.locator('#history-chronicle > .history-carousel-control, #history-chronicle > .history-replay-control').count(),1);
+    assert.equal(await page.locator('#history-chronicle > .history-sticky-group > .history-carousel-control').count(),1);
+    assert.equal(await page.locator('#history-chronicle > .history-sticky-group > .history-sticky-title h3').count(),1);
     assert.equal(await page.locator('#history-year-slider,#history-round-slider').count(),1);
     assert.equal(await page.locator('.history-entry-tile[aria-pressed="true"]').getAttribute('data-view'),view);
+    if(width===390){
+     // The shared title must follow live slider movement, not only final selection.
+     const range=page.locator('#history-year-slider,#history-round-slider');
+     const original=Number(await range.inputValue());
+     const next=(view==='replay'||view==='moments')?original+1:original-1;
+     await range.evaluate((el,value)=>{el.value=String(value);el.dispatchEvent(new Event('input',{bubbles:true}));},next);
+     const preview=await page.locator('#history-sticky-heading').innerText();
+     if(view==='replay'||view==='moments')assert.ok(preview.endsWith('Runde '+(Math.round(next)+1)),view+' updates the actual selected round immediately during slider drag');
+     else assert.equal(preview,({yearbook:'Jahrbuch',records:'Rekordbuch',field:'Teilnehmerfeld',compare:'Jahresvergleich'})[view]+' 2025',view+' previews correct year during slider drag');
+     await range.evaluate(el=>el.dispatchEvent(new Event('change',{bubbles:true})));
+     await page.waitForTimeout(1050);
+     assert.equal(await page.locator('#history-sticky-heading').innerText(),preview,view+' sticky title persists after slider snap');
+     if(view!=='replay'&&view!=='moments')await page.locator('#history-year-select').selectOption('2026');
+    }
    }
    assert.deepEqual(errors,[],width+' browser runtime errors');
    console.log('HISTORIE_STICKY_SLIDER_PASS',JSON.stringify({width,views:views.length,sticky:true,halfCenteredYear:true}));
