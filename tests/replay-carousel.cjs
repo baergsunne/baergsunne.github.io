@@ -8,7 +8,7 @@ const assert=require('node:assert/strict');
   const errors=[];page.on('pageerror',x=>errors.push(x.message));
   for(const path of ['live','editions'])await page.route('**/api/'+path,async route=>{try{const r=await route.fetch({headers:{...route.request().headers(),origin:'https://baergsunne.github.io'}});await route.fulfill({response:r,headers:{...r.headers(),'access-control-allow-origin':'http://127.0.0.1:8765'}})}catch(err){if(!page.isClosed()){try{await route.abort()}catch(_){}}}});
   await page.goto('http://127.0.0.1:8765/#history',{waitUntil:'domcontentloaded'});
-  await page.waitForFunction(()=>typeof db!=='undefined'&&db.editions.some(e=>e.year===2018),null,{timeout:30000});
+  await page.waitForFunction(()=>typeof db!=='undefined'&&db.editions.some(e=>e.year===2026),null,{timeout:30000});
   await page.evaluate(()=>{state.page='history';state.historyYear=2018;draw()});
   await page.locator('#history-view-select').selectOption('replay');
   await page.waitForTimeout(150);
