@@ -82,12 +82,60 @@ function yearbook(ed,editions){
  const panel=x=>{const standing=x.official_standings;const name=n=>standing.filter(z=>z.place===n).map(z=>z.player_id).join(', ')||'Nicht dokumentiert';return `<div class="history-yearbook-card" data-year="${x.year}"><div class="history-yearbook-head"><span class="history-yearbook-eyebrow">BÄRGSUNNE · DIE CHRONIK</span><h3>Jahrbuch <span>${x.year}</span></h3><div class="history-yearbook-cup" aria-hidden="true">🏆</div><span class="history-yearbook-divider" aria-hidden="true"></span></div><div class="history-podium history-podium--champion"><small>Champion</small><strong>${e(name(1))}</strong></div><div class="history-podium-pairs"><div class="history-podium history-podium--second"><small>Platz 2</small><strong>${e(name(2))}</strong></div><div class="history-podium history-podium--third"><small>Platz 3</small><strong>${e(name(3))}</strong></div></div><div class="history-shortcuts history-shortcuts--yearbook"><button type="button" data-his="view" data-view="replay">Turnier anschauen</button><button type="button" data-his="view" data-view="moments"><span>Schlüsselmomente</span><span>entdecken</span></button></div></div>`;};
  return `<section class="history-feature history-feature--yearbook"><div class="history-carousel-viewport"><div class="history-carousel-track" data-index="${index}">${years.map((x,i)=>'<div class="history-carousel-slide" data-index="'+i+'" '+(i!==index?'inert aria-hidden="true"':'')+'>'+panel(x)+'</div>').join('')}</div></div></section><div class="history-carousel-control"><span>‹ Älter</span><input id="history-year-slider" type="range" min="0" max="${years.length-1}" value="${index}" step="0.01" aria-label="Jahrbuch wechseln"/><span>Neuer ›</span></div><p class="history-carousel-hint">Karte mit dem Finger verschieben oder den Regler ziehen. Beim Wischen wechselt jeweils ein Jahrbuch.</p>`;
 }
+
+/* Purely visual presentation: all names and figures come from moments(ed). */
+function momentCardMarkup(m){
+ let headline=m.detail.replace(/\.$/,'');
+ let note='',chips=[];
+ if(m.type==='leader'||m.type==='lantern'){
+  const colon=headline.indexOf(': ');
+  if(colon!==-1){
+   headline=headline.slice(colon+2);
+   chips=[m.type==='leader'?'Gesamtspitze':'Tabellenende'];
+   note='Stand der Gesamtwertung nach dieser Runde.';
+  }
+ }else if(m.type==='up'||m.type==='down'){
+  const parts=headline.split(' · ');
+  const movements=parts.map(x=>x.match(/^(.+) ([+−][0-9]+) Plätze$/));
+  if(movements.every(Boolean)){
+   headline=movements.length===1?movements[0][1]:movements.length+' grosse Rangbewegungen';
+   chips=movements.map(x=>movements.length===1?x[2]+' Plätze':x[1]+' '+x[2]+' Plätze');
+   note='Veränderung gegenüber der vorherigen Runde.';
+  }
+ }else if(m.type==='reaction'||m.type==='slump'){
+  const parts=headline.split(' · ');
+  const delta=parts[1]?.match(/^([0-9.,]+) Punkte (mehr|weniger) als in Runde ([0-9]+)$/);
+  if(delta){
+   headline=parts[0];
+   chips=[(delta[2]==='mehr'?'+':'−')+delta[1]+' Punkte'];
+   note='Verglichen mit den Punkten aus Runde '+delta[3]+'.';
+  }
+ }else if(m.type==='podium'){
+  const name=headline.match(/^(.*) hat den Sprung unter die ersten drei geschafft$/);
+  if(name){headline=name[1];chips=['Neu in den Top 3'];note='Veränderung gegenüber der vorherigen Runde.';}
+ }else if(m.type==='streak'){
+  const name=headline.match(/^(.*) gewinnt auch diese Runde$/);
+  if(name){headline=name[1];chips=['2 Rundensiege in Folge'];note='Auch die vorherige Runde gewonnen.';}
+ }else if(m.type==='final'){
+  const name=headline.match(/^(.*) gewinnt das Turnier [0-9]{4}$/);
+  if(name){headline=name[1];chips=['Turniersieg'];note='Offizielle Schlussrangliste.';}
+ }else if(m.type==='tight'){
+  const gap=headline.match(/nur ([0-9.,]+) Punkte/);
+  if(gap){headline=gap[1]+' Punkte Abstand';chips=['Platz 1 ↔ 2'];note='Abstand in der Gesamtwertung nach dieser Runde.';}
+  else if(headline.includes(' liegen punktgleich vorne')){
+   headline=headline.split(' liegen punktgleich vorne')[0];chips=['Punktgleich'];note='Gemeinsame Führung nach dieser Runde.';
+  }
+ }
+ const tags=chips.length?'<div class="history-moment-chips">'+chips.map(x=>'<span class="history-moment-chip">'+e(x)+'</span>').join('')+'</div>':'';
+ const description=note?'<p class="history-moment-description">'+e(note)+'</p>':'';
+ return '<div class="history-moment-event history-moment-event--'+e(m.type)+'"><strong class="history-moment-label">'+e(m.title)+'</strong><p class="history-moment-headline">'+e(headline)+'</p>'+tags+description+'</div>';
+}
 function scenes(ed){
  const rounds=moments(ed);
  const selected=Math.max(0,Math.min(rounds.length-1,rounds.findIndex(x=>x.round===(memory.round||1))));
  const card=item=>{
   const winner=item.winners.length?item.winners.join(', '):'Kein Rundensieg dokumentiert';
-  const items=item.cards.map(m=>`<div class="history-moment-event history-moment-event--${m.type}"><strong>${e(m.title)}</strong><p>${e(m.detail)}</p></div>`).join('');
+  const items=item.cards.map(momentCardMarkup).join('');
   return `<article class="history-replay-card history-moment-card" data-round="${item.round}"><div class="history-replay-card-head"><span>SCHLÜSSELMOMENTE · ${ed.year}</span><h4>Runde ${item.round}</h4></div><div class="history-moment-winner"><small>Rundensieg</small><strong>${e(winner)}</strong></div><div class="history-moment-events">${items}</div></article>`;
  };
  return `<section class="history-feature history-feature--replay history-feature--moments"><div class="history-replay-head"><span>DIE SCHLÜSSELMOMENTE · ${ed.year}</span><h3>Runde für Runde</h3><p>Wische durch die Ereignisse oder ziehe den Regler.</p></div><div class="history-replay-viewport"><div class="history-replay-track" data-index="${selected}">${rounds.map((item,i)=>`<div class="history-replay-slide" data-index="${i}" aria-hidden="${i!==selected}">${card(item)}</div>`).join('')}</div></div><div class="history-replay-control"><div class="history-replay-control-head"><label for="history-round-slider">Runde auswählen</label><strong id="history-replay-count" aria-live="polite">Runde ${rounds[selected].round} von ${rounds.length}</strong></div><input type="range" id="history-round-slider" min="0" max="${rounds.length-1}" step="0.01" value="${selected}" aria-label="Runde der Schlüsselmomente wählen" aria-valuetext="Runde ${rounds[selected].round} von ${rounds.length}"/></div></section>`;
