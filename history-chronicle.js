@@ -114,6 +114,9 @@ function commitReplay(index){
  if(target===c.index){positionReplay(c.index,true);updateReplayReadout(c.index);return;}
  replayBusy=true;const generation=++replayGeneration;
  const motion=!matchMedia('(prefers-reduced-motion: reduce)').matches;
+ // Commit the finger-held position as the transition's true starting point.
+ // Otherwise fast pointer-up events can collapse the movement into an abrupt jump.
+ if(motion)void c.track.getBoundingClientRect();
  positionReplay(target,motion);
  // Don't swap the displayed round label at finger-up: it follows after the card settles.
  const finish=()=>{
