@@ -73,7 +73,8 @@ const assert=require('node:assert/strict');
    await page.locator('.history-entry-tile[data-view="records"]').click();
    await page.locator('#history-year-select').selectOption('2026');
    const highlights=await page.locator('.history-carousel-slide:not([inert])').innerText();
-   for(const title of ['Meiste Rundensiege','Meiste Top-3-Plätze','Meiste Top-5-Plätze','Grösste Aufholjagd','Meiste Nullerrunden','Grösster Absturz','Turnier-DNA'])assert.ok(highlights.includes(title),title+' needs actual calculation');
+   for(const title of ['Meiste Rundensiege','Meiste Top-3-Plätze','Meiste Top-5-Plätze','Grösste Aufholjagd','Meiste Nullerrunden','Grösster Absturz'])assert.ok(highlights.includes(title),title+' needs actual calculation');
+   assert.equal(await page.locator('.history-carousel-slide:not([inert]) .history-insight-section:has(> h4:text("Turnier-DNA"))').count(),0,'Turnier-DNA belongs only to Jahrbuch, not Rekordbuch');
    const consistency=await page.evaluate(()=>{
     const ed=db.editions.find(x=>x.year===2026),one=ed.rounds.reduce((m,r)=>{for(const x of r.results){if(x.place===1)m[x.player_id]=(m[x.player_id]||0)+1;}return m;},{});
     const top=Math.max(...Object.values(one)),holders=Object.keys(one).filter(x=>one[x]===top).sort();

@@ -56,3 +56,92 @@
  .history-insight-metric{padding:13px 10px}
  .history-insight-compare{padding:12px 9px}
 }
+
+/* Jahrbuch: a concise year portrait built from recorded participants, exactly
+   four selected annual records, and the relocated four-metric Turnier-DNA. */
+#app .page.page--history .history-yearbook-extras{
+ display:flex;
+ flex-direction:column;
+ gap:15px;
+ min-width:0;
+ margin:14px 0 17px;
+ text-align:center;
+}
+#app .page.page--history .history-yearbook-participants{
+ padding:12px 8px;
+ border:1px solid rgba(231,192,118,.36);
+ border-radius:14px;
+ background:linear-gradient(145deg,#224735,#143529);
+ min-width:0;
+}
+#app .page.page--history .history-yearbook-extras :is(.history-yearbook-participants h4,.history-insight-section>h4){
+ margin:0 0 6px;
+ color:#f1cc8f;
+ font-size:clamp(15px,4vw,20px);
+ line-height:1.25;
+ text-wrap:balance;
+}
+#app .page.page--history .history-yearbook-extras :is(.history-yearbook-participants p,.history-insight-section>p){
+ margin:0 0 10px;
+ color:#cedacd;
+ font-size:11px;
+ line-height:1.45;
+}
+#app .page.page--history .history-yearbook-playerlist{
+ display:flex;
+ flex-wrap:wrap;
+ justify-content:center;
+ gap:5px;
+ max-width:100%;
+}
+#app .page.page--history .history-yearbook-playerlist>span{
+ color:#f8eed9;
+ font-size:11px;
+ line-height:1.25;
+ border:1px solid rgba(222,189,120,.27);
+ border-radius:8px;
+ background:rgba(11,36,27,.52);
+ padding:5px 7px;
+ max-width:100%;
+ overflow-wrap:anywhere;
+}
+#app .page.page--history .history-yearbook-extras .history-insight-section{
+ margin:0;
+ min-width:0;
+}
+#app .page.page--history .history-yearbook-extras .history-insight-grid{
+ display:grid;
+ grid-template-columns:repeat(2,minmax(0,1fr));
+ gap:7px;
+}
+#app .page.page--history .history-yearbook-extras .history-insight-metric{
+ padding:10px 5px;
+ min-width:0;
+ gap:5px;
+ justify-content:flex-start;
+ border-color:rgba(215,185,115,.36);
+}
+#app .page.page--history .history-yearbook-extras .history-insight-metric-title{
+ font-size:10px;
+ line-height:1.35;
+ overflow-wrap:anywhere;
+}
+#app .page.page--history .history-yearbook-extras .history-insight-metric-value{
+ font-size:clamp(15px,4vw,20px);
+ line-height:1.18;
+}
+#app .page.page--history .history-yearbook-extras .history-insight-metric-players{
+ font-size:11px;
+ line-height:1.3;
+ overflow-wrap:anywhere;
+}
+#app .page.page--history .history-yearbook-extras .history-insight-metric p{
+ font-size:10px;
+ line-height:1.35;
+ margin:1px 0 0;
+}
+@media(max-width:350px){
+ #app .page.page--history .history-yearbook-extras .history-insight-grid{gap:5px}
+ #app .page.page--history .history-yearbook-extras .history-insight-metric{padding:9px 4px}
+ #app .page.page--history .history-yearbook-extras .history-insight-metric-value{font-size:15px}
+}

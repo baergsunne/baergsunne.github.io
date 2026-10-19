@@ -78,16 +78,40 @@
    choose(rank.red,'value','Meiste Runden mit roter Laterne','Runden','Wer lag nach einer Runde punktgleich auf dem letzten Platz?','negative'),
    choose(rank.changesDown,'value','Grösster Fall nach einer Runde','Plätze','Grösster direkter Rückgang in der Gesamtwertung.','negative')
   ];
-  const changes=leadership(ed),gap=topGap(ed),distinct=uniqueWinners(ed);
+  return section('Bestleistungen','Diese Spitzenwerte gelten nur für das ausgewählte Turnier.',pos)+
+   section('Negativrekorde','Auch die schwierigen Momente gehören zur Turniergeschichte.',neg);
+ }
+ /* Turnier-DNA belongs to the Jahrbuch portrait, not to the record collection. */
+ function seasonDna(ed){
+  const rr=results(ed),changes=leadership(ed),gap=topGap(ed),distinct=uniqueWinners(ed);
   const dna=[
    metric('Unterschiedliche Rundensieger',fmt(distinct)+' Spieler',[],'Wie viele verschiedene Spieler haben mindestens eine Runde gewonnen?','neutral'),
    metric('Wechsel an der Tabellenspitze',fmt(changes)+' Wechsel',[],'Ein Wechsel liegt vor, wenn sich die Gruppe der punktführenden Spieler verändert.','neutral'),
    metric('Abstand zwischen Platz 1 und 2',gap===null?'Nicht verfügbar':fmt(gap)+' Punkte',[],'Abstand in der offiziellen Schlusswertung; fehlende Vergleichsplätze werden nicht ergänzt.','neutral'),
    metric('Anzahl Runden',fmt(rr.length)+' Runden',[],'Alle dokumentierten Runden des Turniers.','neutral')
   ];
-  return section('Bestleistungen','Diese Spitzenwerte gelten nur für das ausgewählte Turnier.',pos)+
-   section('Negativrekorde','Auch die schwierigen Momente gehören zur Turniergeschichte.',neg)+
-   section('Turnier-DNA','Diese vier Zahlen beschreiben, wie das gesamte Turnier verlaufen ist.',dna);
+  return section('Turnier-DNA','Diese vier Zahlen beschreiben den Verlauf dieses Turniers.',dna);
+ }
+ function yearbookExtras(ed){
+  const stats=playerStats(ed),rank=rankings(ed);
+  const choose=(items,key,title,unit,description,kind='positive')=>{
+   const max=maxima(items,key);
+   return metric(title,fmt(max.value)+' '+unit,max.value>0?max.names:[],
+     max.value?description:'Dieser Rekord trat in diesem Turnier nicht auf.',kind);
+  };
+  const records=[
+   choose(stats,'wins','Meiste Rundensiege','Siege','Wie oft erreichte ein Spieler Platz 1?'),
+   choose(stats,'top3','Meiste Top-3-Plätze','Runden','Wie oft stand ein Spieler unter den ersten drei?'),
+   choose(stats,'zeros','Meiste Nullerrunden','Runden','Wie oft erhielt ein Spieler in einer Runde null Punkte?','negative'),
+   choose(rank.climb,'value','Grösste Aufholjagd','Plätze','Grösster Positionsgewinn in der Gesamtwertung von einer früheren bis zu einer späteren Runde.')
+  ];
+  const names=[...new Set(ed.players)];
+  const field='<section class="history-yearbook-participants"><h4>Teilnehmerfeld</h4>'+
+    '<p>'+names.length+' dokumentierte Spieler in diesem Turnier.</p>'+
+    '<div class="history-yearbook-playerlist">'+names.map(x=>'<span>'+esc(x)+'</span>').join('')+'</div></section>';
+  return '<div class="history-yearbook-extras">'+field+
+    section('Vier Jahresrekorde','Die markantesten Spitzen- und Negativwerte dieses Turniers.',records)+
+    seasonDna(ed)+'</div>';
  }
  function field(ed,editions){
   const all=order(editions),index=all.findIndex(x=>x.year===ed.year),earlier=all.slice(0,index),previous=all[index-1]||null;
@@ -166,5 +190,5 @@
     '<div class="history-carousel-slide" data-index="'+i+'" '+(i!==index?'inert aria-hidden="true"':'')+'>'+viewPanel(type,x,editions)+'</div>'
    ).join('')+'</div></div></section><p class="history-carousel-hint">Jahrgang durch Wischen oder mit dem Regler wechseln. Alle Angaben stammen aus den dokumentierten Resultaten.</p>';
  }
- window.BAERGSUNNE_HISTORY_EXT={render,types};
+ window.BAERGSUNNE_HISTORY_EXT={render,types,yearbookExtras};
 })();
