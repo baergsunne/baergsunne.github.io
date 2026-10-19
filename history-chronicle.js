@@ -19,9 +19,9 @@ function yearbook(ed,editions){
 }
 function scenes(ed){return `<section class="history-feature"><div class="history-panel-header"><span>DIE CHRONIK</span><h3>Belegte Turniermomente</h3><p>Diese Ereignisse werden aus den tatsächlich gespeicherten Platzierungen und Punkten rekonstruiert, nicht frei erfunden.</p></div><div class="history-scene-list">${moments(ed).map((m,i)=>`<button type="button" data-his="scene" data-number="${m.round}"><span>R${m.round}</span><strong>${e(m.title)}</strong><small>${e(m.desc)}</small><b>Runde öffnen ↗</b></button>`).join('')}</div></section>`;}
 function archive(ed){return `<section class="history-feature"><div class="history-panel-header"><span>QUELLEN & RESULTATE</span><h3>Originalarchiv ${ed.year}</h3><p>Die gespeicherten historischen Resultate bleiben unverändert. Fehlende Dokumente werden nicht ergänzt.</p></div><p><b>Erfasste Quelle:</b> ${e(ed.source||'Keine Quellenbezeichnung hinterlegt')}</p><p><b>Dokumentationsstatus:</b> ${e(ed.status||'nicht angegeben')}</p><h4>Offizielle Schlussrangliste</h4><div class="history-table-shell"><table class="history-table"><thead><tr><th>Offizieller Rang</th><th>Spieler</th><th>Offizielle Punkte</th></tr></thead><tbody>${[...ed.official_standings].sort((a,b)=>a.place-b.place).map(x=>`<tr><td>${x.place}</td><td>${e(x.player_id)}</td><td>${fmt(x.points)}</td></tr>`).join('')}</tbody></table></div><h4>Originale Rundenresultate</h4>${ed.rounds.map(r=>`<details class="history-proof"><summary>Runde ${r.number}</summary><div class="history-table-shell"><table class="history-table"><thead><tr><th>Rang</th><th>Spieler</th><th>Punkte</th></tr></thead><tbody>${[...r.results].sort((a,b)=>a.place-b.place).map(x=>`<tr><td>${x.place}</td><td>${e(x.player_id)}</td><td>${fmt(x.points)}</td></tr>`).join('')}</tbody></table></div></details>`).join('')}</section>`;}
-function render(editions,year){requestAnimationFrame(initCarousel);const ed=editions.find(x=>x.year===Number(year))||editions.at(-1);if(!ed)return '';if(memory.year!==ed.year){memory.year=ed.year;memory.round=1;memory.view='yearbook'}const tabs=[['yearbook','Jahrbuch'],['replay','Replay'],['moments','Schlüsselmomente'],['archive','Originalarchiv']];return `<div class="history-chronicle" id="history-chronicle">${memory.view==='yearbook'?'':'<div class="history-chronicle-top"><span>BÄRGSUNNE POKER · ZEITREISE</span><h2>Die Turnierchronik</h2><p>Geschichte erleben statt Statistik wiederholen.</p></div>'}<div class="history-dropdown-controls"><label for="history-year-select">Turnierjahr<select id="history-year-select" data-history-select="year" aria-label="Turnierjahr wählen">${[...editions].sort((a,b)=>b.year-a.year).map(x=>`<option value="${x.year}" ${x.year===ed.year?'selected':''}>${x.year}</option>`).join('')}</select></label><label for="history-view-select">Ansicht<select id="history-view-select" data-history-select="view" aria-label="Historische Ansicht wählen">${tabs.map(([id,name])=>`<option value="${id}" ${id===memory.view?'selected':''}>${name}</option>`).join('')}</select></label></div>${memory.view==='replay'?replay(ed):memory.view==='moments'?scenes(ed):memory.view==='archive'?archive(ed):yearbook(ed,editions)}${memory.view==='yearbook'?'':'<p class="history-note">Historische Quelle: '+e(ed.source||'Quellenbezeichnung nicht hinterlegt')+'. Die Darstellung unterscheidet offizielle Schlussresultate von rechnerisch rekonstruierten Zwischenständen.</p>'}</div>`;}
+function render(editions,year){requestAnimationFrame(()=>{initCarousel();initReplayCarousel();});const ed=editions.find(x=>x.year===Number(year))||editions.at(-1);if(!ed)return '';if(memory.year!==ed.year){memory.year=ed.year;memory.round=1;memory.view='yearbook'}const tabs=[['yearbook','Jahrbuch'],['replay','Replay'],['moments','Schlüsselmomente'],['archive','Originalarchiv']];return `<div class="history-chronicle" id="history-chronicle">${(memory.view==='yearbook'||memory.view==='replay')?'':'<div class="history-chronicle-top"><span>BÄRGSUNNE POKER · ZEITREISE</span><h2>Die Turnierchronik</h2><p>Geschichte erleben statt Statistik wiederholen.</p></div>'}<div class="history-dropdown-controls"><label for="history-year-select">Turnierjahr<select id="history-year-select" data-history-select="year" aria-label="Turnierjahr wählen">${[...editions].sort((a,b)=>b.year-a.year).map(x=>`<option value="${x.year}" ${x.year===ed.year?'selected':''}>${x.year}</option>`).join('')}</select></label><label for="history-view-select">Ansicht<select id="history-view-select" data-history-select="view" aria-label="Historische Ansicht wählen">${tabs.map(([id,name])=>`<option value="${id}" ${id===memory.view?'selected':''}>${name}</option>`).join('')}</select></label></div>${memory.view==='replay'?replay(ed):memory.view==='moments'?scenes(ed):memory.view==='archive'?archive(ed):yearbook(ed,editions)}${memory.view==='yearbook'?'':'<p class="history-note">Historische Quelle: '+e(ed.source||'Quellenbezeichnung nicht hinterlegt')+'. Die Darstellung unterscheidet offizielle Schlussresultate von rechnerisch rekonstruierten Zwischenständen.</p>'}</div>`;}
 window.POKER_HISTORY_CHRONICLE={render};
-requestAnimationFrame(initCarousel);
+requestAnimationFrame(()=>{initCarousel();initReplayCarousel();});
 let carouselBusy=false,drag=null,sliderDrag=null;
 function carouselParts(){
  const viewport=document.querySelector('.history-carousel-viewport'),track=viewport?.querySelector('.history-carousel-track'),slides=track?[...track.children]:[];
@@ -77,6 +77,64 @@ document.addEventListener('input',ev=>{
  sliderDrag=value;positionCarousel(value);
 });
 document.addEventListener('change',ev=>{if(ev.target.id!=='history-year-slider')return;const value=sliderDrag===null?Number(ev.target.value):sliderDrag;sliderDrag=null;commitCarouselYear(value);});
-document.addEventListener('change',ev=>{const select=ev.target.closest('[data-history-select]');if(!select)return;if(select.dataset.historySelect==='year'){const button=document.createElement('button');button.dataset.action='historyyear';button.dataset.value=select.value;button.style.display='none';select.after(button);button.click();requestAnimationFrame(initCarousel);return;}if(select.dataset.historySelect==='round'){memory.round=Number(select.value);}else{memory.view=select.value;}const node=document.getElementById('history-chronicle');if(node&&window.POKER_SEED)node.outerHTML=render(window.POKER_SEED.editions,memory.year);requestAnimationFrame(initCarousel);});
-document.addEventListener('click',ev=>{const b=ev.target.closest('[data-his]');if(!b)return;ev.preventDefault();const action=b.dataset.his;if(action==='view')memory.view=b.dataset.view;if(action==='round')memory.round=Number(b.dataset.number);if(action==='prev')memory.round=Math.max(1,memory.round-1);if(action==='next')memory.round+=1;if(action==='scene'){memory.round=Number(b.dataset.number);memory.view='replay'}const node=document.getElementById('history-chronicle');if(node&&window.POKER_SEED){const oldY=memory.year;node.outerHTML=render(window.POKER_SEED.editions,oldY);requestAnimationFrame(initCarousel)}},true);
+// Replay carousel: live finger tracking, half-card snap and continuous round slider.
+let replayBusy=false,replayDrag=null,replaySliderDrag=null,replayGeneration=0;
+function replayParts(){
+ const viewport=document.querySelector('.history-replay-viewport'),track=viewport?.querySelector('.history-replay-track'),slides=track?[...track.children]:[];
+ if(!viewport||!track||!slides.length)return null;
+ const step=slides.length>1?slides[1].offsetLeft-slides[0].offsetLeft:slides[0].offsetWidth;
+ return {viewport,track,slides,step,center:(viewport.clientWidth-slides[0].offsetWidth)/2,index:Number(track.dataset.index)};
+}
+function positionReplay(fraction,animate=false,duration=850){
+ const c=replayParts();if(!c)return;
+ c.track.style.transition=animate&&!matchMedia('(prefers-reduced-motion: reduce)').matches?'transform '+duration+'ms cubic-bezier(.25,.46,.35,1)':'none';
+ c.track.style.transform='translate3d('+(c.center-fraction*c.step)+'px,0,0)';
+ c.slides.forEach((slide,i)=>{const distance=Math.abs(i-fraction);slide.style.opacity=String(Math.max(.46,1-distance*.19));slide.style.transform='scale('+Math.max(.975,1-distance*.023)+')';slide.setAttribute('aria-hidden',String(i!==Math.round(fraction)));});
+}
+function updateReplayReadout(value){
+ const c=replayParts(),counter=document.getElementById('history-replay-count'),slider=document.getElementById('history-round-slider');if(!c)return;
+ const i=Math.max(0,Math.min(c.slides.length-1,Math.round(value))),num=c.slides[i].querySelector('[data-round]')?.dataset.round||i+1;
+ if(counter)counter.textContent='Runde '+num+' von '+c.slides.length;
+ if(slider)slider.setAttribute('aria-valuetext','Runde '+num+' von '+c.slides.length);
+}
+function commitReplay(index){
+ const c=replayParts();if(!c||replayBusy)return;
+ const target=Math.max(0,Math.min(c.slides.length-1,Math.round(index)));
+ const duration=matchMedia('(prefers-reduced-motion: reduce)').matches?0:Math.min(1250,850+Math.max(0,Math.abs(target-c.index)-1)*85);
+ if(target===c.index){positionReplay(target,true);updateReplayReadout(target);return;}
+ replayBusy=true;const generation=++replayGeneration;
+ positionReplay(target,true,duration);updateReplayReadout(target);
+ const finish=()=>{if(generation!==replayGeneration)return;const now=replayParts();if(now?.track===c.track){now.track.dataset.index=String(target);memory.round=Number(now.slides[target].querySelector('[data-round]')?.dataset.round)||memory.round;const slider=document.getElementById('history-round-slider');if(slider)slider.value=String(target);positionReplay(target);updateReplayReadout(target);}replayBusy=false;};
+ setTimeout(finish,duration+25);
+}
+function initReplayCarousel(){replayGeneration++;replayBusy=false;replayDrag=null;replaySliderDrag=null;const c=replayParts();if(c){positionReplay(c.index);updateReplayReadout(c.index);}}
+document.addEventListener('pointerdown',ev=>{
+ const viewport=ev.target.closest('.history-replay-viewport');if(!viewport||ev.target.closest('button,select,input,summary,a')||replayBusy)return;
+ const c=replayParts();if(!c)return;
+ replayDrag={id:ev.pointerId,x:ev.clientX,y:ev.clientY,index:c.index,step:c.step,axis:null};
+ viewport.setPointerCapture(ev.pointerId);
+});
+document.addEventListener('pointermove',ev=>{
+ if(!replayDrag||ev.pointerId!==replayDrag.id||replayBusy)return;
+ const dx=ev.clientX-replayDrag.x,dy=ev.clientY-replayDrag.y;
+ if(!replayDrag.axis&&Math.max(Math.abs(dx),Math.abs(dy))>8)replayDrag.axis=Math.abs(dx)>Math.abs(dy)*1.2?'x':'y';
+ if(replayDrag.axis!=='x')return;
+ ev.preventDefault();
+ const c=replayParts();if(!c)return;
+ const fraction=Math.max(0,Math.min(c.slides.length-1,Math.max(c.index-1,Math.min(c.index+1,replayDrag.index-dx/c.step))));
+ positionReplay(fraction);
+});
+function endReplayDrag(ev){
+ if(!replayDrag||replayDrag.id!==ev.pointerId)return;
+ const d=replayDrag;replayDrag=null;const c=replayParts();if(!c)return;
+ if(d.axis!=='x'){positionReplay(c.index,true);return;}
+ const dx=ev.clientX-d.x,delta=Math.abs(dx/d.step)>=.5?(dx<0?1:-1):0;
+ commitReplay(Math.max(0,Math.min(c.slides.length-1,d.index+delta)));
+}
+document.addEventListener('pointerup',endReplayDrag);
+document.addEventListener('pointercancel',ev=>{if(!replayDrag||replayDrag.id!==ev.pointerId)return;replayDrag=null;const c=replayParts();if(c)positionReplay(c.index,true);});
+document.addEventListener('input',ev=>{if(ev.target.id!=='history-round-slider'||replayBusy)return;const value=Number(ev.target.value);replaySliderDrag=value;positionReplay(value);updateReplayReadout(value);});
+document.addEventListener('change',ev=>{if(ev.target.id!=='history-round-slider')return;const value=replaySliderDrag===null?Number(ev.target.value):replaySliderDrag;replaySliderDrag=null;commitReplay(value);});
+document.addEventListener('change',ev=>{const select=ev.target.closest('[data-history-select]');if(!select)return;if(select.dataset.historySelect==='year'){const button=document.createElement('button');button.dataset.action='historyyear';button.dataset.value=select.value;button.style.display='none';select.after(button);button.click();requestAnimationFrame(()=>{initCarousel();initReplayCarousel();});return;}if(select.dataset.historySelect==='round'){memory.round=Number(select.value);}else{memory.view=select.value;}const node=document.getElementById('history-chronicle');if(node&&window.POKER_SEED)node.outerHTML=render(window.POKER_SEED.editions,memory.year);requestAnimationFrame(()=>{initCarousel();initReplayCarousel();});});
+document.addEventListener('click',ev=>{const b=ev.target.closest('[data-his]');if(!b)return;ev.preventDefault();const action=b.dataset.his;if(action==='view')memory.view=b.dataset.view;if(action==='round')memory.round=Number(b.dataset.number);if(action==='prev')memory.round=Math.max(1,memory.round-1);if(action==='next')memory.round+=1;if(action==='scene'){memory.round=Number(b.dataset.number);memory.view='replay'}const node=document.getElementById('history-chronicle');if(node&&window.POKER_SEED){const oldY=memory.year;node.outerHTML=render(window.POKER_SEED.editions,oldY);requestAnimationFrame(()=>{initCarousel();initReplayCarousel();})}},true);
 })();
