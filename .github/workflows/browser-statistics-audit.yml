@@ -2,7 +2,7 @@ name: Browser statistics audit
 on:
   push:
     branches:
-      - fix/yearbook-settle-850ms-20261019
+      - feat/history-replay-swipe-slider-20261019
   pull_request:
     paths:
       - 'app.js'
@@ -34,3 +34,4 @@ jobs:
       - run: node tests/mobile-dropdowns.cjs
       - run: node tests/yearbook-responsive.cjs
       - run: node tests/yearbook-finger-drag.cjs
+      - run: node tests/replay-carousel.cjs
