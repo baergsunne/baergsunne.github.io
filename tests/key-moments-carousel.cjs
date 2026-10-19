@@ -25,14 +25,26 @@ const assert=require('node:assert/strict');
      const expected=round.results.filter(x=>x.place===1).map(x=>x.player_id).join(', ')||'Kein Rundensieg dokumentiert';
      const actual=card.querySelector('.history-moment-winner strong')?.textContent;
      if(actual!==expected)problems.push(ed.year+' R'+round.number+': incorrect round winner '+actual+' expected '+expected);
-     const titles=[...card.querySelectorAll('.history-moment-event strong')].map(x=>x.textContent);
+     const events=[...card.querySelectorAll('.history-moment-event')];
+      if(!events.length)problems.push(ed.year+' R'+round.number+': no moment cards');
+      for(const event of events){
+       const title=event.querySelector('strong.history-moment-label');
+       const headline=event.querySelector('p.history-moment-headline');
+       if(!title?.textContent.trim()||!headline?.textContent.trim())problems.push(ed.year+' R'+round.number+': missing structured moment typography');
+       if(getComputedStyle(event).textAlign!=='center')problems.push(ed.year+' R'+round.number+': event not centered');
+       for(const child of event.querySelectorAll('.history-moment-label,.history-moment-headline,.history-moment-chip,.history-moment-description')){
+        const b=child.getBoundingClientRect(),outer=event.getBoundingClientRect();
+        if(b.left<outer.left-2||b.right>outer.right+2)problems.push(ed.year+' R'+round.number+': chip/label overflow');
+       }
+      }
+      const titles=[...card.querySelectorAll('.history-moment-event strong')].map(x=>x.textContent);
      if(!titles.some(x=>x.includes('Führung')||x.includes('Spitze')))problems.push(ed.year+' R'+round.number+': missing leader');
      if(!titles.some(x=>x.includes('Rote Laterne')))problems.push(ed.year+' R'+round.number+': missing red lantern');
      if(i>0&&!titles.some(x=>x.includes('Reaktion')||x.includes('Steigerung')))problems.push(ed.year+' R'+round.number+': missing positive reaction');
      if(i>0&&!titles.some(x=>x.includes('Reaktion')||x.includes('Rückgang')))problems.push(ed.year+' R'+round.number+': missing weakest reaction');
      if(i===0&&titles.some(x=>x.includes('Vorrunde')))problems.push(ed.year+' R1: fake previous-round comparison');
      const panel=card.getBoundingClientRect();
-     for(const node of card.querySelectorAll('h4,.history-moment-winner strong,.history-moment-event strong,.history-moment-event p')){
+     for(const node of card.querySelectorAll('h4,.history-moment-winner strong,.history-moment-event strong,.history-moment-event p,.history-moment-chip')){
       const box=node.getBoundingClientRect();
       if(box.right>panel.right+2||box.left<panel.left-2)problems.push(ed.year+' R'+round.number+': text overflow '+node.textContent.slice(0,15));
      }
