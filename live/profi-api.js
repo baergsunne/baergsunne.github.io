@@ -58,7 +58,7 @@ export async function handleProfi({req,env,ctx,url,auth,entry,update}){
    if(req.headers.get('upgrade')?.toLowerCase()!=='websocket')return fail('WebSocket erforderlich.',426);
    const id=url.searchParams.get('id')||'';
    const offered=req.headers.get('sec-websocket-protocol')||'';
-   const ticket=offered.match(/(?:^|,\\s*)token-([a-f0-9]{64})(?=,|$)/)?.[1]||'';
+   const ticket=offered.match(/(?:^|,\s*)token-([a-f0-9]{64})(?=,|$)/)?.[1]||'';
    if(!idPattern.test(id)||!tokenPattern.test(ticket))return fail('Zugriff verweigert.',403);
    const row=await getRow(env,id);if(!row)return fail('Zugriff verweigert.',403);
    const d=docOf(row);
