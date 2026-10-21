@@ -16,6 +16,7 @@ const profiCore=fs.readFileSync(path.join(root,'live/profi-core.js'),'utf8').rep
 const profiApi=fs.readFileSync(path.join(root,'live/profi-api.js'),'utf8').replace(/^import .*?;\n/gm,'').replace(/^export /gm,'');
 const profiEmbedded='const {handleProfi} = (() => {\n'+profiCore+'\n'+profiApi+'\nreturn {handleProfi};\n})();\n';
 let worker=fs.readFileSync(path.join(root,'live/worker.js'),'utf8').replace(/^import .*?;\n/gm,'').replace("if(!env.ASSETS)return fail('Website nicht verbunden.',503);",'const assetStore=env.ASSETS||embeddedAssets;').replaceAll('env.ASSETS.fetch(req)','assetStore.fetch(req)');
-const code=assetCode+core+'\n'+profiEmbedded+'\n'+worker;
+const profiEvents=fs.readFileSync(path.join(root,'live/profi-events.js'),'utf8').replace(/^export /gm,'');
+const code=assetCode+core+'\n'+profiEmbedded+'\n'+profiEvents+'\n'+worker;
 const out=path.join(root,'dist-live-preview-worker.mjs');fs.writeFileSync(out,code);
 console.log(JSON.stringify({path:out,bytes:Buffer.byteLength(code),sha256:crypto.createHash('sha256').update(code).digest('hex'),assets:Object.keys(assets).length}));
