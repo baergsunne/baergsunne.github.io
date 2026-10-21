@@ -29,7 +29,7 @@ const assert=require('node:assert/strict');
      const names=[...fields].map(text);
      if(names.length!==new Set(ed.players).size)problems.push(ed.year+': participant count incorrect');
      for(const p of ed.players)if(!names.includes(p))problems.push(ed.year+': missing participant '+p);
-     if(!text(extra.querySelector('.history-yearbook-participants p')).startsWith(ed.players.length+' dokumentierte'))problems.push(ed.year+': roster summary wrong');
+     if(!text(extra.querySelector('.history-yearbook-participants p')).startsWith(ed.players.length+' Spieler waren'))problems.push(ed.year+': roster summary wrong');
      const sections=[...extra.querySelectorAll('.history-insight-section')];
      if(sections.length!==2){problems.push(ed.year+': expected exactly records and DNA');continue;}
      if(text(sections[0].querySelector('h4'))!=='Vier Jahresrekorde')problems.push(ed.year+': wrong records section');
