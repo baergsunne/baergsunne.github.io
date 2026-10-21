@@ -355,3 +355,45 @@
    immediately after the shared controller and stays inside the carousel. */
 .history-feature--yearbook .history-yearbook-head{margin-bottom:11px}
 
+/* One-card back/forward navigation: 44px touch areas and keyboard focus. */
+#app .page.page--history .history-sticky-group .history-carousel-control > .history-step-button{
+ appearance:none;
+ -webkit-appearance:none;
+ box-sizing:border-box;
+ display:inline-flex;
+ align-items:center;
+ justify-content:center;
+ flex:0 0 auto;
+ min-height:44px;
+ max-width:29%;
+ min-width:0;
+ margin:0;
+ padding:4px clamp(2px,.8vw,7px);
+ border:0;
+ border-radius:8px;
+ background:transparent;
+ color:#edce9d;
+ font:inherit;
+ font-size:clamp(11px,2.8vw,14px);
+ font-weight:750;
+ line-height:1.2;
+ text-align:center;
+ white-space:nowrap;
+ cursor:pointer;
+ touch-action:manipulation;
+ -webkit-tap-highlight-color:transparent;
+}
+#app .page.page--history .history-sticky-group .history-carousel-control > .history-step-button:focus-visible{
+ outline:2px solid #efc786;
+ outline-offset:1px;
+ background:rgba(232,191,115,.16);
+}
+#app .page.page--history .history-sticky-group .history-carousel-control > .history-step-button:disabled{
+ opacity:.44;
+ cursor:default;
+}
+@media(hover:hover){
+ #app .page.page--history .history-sticky-group .history-carousel-control > .history-step-button:not(:disabled):hover{
+  background:rgba(232,191,115,.13);
+ }
+}
