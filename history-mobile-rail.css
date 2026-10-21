@@ -1,0 +1,142 @@
+/* Bärgsunne Historie 2026-10-22: mobile-only slim thumb rail.
+   Keeps one sticky heading; desktop 651px+ retains the established horizontal control. */
+.history-mobile-rail{display:none}
+@media(max-width:650px){
+ #app .page.page--history .history-chronicle > .history-sticky-group{
+  position:sticky;
+  top:var(--bp-history-sticky-top,116px);
+  z-index:19;
+  box-sizing:border-box;
+  width:calc(100% - 2px);
+  margin:0 0 10px;
+  min-height:48px;
+  background:linear-gradient(150deg,rgba(26,65,49,.97),rgba(10,41,31,.98));
+  border:1px solid #58775e;
+  border-radius:13px;
+  box-shadow:0 5px 15px rgba(0,0,0,.22);
+ }
+ #app .page.page--history .history-chronicle > .history-sticky-group > .history-carousel-control{
+  display:none!important;
+ }
+ #app .page.page--history .history-chronicle > .history-sticky-group > .history-sticky-title{
+  box-sizing:border-box;
+  display:flex;
+  width:100%;
+  min-height:48px;
+  padding:9px 12px!important;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+ }
+ #app .page.page--history .history-chronicle > .history-sticky-group .history-sticky-title h3{
+  margin:0;
+  font-size:clamp(17px,4.6vw,22px);
+  line-height:1.16;
+  color:#fff0d6;
+  text-wrap:balance;
+ }
+ #app .page.page--history .history-mobile-rail{
+  position:fixed;
+  z-index:22;
+  display:grid;
+  box-sizing:border-box;
+  top:calc(var(--bp-history-sticky-top,116px) + 59px);
+  bottom:calc(54px + env(safe-area-inset-bottom));
+  right:max(1px,env(safe-area-inset-right));
+  width:44px;
+  grid-template-rows:44px minmax(48px,1fr) 44px;
+  align-items:stretch;
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+  transform:translateX(7px);
+  transition:opacity .18s ease,transform .18s ease,visibility .18s;
+ }
+ #app .page.page--history .history-mobile-rail.is-active{
+  opacity:1;
+  visibility:visible;
+  pointer-events:auto;
+  transform:translateX(0);
+ }
+ #app .page.page--history .history-mobile-step{
+  display:grid;
+  place-items:center;
+  box-sizing:border-box;
+  width:44px;
+  height:44px;
+  padding:0;
+  border:0;
+  border-radius:12px;
+  background:transparent;
+  color:#f0c781;
+  cursor:pointer;
+  touch-action:manipulation;
+  -webkit-tap-highlight-color:transparent;
+ }
+ #app .page.page--history .history-mobile-step span{
+  display:grid;
+  place-items:center;
+  box-sizing:border-box;
+  width:30px;
+  height:34px;
+  border:1px solid #aa8954;
+  border-radius:11px;
+  background:linear-gradient(150deg,#1b4835,#0d2b21);
+  box-shadow:0 5px 14px rgba(0,0,0,.26);
+  font-size:30px;
+  font-weight:750;
+  line-height:1;
+  padding-bottom:4px;
+ }
+ #app .page.page--history .history-mobile-step:disabled{opacity:.32;cursor:default}
+ #app .page.page--history .history-mobile-track{
+  position:relative;
+  display:block;
+  box-sizing:border-box;
+  min-height:48px;
+  width:44px;
+  overflow:visible;
+  touch-action:none;
+  cursor:ns-resize;
+  user-select:none;
+  -webkit-user-select:none;
+  -webkit-tap-highlight-color:transparent;
+ }
+ #app .page.page--history .history-mobile-track-line{
+  position:absolute;
+  top:12px;
+  bottom:12px;
+  left:50%;
+  width:3px;
+  border-radius:4px;
+  transform:translateX(-50%);
+  background:linear-gradient(180deg,#f0cb8c,#af8850 50%,#6f895f);
+  box-shadow:0 0 0 5px rgba(16,50,35,.54),0 1px 8px rgba(0,0,0,.32);
+  pointer-events:none;
+ }
+ #app .page.page--history .history-mobile-knob{
+  position:absolute;
+  left:50%;
+  top:clamp(16px,var(--history-mobile-position,50%),calc(100% - 16px));
+  transform:translate(-50%,-50%);
+  box-sizing:border-box;
+  width:20px;
+  height:32px;
+  border:2px solid #f1ddae;
+  border-radius:11px;
+  background:linear-gradient(140deg,#fff8ec,#ddbd80);
+  box-shadow:0 2px 11px rgba(0,0,0,.4);
+  pointer-events:none;
+  transition:top .18s ease;
+ }
+ #app .page.page--history .history-mobile-step:focus-visible,
+ #app .page.page--history .history-mobile-track:focus-visible{
+  outline:2px solid #ffdd92;
+  outline-offset:-2px;
+  border-radius:10px;
+ }
+}
+@media(prefers-reduced-motion:reduce){
+ #app .page.page--history .history-mobile-rail,
+ #app .page.page--history .history-mobile-knob{transition:none!important}
+}
