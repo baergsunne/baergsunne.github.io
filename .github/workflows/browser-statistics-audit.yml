@@ -17,6 +17,8 @@ on:
       - 'tests/yearbook-highlights-dna.cjs'
       - 'tests/history-record-stories.cjs'
       - 'tests/history-insight-carousel-peek.cjs'
+      - 'tests/history-six-visual-unity.cjs'
+      - 'history-unified-design.css'
       - 'tests/history-sticky-slider.cjs'
       - 'tests/history-step-buttons.cjs'
       - 'tests/home-history-teaser.cjs'
@@ -56,6 +58,7 @@ jobs:
       - run: node tests/yearbook-highlights-dna.cjs
       - run: node tests/history-record-stories.cjs
       - run: node tests/history-insight-carousel-peek.cjs
+      - run: node tests/history-six-visual-unity.cjs
       - run: node tests/history-sticky-slider.cjs
       - run: node tests/history-step-buttons.cjs
       - run: node tests/home-history-teaser.cjs
