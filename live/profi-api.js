@@ -44,8 +44,8 @@ export async function handleProfi({req,env,ctx,url,auth,entry,update}){
    const row=await getRow(env,id);
    if(!row)return fail('Zugriff verweigert.',403);
    const d=docOf(row);
-   if(d.status==='finished')return fail('Turnier beendet.',410);
    if(!secureEq(ticket,await spectatorToken(env,d)))return fail('Zugriff verweigert.',403);
+   if(d.status==='finished')return fail('Turnier beendet.',410);
    return reply({revision:row.revision,...viewerSnapshot(d)});
   }
   if(!await auth(req,env))return fail('Anmeldung erforderlich.',401);
