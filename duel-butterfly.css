@@ -11,3 +11,153 @@
 .duel-bars{display:grid;grid-template-columns:minmax(0,1fr) 2px minmax(0,1fr);gap:3px;height:13px;margin-top:5px}.duel-bars i{background:#e6dfc9}.duel-track{display:flex;background:#365a44;border-radius:3px;overflow:hidden}.duel-track.left{justify-content:flex-end}.duel-track span{height:100%;background:#ddb472;border-radius:3px}.duel-track.right span{background:#73b591}.duel-open-hint{display:block;text-align:center;color:#bdd4c4;font-size:11px;margin-top:6px}
 .duel-year-list{padding:0 10px 10px}.duel-round-list{padding:2px 9px 8px}.duel-year{background:#1b4030}.duel-round{background:#173728}.duel-round p,.duel-explain{font-size:12px;line-height:1.6;color:#c9decd;padding:8px 12px;margin:0}.duel-timeline{margin:15px 0 5px}.duel-timeline label{display:grid;gap:8px;font-size:13px}
 @media(max-width:390px){.duel-stage{padding:9px}.duel-pair-top{grid-template-columns:minmax(0,1fr) 94px minmax(0,1fr);font-size:12px}.duel-years{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+
+/* Duell: native player fields follow the Historie year dropdown one-to-one.
+   Keep the two labels, real <select> interaction and iOS picker behaviour. */
+#app .page--stats .duel-persons .duel-picker select.duel-native-select{
+ display:block;
+ box-sizing:border-box;
+ width:100%;
+ min-width:0;
+ max-width:100%;
+ min-height:49px;
+ margin:0;
+ padding:10px 28px 10px 12px;
+ border:1px solid #4d6752;
+ border-radius:12px;
+ background:#102d23;
+ color:#f5edde;
+ font:600 16px system-ui,-apple-system,sans-serif;
+ appearance:auto;
+ -webkit-appearance:menulist;
+ box-shadow:none;
+}
+#app .page--stats .duel-persons .duel-picker select.duel-native-select:focus-visible{
+ outline:2px solid #e8c37e;
+ outline-offset:2px;
+}
+#app .page--stats .duel-picker{
+ min-width:0;
+}
+/* Compact year-chooser: the closed row consumes its actual tap target only,
+   not a second empty card. Expanded years retain finger-sized controls. */
+#app .page--stats .duel-inputs .duel-year-picker{
+ box-sizing:border-box;
+ min-width:0;
+ min-height:0;
+ height:auto;
+ margin:10px 0 9px;
+ padding:0;
+ border:1px solid #57745c;
+ border-radius:10px;
+ background:rgba(12,37,28,.26);
+ overflow:hidden;
+}
+#app .page--stats .duel-inputs .duel-year-picker>summary{
+ box-sizing:border-box;
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ gap:9px;
+ width:100%;
+ min-height:44px;
+ margin:0;
+ padding:9px 12px;
+ border:0;
+ cursor:pointer;
+ list-style:none;
+ color:#f6ead6;
+ font-size:14px;
+ font-weight:750;
+ line-height:1.25;
+}
+#app .page--stats .duel-inputs .duel-year-picker>summary::-webkit-details-marker{display:none}
+#app .page--stats .duel-inputs .duel-year-picker>summary::marker{content:''}
+#app .page--stats .duel-inputs .duel-year-picker>summary::after{
+ content:"";
+ flex:0 0 9px;
+ width:9px;
+ height:9px;
+ border-right:2px solid #e8c37e;
+ border-bottom:2px solid #e8c37e;
+ transform:rotate(45deg);
+ transition:transform .2s ease;
+ margin:-5px 4px 0 0;
+}
+#app .page--stats .duel-inputs .duel-year-picker[open]>summary{
+ background:rgba(216,182,113,.07);
+ border-bottom:1px solid rgba(123,158,125,.28);
+}
+#app .page--stats .duel-inputs .duel-year-picker[open]>summary::after{
+ transform:rotate(225deg);
+ margin:4px 4px -5px 0;
+}
+#app .page--stats .duel-inputs .duel-year-picker .duel-year-actions{
+ margin:9px 10px 5px;
+}
+#app .page--stats .duel-inputs .duel-year-picker .duel-years{
+ box-sizing:border-box;
+ margin:0;
+ padding:8px 10px 11px;
+}
+#app .page--stats .duel-inputs .duel-year-picker .duel-year-actions button{
+ min-height:38px;
+}
+/* Every Tannenbaum drilldown has the same unmistakable affordance and
+   independent open/closed chevron, including year and individual round. */
+#app .page--stats .duel-stage :is(.duel-metric,.duel-year,.duel-round)>summary{
+ cursor:pointer;
+ min-height:44px;
+ box-sizing:border-box;
+}
+#app .page--stats .duel-stage :is(.duel-metric,.duel-year,.duel-round)>summary .duel-open-hint{
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ gap:9px;
+ width:max-content;
+ max-width:100%;
+ margin:8px auto 0;
+ color:#d8e6d8;
+ font-size:12px;
+ font-weight:650;
+ line-height:1.4;
+ letter-spacing:.01em;
+}
+#app .page--stats .duel-stage :is(.duel-metric,.duel-year,.duel-round)>summary .duel-open-hint::after{
+ content:"";
+ display:inline-block;
+ flex:0 0 8px;
+ width:8px;
+ height:8px;
+ border-right:2px solid #e8c37e;
+ border-bottom:2px solid #e8c37e;
+ transform:rotate(45deg);
+ transition:transform .2s ease;
+ margin-top:-4px;
+}
+#app .page--stats .duel-stage :is(.duel-metric,.duel-year,.duel-round)[open]>summary{
+ background:rgba(216,182,113,.075);
+}
+#app .page--stats .duel-stage :is(.duel-metric,.duel-year,.duel-round)[open]>summary .duel-open-hint::after{
+ transform:rotate(225deg);
+ margin-top:4px;
+}
+#app .page--stats .duel-stage :is(.duel-metric,.duel-year,.duel-round)>summary:focus-visible,
+#app .page--stats .duel-inputs .duel-year-picker>summary:focus-visible{
+ outline:2px solid #e8c37e;
+ outline-offset:-3px;
+}
+@media(max-width:390px){
+ #app .page--stats .duel-persons{grid-template-columns:minmax(0,1fr) 26px minmax(0,1fr);gap:6px;}
+ #app .page--stats .duel-persons .duel-picker select.duel-native-select{
+   padding-left:9px;
+   padding-right:21px;
+   font-size:16px;
+ }
+}
+@media(prefers-reduced-motion:reduce){
+ #app .page--stats .duel-stage .duel-open-hint::after,
+ #app .page--stats .duel-year-picker>summary::after{transition:none}
+}
