@@ -47,8 +47,10 @@ const fixture=require('./fixture-2026.json');
     }
     state.page='stats';state.tab='race';draw();
     const race=document.querySelector('.race-sticky-control');
-    const history=(()=>{state.page='history';draw();return document.querySelector('.history-sticky-group')})();
-    return {results,racePosition:race?getComputedStyle(race).position:'not-found',
+    const racePosition=race?getComputedStyle(race).position:'not-found';
+    state.page='history';draw();
+    const history=document.querySelector('.history-sticky-group');
+    return {results,racePosition,
       historyPosition:history?getComputedStyle(history).position:'not-found',
       styleLoaded:!!styleTag,htmlBackground:getComputedStyle(document.documentElement).backgroundColor};
    });
