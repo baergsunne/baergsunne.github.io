@@ -15,3 +15,40 @@
 .page--live .cl-chart,.page--live .cl-legend{color:#dce7dc}
 .page--live .cl-player-link{border:0;background:transparent;padding:6px 0;color:#f4efdf;font-weight:750;text-decoration:underline;text-decoration-color:#e8c37e;text-underline-offset:3px;cursor:pointer;text-align:left}
 .page--live .cl-player-link:focus-visible{outline:2px solid #e8c37e;outline-offset:3px;border-radius:3px}
+
+/* 2026-10-21: Actual Bärgsunne trophy in the existing leader card. */
+.page--live .cl-leader{
+ box-sizing:border-box;
+ display:grid;
+ grid-template-columns:minmax(0,1fr) minmax(68px,23%);
+ align-items:center;
+ gap:clamp(8px,2.5vw,20px);
+}
+.page--live .cl-leader > .cl-leader-body{display:block;min-width:0}
+.page--live .cl-leader-body > span{display:block;color:#e8c37e;font-size:11px;font-weight:800;letter-spacing:.08em}
+.page--live .cl-leader-body > .cl-leader-score{
+ display:flex;
+ flex-wrap:wrap;
+ align-items:baseline;
+ justify-content:space-between;
+ gap:4px 12px;
+ margin-top:7px;
+}
+.page--live .cl-leader-score strong{font-size:clamp(23px,5vw,31px);line-height:1.17;overflow-wrap:anywhere;min-width:0}
+.page--live .cl-leader-score b{font-size:clamp(12px,1.8vw,16px);white-space:nowrap}
+.page--live .cl-leader-body p{margin:10px 0 0;font-size:13px;line-height:1.42;overflow-wrap:anywhere}
+.page--live .cl-leader > img.cl-leader-trophy{
+ display:block;
+ width:100%;
+ height:clamp(98px,16vw,150px);
+ max-width:130px;
+ justify-self:center;
+ object-fit:contain;
+ object-position:center;
+ filter:drop-shadow(0 8px 9px rgba(0,0,0,.38));
+}
+@media(max-width:390px){
+ .page--live .cl-leader{grid-template-columns:minmax(0,1fr) 68px;gap:8px;padding:13px 11px}
+ .page--live .cl-leader-body > .cl-leader-score{display:flex;flex-direction:column;align-items:flex-start;gap:3px}
+ .page--live .cl-leader > img.cl-leader-trophy{height:108px}
+}
