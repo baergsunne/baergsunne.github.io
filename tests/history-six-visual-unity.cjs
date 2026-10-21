@@ -60,6 +60,15 @@ const assert=require('node:assert/strict');
      });
      await page.waitForTimeout(950);
     }
+    // The user's 850ms animated snap is asynchronous. Evaluate geometry only
+    // once the destination actually reaches its final centred position.
+    await page.waitForFunction(()=>{
+     const viewport=document.querySelector('.history-carousel-viewport,.history-replay-viewport');
+     const track=viewport?.querySelector('.history-carousel-track,.history-replay-track');
+     const slide=track?.children[Number(track?.dataset.index)];
+     const r=slide?.getBoundingClientRect(),v=viewport?.getBoundingClientRect();
+     return r&&v&&Math.abs((r.left+r.right-v.left-v.right)/2)<4;
+    },null,{timeout:4000});
     sample[view]=await styleAudit();
     const s=sample[view];
     assert.equal(s.missing,false,width+' '+view+' card renders');
