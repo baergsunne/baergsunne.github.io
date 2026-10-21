@@ -75,12 +75,12 @@ function replay(ed){
  const rounds=[...ed.rounds].sort((a,b)=>a.number-b.number);
  const selected=Math.min(rounds.length-1,Math.max(0,rounds.findIndex(x=>x.number===(memory.round||1))));
  const card=(round,i)=>`<article class="history-replay-card" data-round="${round.number}"><div class="history-replay-card-head"><span>TURNIER ${ed.year} · RUNDENCHRONIK</span><h4>Runde ${round.number}</h4><p>Stand nach Runde ${round.number}</p></div>${table(ed,round.number)}<details class="history-proof history-replay-proof" ${memory.originalResultsOpen?'open':''}><summary>Originalergebnis dieser Runde</summary><div class="history-table-shell"><table class="history-table"><thead><tr><th>Rang</th><th>Spieler</th><th>Punkte</th></tr></thead><tbody>${[...round.results].sort((a,b)=>a.place-b.place).map(x=>`<tr><td>${x.place}</td><td>${e(x.player_id)}</td><td>${fmt(x.points)}</td></tr>`).join('')}</tbody></table></div></details></article>`;
- return `<div class="history-carousel-control history-replay-control history-unified-slider"><span aria-hidden="true">‹ Zurück</span><input type="range" id="history-round-slider" min="0" max="${rounds.length-1}" step="0.01" value="${selected}" aria-label="Runde im Replay auswählen" aria-valuetext="Runde ${rounds[selected].number} von ${ed.round_count}"/><span aria-hidden="true">Weiter ›</span><strong id="history-replay-count" class="history-slider-sr-only" aria-live="polite">Runde ${rounds[selected].number} von ${ed.round_count}</strong></div><section class="history-feature history-feature--replay"><div class="history-replay-viewport"><div class="history-replay-track" data-index="${selected}">${rounds.map((r,i)=>`<div class="history-replay-slide" data-index="${i}" aria-hidden="${i!==selected}">${card(r,i)}</div>`).join('')}</div></div></section>`;
+ return `<div class="history-carousel-control history-replay-control history-unified-slider"><button type="button" class="history-step-button" data-history-step="-1" aria-label="Eine Runde zurück">‹ Zurück</button><input type="range" id="history-round-slider" min="0" max="${rounds.length-1}" step="0.01" value="${selected}" aria-label="Runde im Replay auswählen" aria-valuetext="Runde ${rounds[selected].number} von ${ed.round_count}"/><button type="button" class="history-step-button" data-history-step="1" aria-label="Eine Runde weiter">Weiter ›</button><strong id="history-replay-count" class="history-slider-sr-only" aria-live="polite">Runde ${rounds[selected].number} von ${ed.round_count}</strong></div><section class="history-feature history-feature--replay"><div class="history-replay-viewport"><div class="history-replay-track" data-index="${selected}">${rounds.map((r,i)=>`<div class="history-replay-slide" data-index="${i}" aria-hidden="${i!==selected}">${card(r,i)}</div>`).join('')}</div></div></section>`;
 }
 function yearbook(ed,editions){
  const years=[...editions].sort((a,b)=>a.year-b.year),index=years.findIndex(x=>x.year===ed.year);
  const panel=x=>{const standing=x.official_standings;const name=n=>standing.filter(z=>z.place===n).map(z=>z.player_id).join(', ')||'Nicht dokumentiert';return `<div class="history-yearbook-card" data-year="${x.year}"><div class="history-yearbook-head"><div class="history-yearbook-cup" aria-hidden="true">🏆</div><span class="history-yearbook-divider" aria-hidden="true"></span></div><div class="history-podium history-podium--champion"><small>Champion</small><strong>${e(name(1))}</strong></div><div class="history-podium-pairs"><div class="history-podium history-podium--second"><small>Platz 2</small><strong>${e(name(2))}</strong></div><div class="history-podium history-podium--third"><small>Platz 3</small><strong>${e(name(3))}</strong></div></div>${window.BAERGSUNNE_HISTORY_EXT?.yearbookExtras?.(x)||""}<div class="history-shortcuts history-shortcuts--yearbook"><button type="button" data-his="view" data-view="replay">Turnier anschauen</button><button type="button" data-his="view" data-view="moments"><span>Schlüsselmomente</span><span>entdecken</span></button></div></div>`;};
- return `<div class="history-carousel-control"><span>‹ Älter</span><input id="history-year-slider" type="range" min="0" max="${years.length-1}" value="${index}" step="0.01" aria-label="Jahrbuch wechseln"/><span>Neuer ›</span></div><section class="history-feature history-feature--yearbook"><div class="history-carousel-viewport"><div class="history-carousel-track" data-index="${index}">${years.map((x,i)=>'<div class="history-carousel-slide" data-index="'+i+'" '+(i!==index?'inert aria-hidden="true"':'')+'>'+panel(x)+'</div>').join('')}</div></div></section><p class="history-carousel-hint">Karte mit dem Finger verschieben oder den Regler ziehen. Beim Wischen wechselt jeweils ein Jahrbuch.</p>`;
+ return `<div class="history-carousel-control"><button type="button" class="history-step-button" data-history-step="-1" aria-label="Ein Jahr zurück">‹ Zurück</button><input id="history-year-slider" type="range" min="0" max="${years.length-1}" value="${index}" step="0.01" aria-label="Jahrbuch wechseln"/><button type="button" class="history-step-button" data-history-step="1" aria-label="Ein Jahr weiter">Weiter ›</button></div><section class="history-feature history-feature--yearbook"><div class="history-carousel-viewport"><div class="history-carousel-track" data-index="${index}">${years.map((x,i)=>'<div class="history-carousel-slide" data-index="'+i+'" '+(i!==index?'inert aria-hidden="true"':'')+'>'+panel(x)+'</div>').join('')}</div></div></section><p class="history-carousel-hint">Karte mit dem Finger verschieben oder den Regler ziehen. Beim Wischen wechselt jeweils ein Jahrbuch.</p>`;
 }
 
 /* Purely visual presentation: all names and figures come from moments(ed). */
@@ -138,7 +138,7 @@ function scenes(ed){
   const items=item.cards.map(momentCardMarkup).join('');
   return `<article class="history-replay-card history-moment-card" data-round="${item.round}"><div class="history-replay-card-head"><span>SCHLÜSSELMOMENTE · ${ed.year}</span><h4>Runde ${item.round}</h4></div><div class="history-moment-winner"><small>Rundensieg</small><strong>${e(winner)}</strong></div><div class="history-moment-events">${items}</div></article>`;
  };
- return `<div class="history-carousel-control history-replay-control history-unified-slider"><span aria-hidden="true">‹ Zurück</span><input type="range" id="history-round-slider" min="0" max="${rounds.length-1}" step="0.01" value="${selected}" aria-label="Runde der Schlüsselmomente wählen" aria-valuetext="Runde ${rounds[selected].round} von ${rounds.length}"/><span aria-hidden="true">Weiter ›</span><strong id="history-replay-count" class="history-slider-sr-only" aria-live="polite">Runde ${rounds[selected].round} von ${rounds.length}</strong></div><section class="history-feature history-feature--replay history-feature--moments"><div class="history-replay-viewport"><div class="history-replay-track" data-index="${selected}">${rounds.map((item,i)=>`<div class="history-replay-slide" data-index="${i}" aria-hidden="${i!==selected}">${card(item)}</div>`).join('')}</div></div></section>`;
+ return `<div class="history-carousel-control history-replay-control history-unified-slider"><button type="button" class="history-step-button" data-history-step="-1" aria-label="Eine Runde zurück">‹ Zurück</button><input type="range" id="history-round-slider" min="0" max="${rounds.length-1}" step="0.01" value="${selected}" aria-label="Runde der Schlüsselmomente wählen" aria-valuetext="Runde ${rounds[selected].round} von ${rounds.length}"/><button type="button" class="history-step-button" data-history-step="1" aria-label="Eine Runde weiter">Weiter ›</button><strong id="history-replay-count" class="history-slider-sr-only" aria-live="polite">Runde ${rounds[selected].round} von ${rounds.length}</strong></div><section class="history-feature history-feature--replay history-feature--moments"><div class="history-replay-viewport"><div class="history-replay-track" data-index="${selected}">${rounds.map((item,i)=>`<div class="history-replay-slide" data-index="${i}" aria-hidden="${i!==selected}">${card(item)}</div>`).join('')}</div></div></section>`;
 }
 function archive(ed){return `<section class="history-feature"><div class="history-panel-header"><span>QUELLEN & RESULTATE</span><h3>Originalarchiv ${ed.year}</h3><p>Die gespeicherten historischen Resultate bleiben unverändert. Fehlende Dokumente werden nicht ergänzt.</p></div><p><b>Erfasste Quelle:</b> ${e(ed.source||'Keine Quellenbezeichnung hinterlegt')}</p><p><b>Dokumentationsstatus:</b> ${e(ed.status||'nicht angegeben')}</p><h4>Offizielle Schlussrangliste</h4><div class="history-table-shell"><table class="history-table"><thead><tr><th>Offizieller Rang</th><th>Spieler</th><th>Offizielle Punkte</th></tr></thead><tbody>${[...ed.official_standings].sort((a,b)=>a.place-b.place).map(x=>`<tr><td>${x.place}</td><td>${e(x.player_id)}</td><td>${fmt(x.points)}</td></tr>`).join('')}</tbody></table></div><h4>Originale Rundenresultate</h4>${ed.rounds.map(r=>`<details class="history-proof"><summary>Runde ${r.number}</summary><div class="history-table-shell"><table class="history-table"><thead><tr><th>Rang</th><th>Spieler</th><th>Punkte</th></tr></thead><tbody>${[...r.results].sort((a,b)=>a.place-b.place).map(x=>`<tr><td>${x.place}</td><td>${e(x.player_id)}</td><td>${fmt(x.points)}</td></tr>`).join('')}</tbody></table></div></details>`).join('')}</section>`;}
 /* Three home-style navigation cards, without replacing the existing explorer. */
@@ -210,6 +210,17 @@ function positionCarousel(fraction,animate=false){
  c.slides.forEach((slide,i)=>{const active=Math.abs(i-fraction)<.55;slide.style.opacity=active?'1':String(Math.max(.42,1-Math.abs(i-fraction)*.2));slide.style.transform='scale('+Math.max(.97,1-Math.abs(i-fraction)*.025)+')';slide.setAttribute('aria-hidden',String(!active));});
  const shown=c.slides[Math.max(0,Math.min(c.slides.length-1,Math.round(fraction)))]?.querySelector('[data-year]')?.dataset.year;
  if(shown)updateStickyTitle(memory.view,shown,memory.round);
+ syncHistoryStepButtons(c.index,c.slides.length);
+}
+/* Accessible single-card navigation uses the committed position only.
+   No stepping beyond the first or last slide, and no wrapping. */
+function syncHistoryStepButtons(index,total){
+ const control=document.querySelector('#history-chronicle .history-sticky-group > .history-carousel-control');
+ if(!control)return;
+ for(const button of control.querySelectorAll('[data-history-step]')){
+  const step=Number(button.dataset.historyStep);
+  button.disabled=step<0?index<=0:index>=total-1;
+ }
 }
 function commitCarouselYear(index,animate=true){
  const c=carouselParts();if(!c||carouselBusy)return;
@@ -276,6 +287,7 @@ function positionReplay(fraction,animate=false,parts=null){
  });
  const shown=c.slides[Math.max(0,Math.min(c.slides.length-1,Math.round(fraction)))]?.querySelector('[data-round]')?.dataset.round;
  if(shown)updateStickyTitle(memory.view,memory.year,shown);
+ syncHistoryStepButtons(c.index,c.slides.length);
 }
 function updateReplayReadout(value,parts=null){
  const c=parts||replayParts(),counter=document.getElementById('history-replay-count'),slider=document.getElementById('history-round-slider');if(!c)return;
@@ -380,6 +392,26 @@ document.addEventListener('touchcancel',ev=>{
 
 document.addEventListener('input',ev=>{if(ev.target.id!=='history-round-slider'||replayBusy)return;const value=Number(ev.target.value);replaySliderParts=replaySliderParts||replayParts();replaySliderDrag=value;positionReplay(value,false,replaySliderParts);updateReplayReadout(value,replaySliderParts);});
 document.addEventListener('change',ev=>{if(ev.target.id!=='history-round-slider')return;const value=replaySliderDrag===null?Number(ev.target.value):replaySliderDrag;replaySliderDrag=null;replaySliderParts=null;commitReplay(value);});
+// Clicks reuse the same one-card snap and movement as a finger swipe.
+document.addEventListener('click',ev=>{
+ const button=ev.target.closest('#history-chronicle .history-step-button[data-history-step]');
+ if(!button)return;
+ ev.preventDefault();
+ if(button.disabled)return;
+ const step=Number(button.dataset.historyStep);
+ if(step!==-1&&step!==1)return;
+ const control=button.closest('.history-carousel-control');
+ if(!control)return;
+ if(control.querySelector('#history-round-slider')){
+  if(replayBusy)return;
+  const c=replayParts();
+  if(c)commitReplay(c.index+step);
+ }else if(control.querySelector('#history-year-slider')){
+  if(carouselBusy)return;
+  const c=carouselParts();
+  if(c)commitCarouselYear(c.index+step);
+ }
+});
 // The original round result is one shared display preference for every round.
 // A native summary click is intercepted so all cards expand/collapse together,
 // including those outside the visible viewport. Keep it through round switches
