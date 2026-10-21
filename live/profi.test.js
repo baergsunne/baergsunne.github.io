@@ -4,6 +4,7 @@ import fs from 'node:fs';
 import {DatabaseSync} from 'node:sqlite';
 import worker from './worker.js';
 import {makeTournament,change,ranking,clockAt,viewerSnapshot,validNames,validLevels} from './profi-core.js';
+import {projectLiveClock,formatLiveClock} from './profi-clock.js';
 
 const URL_BASE='https://preview.example';
 function fixture(){
@@ -47,6 +48,27 @@ test('clock advances through multiple levels with no browser polling',()=>{
  assert.equal(clockAt(d,61100).index,1);
  assert.equal(clockAt(d,125100).index,2);
  assert.equal(clockAt(d,220100).running,false);
+});
+test('local countdown advances blinds and scheduled breaks without extra requests',()=>{
+ const levels=[{minutes:1,sb:25,bb:50},{minutes:1,break:true},{minutes:1,sb:50,bb:100}];
+ const snapshot={levels,index:0,running:true,remainingMs:60000,deadline:60100};
+ assert.equal(projectLiveClock(snapshot,30100).index,0);
+ assert.equal(projectLiveClock(snapshot,61100).index,1);
+ assert.equal(projectLiveClock(snapshot,61100).current.break,true);
+ assert.equal(projectLiveClock(snapshot,125100).index,2);
+ assert.equal(projectLiveClock(snapshot,185100).running,false);
+ assert.equal(formatLiveClock(61300),'01:02');
+});
+test('administrator cancellation revokes spectator link and frees free-tier active slot',async()=>{
+ const {env}=fixture(),c=client(env);await login(c);
+ const created=await c.send('/api/profi/create','POST',{mode:'free',title:'Pokerabend',names:['A','B']});
+ assert.equal(created.code,201);
+ const {id,viewerUrl}=created.value,viewer=new URLSearchParams(viewerUrl.split('#')[1]).get('token');
+ const cancelled=await c.send('/api/profi/action','PUT',{id,revision:0,action:'cancel'});
+ assert.equal(cancelled.code,200);
+ assert.equal(cancelled.value.document.status,'cancelled');
+ assert.equal((await c.send('/api/profi/watch?id='+id,'GET',undefined,{viewer})).code,403);
+ assert.equal((await c.send('/api/profi/create','POST',{mode:'free',title:'Nächstes Turnier',names:['A','B']})).code,201);
 });
 test('strict player and level validation',()=>{
  assert.throws(()=>validNames(['A','a']),/verschiedene/);
