@@ -86,12 +86,12 @@ async function run(){
   await page.waitForFunction(()=>document.querySelector('#status')?.textContent==='Live');
   await page.locator('#players .player button').first().click();
   await page.waitForFunction(()=>document.querySelector('#counts')?.textContent.includes('2 von 3'));
-  await viewer.reload({waitUntil:'networkidle'});
+  await viewer.reload({waitUntil:'domcontentloaded',timeout:12000});
   await viewer.locator('[data-tab=players]').click();
   await viewer.waitForFunction(()=>document.querySelector('#players')?.textContent.includes('Ausgeschieden'));
   await page.locator('#cancel').click();
   await page.waitForFunction(()=>document.querySelector('#status')?.textContent==='Abgebrochen');
-  await viewer.reload({waitUntil:'networkidle'});
+  await viewer.reload({waitUntil:'domcontentloaded',timeout:12000});
   await viewer.waitForFunction(()=>document.querySelector('#notice')?.textContent.includes('nicht mehr gültig'));
   assert.equal(await viewer.locator('#clock').textContent(),'--:--','Expired QR displays no live clock');
   const desktop=await browser.newContext({viewport:{width:1280,height:800}});
