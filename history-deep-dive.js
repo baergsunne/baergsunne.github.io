@@ -266,7 +266,7 @@
  function render(type,ed,editions){
   if(!types[type])return '';
   const years=order(editions),index=years.findIndex(x=>x.year===ed.year);
-  return '<div class="history-carousel-control"><span>‹ Älter</span><input id="history-year-slider" type="range" min="0" max="'+(years.length-1)+'" value="'+index+'" step="0.01" aria-label="'+esc(types[type][0])+' – Jahr wechseln"/><span>Neuer ›</span></div>'+
+  return '<div class="history-carousel-control"><button type="button" class="history-step-button" data-history-step="-1" aria-label="Ein Jahr zurück">‹ Zurück</button><input id="history-year-slider" type="range" min="0" max="'+(years.length-1)+'" value="'+index+'" step="0.01" aria-label="'+esc(types[type][0])+' – Jahr wechseln"/><button type="button" class="history-step-button" data-history-step="1" aria-label="Ein Jahr weiter">Weiter ›</button></div>'+
    '<section class="history-feature history-feature--yearbook history-feature--insights history-feature--'+type+'"><div class="history-carousel-viewport"><div class="history-carousel-track" data-index="'+index+'">'+years.map((x,i)=>
     '<div class="history-carousel-slide" data-index="'+i+'" '+(i!==index?'inert aria-hidden="true"':'')+'>'+viewPanel(type,x,editions)+'</div>'
    ).join('')+'</div></div></section><p class="history-carousel-hint">Jahrgang durch Wischen oder mit dem Regler wechseln. Alle Angaben stammen aus den dokumentierten Resultaten.</p>';
