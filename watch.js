@@ -4,7 +4,7 @@ const $=id=>document.getElementById(id);
 const escNumber=n=>Number(n||0).toLocaleString('de-CH');
 const fragment=new URLSearchParams(location.hash.slice(1));
 const id=fragment.get('id')||'',token=fragment.get('token')||'';
-let last=null,offset=0,loaded=false,closed=false,activeSync=false;
+let last=null,offset=0,loaded=false,closed=false,activeSync=false,lastSyncAt=0,socket=null,nextSocketTry=0;
 const valid=/^[a-f0-9]{32}$/.test(id)&&/^[a-f0-9]{64}$/.test(token);
 function row(name,value,emph=false){const el=document.createElement('div');el.className='row'+(emph?' levelnow':'');const a=document.createElement('span'),b=document.createElement('span');a.textContent=name;b.textContent=value;el.append(a,b);return el;}
 function setTab(name){document.querySelectorAll('[data-tab]').forEach(b=>{b.classList.toggle('active',b.dataset.tab===name);b.setAttribute('aria-pressed',String(b.dataset.tab===name));});document.querySelectorAll('[data-panel]').forEach(s=>s.hidden=s.dataset.panel!==name)}
@@ -31,22 +31,36 @@ function tick(){
  for(const x of document.querySelectorAll('[data-level]'))x.classList.toggle('levelnow',Number(x.dataset.level)===projected.index);
  const chips=$('chips');if(chips.lastChild)chips.lastChild.lastChild.textContent=lev.bb?String(Math.round(last.averageStack/lev.bb)):'–';
 }
+function connectSocket(){
+ if(closed||!last?.pushEnabled||!('WebSocket' in window)||Date.now()<nextSocketTry)return;
+ if(socket&&(socket.readyState===WebSocket.CONNECTING||socket.readyState===WebSocket.OPEN))return;
+ nextSocketTry=Date.now()+15000;
+ try{
+  const address=location.origin.replace(/^http/,'ws')+'/api/profi/socket?id='+encodeURIComponent(id);
+  socket=new WebSocket(address,['bp-viewer','token-'+token]);
+  socket.onmessage=e=>{
+   try{const message=JSON.parse(e.data);if(message.event==='update')sync();}catch{}
+  };
+  socket.onclose=()=>{socket=null;nextSocketTry=Date.now()+15000;};
+  socket.onerror=()=>{try{socket?.close();}catch{}};
+ }catch{socket=null;}
+}
 async function sync(){
  if(!valid){$('notice').textContent='Der Zuschauerlink ist ungültig.';return;}
  if(closed||activeSync)return;activeSync=true;
  try{
   const response=await fetch('/api/profi/watch?id='+encodeURIComponent(id),{cache:'no-store',headers:{'x-viewer-token':token}});
   if(!response.ok){
-   if(response.status===403||response.status===410){closed=true;last=null;document.querySelectorAll('[data-panel]').forEach(p=>p.replaceChildren());$('level').textContent='ZUGANG BEENDET';$('clock').textContent='--:--';$('blinds').textContent='– / –';$('notice').hidden=false;$('notice').textContent='Dieser Zuschauerzugang ist nicht mehr gültig.';return;}
+   if(response.status===403||response.status===410){closed=true;last=null;try{socket?.close();}catch{}document.querySelectorAll('[data-panel]').forEach(p=>p.replaceChildren());$('level').textContent='ZUGANG BEENDET';$('clock').textContent='--:--';$('blinds').textContent='– / –';$('notice').hidden=false;$('notice').textContent='Dieser Zuschauerzugang ist nicht mehr gültig.';return;}
    throw new Error('Verbindung nicht verfügbar');
   }
-  const r=await response.json();last=r;offset=Date.now()-r.serverTime;
-  $('notice').textContent='Verbindung aktiv · Stand wird alle 30 Sekunden abgeglichen.';
-  $('notice').hidden=true;loaded=true;paint();
+  const r=await response.json();last=r;offset=Date.now()-r.serverTime;lastSyncAt=Date.now();
+  $('notice').textContent=last.pushEnabled?'Live-Verbindung aktiv · Änderungen werden sofort übertragen.':'Verbindung aktiv · regelmässiger Datenabgleich.';
+  $('notice').hidden=true;loaded=true;paint();connectSocket();
  }catch(e){$('notice').hidden=false;$('notice').textContent=loaded?'Verbindung unterbrochen. Die letzte bekannte Uhrzeit wird weiter angezeigt, bis wieder eine Verbindung besteht.':'Verbindung noch nicht verfügbar. Bitte erneut versuchen.';}finally{activeSync=false;}
 }
 window.addEventListener('online',sync);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)sync()});
 setInterval(tick,1000);
-setInterval(()=>{if(!document.hidden)sync()},30000);
+setInterval(()=>{if(document.hidden||closed)return;if(socket?.readyState===WebSocket.OPEN&&Date.now()-lastSyncAt<300000)return;sync()},30000);
 sync();
