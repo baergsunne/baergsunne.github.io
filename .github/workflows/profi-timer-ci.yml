@@ -36,3 +36,29 @@ jobs:
           node --check dist-live-preview-worker.mjs
           test -s dist-live/profi-live-admin.html
           test -s dist-live/watch.html
+
+  browser-qa:
+    name: Real Chrome Browser QA
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 9
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install isolated Playwright browser driver
+        run: npm install --no-save --no-package-lock --ignore-scripts playwright-core@1.56.1
+      - name: Run smartphone-view and desktop security smoke tests
+        run: |
+          CHROME_PATH="$(command -v google-chrome || command -v chromium || command -v chromium-browser || true)"
+          if [ -z "$CHROME_PATH" ]; then echo "Chrome unavailable in runner"; exit 1; fi
+          CHROME_PATH="$CHROME_PATH" node tests/profi-browser-smoke.cjs
+      - name: Keep temporary mobile screenshots for visual inspection
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: profi-timer-mobile-qa
+          path: browser-evidence/*.png
+          if-no-files-found: ignore
+          retention-days: 3
