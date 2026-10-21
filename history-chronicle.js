@@ -274,12 +274,16 @@ function selectRoundYearInPlace(year){
  const nextControl=nextGroup?.querySelector('.history-carousel-control');
  const oldControl=group.querySelector('.history-carousel-control');
  if(!nextRail||!nextControl||!oldControl)return false;
+ const viewportY=window.scrollY;
  // The root is never replaced: the iPhone has no reason to readjust scroll.
  oldControl.replaceWith(nextControl);
  const newCards=document.createDocumentFragment();
  while(nextRail.nextSibling)newCards.appendChild(nextRail.nextSibling);
  while(rail.nextSibling)rail.nextSibling.remove();
  rail.after(newCards);
+ // iOS Safari may re-anchor to a card that changed size. Keep the document at
+ // exactly the same scroll offset when updating the content below the title.
+ if(Math.abs(window.scrollY-viewportY)>.5)window.scrollTo({top:viewportY,behavior:'instant'});
  const select=root.querySelector('#history-year-select');
  if(select)select.value=String(edition.year);
  memory.year=edition.year;memory.round=1;
