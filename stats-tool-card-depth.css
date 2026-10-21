@@ -1,12 +1,12 @@
 /* Bärgsunne Poker – Statistik-Werkzeugkacheln: dezente zweite Ebene.
    Target only the selectable tool directory, not result cards or other pages. */
 #app .page--stats .tool-directory .tool-grid > button.tool-tile {
-  background: linear-gradient(170deg, #1a3a2c 0%, #163327 55%, #112b21 100%);
+  background: linear-gradient(165deg, #244b39 0%, #1c4131 55%, #153528 100%);
   /* Keep the original borders and corner radius in both sections. */
   box-shadow:
-    0 6px 16px rgba(0, 0, 0, .23),
-    0 2px 4px rgba(0, 0, 0, .10),
-    inset 0 1px 0 rgba(255, 255, 255, .055);
+    0 4px 0 rgba(4, 16, 11, .38),
+    0 11px 22px rgba(0, 0, 0, .36),
+    inset 0 1px 0 rgba(250, 255, 248, .12);
   transform: translateY(0);
   transition: background .18s ease, border-color .18s ease,
     box-shadow .18s ease, transform .18s ease;
@@ -15,12 +15,12 @@
 /* The selected tool keeps its established golden frame and earns just a
    touch more depth, without a flashy glow or changing layout measurements. */
 #app .page--stats .tool-directory .tool-grid > button.tool-tile.is-active {
-  background: linear-gradient(170deg, #294b38 0%, #234431 60%, #1c3b2c 100%);
+  background: linear-gradient(165deg, #315b43 0%, #294d39 60%, #20422f 100%);
   border: 2px solid #d6b06d;
   box-shadow:
-    0 9px 20px rgba(0, 0, 0, .29),
-    0 2px 5px rgba(0, 0, 0, .10),
-    inset 0 1px 0 rgba(255, 247, 224, .065);
+    0 4px 0 rgba(4, 16, 11, .43),
+    0 14px 26px rgba(0, 0, 0, .44),
+    inset 0 1px 0 rgba(255, 247, 224, .13);
 }
 
 /* Hover is restricted to real hover devices; taps remain stable on iPhone. */
@@ -29,9 +29,9 @@
     transform: translateY(-1px);
     border-color: #9aa690;
     box-shadow:
-      0 9px 21px rgba(0, 0, 0, .27),
-      0 2px 5px rgba(0, 0, 0, .10),
-      inset 0 1px 0 rgba(255, 255, 255, .06);
+      0 5px 0 rgba(4, 16, 11, .40),
+      0 14px 25px rgba(0, 0, 0, .43),
+      inset 0 1px 0 rgba(255, 255, 255, .13);
   }
 }
 /* Existing high-contrast keyboard focus remains visible. */
@@ -42,15 +42,15 @@
 @media (max-width: 650px) {
   #app .page--stats .tool-directory .tool-grid > button.tool-tile {
     box-shadow:
-      0 5px 13px rgba(0, 0, 0, .23),
-      0 1px 3px rgba(0, 0, 0, .10),
-      inset 0 1px 0 rgba(255, 255, 255, .045);
+      0 3px 0 rgba(4, 16, 11, .38),
+      0 8px 17px rgba(0, 0, 0, .38),
+      inset 0 1px 0 rgba(250, 255, 248, .11);
   }
   #app .page--stats .tool-directory .tool-grid > button.tool-tile.is-active {
     box-shadow:
-      0 8px 17px rgba(0, 0, 0, .28),
-      0 2px 4px rgba(0, 0, 0, .10),
-      inset 0 1px 0 rgba(255, 247, 224, .06);
+      0 4px 0 rgba(4, 16, 11, .43),
+      0 12px 21px rgba(0, 0, 0, .44),
+      inset 0 1px 0 rgba(255, 247, 224, .12);
   }
 }
 @media (prefers-reduced-motion: reduce) {
