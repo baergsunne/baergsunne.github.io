@@ -18,6 +18,7 @@ on:
       - 'tests/history-record-stories.cjs'
       - 'tests/history-insight-carousel-peek.cjs'
       - 'tests/history-sticky-slider.cjs'
+      - 'tests/history-step-buttons.cjs'
       - 'tests/home-history-teaser.cjs'
       - 'tests/history-statistics-tiles.cjs'
       - 'open-pages.css'
@@ -56,6 +57,7 @@ jobs:
       - run: node tests/history-record-stories.cjs
       - run: node tests/history-insight-carousel-peek.cjs
       - run: node tests/history-sticky-slider.cjs
+      - run: node tests/history-step-buttons.cjs
       - run: node tests/home-history-teaser.cjs
       - run: node tests/history-statistics-tiles.cjs
       - run: node tests/open-pages-layout.cjs
