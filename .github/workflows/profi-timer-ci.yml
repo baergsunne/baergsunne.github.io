@@ -19,6 +19,8 @@ jobs:
         run: |
           node --check live/profi-api.js
           node --check live/profi-core.js
+          node --check live/profi-clock.js
+          node --check live/profi-events.js
           node --check live/worker.js
           node --check profi-qr.js
           node --check profi-live-admin.js
