@@ -74,8 +74,9 @@ const live={status:'final',year:2026,players:year.players,round_count:7,rounds:[
    assert(history.images.every(x=>x.count===1&&x.loaded&&x.src==='assets/trophy-premium.webp'&&!x.emoji),width+' all yearbook medals use the real trophy');
    assert(history.sticky&&history.steps===2,width+' history sticky and back/forward retained');
    assert(history.horizontalOverflow<=2,width+' no history horizontal scrolling');
-   await page.evaluate(()=>{state.page='live';draw();window.BAERGSUNNE_CHAMPIONSHIP?.mount()});
-   await page.waitForSelector('.cl-leader-trophy',{timeout:15000});
+   await page.waitForFunction(()=>typeof window.BAERGSUNNE_CHAMPIONSHIP?.mount==='function',null,{timeout:10000});
+   await page.evaluate(liveFixture=>{window.BAERGSUNNE_PUBLIC_LIVE=liveFixture;state.page='live';draw();window.BAERGSUNNE_CHAMPIONSHIP.mount()},live);
+   await page.waitForSelector('.cl-leader-trophy',{timeout:10000});
    const leader=await page.evaluate(()=>{
     const mast=document.querySelector('.page--live .premium-masthead');
     const box=document.querySelector('.cl-leader'),body=box.querySelector('.cl-leader-body'),cup=box.querySelector('.cl-leader-trophy');
