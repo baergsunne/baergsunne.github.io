@@ -11,6 +11,9 @@ const fixture=require('./fixture-2026.json');
    await page.route('**/api/editions',route=>route.fulfill({status:200,contentType:'application/json',body:JSON.stringify(fixture)}));
    await page.goto('http://127.0.0.1:8765/#stats',{waitUntil:'domcontentloaded'});
    await page.waitForSelector('.page--stats table.bp-stat-personalized-table');
+   const overviewCards=await page.evaluate(()=>({titles:[...document.querySelectorAll('.page--stats .card > h3')].map(x=>x.textContent.trim()),headers:[...document.querySelector('.page--stats .bp-stat-personalized-table').tHead.rows[0].cells].map(x=>x.textContent.trim())}));
+   assert(!overviewCards.titles.includes('Punkte pro Runde'),'redundant Punkte pro Runde chart card must not appear');
+   assert(overviewCards.headers.some(x=>x.includes('Pkt./R')),'points per round must remain available in overview table');
    const original=await page.evaluate(()=>{
      const t=document.querySelector('.page--stats .bp-stat-personalized-table');
      const parent=t.closest('.bp-stat-scroll');
