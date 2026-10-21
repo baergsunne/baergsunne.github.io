@@ -58,60 +58,128 @@
  const label=(title,body)=>'<div class="history-insight-fact"><strong>'+esc(title)+'</strong><p>'+body+'</p></div>';
  const namesSpan=xs=>'<strong class="history-insight-names">'+people(xs)+'</strong>';
  const empty=msg=>'<p class="history-insight-empty">'+esc(msg)+'</p>';
+ /* Every explanation tells the reader what actually happened, not how a
+    statistic was calculated. The same documented rounds drive both Jahrbuch
+    and Rekordbuch. */
+ const roundNumbers=(ed,player,match)=>results(ed).filter(r=>{
+  const item=r.results.find(x=>x.player_id===player);
+  return item&&match(item,r);
+ }).map(r=>r.number);
+ const roundNumbersText=ns=>ns.length===1?String(ns[0]):
+  ns.length===2?ns[0]+' und '+ns[1]:ns.slice(0,-1).join(', ')+' und '+ns.at(-1);
+ const inRounds=ns=>ns.length===1?'in Runde '+ns[0]:'in den Runden '+roundNumbersText(ns);
+ const wonRounds=ns=>ns.length===1?'Runde '+ns[0]:'die Runden '+roundNumbersText(ns);
+ const roundStory=(ed,names,filter,verb)=>{
+  return names.map(name=>{
+   const ns=roundNumbers(ed,name,filter);
+   return verb(name,ns);
+  }).join(' ');
+ };
+ /* Finds the two real intermediate standings behind a climb, fall or
+    single-round jump. For equal records the first chronological occurrence
+    is used. The difference always matches rankings(ed), including ties. */
+ function rankJourney(ed,player,direction,adjacent=false){
+  const series=timeline(ed).map(x=>({round:x.round,rank:x.rows.find(r=>r.player===player)?.rank}))
+   .filter(x=>Number.isFinite(x.rank));
+  let best=null,value=0;
+  for(let i=0;i<series.length-1;i++)for(let j=i+1;j<series.length;j++){
+   if(adjacent&&j!==i+1)continue;
+   const diff=direction==='up'?series[i].rank-series[j].rank:series[j].rank-series[i].rank;
+   if(diff>value){value=diff;best={from:series[i],to:series[j],value};}
+  }
+  return best;
+ }
+ const rankStory=(ed,names,direction,adjacent=false)=>{
+  return names.map(name=>{
+   const j=rankJourney(ed,name,direction,adjacent);
+   if(!j)return name+' blieb in der Gesamtwertung auf seinem Rang.';
+   const verb=direction==='up'?'stieg':'fiel';
+   return name+' '+verb+' von Rang '+j.from.rank+' nach Runde '+j.from.round+
+    ' auf Rang '+j.to.rank+' nach Runde '+j.to.round+'.';
+  }).join(' ');
+ };
+ const chooseRecord=(items,key,title,unit,describe,kind='positive')=>{
+  const m=maxima(items,key);
+  return metric(title,fmt(m.value)+' '+unit,m.value>0?m.names:[],
+   m.value>0?describe(m.names):'Dazu gab es in diesem Turnier keinen entsprechenden Rangwechsel oder Treffer.',kind);
+ };
+ const roundRecord=(ed,stats,key,title,unit,filter,describe,kind='positive')=>
+  chooseRecord(stats,key,title,unit,names=>roundStory(ed,names,filter,describe),kind);
  function records(ed){
   const stats=playerStats(ed),rank=rankings(ed),rr=results(ed);
-  const choose=(data,key,title,unit,explanation,kind='positive')=>{
-   const m=maxima(data,key);return metric(title,fmt(m.value)+' '+unit,m.value>0?m.names:[],m.value?explanation:'Dieser Rekord trat in diesem Turnier nicht auf.',kind);
-  };
+  const time=rank.line;
   const pos=[
-   choose(stats,'wins','Meiste Rundensiege','Siege','Anzahl Runden mit Platz 1.'),
-   choose(stats,'top3','Meiste Top-3-Plätze','Runden','Anzahl Runden auf Platz 1, 2 oder 3.'),
-   choose(stats,'top5','Meiste Top-5-Plätze','Runden','Anzahl Runden unter den ersten fünf.'),
-   choose(rank.climb,'value','Grösste Aufholjagd','Plätze','Grösster Positionsgewinn in der Gesamtwertung von einer früheren Runde bis zu einer späteren.'),
-   choose(rank.leads,'value','Meiste Runden an der Spitze','Runden','Punktgleiche Führende werden jeweils alle gezählt.'),
-   choose(rank.changesUp,'value','Grösster Sprung nach oben','Plätze','Grösster direkter Anstieg in der Gesamtwertung nach einer Runde.')
+   roundRecord(ed,stats,'wins','Meiste Rundensiege','Siege',x=>x.place===1,
+    (name,ns)=>name+' gewann '+wonRounds(ns)+'.'),
+   roundRecord(ed,stats,'top3','Meiste Top-3-Plätze','Runden',x=>x.place<=3,
+    (name,ns)=>name+' stand '+inRounds(ns)+' auf dem Podest.'),
+   roundRecord(ed,stats,'top5','Meiste Top-5-Plätze','Runden',x=>x.place<=5,
+    (name,ns)=>name+' landete '+inRounds(ns)+' unter den ersten fünf.'),
+   chooseRecord(rank.climb,'value','Grösste Aufholjagd','Plätze',
+    names=>rankStory(ed,names,'up')),
+   chooseRecord(rank.leads,'value','Meiste Runden an der Spitze','Runden',
+    names=>names.map(name=>{
+     const ns=time.filter(x=>x.leaders.includes(name)).map(x=>x.round);
+     return name+' lag nach '+(ns.length===1?'Runde '+ns[0]:'den Runden '+roundNumbersText(ns))+' an der Spitze.';
+    }).join(' ')),
+   chooseRecord(rank.changesUp,'value','Grösster Sprung nach oben','Plätze',
+    names=>rankStory(ed,names,'up',true))
   ];
   const neg=[
-   choose(stats,'zeros','Meiste Nullerrunden','Runden','Anzahl Runden mit null Punkten.','negative'),
-   choose(stats,'last','Meiste letzte Rundenplätze','Runden','Die geteilte letzte Platzierung zählt für alle Betroffenen.','negative'),
-   choose(rank.fall,'value','Grösster Absturz','Plätze','Grösster Positionsverlust von einer früheren Gesamtwertung bis zu einer späteren.','negative'),
-   choose(rank.red,'value','Meiste Runden mit roter Laterne','Runden','Wer lag nach einer Runde punktgleich auf dem letzten Platz?','negative'),
-   choose(rank.changesDown,'value','Grösster Fall nach einer Runde','Plätze','Grösster direkter Rückgang in der Gesamtwertung.','negative')
+   roundRecord(ed,stats,'zeros','Meiste Nullerrunden','Runden',x=>x.points===0,
+    (name,ns)=>name+' blieb '+inRounds(ns)+' ohne Punkte.','negative'),
+   roundRecord(ed,stats,'last','Meiste letzte Rundenplätze','Runden',
+    (x,r)=>x.place===Math.max(...r.results.map(z=>z.place)),
+    (name,ns)=>name+' belegte '+inRounds(ns)+' den letzten Platz.','negative'),
+   chooseRecord(rank.fall,'value','Grösster Absturz','Plätze',
+    names=>rankStory(ed,names,'down'),'negative'),
+   chooseRecord(rank.red,'value','Meiste Runden mit roter Laterne','Runden',
+    names=>names.map(name=>{
+     const ns=time.filter(x=>x.last.includes(name)).map(x=>x.round);
+     return name+' lag nach '+(ns.length===1?'Runde '+ns[0]:'den Runden '+roundNumbersText(ns))+' ganz hinten.';
+    }).join(' '),'negative'),
+   chooseRecord(rank.changesDown,'value','Grösster Fall nach einer Runde','Plätze',
+    names=>rankStory(ed,names,'down',true),'negative')
   ];
-  return section('Bestleistungen','Diese Spitzenwerte gelten nur für das ausgewählte Turnier.',pos)+
-   section('Negativrekorde','Auch die schwierigen Momente gehören zur Turniergeschichte.',neg);
+  return section('Bestleistungen','Die besten Leistungen aus diesem Turnier.',pos)+
+   section('Negativrekorde','Diese Runden und Rangverluste verliefen weniger glücklich.',neg);
  }
- /* Turnier-DNA belongs to the Jahrbuch portrait, not to the record collection. */
+ /* Turnier-DNA belongs to the Jahrbuch portrait, not to Rekordbuch. */
  function seasonDna(ed){
   const rr=results(ed),changes=leadership(ed),gap=topGap(ed),distinct=uniqueWinners(ed);
   const dna=[
-   metric('Unterschiedliche Rundensieger',fmt(distinct)+' Spieler',[],'Wie viele verschiedene Spieler haben mindestens eine Runde gewonnen?','neutral'),
-   metric('Wechsel an der Tabellenspitze',fmt(changes)+' Wechsel',[],'Ein Wechsel liegt vor, wenn sich die Gruppe der punktführenden Spieler verändert.','neutral'),
-   metric('Abstand zwischen Platz 1 und 2',gap===null?'Nicht verfügbar':fmt(gap)+' Punkte',[],'Abstand in der offiziellen Schlusswertung; fehlende Vergleichsplätze werden nicht ergänzt.','neutral'),
-   metric('Anzahl Runden',fmt(rr.length)+' Runden',[],'Alle dokumentierten Runden des Turniers.','neutral')
+   metric('Unterschiedliche Rundensieger',fmt(distinct)+' Spieler',[],
+    distinct===1?'Ein Spieler konnte sämtliche Runden für sich entscheiden.':distinct+' Spieler gewannen mindestens eine Runde.','neutral'),
+   metric('Wechsel an der Tabellenspitze',fmt(changes)+' Wechsel',[],
+    changes===0?'Die Führung blieb zwischen den Runden unverändert.':
+     'Nach '+changes+' Runden wechselten die Spieler an der Tabellenspitze.','neutral'),
+   metric('Abstand zwischen Platz 1 und 2',gap===null?'Nicht verfügbar':fmt(gap)+' Punkte',[],
+    gap===null?'Es gibt keinen dokumentierten zweiten Platz zum Vergleichen.':
+     'Am Turnierende lagen zwischen Platz 1 und 2 genau '+fmt(gap)+' Punkte.','neutral'),
+   metric('Anzahl Runden',fmt(rr.length)+' Runden',[],
+    'In diesem Turnier wurden '+fmt(rr.length)+' Runden gespielt.','neutral')
   ];
-  return section('Turnier-DNA','Diese vier Zahlen beschreiben den Verlauf dieses Turniers.',dna);
+  return section('Turnier-DNA','Vier Zahlen, die zeigen, wie dieses Turnier verlief.',dna);
  }
  function yearbookExtras(ed){
   const stats=playerStats(ed),rank=rankings(ed);
-  const choose=(items,key,title,unit,description,kind='positive')=>{
-   const max=maxima(items,key);
-   return metric(title,fmt(max.value)+' '+unit,max.value>0?max.names:[],
-     max.value?description:'Dieser Rekord trat in diesem Turnier nicht auf.',kind);
-  };
-  const records=[
-   choose(stats,'wins','Meiste Rundensiege','Siege','Wie oft erreichte ein Spieler Platz 1?'),
-   choose(stats,'top3','Meiste Top-3-Plätze','Runden','Wie oft stand ein Spieler unter den ersten drei?'),
-   choose(stats,'zeros','Meiste Nullerrunden','Runden','Wie oft erhielt ein Spieler in einer Runde null Punkte?','negative'),
-   choose(rank.climb,'value','Grösste Aufholjagd','Plätze','Grösster Positionsgewinn in der Gesamtwertung von einer früheren bis zu einer späteren Runde.')
+  const annual=[
+   roundRecord(ed,stats,'wins','Meiste Rundensiege','Siege',x=>x.place===1,
+    (name,ns)=>name+' gewann '+wonRounds(ns)+'.'),
+   roundRecord(ed,stats,'top3','Meiste Top-3-Plätze','Runden',x=>x.place<=3,
+    (name,ns)=>name+' stand '+inRounds(ns)+' auf dem Podest.'),
+   roundRecord(ed,stats,'zeros','Meiste Nullerrunden','Runden',x=>x.points===0,
+    (name,ns)=>name+' blieb '+inRounds(ns)+' ohne Punkte.','negative'),
+   chooseRecord(rank.climb,'value','Grösste Aufholjagd','Plätze',
+    names=>rankStory(ed,names,'up'))
   ];
   const names=[...new Set(ed.players)];
   const field='<section class="history-yearbook-participants"><h4>Teilnehmerfeld</h4>'+
-    '<p>'+names.length+' dokumentierte Spieler in diesem Turnier.</p>'+
+    '<p>'+names.length+' Spieler waren bei diesem Turnier dabei.</p>'+
     '<div class="history-yearbook-playerlist">'+names.map(x=>'<span>'+esc(x)+'</span>').join('')+'</div></section>';
   return '<div class="history-yearbook-extras">'+field+
-    section('Vier Jahresrekorde','Die markantesten Spitzen- und Negativwerte dieses Turniers.',records)+
-    seasonDna(ed)+'</div>';
+   section('Vier Jahresrekorde','Das haben die Spieler in diesem Turnier erreicht.',annual)+
+   seasonDna(ed)+'</div>';
  }
  function field(ed,editions){
   const all=order(editions),index=all.findIndex(x=>x.year===ed.year),earlier=all.slice(0,index),previous=all[index-1]||null;
