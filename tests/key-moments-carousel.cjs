@@ -60,71 +60,37 @@ const assert=require('node:assert/strict');
   await page.locator('.history-entry-tile[data-view="moments"]').click();
   assert.equal(await page.locator('.history-feature--moments').count(),1,'Existing Schlüsselmomente remain available');
 
-  // Validate that replay and moment sliders match the exact Jahrbuch slider layout.
-  let baselineSliderStyle=null;
+  // Three legacy inputs remain for desktop, while mobile gets a shared vertical control.
+  let baselineRail=null;
   for(const view of ['yearbook','replay','moments']){
    await page.locator('.history-entry-tile[data-view="'+view+'"]').click();
-   const visual=await page.evaluate(view=>{
-    const root=document.getElementById('history-chronicle');
-    const control=root.querySelector(view==='yearbook'?'.history-carousel-control':'.history-replay-control');
-    const slider=control?.querySelector('input[type=range]');
-    if(!control||!slider)return {missing:true};
-    const box=control.getBoundingClientRect(),sb=slider.getBoundingClientRect(),s=getComputedStyle(control),t=getComputedStyle(slider);
-    return {
-     missing:false,
-     design:{display:s.display,gap:s.gap,padding:s.padding,color:s.color,fontSize:s.fontSize,fontWeight:s.fontWeight,borderRadius:s.borderRadius,backgroundImage:s.backgroundImage,
-       sliderMargin:t.margin,sliderAccent:t.accentColor,sliderMinHeight:t.minHeight},
-     labels:[...control.querySelectorAll(':scope > button.history-step-button')].map(x=>x.textContent.trim()),
-     rows:control.querySelectorAll(':scope > input[type=range]').length,
-     sameLine:Math.abs(sb.y+sb.height/2-(box.y+box.height/2))<3,
-     visibleSlider:sb.width>35&&sb.height>=35,
-     offscreenReadout:view==='yearbook'||!!control.querySelector('#history-replay-count.history-slider-sr-only'),
-     missingNumbers:!slider.getAttribute('aria-valuetext')&&view!=='yearbook'
-    };
-   },view);
-   assert.equal(visual.missing,false,view+' missing visual slider');
-   assert.equal(visual.rows,1,view+' must have one range in one row');
-   assert.deepEqual(visual.labels,['‹ Zurück','Weiter ›'],view+' needs two identical, clickable step buttons');
-   assert.equal(visual.sameLine,true,view+' range must align vertically with captions');
-   assert.equal(visual.visibleSlider,true,view+' range too small');
-   assert.equal(visual.offscreenReadout,true,view+' accessible round count missing');
-   assert.equal(visual.missingNumbers,false,view+' aria-valuetext missing');
-   if(view==='yearbook')baselineSliderStyle=visual.design;
-   else assert.deepEqual(visual.design,baselineSliderStyle,view+' slider must match Jahrbuch styling');
-  }
-  // Top navigation order and actual measured layout across all three modes.
-  for(const [view,control,slider,feature] of [
-   ['yearbook','.history-carousel-control','#history-year-slider','.history-feature--yearbook'],
-   ['replay','.history-replay-control','#history-round-slider','.history-feature--replay'],
-   ['moments','.history-replay-control','#history-round-slider','.history-feature--moments']
-  ]){
-   await page.locator('.history-entry-tile[data-view="'+view+'"]').click();
-   const position=await page.evaluate(({control,slider,feature})=>{
-    const root=document.getElementById('history-chronicle');
-    const filters=root.querySelector('.history-dropdown-controls');
-    const c=root.querySelector(control),s=root.querySelector(slider),stage=root.querySelector(feature);
-    if(!filters||!c||!s||!stage)return {missing:true};
-    const f=filters.getBoundingClientRect(),r=c.getBoundingClientRect(),g=stage.getBoundingClientRect();
-    return {
-     order:filters.nextElementSibling===c.parentElement&&c.parentElement.nextElementSibling===stage,
-     parent:c.parentElement?.classList.contains('history-sticky-group')&&c.parentElement.parentElement===root,
-     duplicate:root.querySelectorAll(slider).length,
-     insideCarousel:stage.contains(s),
-     visible:r.width>100&&r.height>30&&getComputedStyle(c).display!=='none',
-     dropdownGap:r.top-f.bottom,
-     carouselGap:g.top-c.parentElement.getBoundingClientRect().bottom,
-     overflow:r.left<root.getBoundingClientRect().left-2||r.right>root.getBoundingClientRect().right+2
-    };
-   },{control,slider,feature});
-   assert.equal(position.missing,undefined,view+' missing slider elements');
-   assert.equal(position.order,true,view+' slider must be directly after dropdowns and before carousel');
-   assert.equal(position.parent,true,view+' slider must be outside carousel');
-   assert.equal(position.duplicate,1,view+' must have exactly one slider');
-   assert.equal(position.insideCarousel,false,view+' must not have slider at bottom');
-   assert.equal(position.visible,true,view+' top slider must be visible');
-   assert.ok(position.dropdownGap>=-2&&position.dropdownGap<30,view+' top slider gap '+position.dropdownGap);
-   assert.ok(position.carouselGap>=-2&&position.carouselGap<30,view+' gap before carousel '+position.carouselGap);
-   assert.equal(position.overflow,false,view+' slider must not overflow');
+   await page.locator('.history-mobile-rail.is-active').waitFor({timeout:7000});
+   const visual=await page.evaluate(()=>{
+    const root=document.getElementById('history-chronicle'),group=root.querySelector('.history-sticky-group');
+    const ctrl=group?.querySelector('.history-carousel-control'),rail=root.querySelector(':scope > .history-mobile-rail');
+    const input=ctrl?.querySelector('input[type=range]');
+    if(!ctrl||!rail||!input)return {missing:true};
+    const bounds=rail.getBoundingClientRect();
+    return {missing:false,display:getComputedStyle(ctrl).display,
+      arrows:[...rail.querySelectorAll('button span')].map(x=>x.textContent),
+      railWidth:bounds.width,orientation:rail.querySelector('.history-mobile-track').getAttribute('aria-orientation'),
+      active:rail.classList.contains('is-active'),
+      heading:group.querySelector('#history-sticky-heading')?.textContent,
+      count:group.querySelectorAll('input[type=range]').length,
+      after:group.nextElementSibling===rail,controlParent:ctrl.parentElement===group};
+   });
+   assert.equal(visual.missing,false);
+   assert.equal(visual.display,'none','Mobile must hide top horizontal slider');
+   assert.deepEqual(visual.arrows,['›','‹']);
+   assert.equal(visual.railWidth,44);
+   assert.equal(visual.orientation,'vertical');
+   assert.equal(visual.active,true);
+   assert.equal(visual.count,1);
+   assert.equal(visual.after,true);
+   assert.equal(visual.controlParent,true);
+   assert(visual.heading.length>6);
+   if(view==='yearbook')baselineRail=[visual.railWidth,visual.orientation,visual.arrows.join('')];
+   else assert.deepEqual([visual.railWidth,visual.orientation,visual.arrows.join('')],baselineRail);
   }
   const audit=await page.evaluate(()=>{
    const problems=[],data=db.editions;
