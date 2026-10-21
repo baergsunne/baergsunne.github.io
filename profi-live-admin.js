@@ -1,4 +1,5 @@
 import {qrSvg} from './profi-qr.js';
+import {projectLiveClock,formatLiveClock} from './live/profi-clock.js';
 const $=id=>document.getElementById(id),say=s=>$('message').textContent=s;
 let token='',mode='official',current=null,clockOffset=0,busy=false;
 const fmt=n=>Number(n||0).toLocaleString('de-CH'),txt=s=>document.createTextNode(String(s));
@@ -34,7 +35,7 @@ $('create').addEventListener('submit',e=>{e.preventDefault();guard(async()=>{
 async function list(){
  const r=await api('/api/profi/list');
  $('sessions').replaceChildren(...r.sessions.map(s=>{
-  const b=document.createElement('button');b.textContent=s.title+' · '+(s.status==='finished'?'Beendet':s.status==='live'?'Läuft':'Bereit');b.onclick=()=>guard(()=>openSession(s.id));return b;
+  const b=document.createElement('button');b.textContent=s.title+' · '+(s.status==='cancelled'?'Abgebrochen':s.status==='finished'?'Beendet':s.status==='live'?'Läuft':'Bereit');b.onclick=()=>guard(()=>openSession(s.id));return b;
  }));
 }
 async function openSession(id){
@@ -48,15 +49,16 @@ function action(action,name){
  return guard(async()=>{
   if(!current)return;
   const a=action;
-  if(['out','finish','revoke'].includes(a)&&!confirm(a==='out'?name+' wirklich ausscheiden lassen?':a==='finish'?'Runde abschliessen und Ergebnisentwurf berechnen?':'Alten Zuschauerlink ungültig machen?'))return;
+  if(['out','finish','cancel','revoke'].includes(a)&&!confirm(a==='out'?name+' wirklich ausscheiden lassen?':a==='finish'?'Runde abschliessen und Ergebnisentwurf berechnen?':a==='cancel'?'Turnier abbrechen? Der QR-Zugang endet sofort; es werden keine Ergebnisse veröffentlicht.':'Alten Zuschauerlink ungültig machen?'))return;
   const r=await api('/api/profi/action','PUT',{id:current.id,revision:current.revision,action:a,name});
   current={...current,...r,viewerUrl:current.viewerUrl}; // refresh viewer token after revoke
-  if(a==='revoke')await refresh();else display();
+  if(a==='revoke'||a==='cancel')await refresh();else display();
  });
 }
 for(const b of document.querySelectorAll('[data-action]'))b.onclick=()=>action(b.dataset.action);
 $('start').onclick=()=>action('start');
 $('finish').onclick=()=>action('finish');
+$('cancel').onclick=()=>action('cancel');
 $('revoke').onclick=()=>action('revoke');
 $('copy-link').onclick=()=>guard(async()=>{
  if(!current)return;
@@ -84,12 +86,13 @@ function display(){
  const d=current.document,r=current.summary,lev=r.levels[r.index],next=r.levels[r.index+1],places=r.places;
  $('type').textContent=d.mode==='official'?'OFFIZIELLE RUNDE '+d.year+' / '+d.round:'FREIES TURNIER';
  $('title').textContent=d.title;
- $('status').textContent=d.status==='setup'?'Bereit':d.status==='live'?'Live':'Beendet';
+ $('status').textContent=d.status==='setup'?'Bereit':d.status==='live'?'Live':d.status==='cancelled'?'Abgebrochen':'Beendet';
  $('current').textContent='Level '+(r.index+1)+' von '+r.levels.length+(lev.break?' · Pause':'');
  $('blinds').textContent=lev.break?'PAUSE':fmt(lev.sb)+' / '+fmt(lev.bb);
  $('next').textContent=next?(next.break?'Nächste Stufe: Pause':'Nächste Stufe: '+fmt(next.sb)+' / '+fmt(next.bb)):'Letztes Blindlevel';
  $('counts').textContent=r.activeCount+' von '+r.totalCount+' Spielern aktiv';
  $('start').hidden=d.status!=='setup';$('finish').hidden=d.status!=='live'||!places;
+ $('cancel').hidden=d.status==='finished'||d.status==='cancelled';$('revoke').disabled=d.status==='finished'||d.status==='cancelled';
  for(const b of document.querySelectorAll('[data-action]'))b.disabled=d.status!=='live' || (b.dataset.action==='pause'&&!r.running)||(b.dataset.action==='resume'&&r.running);
  $('players').replaceChildren(...r.players.map(p=>{
   const row=document.createElement('div');row.className='player'+(p.active?'':' inactive');
@@ -112,11 +115,13 @@ function display(){
 }
 function tick(){
  if(!current)return;
- const r=current.summary;
- const ms=r.running&&r.deadline?Math.max(0,r.deadline-(Date.now()-clockOffset)):r.remainingMs;
- const secs=Math.max(0,Math.ceil(ms/1000)),m=Math.floor(secs/60),s=secs%60;
- $('clock').textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+ const r=current.summary,projection=projectLiveClock(r,Date.now()-clockOffset),level=projection.current,next=projection.next;
+ $('clock').textContent=formatLiveClock(projection.remainingMs);
+ $('current').textContent='Level '+(projection.index+1)+' von '+r.levels.length+(level.break?' · Pause':'');
+ $('blinds').textContent=level.break?'PAUSE':fmt(level.sb)+' / '+fmt(level.bb);
+ $('next').textContent=next?(next.break?'Nächste Stufe: Pause':'Nächste Stufe: '+fmt(next.sb)+' / '+fmt(next.bb)):'Letztes Blindlevel';
 }
+
 setInterval(tick,1000);
 setInterval(()=>{if(current&&current.document.status==='live'&&!busy)refresh().catch(()=>{})},30000);
 choose('official');
