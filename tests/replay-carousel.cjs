@@ -57,8 +57,14 @@ const assert=require('node:assert/strict');
 
   const viewport=page.locator('.history-replay-viewport');await viewport.scrollIntoViewIfNeeded();
   async function gesture(dx){
-    const head=page.locator('.history-replay-slide[aria-hidden="false"] .history-replay-card-head');await head.scrollIntoViewIfNeeded();
+    const head=page.locator('.history-replay-slide[aria-hidden="false"] .history-replay-card-head');
+    // A compact sticky header changes the scroll target geometry. Place the
+    // gesture in the unobstructed centre, never behind the fixed sticky slider.
+    await head.evaluate(el=>el.scrollIntoView({block:'center',inline:'nearest',behavior:'instant'}));
+    await page.waitForTimeout(80);
     const rect=await head.boundingBox(),x=rect.x+rect.width*.5,y=rect.y+rect.height*.5;
+    const hit=await page.evaluate(([xx,yy])=>!!document.elementFromPoint(xx,yy)?.closest('.history-replay-card-head'),[x,y]);
+    assert(hit,'Replay mouse drag starts on uncovered card header, not the sticky slider');
     await page.mouse.move(x,y);await page.mouse.down();await page.mouse.move(x+dx,y,{steps:12});
     const inMotion=await page.locator('.history-replay-track').evaluate(el=>el.style.transform);
     await page.mouse.up();
