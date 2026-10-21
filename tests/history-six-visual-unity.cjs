@@ -23,7 +23,7 @@ const assert=require('node:assert/strict');
     const center=slides[index],card=center?.querySelector('.history-yearbook-card,.history-replay-card');
     if(!stage||!viewport||!track||!card)return {missing:true};
     const b=getComputedStyle(card),outer=getComputedStyle(stage),grid=getComputedStyle(track),sl=getComputedStyle(center);
-    const selectors=['.history-yearbook-extras .history-insight-metric','.history-insight-card .history-insight-metric',
+    const selectors=['.history-yearbook-extras .history-insight-metric','.history-insight-card .history-insight-metric','.history-insight-compare',
      '.history-moment-event','.history-replay-proof'];
     const inner=selectors.map(s=>card.querySelector(s)).find(Boolean);
     const innerStyle=inner?getComputedStyle(inner):null;
@@ -80,9 +80,11 @@ const assert=require('node:assert/strict');
    }
    assert.equal(sample.replay.inner.radius,sample.records.inner.radius,width+' replay proof/stats tile shape same');
    assert.equal(sample.moments.inner.radius,sample.records.inner.radius,width+' key moment/stat metric shape same');
-   assert.equal(sample.moments.inner.background,sample.records.inner.background,width+' key moment/stat metric forest surface');
+   assert.equal(sample.moments.inner.fontFamily,sample.records.inner.fontFamily,width+' key moment/stat metric font');
+   assert.ok(sample.moments.inner.background.includes('gradient'),width+' semantic highlight keeps premium card treatment');
    assert.equal(sample.yearbook.inner.background,sample.records.inner.background,width+' Jahrbuch records/recent recordbook metric style');
    assert.equal(sample.field.inner.background,sample.records.inner.background,width+' Teilnehmerfeld/recordbook inset');
+   assert.equal(sample.compare.inner.background,sample.records.inner.background,width+' Jahresvergleich/recordbook inset');
    assert.deepEqual(errors,[],width+' no runtime errors');
    console.log('HISTORY_SIX_VISUAL_UNITY_PASS',JSON.stringify({width,views:6,sharedCard:true,sameMotion:true,visibleNeighbors:true}));
    await page.close();
