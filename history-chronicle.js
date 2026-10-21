@@ -275,6 +275,9 @@ function selectRoundYearInPlace(year){
  const oldControl=group.querySelector('.history-carousel-control');
  if(!nextRail||!nextControl||!oldControl)return false;
  const viewportY=window.scrollY;
+ // Round years vary in card height: keep the former explorer height as a floor
+ // so the browser cannot clamp scrollY when a shorter year's cards load.
+ root.style.minHeight=Math.ceil(Math.max(root.getBoundingClientRect().height,parseFloat(root.style.minHeight)||0))+'px';
  // The root is never replaced: the iPhone has no reason to readjust scroll.
  oldControl.replaceWith(nextControl);
  const newCards=document.createDocumentFragment();
