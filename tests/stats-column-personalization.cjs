@@ -44,6 +44,8 @@ const fixture=require('./fixture-2026.json');
    await page.waitForSelector('.page--stats table.bp-stat-personalized-table');
    const overviewCards=await page.evaluate(()=>({titles:[...document.querySelectorAll('.page--stats .card > h3')].map(x=>x.textContent.trim()),headers:[...document.querySelector('.page--stats .bp-stat-personalized-table').tHead.rows[0].cells].map(x=>x.textContent.trim())}));
    assert(!overviewCards.titles.includes('Punkte pro Runde'),'redundant Punkte pro Runde chart card must not appear');
+   assert(overviewCards.titles.includes('Gesamtübersicht'),'overview heading must be short and uncluttered');
+   assert(!overviewCards.titles.some(x=>x.includes('jede Spalte sortierbar')),'remove redundant sortable note from heading');
    assert(overviewCards.headers.some(x=>x.includes('Pkt./R')),'points per round must remain available in overview table');
    const original=await page.evaluate(()=>{
      const t=document.querySelector('.page--stats .bp-stat-personalized-table');
@@ -73,6 +75,13 @@ const fixture=require('./fixture-2026.json');
    assert(original.columns>=10,'Overview must have full original metric set');
    assert.equal(original.first,'Spieler ↕'.replace(' ↕','')===original.first?original.first:original.first,'valid header'); // cover smart-sort enhancement
    assert(original.picker,'column picker missing');
+   const closedTriangle=await page.evaluate(()=>{
+     const sum=document.querySelector('.page--stats .bp-stat-columns-summary');
+     const c=getComputedStyle(sum,'::after');
+     return {border:c.borderLeftColor,width:c.borderLeftWidth,marker:c.content,transform:c.transform};
+   });
+   assert.equal(closedTriangle.border,'rgb(232, 195, 126)','closed column picker shows gold disclosure triangle');
+   assert.equal(closedTriangle.width,'7px','triangle shape must be visibly sized');
    assert(!original.oldToolbarVisible,'obsolete sorting toolbar must disappear');
    assert.equal(original.stickyHeader,'sticky','first header not fixed');
    assert.equal(original.stickyData,'sticky','first data column not fixed');
@@ -94,6 +103,13 @@ const fixture=require('./fixture-2026.json');
    });
    assert(movement.scroll>30&&movement.first<1.5&&movement.second>30,'sticky first column must remain fixed during horizontal scroll');
    await page.locator('.page--stats .bp-stat-columns-summary').first().click();
+   await page.waitForTimeout(230);
+   const openedTriangle=await page.evaluate(()=>{
+     const item=document.querySelector('.page--stats .bp-stat-columns');
+     return {open:item.open,transform:getComputedStyle(item.querySelector('summary'),'::after').transform};
+   });
+   assert(openedTriangle.open,'column chooser must expand');
+   assert.notEqual(openedTriangle.transform,closedTriangle.transform,'disclosure arrow must rotate when open');
    await page.evaluate(()=>{
      const p=document.querySelector('.page--stats .bp-stat-columns');
      for(const b of p.querySelectorAll('.bp-stat-column-choice')){
@@ -141,6 +157,16 @@ const fixture=require('./fixture-2026.json');
        assert.equal(abbreviated?.full,'Jahresrang sortieren','full column description must remain accessible');
        assert(abbreviated?.picker.some(x=>x.includes('Jahresrang')),'picker must keep unabbreviated names');
      }
+     const goldArrows=await page.evaluate(()=>{
+       const arrows=[...document.querySelectorAll('.page--stats table .bp-smart-sort > span')];
+       return {count:arrows.length,bad:arrows.filter(el=>{
+         const s=getComputedStyle(el),up=getComputedStyle(el,'::before'),down=getComputedStyle(el,'::after');
+         const allowed=['rgb(229, 189, 120)','rgb(255, 223, 154)','rgba(229, 189, 120, 0.38)'];
+         return s.fontSize!=='0px'||!allowed.includes(up.borderBottomColor)||!allowed.includes(down.borderTopColor)||up.content==='none'||down.content==='none';
+       }).length};
+     });
+     if(check.total)assert(goldArrows.count>0,'sortable '+tab+' tables should expose branded CSS sort indicators');
+     assert.equal(goldArrows.bad,0,'all '+tab+' sortable header arrows must be gold CSS triangles, not blue iOS emoji');
      assert.equal(check.missing,0,'all eligible '+tab+' tables should get picker');
      assert.equal(check.bad,0,'all '+tab+' tables should freeze first column');
    }
