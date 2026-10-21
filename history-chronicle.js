@@ -254,6 +254,41 @@ function selectCarouselYearInPlace(year){
  positionCarousel(target,false);
  return true;
 }
+// Runden/Schlüsselmomente have a different set of slides for each year.
+// Replace only that year-dependent region; keep the explorer, scroll, sticky
+// heading, docked state and rail nodes untouched, unlike the old global draw().
+function selectRoundYearInPlace(year){
+ const root=document.getElementById('history-chronicle');
+ const editions=window.POKER_SEED?.editions;
+ const edition=editions?.find(x=>x.year===Number(year));
+ if(!root||!edition||!['replay','moments'].includes(memory.view))return false;
+ const group=root.querySelector(':scope > .history-sticky-group');
+ const rail=root.querySelector(':scope > .history-mobile-rail');
+ if(!group||!rail)return false;
+ const html=render(editions,edition.year);
+ const template=document.createElement('template');
+ template.innerHTML=html.trim();
+ const incoming=template.content.firstElementChild;
+ const nextGroup=incoming?.querySelector(':scope > .history-sticky-group');
+ const nextRail=incoming?.querySelector(':scope > .history-mobile-rail');
+ const nextControl=nextGroup?.querySelector('.history-carousel-control');
+ const oldControl=group.querySelector('.history-carousel-control');
+ if(!nextRail||!nextControl||!oldControl)return false;
+ // The root is never replaced: the iPhone has no reason to readjust scroll.
+ oldControl.replaceWith(nextControl);
+ const newCards=document.createDocumentFragment();
+ while(nextRail.nextSibling)newCards.appendChild(nextRail.nextSibling);
+ while(rail.nextSibling)rail.nextSibling.remove();
+ rail.after(newCards);
+ const select=root.querySelector('#history-year-select');
+ if(select)select.value=String(edition.year);
+ memory.year=edition.year;memory.round=1;
+ if(typeof state!=='undefined'&&state.page==='history')state.historyYear=edition.year;
+ updateStickyTitle(memory.view,edition.year,1);
+ initReplayCarousel();
+ scheduleMobileRailVisibility();
+ return true;
+}
 function commitCarouselYear(index,animate=true){
  const c=carouselParts();if(!c||carouselBusy)return;
  const target=Math.max(0,Math.min(c.slides.length-1,Math.round(index)));
@@ -601,9 +636,10 @@ document.addEventListener('change',ev=>{
  const select=ev.target.closest('[data-history-select]');
  if(!select)return;
  if(select.dataset.historySelect==='year'){
-  if(memory.view!=='replay'&&memory.view!=='moments'&&selectCarouselYearInPlace(select.value))return;
-  // Round-based screens need new round data. Keep their rebuilt sticky dock
-  // state instead of letting the complete header expand and collapse.
+  if(memory.view==='replay'||memory.view==='moments'){
+   if(selectRoundYearInPlace(select.value))return;
+  }else if(selectCarouselYearInPlace(select.value))return;
+  // Unavailable carousel DOM: retain the original full-draw fallback only.
   const button=document.createElement('button');
   button.dataset.action='historyyear';
   button.dataset.value=select.value;
