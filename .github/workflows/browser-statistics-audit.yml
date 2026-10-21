@@ -28,6 +28,8 @@ on:
       - 'stats-table-personalization.css'
       - 'tests/stats-column-personalization.cjs'
       - 'history-chronicle.js'
+      - 'history-mobile-rail.css'
+      - 'tests/history-mobile-thumb-rail.cjs'
       - 'history-chronicle.css'
       - 'history-deep-dive.js'
       - 'history-deep-dive.css'
@@ -86,6 +88,7 @@ jobs:
       - run: node tests/history-insight-carousel-peek.cjs
       - run: node tests/history-six-visual-unity.cjs
       - run: node tests/history-sticky-slider.cjs
+      - run: node tests/history-mobile-thumb-rail.cjs
       - run: node tests/history-step-buttons.cjs
       - run: node tests/home-history-teaser.cjs
       - run: node tests/history-statistics-tiles.cjs
