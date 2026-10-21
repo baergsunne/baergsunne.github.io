@@ -98,10 +98,23 @@
     ' auf Rang '+j.to.rank+' nach Runde '+j.to.round+'.';
   }).join(' ');
  };
+ const emptyRecordExplanation=title=>({
+  'Meiste Rundensiege':'In den vorhandenen Runden wurde kein Rundensieg verzeichnet.',
+  'Meiste Top-3-Plätze':'Kein Spieler erreichte in den vorhandenen Runden die ersten drei Plätze.',
+  'Meiste Top-5-Plätze':'Kein Spieler erreichte in den vorhandenen Runden die ersten fünf Plätze.',
+  'Meiste Nullerrunden':'Alle Spieler holten in jeder Runde Punkte.',
+  'Meiste letzte Rundenplätze':'Es wurde kein letzter Rundenplatz verzeichnet.',
+  'Grösste Aufholjagd':'Niemand verbesserte sich zwischen zwei Runden in der Gesamtwertung.',
+  'Grösster Absturz':'Niemand rutschte zwischen zwei Runden in der Gesamtwertung ab.',
+  'Grösster Sprung nach oben':'Nach keiner einzelnen Runde machte jemand einen Rang gut.',
+  'Grösster Fall nach einer Runde':'Nach keiner einzelnen Runde verlor jemand einen Rang.',
+  'Meiste Runden an der Spitze':'Es gibt keine dokumentierte Führung nach einer Runde.',
+  'Meiste Runden mit roter Laterne':'Es gibt keinen dokumentierten letzten Platz nach einer Runde.'
+ })[title]||'Dazu gab es in diesem Turnier keinen Eintrag.';
  const chooseRecord=(items,key,title,unit,describe,kind='positive')=>{
   const m=maxima(items,key);
   return metric(title,fmt(m.value)+' '+unit,m.value>0?m.names:[],
-   m.value>0?describe(m.names):'Dazu gab es in diesem Turnier keinen entsprechenden Rangwechsel oder Treffer.',kind);
+   m.value>0?describe(m.names):emptyRecordExplanation(title),kind);
  };
  const roundRecord=(ed,stats,key,title,unit,filter,describe,kind='positive')=>
   chooseRecord(stats,key,title,unit,names=>roundStory(ed,names,filter,describe),kind);
@@ -152,7 +165,7 @@
     distinct===1?'Ein Spieler konnte sämtliche Runden für sich entscheiden.':distinct+' Spieler gewannen mindestens eine Runde.','neutral'),
    metric('Wechsel an der Tabellenspitze',fmt(changes)+' Wechsel',[],
     changes===0?'Die Führung blieb zwischen den Runden unverändert.':
-     'Nach '+changes+' Runden wechselten die Spieler an der Tabellenspitze.','neutral'),
+     'Im Laufe des Turniers wechselte die Führung '+changes+'-mal.','neutral'),
    metric('Abstand zwischen Platz 1 und 2',gap===null?'Nicht verfügbar':fmt(gap)+' Punkte',[],
     gap===null?'Es gibt keinen dokumentierten zweiten Platz zum Vergleichen.':
      'Am Turnierende lagen zwischen Platz 1 und 2 genau '+fmt(gap)+' Punkte.','neutral'),
