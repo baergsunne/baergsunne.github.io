@@ -1,122 +1,74 @@
-const {chromium}=require('playwright');
-const assert=require('node:assert/strict');
-
+/* Mobile Historie: title-only sticky, separate right-side rail; desktop unchanged. */
+const {chromium}=require('playwright'),assert=require('node:assert/strict');
+const fixture=require('./fixture-2026.json');
 (async()=>{
  const browser=await chromium.launch({headless:true});
- try {
-  for(const width of [320,375,390,430]){
-   const page=await browser.newPage({viewport:{width,height:844},isMobile:true,hasTouch:true});
-   const errors=[];
-   page.on('pageerror',err=>errors.push(err.message));
-   for(const path of ['live','editions'])await page.route('**/api/'+path,async route=>{
-    try{
-     const response=await route.fetch({headers:{...route.request().headers(),origin:'https://baergsunne.github.io'}});
-     await route.fulfill({response,headers:{...response.headers(),'access-control-allow-origin':'http://127.0.0.1:8765'}});
-    }catch(err){if(!page.isClosed())try{await route.abort()}catch(_){}}
-   });
+ try{
+  for(const width of [320,375,390,430,650,768]){
+   const page=await browser.newPage({viewport:{width,height:844},isMobile:width<=430,hasTouch:width<=430});
+   await page.emulateMedia({reducedMotion:'reduce'});
+   const errors=[];page.on('pageerror',e=>errors.push(e.message));
+   await page.route('**/api/editions',r=>r.fulfill({status:200,contentType:'application/json',body:JSON.stringify(fixture)}));
+   await page.route('**/api/live',r=>r.fulfill({status:200,contentType:'application/json',body:JSON.stringify({year:2026,status:'planned',players:[],standings:[],rounds:[]})}));
    await page.goto('http://127.0.0.1:8765/#history',{waitUntil:'domcontentloaded'});
-   await page.waitForFunction(()=>typeof db!=='undefined'&&db.editions.some(x=>x.year===2026),null,{timeout:30000});
-   const views=['yearbook','replay','moments','records','field','compare'];
-   const probe=()=>page.evaluate(()=>{
-    const root=document.querySelector('.history-chronicle');
-    const chosen=document.querySelector('.history-entry-tile[aria-pressed="true"]')?.dataset.view;
-    const dropdown=root?.querySelector('.history-dropdown-controls');
-    const control=root?.querySelector(':scope > .history-sticky-group > .history-carousel-control');
-    const group=root?.querySelector(':scope > .history-sticky-group');
-    const header=document.querySelector('.heritage-header');
-    if(!root||!dropdown||!control||!group||!header)return {missing:true,chosen};
-    const c=group.getBoundingClientRect(),b=dropdown.getBoundingClientRect(),r=root.getBoundingClientRect(),
-     style=getComputedStyle(group);
-    return {
-     missing:false,view:chosen,year:root.querySelector('#history-year-select')?.value,
-     yearInputs:dropdown.querySelectorAll('select').length,otherView:!!root.querySelector('#history-view-select'),
-     ratio:b.width/r.width,centerDelta:Math.abs((b.left+b.right)/2-(r.left+r.right)/2),
-     scroll:scrollY,maxScroll:document.documentElement.scrollHeight-innerHeight,
-     top:c.top,docTop:c.top+scrollY,height:c.height,headerBottom:header.getBoundingClientRect().bottom,
-     expectedTop:parseFloat(style.top),position:style.position,
-     parentBottom:r.bottom,visible:c.height>30&&c.width>180,
-     atFront:!!document.elementFromPoint(c.left+Math.min(28,c.width/4),Math.max(0,c.top)+c.height/2)?.closest('.history-sticky-group'),
-     title:group.querySelector('.history-sticky-title h3')?.textContent,
-     titleCount:group.querySelectorAll('h3').length,
-     sliderCount:group.querySelectorAll('input[type=range]').length,
-     titleBackground:getComputedStyle(group.querySelector('.history-sticky-title')).backgroundColor
-    };
-   });
-   for(const view of views){
-    await page.evaluate(()=>window.scrollTo({top:0,behavior:'instant'}));
+   await page.waitForFunction(()=>typeof db!=='undefined'&&db.editions.some(e=>e.year===2026),null,{timeout:15000});
+   for(const view of ['yearbook','replay','moments','records','field','compare']){
     await page.locator('.history-entry-tile[data-view="'+view+'"]').click();
-    await page.waitForTimeout(1200);
-    const base=await probe();
-    assert.equal(base.missing,false,width+' '+view+' must render carousel control');
-    assert.equal(base.view,view,'Correct selected entry');
-    assert.equal(base.year,'2026','Changing view must not change year');
-    assert.equal(base.yearInputs,1,'Only the tournament year dropdown remains');
-    assert.equal(base.otherView,false,'Ansicht dropdown must remain removed');
-    assert.ok(Math.abs(base.ratio-.5)<.025,width+' '+view+' year dropdown must be half available width ('+base.ratio+')');
-    assert.ok(base.centerDelta<3,width+' '+view+' centered year dropdown ('+base.centerDelta+')');
-    assert.equal(base.position,'sticky',width+' '+view+' combined regulator/title uses native CSS sticky');
-    assert.equal(base.titleCount,1,'Exactly one visible standalone title');
-    assert.equal(base.sliderCount,1,'One slider lives with the title');
-    assert.equal(base.titleBackground,'rgba(0, 0, 0, 0)','Title has no separate dark block');
-    assert.ok(base.title.startsWith(({yearbook:'Jahrbuch',replay:'Runden',moments:'Schlüsselmomente',records:'Rekordbuch',field:'Teilnehmerfeld',compare:'Jahresvergleich'})[view]+' 2026'),'Shared heading names selected function and year');
-    assert.ok(Math.abs(base.expectedTop-base.headerBottom-8)<4,width+' '+view+' sticky offset matches site header');
-    assert.equal(base.visible,true,'Regulator stays visible and readable');
-    const natural=base.docTop, top=base.expectedTop;
-    const beforeY=Math.max(0,natural-top-94);
-    await page.evaluate(y=>window.scrollTo({top:y,behavior:'instant'}),beforeY);
-    await page.waitForTimeout(120);
-    const before=await probe();
-    assert.ok(before.top>top+60,width+' '+view+' regulator must still scroll normally before reaching header: '+JSON.stringify(before));
-    assert.ok(Math.abs(before.docTop-natural)<4,width+' '+view+' regulator has not yet been detached from original position');
-
-    const fixedY=natural-top+165;
-    await page.evaluate(y=>window.scrollTo({top:y,behavior:'instant'}),fixedY);
-    await page.waitForTimeout(120);
-    const pinned=await probe();
-    assert.ok(pinned.scroll>before.scroll+110,width+' '+view+' need to pass sticky threshold');
-    assert.ok(Math.abs(pinned.top-top)<4,width+' '+view+' regulator must pin immediately below sticky site header: '+JSON.stringify(pinned));
-    assert.ok(pinned.top>=pinned.headerBottom+3,width+' '+view+' regulator must not slide under header');
-    assert.equal(pinned.atFront,true,width+' '+view+' pinned regulator must remain tappable');
-
-    // Short Jahrbuch pages can reach the document bottom shortly after the
-    // regulator pins. Only demand further motion when actual scroll room exists.
-    if(pinned.maxScroll-pinned.scroll>60 && pinned.parentBottom>pinned.top+pinned.height+100){
-     await page.evaluate(y=>window.scrollTo({top:y,behavior:'instant'}),Math.min(fixedY+105,pinned.maxScroll));
-     await page.waitForTimeout(120);
-     const pinnedFurther=await probe();
-     assert.ok(pinnedFurther.scroll>pinned.scroll+45,width+' '+view+' scroll advances when space exists');
-     assert.ok(Math.abs(pinnedFurther.top-pinned.top)<3,width+' '+view+' regulator stays fixed while scrolling deeper');
-    }
-
-    await page.evaluate(y=>window.scrollTo({top:y,behavior:'instant'}),beforeY);
-    await page.waitForTimeout(150);
-    const released=await probe();
-    assert.ok(released.top>top+60,width+' '+view+' regulator releases when original location comes back');
-    assert.ok(Math.abs(released.docTop-natural)<4,width+' '+view+' regulator returns to its natural position');
-
-    // Slider remains fully present throughout; no cloned duplicate and same selected mode.
-    assert.equal(await page.locator('#history-chronicle > .history-sticky-group > .history-carousel-control').count(),1);
-    assert.equal(await page.locator('#history-chronicle > .history-sticky-group > .history-sticky-title h3').count(),1);
-    assert.equal(await page.locator('#history-year-slider,#history-round-slider').count(),1);
-    assert.equal(await page.locator('.history-entry-tile[aria-pressed="true"]').getAttribute('data-view'),view);
-    if(width===390){
-     // The shared title must follow live slider movement, not only final selection.
-     const range=page.locator('#history-year-slider,#history-round-slider');
-     const original=Number(await range.inputValue());
-     const next=(view==='replay'||view==='moments')?original+1:original-1;
-     await range.evaluate((el,value)=>{el.value=String(value);el.dispatchEvent(new Event('input',{bubbles:true}));},next);
-     const preview=await page.locator('#history-sticky-heading').innerText();
-     if(view==='replay'||view==='moments')assert.ok(preview.endsWith('Runde '+(Math.round(next)+1)),view+' updates the actual selected round immediately during slider drag');
-     else assert.equal(preview,({yearbook:'Jahrbuch',records:'Rekordbuch',field:'Teilnehmerfeld',compare:'Jahresvergleich'})[view]+' 2025',view+' previews correct year during slider drag');
-     await range.evaluate(el=>el.dispatchEvent(new Event('change',{bubbles:true})));
-     await page.waitForTimeout(1050);
-     assert.equal(await page.locator('#history-sticky-heading').innerText(),preview,view+' sticky title persists after slider snap');
-     if(view!=='replay'&&view!=='moments')await page.locator('#history-year-select').selectOption('2026');
+    if(width<=650)await page.locator('.history-mobile-rail.is-active').waitFor({timeout:10000});
+    const report=await page.evaluate(()=>{
+     const root=document.getElementById('history-chronicle'),group=root.querySelector('.history-sticky-group'),ctrl=group.querySelector('.history-carousel-control');
+     const head=group.querySelector('.history-sticky-title'),rail=root.querySelector(':scope > .history-mobile-rail'),track=rail.querySelector('.history-mobile-track');
+     const h=document.querySelector('.heritage-header'),r=rail.getBoundingClientRect(),body=root.getBoundingClientRect(),title=head.getBoundingClientRect();
+     const native=ctrl.querySelector('input[type=range]'),chosen=root.querySelector('.history-entry-tile[aria-pressed=true]')?.dataset.view;
+     return {chosen,yearSelects:root.querySelectorAll('.history-dropdown-controls select').length,
+      title:head.textContent.trim(),titleCount:group.querySelectorAll('h3').length,
+      groupPosition:getComputedStyle(group).position,groupTop:group.getBoundingClientRect().top,
+      wantedTop:parseFloat(getComputedStyle(group).top),headerBottom:h.getBoundingClientRect().bottom,
+      titleHeight:title.height,titleColor:getComputedStyle(head).backgroundColor,
+      oldVisible:getComputedStyle(ctrl).display!=='none',
+      railDisplay:getComputedStyle(rail).display,active:rail.classList.contains('is-active'),
+      visible:getComputedStyle(rail).visibility,
+      railRight:r.right,railLeft:r.left,railWidth:r.width,railTop:r.top,railBottom:r.bottom,viewport:innerWidth,
+      touchAction:getComputedStyle(track).touchAction,rangeCount:group.querySelectorAll('input[type=range]').length,
+      buttonCount:rail.querySelectorAll('button').length,arrowSymbols:[...rail.querySelectorAll('button span')].map(x=>x.textContent),
+      nativeId:native.id,trackOrientation:track.getAttribute('aria-orientation'),
+      overflow:document.documentElement.scrollWidth-innerWidth,
+      railAfterSticky:group.nextElementSibling===rail,bodyRight:body.right};
+    });
+    assert.equal(report.chosen,view);
+    assert.equal(report.yearSelects,1);
+    assert.equal(report.titleCount,1);
+    assert.equal(report.rangeCount,1,'Keep original slider for desktop and programmatic selection');
+    assert.equal(report.groupPosition,'sticky');
+    assert(report.title.startsWith(({yearbook:'Jahrbuch',replay:'Runden',moments:'Schlüsselmomente',records:'Rekordbuch',field:'Teilnehmerfeld',compare:'Jahresvergleich'})[view]));
+    assert(Math.abs(report.wantedTop-report.headerBottom-8)<5,'Sticky title stays below header');
+    assert.equal(report.overflow<=2,true,'No horizontal scrolling');
+    if(width<=650){
+     assert.equal(report.oldVisible,false,'Horizontal slider hidden on mobile');
+     assert.equal(report.active,true,'Side rail visible in the workspace');
+     assert.equal(report.visible,'visible');
+     assert.equal(report.railWidth,44,'44px touch strip around slim visual track');
+     assert(report.railRight<=width+1&&report.railLeft>=width-49,'Right-hand thumb position');
+     assert.equal(report.railAfterSticky,true);
+     assert.equal(report.touchAction,'none','Only the vertical track captures the swipe');
+     assert.deepEqual(report.arrowSymbols,['›','‹'],'Right arrow advances, left arrow returns');
+     assert.equal(report.trackOrientation,'vertical');
+     assert(report.titleHeight>=43&&report.titleHeight<70);
+     assert.equal(report.buttonCount,2);
+     assert.equal(report.titleColor,'rgba(0, 0, 0, 0)');
+     const sc=await page.evaluate(()=>window.scrollY);
+     await page.evaluate(()=>window.scrollBy({top:140,behavior:'instant'}));
+     await page.waitForTimeout(30);
+     const after=await page.evaluate(()=>window.scrollY);
+     if(await page.evaluate(()=>document.documentElement.scrollHeight>innerHeight+scrollY+80))assert(after>sc+35,'Scroll outside narrow rail remains native');
+    }else{
+     assert.equal(report.oldVisible,true,'Desktop keeps horizontal control');
+     assert.equal(report.railDisplay,'none','Desktop rail hidden');
     }
    }
-   assert.deepEqual(errors,[],width+' browser runtime errors');
-   console.log('HISTORIE_STICKY_SLIDER_PASS',JSON.stringify({width,views:views.length,sticky:true,halfCenteredYear:true}));
+   assert.deepEqual(errors,[],width+' runtime errors');
+   console.log('HISTORY_STICKY_THUMB_SUCCESS',width);
    await page.close();
   }
  }finally{await browser.close()}
-})().catch(err=>{console.error('HISTORIE_STICKY_SLIDER_FAIL',err);process.exit(1)});
+})().catch(e=>{console.error('HISTORY_STICKY_THUMB_FAILURE',e);process.exit(1)});

@@ -160,14 +160,18 @@ const stickyViewNames={yearbook:'Jahrbuch',replay:'Runden',moments:'Schlüsselmo
 function stickyTitleText(view,year,round){
  return (stickyViewNames[view]||'Jahrbuch')+' '+year+((view==='replay'||view==='moments')?' · Runde '+(round||1):'');
 }
-/* Regler and one independent title move together; slides contain only data. */
+/* Sticky heading and a separate mobile thumb rail; desktop retains the existing slider. */
 function stickyHistoryChrome(body,view,ed){
  const control=body.match(/^<div class="history-carousel-control[^"]*">[\s\S]*?<\/div>/);
  if(!control)return body;
  const title=stickyTitleText(view,ed.year,memory.round);
- return '<div class="history-sticky-group" aria-label="Karussellsteuerung und aktuelle Ansicht">'+control[0]+
+ const rail='<aside class="history-mobile-rail" aria-label="Historie seitlich steuern" aria-hidden="true">'+
+  '<button type="button" class="history-mobile-step history-mobile-step--next" data-history-mobile-step="1" aria-label="Weiter zur nächsten Karte" tabindex="-1"><span aria-hidden="true">›</span></button>'+
+  '<div class="history-mobile-track" role="slider" tabindex="-1" aria-orientation="vertical" aria-label="Historie wechseln: aufwärts weiter, abwärts zurück" aria-valuemin="1" aria-valuemax="1" aria-valuenow="1" aria-valuetext="'+e(title)+'"><span class="history-mobile-track-line" aria-hidden="true"></span><span class="history-mobile-knob" aria-hidden="true"></span></div>'+
+  '<button type="button" class="history-mobile-step history-mobile-step--prev" data-history-mobile-step="-1" aria-label="Zurück zur vorherigen Karte" tabindex="-1"><span aria-hidden="true">‹</span></button></aside>';
+ return '<div class="history-sticky-group" aria-label="Aktuelle Historie-Ansicht">'+control[0]+
   '<div class="history-sticky-title"><h3 id="history-sticky-heading">'+e(title)+'</h3></div></div>'+
-  body.slice(control[0].length);
+  rail+body.slice(control[0].length);
 }
 function updateStickyTitle(view,year,round){
  const h=document.getElementById('history-sticky-heading');
@@ -175,7 +179,7 @@ function updateStickyTitle(view,year,round){
  const next=stickyTitleText(view,year,round);
  if(h.textContent!==next)h.textContent=next;
 }
-function render(editions,year){requestAnimationFrame(()=>{syncHistorieStickyTop();initCarousel();initReplayCarousel();});const ed=editions.find(x=>x.year===Number(year))||editions.at(-1);if(!ed)return '';if(memory.year!==ed.year){memory.year=ed.year;memory.round=1;}if(!['yearbook','replay','moments','records','field','compare'].includes(memory.view))memory.view='yearbook';const content=memory.view==='replay'?replay(ed):memory.view==='moments'?scenes(ed):memory.view==='yearbook'?yearbook(ed,editions):window.BAERGSUNNE_HISTORY_EXT?.render(memory.view,ed,editions)||yearbook(ed,editions);return `<div class="history-chronicle" id="history-chronicle">${true?'':'<div class="history-chronicle-top"><span>BÄRGSUNNE POKER · ZEITREISE</span><h2>Die Turnierchronik</h2><p>Geschichte erleben statt Statistik wiederholen.</p></div>'}${historyEntry()}<div class="history-workspace-marker" id="history-workspace"></div><div class="history-dropdown-controls"><label for="history-year-select">Turnierjahr<select id="history-year-select" data-history-select="year" aria-label="Turnierjahr wählen">${[...editions].sort((a,b)=>b.year-a.year).map(x=>`<option value="${x.year}" ${x.year===ed.year?'selected':''}>${x.year}</option>`).join('')}</select></label></div>${stickyHistoryChrome(content,memory.view,ed)}${true?'':'<p class="history-note">Historische Quelle: '+e(ed.source||'Quellenbezeichnung nicht hinterlegt')+'. Die Darstellung unterscheidet offizielle Schlussresultate von rechnerisch rekonstruierten Zwischenständen.</p>'}</div>`;}
+function render(editions,year){requestAnimationFrame(()=>{syncHistorieStickyTop();initCarousel();initReplayCarousel();scheduleMobileRailVisibility();});const ed=editions.find(x=>x.year===Number(year))||editions.at(-1);if(!ed)return '';if(memory.year!==ed.year){memory.year=ed.year;memory.round=1;}if(!['yearbook','replay','moments','records','field','compare'].includes(memory.view))memory.view='yearbook';const content=memory.view==='replay'?replay(ed):memory.view==='moments'?scenes(ed):memory.view==='yearbook'?yearbook(ed,editions):window.BAERGSUNNE_HISTORY_EXT?.render(memory.view,ed,editions)||yearbook(ed,editions);return `<div class="history-chronicle" id="history-chronicle">${true?'':'<div class="history-chronicle-top"><span>BÄRGSUNNE POKER · ZEITREISE</span><h2>Die Turnierchronik</h2><p>Geschichte erleben statt Statistik wiederholen.</p></div>'}${historyEntry()}<div class="history-workspace-marker" id="history-workspace"></div><div class="history-dropdown-controls"><label for="history-year-select">Turnierjahr<select id="history-year-select" data-history-select="year" aria-label="Turnierjahr wählen">${[...editions].sort((a,b)=>b.year-a.year).map(x=>`<option value="${x.year}" ${x.year===ed.year?'selected':''}>${x.year}</option>`).join('')}</select></label></div>${stickyHistoryChrome(content,memory.view,ed)}${true?'':'<p class="history-note">Historische Quelle: '+e(ed.source||'Quellenbezeichnung nicht hinterlegt')+'. Die Darstellung unterscheidet offizielle Schlussresultate von rechnerisch rekonstruierten Zwischenständen.</p>'}</div>`;}
 /* Sticky controls stay below the actual site header across iPhone layouts,
    including safe areas and rotations. Recalculation never adjusts scrollY. */
 let historienHeaderObserved=null;
@@ -211,6 +215,7 @@ function positionCarousel(fraction,animate=false){
  const shown=c.slides[Math.max(0,Math.min(c.slides.length-1,Math.round(fraction)))]?.querySelector('[data-year]')?.dataset.year;
  if(shown)updateStickyTitle(memory.view,shown,memory.round);
  syncHistoryStepButtons(c.index,c.slides.length);
+ syncMobileRail(Math.round(fraction),c.slides.length);
 }
 /* Accessible single-card navigation uses the committed position only.
    No stepping beyond the first or last slide, and no wrapping. */
@@ -288,6 +293,7 @@ function positionReplay(fraction,animate=false,parts=null){
  const shown=c.slides[Math.max(0,Math.min(c.slides.length-1,Math.round(fraction)))]?.querySelector('[data-round]')?.dataset.round;
  if(shown)updateStickyTitle(memory.view,memory.year,shown);
  syncHistoryStepButtons(c.index,c.slides.length);
+ syncMobileRail(Math.round(fraction),c.slides.length);
 }
 function updateReplayReadout(value,parts=null){
  const c=parts||replayParts(),counter=document.getElementById('history-replay-count'),slider=document.getElementById('history-round-slider');if(!c)return;
@@ -392,6 +398,86 @@ document.addEventListener('touchcancel',ev=>{
 
 document.addEventListener('input',ev=>{if(ev.target.id!=='history-round-slider'||replayBusy)return;const value=Number(ev.target.value);replaySliderParts=replaySliderParts||replayParts();replaySliderDrag=value;positionReplay(value,false,replaySliderParts);updateReplayReadout(value,replaySliderParts);});
 document.addEventListener('change',ev=>{if(ev.target.id!=='history-round-slider')return;const value=replaySliderDrag===null?Number(ev.target.value):replaySliderDrag;replaySliderDrag=null;replaySliderParts=null;commitReplay(value);});
+
+/* The visible track is slim; touch targets are 44px. Outside the rail normal page scroll is native. */
+let mobileRailGesture=null,mobileRailFrame=0;
+function syncMobileRail(index,total){
+ const rail=document.querySelector('#history-chronicle > .history-mobile-rail');if(!rail)return;
+ const current=Math.max(0,Math.min(total-1,Math.round(index)));
+ rail.style.setProperty('--history-mobile-position',(total>1?100*(1-current/(total-1)):50)+'%');
+ const track=rail.querySelector('.history-mobile-track');
+ const round=memory.view==='replay'||memory.view==='moments';
+ const cards=round?replayParts():carouselParts();
+ const shown=round?cards?.slides[current]?.querySelector('[data-round]')?.dataset.round:cards?.slides[current]?.querySelector('[data-year]')?.dataset.year;
+ track?.setAttribute('aria-valuemax',String(total));
+ track?.setAttribute('aria-valuenow',String(current+1));
+ track?.setAttribute('aria-valuetext',stickyTitleText(memory.view,round?memory.year:(shown||memory.year),round?(shown||memory.round):memory.round));
+ for(const button of rail.querySelectorAll('[data-history-mobile-step]')){
+  const step=Number(button.dataset.historyMobileStep);
+  button.disabled=step>0?current>=total-1:current<=0;
+ }
+}
+function mobileRailGo(target){
+ if(!matchMedia('(max-width:650px)').matches)return;
+ if(!document.querySelector('#history-chronicle > .history-mobile-rail.is-active'))return;
+ if(memory.view==='replay'||memory.view==='moments'){if(!replayBusy)commitReplay(target);}
+ else if(!carouselBusy)commitCarouselYear(target);
+}
+function mobileRailStep(direction){
+ const round=memory.view==='replay'||memory.view==='moments';
+ const current=round?replayParts()?.index:carouselParts()?.index;
+ if(Number.isFinite(current))mobileRailGo(current+direction);
+}
+function syncMobileRailVisibility(){
+ const root=document.getElementById('history-chronicle');
+ const rail=root?.querySelector(':scope > .history-mobile-rail'),workspace=root?.querySelector('#history-workspace');
+ if(!root||!rail||!workspace)return;
+ const box=root.getBoundingClientRect(),r=rail.getBoundingClientRect();
+ const active=matchMedia('(max-width:650px)').matches&&workspace.getBoundingClientRect().top<innerHeight*.73&&box.bottom>r.top+Math.min(100,r.height*.3);
+ rail.classList.toggle('is-active',active);
+ rail.setAttribute('aria-hidden',active?'false':'true');
+ rail.querySelector('.history-mobile-track')?.setAttribute('tabindex',active?'0':'-1');
+ for(const button of rail.querySelectorAll('button'))button.tabIndex=active?0:-1;
+}
+function scheduleMobileRailVisibility(){
+ if(mobileRailFrame)return;
+ mobileRailFrame=requestAnimationFrame(()=>{mobileRailFrame=0;syncMobileRailVisibility();});
+}
+window.addEventListener('scroll',scheduleMobileRailVisibility,{passive:true});
+window.addEventListener('resize',scheduleMobileRailVisibility,{passive:true});
+document.addEventListener('click',ev=>{
+ const button=ev.target.closest('#history-chronicle .history-mobile-rail [data-history-mobile-step]');
+ if(!button)return;ev.preventDefault();
+ if(!button.disabled)mobileRailStep(Number(button.dataset.historyMobileStep));
+});
+document.addEventListener('keydown',ev=>{
+ const track=ev.target.closest('#history-chronicle .history-mobile-track');
+ if(!track)return;
+ if(ev.key==='ArrowUp'||ev.key==='PageUp'){ev.preventDefault();mobileRailStep(1);}
+ else if(ev.key==='ArrowDown'||ev.key==='PageDown'){ev.preventDefault();mobileRailStep(-1);}
+ else if(ev.key==='Home'){ev.preventDefault();mobileRailGo(0);}
+ else if(ev.key==='End'){ev.preventDefault();mobileRailGo(Number(track.getAttribute('aria-valuemax'))-1);}
+});
+document.addEventListener('pointerdown',ev=>{
+ const track=ev.target.closest('#history-chronicle .history-mobile-track');
+ if(!ev.isPrimary||!track||!track.closest('.history-mobile-rail.is-active'))return;
+ mobileRailGesture={id:ev.pointerId,startY:ev.clientY};
+ track.setPointerCapture(ev.pointerId);
+});
+document.addEventListener('pointerup',ev=>{
+ if(!mobileRailGesture||mobileRailGesture.id!==ev.pointerId)return;
+ const d=mobileRailGesture;mobileRailGesture=null;
+ const dy=ev.clientY-d.startY;
+ if(Math.abs(dy)>23)mobileRailStep(dy<0?1:-1);
+ else{
+  const track=ev.target.closest('.history-mobile-track');
+  if(track){const b=track.getBoundingClientRect();mobileRailStep(ev.clientY<b.top+b.height/2?1:-1);}
+ }
+});
+document.addEventListener('pointercancel',ev=>{
+ if(mobileRailGesture?.id===ev.pointerId)mobileRailGesture=null;
+});
+
 // Clicks reuse the same one-card snap and movement as a finger swipe.
 document.addEventListener('click',ev=>{
  const button=ev.target.closest('#history-chronicle .history-step-button[data-history-step]');

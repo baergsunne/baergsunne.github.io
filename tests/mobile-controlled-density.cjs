@@ -56,9 +56,18 @@ const fixture=require('./fixture-2026.json');
     return {newer,previous};
    });
    assert(!histor.error,JSON.stringify(histor));
-   assert(histor.newer.h<histor.previous.h,width+'px: sticky card including title is shorter '+JSON.stringify(histor));
+   if(width<=650){
+    assert(histor.newer.h>=44&&histor.newer.h<=60,width+'px: new title-only sticky bar must stay compact');
+    assert(histor.newer.stepHeights.every(v=>v===0),'horizontal step buttons hidden on narrow phones');
+    const side=await page.evaluate(()=>({width:document.querySelector('.history-mobile-rail')?.getBoundingClientRect().width,
+     buttons:[...document.querySelectorAll('.history-mobile-step')].map(x=>x.getBoundingClientRect().height)}));
+    assert.equal(side.width,44,'narrow side rail keeps thumb-accessible touch strip');
+    assert(side.buttons.every(x=>x===44),'separate side arrows remain 44px high');
+   }else{
+    assert(histor.newer.h<histor.previous.h,width+'px: legacy landscape slider remains compact');
+    assert(histor.newer.stepHeights.every(v=>v>=44),'landscape desktop step buttons retained');
+   }
    assert.equal(histor.newer.position,'sticky');
-   assert(histor.newer.stepHeights.every(v=>v>=44),'previous/next tap targets preserved');
    assert(histor.newer.title&&histor.newer.title.length>4,'title remains legible');
    await page.locator('.history-step-button[data-history-step="-1"]').first().count(); // no interaction mutation needed
    await page.evaluate(()=>{state.page='stats';state.tab='overview';draw()});
