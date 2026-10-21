@@ -12,7 +12,10 @@ function walk(dir){for(const ent of fs.readdirSync(dir,{withFileTypes:true})){co
 walk(dist);
 const assetCode=`const embeddedAssets={async fetch(req){const u=new URL(req.url);let key=u.pathname==='/'?'/index.html':u.pathname;if(key==='')key='/index.html';const a=EMBEDDED_ASSETS[key];if(a){const bytes=Uint8Array.from(atob(a.data),c=>c.charCodeAt(0));const stream=new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'));return new Response(stream,{headers:{'content-type':a.type,'cache-control':'no-store','x-content-type-options':'nosniff'}});}if(['/assets/alpine-hero.webp','/assets/logo-premium.webp','/assets/trophy-premium.webp'].includes(key)){const external=await fetch('https://baergsunne.github.io'+key);if(external.ok)return new Response(external.body,{headers:{'content-type':'image/webp','cache-control':'public, max-age=3600'}});}return new Response('Not found',{status:404});}};const EMBEDDED_ASSETS=${JSON.stringify(assets)};\n`;
 const core=fs.readFileSync(path.join(root,'live/core.js'),'utf8').replace(/^export /gm,'');
-let worker=fs.readFileSync(path.join(root,'live/worker.js'),'utf8').replace(/^import .*?;\n/,'').replace("if(!env.ASSETS)return fail('Website nicht verbunden.',503);",'const assetStore=env.ASSETS||embeddedAssets;').replaceAll('env.ASSETS.fetch(req)','assetStore.fetch(req)');
-const code=assetCode+core+'\n'+worker;
+const profiCore=fs.readFileSync(path.join(root,'live/profi-core.js'),'utf8').replace(/^export /gm,'');
+const profiApi=fs.readFileSync(path.join(root,'live/profi-api.js'),'utf8').replace(/^import .*?;\n/gm,'').replace(/^export /gm,'');
+const profiEmbedded='const {handleProfi} = (() => {\n'+profiCore+'\n'+profiApi+'\nreturn {handleProfi};\n})();\n';
+let worker=fs.readFileSync(path.join(root,'live/worker.js'),'utf8').replace(/^import .*?;\n/gm,'').replace("if(!env.ASSETS)return fail('Website nicht verbunden.',503);",'const assetStore=env.ASSETS||embeddedAssets;').replaceAll('env.ASSETS.fetch(req)','assetStore.fetch(req)');
+const code=assetCode+core+'\n'+profiEmbedded+'\n'+worker;
 const out=path.join(root,'dist-live-preview-worker.mjs');fs.writeFileSync(out,code);
 console.log(JSON.stringify({path:out,bytes:Buffer.byteLength(code),sha256:crypto.createHash('sha256').update(code).digest('hex'),assets:Object.keys(assets).length}));
