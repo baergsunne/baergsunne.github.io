@@ -70,7 +70,7 @@ const live={status:'final',year:2026,players:year.players,round_count:7,rounds:[
    assert.equal(history.title,'Historie');
    assert.equal(history.photo,true,width+' keep alpine masthead on other pages');
    assert.equal(history.foreground,0,width+' remove only foreground trophy from masthead');
-   assert.equal(history.cupCount,fixture.editions.length,width+' real trophy in every yearbook card');
+   assert.equal(history.cupCount,17,width+' real trophy in all 17 yearbook cards');
    assert(history.images.every(x=>x.count===1&&x.loaded&&x.src==='assets/trophy-premium.webp'&&!x.emoji),width+' all yearbook medals use the real trophy');
    assert(history.sticky&&history.steps===2,width+' history sticky and back/forward retained');
    assert(history.horizontalOverflow<=2,width+' no history horizontal scrolling');
