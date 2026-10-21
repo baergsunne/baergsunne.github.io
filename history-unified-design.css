@@ -290,9 +290,9 @@
   border-bottom-color:var(--history-design-inner-line);
 }
 #app .page.page--history .history-replay-card .history-replay-proof{
-  background:var(--history-design-tile);
-  border-color:var(--history-design-inner-line);
-  border-radius:16px;
+  background:var(--history-design-tile)!important;
+  border-color:var(--history-design-inner-line)!important;
+  border-radius:16px!important;
 }
 
 /* Preserve equal motion and give users with reduced-motion preferences the
