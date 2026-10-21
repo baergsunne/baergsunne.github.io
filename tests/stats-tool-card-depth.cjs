@@ -31,13 +31,15 @@ const fixture=require('./fixture-2026.json');
           return {width:r.width,height:r.height,x:r.left,y:r.top};
         });
         const shadowWithout=nonTool?getComputedStyle(nonTool).boxShadow:null;
+        const baseline={gradient:getComputedStyle(neutral).backgroundImage,shadow:getComputedStyle(neutral).boxShadow};
         css.disabled=false;
         const a=getComputedStyle(active),n=getComputedStyle(neutral);
         return {
           count:tiles.length,active:active?.dataset.value||'',cssLoaded:!!css,
           colors:{activeBorder:a.borderTopColor,neutralBorder:n.borderTopColor},
           shadows:{active:a.boxShadow,neutral:n.boxShadow,nonTool:innerShadow,nonToolWithout:shadowWithout},
-          backgrounds:{active:a.backgroundImage,neutral:n.backgroundImage},
+          backgrounds:{active:a.backgroundImage,neutral:n.backgroundImage,baseline:baseline.gradient},
+          baselineShadow:baseline.shadow,
           activeBorderWidth:a.borderTopWidth,
           geomEqual:initial.every((r,i)=>Object.keys(r).every(k=>Math.abs(r[k]-disabled[i][k])<1)),
           columns:getComputedStyle(document.querySelector('.page--stats .tool-grid')).gridTemplateColumns.split(' ').length,
@@ -51,8 +53,11 @@ const fixture=require('./fixture-2026.json');
       assert.equal(style.colors.activeBorder,'rgb(214, 176, 109)','Selected tool must keep its gold border');
       assert(style.activeBorderWidth==='2px','Active border thickness preserved');
       assert(style.shadows.active!=='none'&&style.shadows.neutral!=='none','Active and inactive tool tiles must have subtle depth');
-      assert(style.shadows.active.includes('rgba(0, 0, 0, 0.29)')||style.shadows.active.includes('rgba(0, 0, 0, 0.28)'),'Active shadow remains more pronounced');
-      assert(style.shadows.neutral.includes('rgba(0, 0, 0, 0.23)'),'Inactive tile elevation must be restrained');
+      assert(style.shadows.active.includes('rgba(0, 0, 0, 0.44)'),'Active tile has visibly stronger lower shadow');
+      assert(style.shadows.neutral.includes('rgba(0, 0, 0, 0.38)')||style.shadows.neutral.includes('rgba(0, 0, 0, 0.36)'),'Inactive tile has legible depth on a dark phone display');
+      assert.notEqual(style.shadows.neutral,style.baselineShadow,'New style actually changes shadow from original');
+      assert.notEqual(style.backgrounds.neutral,style.backgrounds.baseline,'New style actually changes surface from original');
+      assert(style.backgrounds.neutral.includes('rgb(36, 75, 57)'),'Brighter forest-green upper surface must be active, not cached old gradient');
       assert(style.backgrounds.active.includes('linear-gradient')&&style.backgrounds.neutral.includes('linear-gradient'),'Depth is supported by a restrained forest gradient');
       assert(style.geomEqual,'Tool grid dimensions and hit targets must remain unchanged');
       assert.equal(style.shadows.nonTool,style.shadows.nonToolWithout,'Result cards must not acquire the new tool shadow');
