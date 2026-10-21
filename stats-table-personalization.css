@@ -1,0 +1,145 @@
+/* Bärgsunne Poker – Stats-only table personalization and sticky first column.
+   The simpler, unboxed names and flat forest-green rows follow Historie > Runden. */
+/* Suppress obsolete sort rail only when its table was successfully enhanced. */
+#app .page--stats .bp-unified-toolbar.bp-stat-hidden-sort{display:none!important}
+/* Horizontal movement belongs to the table, not to the page. */
+#app .page--stats .bp-stat-scroll{
+ width:100%;max-width:100%;min-width:0;
+ overflow-x:auto!important;overflow-y:auto;
+ -webkit-overflow-scrolling:touch;
+ overscroll-behavior-inline:contain;
+ scrollbar-width:thin;
+ border-radius:12px;
+}
+/* Ensure the table keeps all chosen columns, even under old mobile fixed-layout rules. */
+#app .page--stats table.bp-stat-personalized-table{
+ border-collapse:separate!important;
+ border-spacing:0 6px!important;
+ table-layout:auto!important;
+ width:max-content!important;
+ min-width:100%!important;
+ max-width:none!important;
+ background:transparent!important;
+}
+/* A column picker shared by EVERY statistics table, including lab/simulator tables. */
+#app .page--stats .bp-stat-columns{
+ margin:10px 0 13px;
+ border:1px solid rgba(232,196,126,.32);
+ border-radius:13px;
+ background:rgba(12,35,27,.40);
+ overflow:hidden;
+}
+#app .page--stats .bp-stat-columns-summary{
+ display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;
+ gap:9px;padding:13px 14px;
+ color:#f5eddc;cursor:pointer;
+ font-size:13px;font-weight:750;line-height:1.35;
+}
+#app .page--stats .bp-stat-columns-summary::marker{color:#dfbd82}
+#app .page--stats .bp-stat-columns-summary small{
+ color:#e3c388;font-size:11px;font-weight:650;white-space:nowrap;
+}
+#app .page--stats .bp-stat-column-choices{
+ display:flex;flex-wrap:wrap;gap:7px;
+ padding:3px 12px 12px;
+}
+#app .page--stats .bp-stat-column-choice{
+ display:inline-flex;align-items:center;gap:7px;
+ min-height:38px;max-width:100%;
+ padding:8px 11px;
+ background:rgba(242,239,221,.035);
+ border:1px solid rgba(232,196,126,.23);
+ border-radius:10px;
+ color:#f0e8d8;font-size:12px;font-weight:650;line-height:1.25;
+ text-align:left;white-space:normal;overflow-wrap:anywhere;
+}
+#app .page--stats .bp-stat-column-choice.is-selected{
+ background:rgba(227,192,125,.13);
+ border-color:rgba(227,192,125,.65);
+ color:#fff0d9;
+}
+#app .page--stats .bp-stat-column-choice:disabled{
+ opacity:1;cursor:default;
+}
+#app .page--stats .bp-stat-choice-mark{
+ display:grid;place-items:center;flex:0 0 17px;
+ width:17px;height:17px;line-height:1;
+ border:1px solid rgba(227,192,125,.56);
+ border-radius:4px;color:#eac78c;font-size:12px;
+}
+#app .page--stats .bp-stat-columns-hint{
+ margin:0;padding:0 13px 13px;
+ color:#b6cbbd;font-size:11px;line-height:1.5;
+}
+/* Unselected columns are physically absent from the table layout, not just faded. */
+#app .page--stats table.bp-stat-personalized-table [data-bp-column-hidden]{
+ display:none!important;
+}
+/* The first visible/leftmost column stays under the finger while scrolling sideways.
+   Stick the actual cell, not an overlay: header and data always stay aligned. */
+#app .page--stats table.bp-stat-personalized-table thead tr>:first-child{
+ position:sticky!important;
+ left:0!important;
+ z-index:5!important;
+ background:#17382c!important;
+ color:#eac78c!important;
+ box-shadow:7px 0 11px -10px rgba(0,0,0,.95)!important;
+}
+#app .page--stats table.bp-stat-personalized-table tbody tr>:first-child{
+ position:sticky!important;
+ left:0!important;
+ z-index:4!important;
+ background:linear-gradient(145deg,#315646,#254a39)!important;
+ color:#fff1dc!important;
+ box-shadow:7px 0 11px -10px rgba(0,0,0,.95)!important;
+ border-radius:8px 0 0 8px!important;
+ font-weight:750;
+}
+#app .page--stats table.bp-stat-personalized-table tfoot tr>:first-child{
+ position:sticky!important;left:0!important;z-index:4!important;
+ background:#254a39!important;
+}
+/* Flat, clean player names, matching Historie > Runden; NO separate name capsules. */
+#app .page--stats table.bp-stat-personalized-table .playerlink,
+#app .page--stats table.bp-stat-personalized-table .playerlink:link{
+ display:inline!important;
+ min-height:0!important;
+ width:auto!important;max-width:100%!important;
+ margin:0!important;padding:0!important;
+ background:transparent!important;border:0!important;
+ border-radius:0!important;box-shadow:none!important;
+ color:#fff1dc!important;font:inherit!important;
+ font-weight:750!important;text-align:left!important;
+ text-decoration:none!important;
+ white-space:normal!important;overflow-wrap:anywhere!important;
+}
+#app .page--stats table.bp-stat-personalized-table .playerlink:focus-visible{
+ outline:2px solid #eac78c!important;outline-offset:3px!important;
+}
+/* Preserve comfortable widths, without wasting iPhone space when there are few columns. */
+#app .page--stats table.bp-stat-personalized-table :is(thead,tbody,tfoot) tr>*{
+ white-space:nowrap!important;
+ overflow-wrap:normal!important;
+ word-break:normal!important;
+}
+#app .page--stats table.bp-stat-personalized-table.bp-stat-first-is-name tr>:first-child{
+ min-width:104px!important;max-width:175px!important;
+ white-space:normal!important;overflow-wrap:anywhere!important;
+}
+#app .page--stats table.bp-stat-personalized-table tr>:first-child:not([data-bp-column-hidden]){
+ text-align:left!important;
+}
+/* Make very wide tables readable at small widths while retaining full horizontal scroll. */
+@media(max-width:600px){
+ #app .page--stats table.bp-stat-personalized-table{
+   table-layout:auto!important;width:max-content!important;min-width:100%!important;
+ }
+ #app .page--stats table.bp-stat-personalized-table thead tr>*{
+   font-size:10px!important;padding:8px 9px!important;
+ }
+ #app .page--stats table.bp-stat-personalized-table tbody tr>*{
+   font-size:12px!important;padding:11px 9px!important;
+ }
+ #app .page--stats .bp-stat-columns-summary{padding:12px}
+ #app .page--stats .bp-stat-column-choices{padding:3px 10px 11px}
+}
