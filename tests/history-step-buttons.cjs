@@ -37,7 +37,17 @@ const assert=require('node:assert/strict');
     await page.locator('.history-entry-tile[data-view="'+view+'"]').click();
     await page.locator('#history-year-select').selectOption('2026');
     await page.waitForTimeout(180);
-    const round=view==='replay'||view==='moments',start=await state();
+    const round=view==='replay'||view==='moments';
+    // Runden und Schlüsselmomente intentionally share the last chosen round.
+    // Reset through the existing slider before verifying first-round boundaries.
+    if(round){
+     await page.locator('#history-round-slider').evaluate(el=>{
+      el.value='0';el.dispatchEvent(new Event('input',{bubbles:true}));
+      el.dispatchEvent(new Event('change',{bubbles:true}));
+     });
+     await page.waitForTimeout(950);
+    }
+    const start=await state();
     assert.equal(start.buttons,2,width+' '+view+' exactly two buttons');
     assert.deepEqual(start.texts,['‹ Zurück','Weiter ›'],width+' '+view+' consistent labels');
     assert.ok(start.labels.every(x=>x&&/zurück|weiter/i.test(x)),width+' '+view+' descriptive accessible names');
