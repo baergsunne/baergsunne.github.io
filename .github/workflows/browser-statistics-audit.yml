@@ -13,6 +13,8 @@ on:
       - 'tests/duel-mobile-usability.cjs'
       - 'data.js'
       - 'index.html'
+      - 'stats-tool-card-depth.css'
+      - 'tests/stats-tool-card-depth.cjs'
       - 'stats-table-personalization.js'
       - 'stats-table-personalization.css'
       - 'tests/stats-column-personalization.cjs'
@@ -53,6 +55,7 @@ jobs:
       - run: node tests/race-sticky-navigation.cjs
       - run: node tests/duel-mobile-usability.cjs
       - run: node tests/stats-column-personalization.cjs
+      - run: node tests/stats-tool-card-depth.cjs
       - run: node tests/real-cloudflare-audit.cjs
       - run: node tests/all-pages-audit.cjs
       - run: node tests/chart-values-integrity.cjs
