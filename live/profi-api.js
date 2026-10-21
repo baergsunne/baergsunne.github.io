@@ -50,7 +50,7 @@ export async function handleProfi({req,env,ctx,url,auth,entry,update}){
    const d=docOf(row);
    if(!secureEq(ticket,await spectatorToken(env,d)))return fail('Zugriff verweigert.',403);
    if(d.status==='finished'||d.status==='cancelled')return fail('Turnier beendet.',410);
-   return reply({revision:row.revision,...viewerSnapshot(d)});
+   return reply({revision:row.revision,pushEnabled:!!env.PROFI_EVENTS,...viewerSnapshot(d)});
   }
   if(path==='/api/profi/socket'&&method==='GET'){
    if(!env.PROFI_EVENTS)return fail('Ereignisgesteuerte Live-Verbindung nicht aktiviert.',503);
