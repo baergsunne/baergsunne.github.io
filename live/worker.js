@@ -33,7 +33,7 @@ export default {async fetch(req,env,ctx){
  try {
   const url=new URL(req.url),path=url.pathname,method=req.method;
   if(env.PREVIEW_REQUIRED==='true'&&!env.PREVIEW_GATE_SECRET)return fail('Private Vorschau noch nicht freigeschaltet.',503);
-  if(env.PREVIEW_GATE_SECRET){
+  if(env.PREVIEW_GATE_SECRET&&!['/watch.html','/watch.js','/api/profi/watch'].includes(path)){
    const today=new Date().toISOString().slice(0,10),valid=await digest(env.PREVIEW_GATE_SECRET+':'+today);
    const cookie=req.headers.get('cookie')?.match(/(?:^|;\s*)bp_preview=([a-f0-9]{64})(?:;|$)/)?.[1];
    if(!equal(cookie,valid)){
