@@ -72,7 +72,7 @@ html,body{background:var(--heritage-ground)!important;}
    backgrounds are now distinctly separated from the lighter green ground. */
 #app .page :is(
   .card,.kpi,.feature,.record,.playercard,.champ-tile,.podium-card,.yearcard,
-  .filterbar,.round-detail,.standard-card,.tool-tile,
+  .filterbar,.round-detail,.standard-card,.tool-tile,.history-entry-tile,
   .discovery-feature,.discovery-champion,.discovery-live,
   .studio-flagship,.history-yearbook-card,.history-replay-card,
   .history-moment-winner,.cl-block,.cl-leader,.cl-simulator
@@ -102,7 +102,7 @@ html,body{background:var(--heritage-ground)!important;}
  box-shadow:var(--heritage-input-shadow)!important;
 }
 /* Active selection remains unmistakably gold, only its depth is reinforced. */
-#app .page :is(.tool-tile.is-active,.discovery-feature.is-active,.history-tool-tile.is-active){
+#app .page :is(.tool-tile.is-active,.discovery-feature.is-active,.history-entry-tile.is-active){
  box-shadow:var(--heritage-active-shadow)!important;
 }
 /* 320-800 px: 8px outer + 4px inner = 12px actual page inset per side,
@@ -140,7 +140,7 @@ html,body{background:var(--heritage-ground)!important;}
  ){
   box-shadow:0 3px 0 rgba(5,19,13,.27),0 8px 16px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,253,236,.07)!important;
  }
- #app .page :is(.tool-tile.is-active,.discovery-feature.is-active,.history-tool-tile.is-active){
+ #app .page :is(.tool-tile.is-active,.discovery-feature.is-active,.history-entry-tile.is-active){
   box-shadow:var(--heritage-active-shadow)!important;
  }
 }
