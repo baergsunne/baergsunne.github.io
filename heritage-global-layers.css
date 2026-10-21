@@ -1,0 +1,159 @@
+/* Bärgsunne Poker — Heritage layers v1
+   Site-wide presentation ONLY: one set of gutters, muted heritage-green
+   ground, gently raised cards and tactile input surfaces.
+   Deliberately excludes the masthead navigation/footer, raw table rows,
+   sticky controls, overlays and the transparent history carousel stages. */
+:root{
+  --bp-shell:#1c3730;
+  --heritage-ground:#1c3730;
+  --heritage-card-shadow:
+    0 3px 0 rgba(5,19,13,.30),
+    0 10px 22px rgba(0,0,0,.29),
+    inset 0 1px 0 rgba(255,253,236,.075);
+  --heritage-input-shadow:
+    0 3px 9px rgba(0,0,0,.23),
+    inset 0 1px 0 rgba(255,253,236,.075);
+  --heritage-active-shadow:
+    0 4px 0 rgba(6,19,13,.37),
+    0 14px 27px rgba(0,0,0,.35),
+    inset 0 1px 0 rgba(255,244,208,.10);
+}
+html,body{background:var(--heritage-ground)!important;}
+#app .page.page--home,
+#app .page:not(.page--home){
+ background:var(--heritage-ground)!important;
+}
+/* Wide screens: keep the established max width; remove layered excess gutters. */
+#app main{
+ box-sizing:border-box;
+ padding-inline:clamp(12px,1.35vw,17px)!important;
+}
+/* Legacy elite/layout-fix/open-pages styles each add their own side margins.
+   One explicit four-pixel inner edge replaces their combined 12-32px. */
+#app .page:not(.page--home)>:not(.premium-masthead){
+ box-sizing:border-box;
+ width:calc(100% - 12px)!important;
+ max-width:calc(100% - 12px)!important;
+ margin-left:6px!important;
+ margin-right:6px!important;
+}
+#app .page:not(.page--home)>.premium-masthead{
+ box-sizing:border-box;
+ width:calc(100% - 12px)!important;
+ max-width:calc(100% - 12px)!important;
+ margin-left:6px!important;
+ margin-right:6px!important;
+}
+/* Home is built inside an independent padded content wrapper. */
+#app .page--home>.discovery-home{
+ box-sizing:border-box;
+ width:calc(100% - 12px)!important;
+ max-width:min(1160px,calc(100% - 12px))!important;
+ margin-left:auto!important;
+ margin-right:auto!important;
+ padding-left:0!important;
+ padding-right:0!important;
+}
+#app .page--live .discovery-livepage{
+ box-sizing:border-box;
+ width:100%;
+ max-width:970px;
+ padding-inline:0!important;
+}
+/* Statistical hub adds another tool-directory/flagship inset inside stat-content. */
+#app .page--stats :is(.studio-flagship,.tool-directory,.tool-active-heading){
+ box-sizing:border-box;
+ width:calc(100% - 12px)!important;
+ max-width:calc(100% - 12px)!important;
+ margin-left:6px!important;
+ margin-right:6px!important;
+}
+/* Dedicated page components stay geometrically unchanged; their dark
+   backgrounds are now distinctly separated from the lighter green ground. */
+#app .page :is(
+  .card,.kpi,.feature,.record,.playercard,.champ-tile,.podium-card,.yearcard,
+  .filterbar,.round-detail,.standard-card,.tool-tile,
+  .discovery-feature,.discovery-champion,.discovery-live,
+  .studio-flagship,.history-yearbook-card,.history-replay-card,
+  .history-moment-winner,.cl-block,.cl-leader,.cl-simulator
+){
+ box-shadow:var(--heritage-card-shadow)!important;
+}
+#app .page .discovery-counts>div,
+#app .page .discovery-year-grid button,
+#app .page .cl-kpis>div{
+ box-shadow:var(--heritage-card-shadow)!important;
+}
+/* Hero imagery is a separate raised surface but its picture/overlay stays
+   untouched. The stage and slider navigation stay transparent/not raised. */
+#app .page :is(.premium-masthead,.discovery-hero){
+ box-shadow:0 8px 23px rgba(0,0,0,.26)!important;
+}
+/* Inputs and their selection containers are shallow, not nested heavy cards.
+   Never change native picker heights, options or sticky range controls. */
+#app .page :is(
+  .bp-selection-panel,.tool-choice-panel,.duel-inputs,.duel-year-picker,
+  .insight-picker,.insight-filters,.bp-stat-columns,
+  .bp-unified-explain,.bp-profile-explain
+){
+ box-shadow:var(--heritage-input-shadow)!important;
+}
+#app .page :is(select,textarea,input:not([type="range"]):not([type="checkbox"]):not([type="radio"]),.selectlike){
+ box-shadow:var(--heritage-input-shadow)!important;
+}
+/* Active selection remains unmistakably gold, only its depth is reinforced. */
+#app .page :is(.tool-tile.is-active,.discovery-feature.is-active,.history-tool-tile.is-active){
+ box-shadow:var(--heritage-active-shadow)!important;
+}
+/* 320-800 px: 8px outer + 4px inner = 12px actual page inset per side,
+   instead of the former 14px outer + 10-14px internal = 24-28px. */
+@media(max-width:800px){
+ #app main{padding-inline:8px!important;}
+ #app .page:not(.page--home)>:not(.premium-masthead){
+  width:calc(100% - 8px)!important;
+  max-width:calc(100% - 8px)!important;
+  margin-left:4px!important;
+  margin-right:4px!important;
+ }
+ #app .page:not(.page--home)>.premium-masthead{
+  width:calc(100% - 8px)!important;
+  max-width:calc(100% - 8px)!important;
+  margin-left:4px!important;
+  margin-right:4px!important;
+ }
+ #app .page--home>.discovery-home{
+  width:calc(100% - 8px)!important;
+  max-width:calc(100% - 8px)!important;
+ }
+ #app .page--stats :is(.studio-flagship,.tool-directory,.tool-active-heading){
+  width:calc(100% - 8px)!important;
+  max-width:calc(100% - 8px)!important;
+  margin-left:4px!important;
+  margin-right:4px!important;
+ }
+ #app .page :is(
+  .card,.kpi,.feature,.record,.playercard,.champ-tile,.podium-card,.yearcard,
+  .filterbar,.round-detail,.standard-card,.tool-tile,
+  .discovery-feature,.discovery-champion,.discovery-live,
+  .studio-flagship,.history-yearbook-card,.history-replay-card,
+  .history-moment-winner,.cl-block,.cl-leader,.cl-simulator
+ ){
+  box-shadow:0 3px 0 rgba(5,19,13,.27),0 8px 16px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,253,236,.07)!important;
+ }
+ #app .page :is(.tool-tile.is-active,.discovery-feature.is-active,.history-tool-tile.is-active){
+  box-shadow:var(--heritage-active-shadow)!important;
+ }
+}
+/* Smallest supported iPhones still retain 12px touch-safe spacing. */
+@media(max-width:350px){
+ #app main{padding-inline:8px!important;}
+}
+/* Explicitly protect bottom navigation and sticky slider layers. */
+#app :is(.bottomnav,.heritage-header,.race-sticky-control,.history-sticky-group){
+ box-shadow:unset;
+}
+@media(prefers-reduced-motion:reduce){
+ #app .page :is(.tool-tile,.feature,.discovery-feature){
+  transition:none!important;
+ }
+}
