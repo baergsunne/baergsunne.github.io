@@ -37,6 +37,7 @@ const assert=require('node:assert/strict');
     };
     for(const ed of db.editions){
      state.page='history';state.historyYear=ed.year;draw();
+     document.querySelector('.history-entry-tile[data-view="yearbook"]').click();
      const yearbook=document.querySelector('.history-carousel-slide:not([inert]) .history-yearbook-card');
      const parts=[...yearbook.querySelectorAll('.history-yearbook-extras .history-insight-metric')];
      if(parts.length!==8){errors.push(ed.year+': expected four records and four DNA metrics');continue;}
