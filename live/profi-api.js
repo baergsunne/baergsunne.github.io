@@ -59,7 +59,7 @@ export async function handleProfi({req,env,ctx,url,auth,entry,update}){
    const id=url.searchParams.get('id')||'';
    const offered=req.headers.get('sec-websocket-protocol')||'';
    const ticket=offered.match(/(?:^|,\s*)token-([a-f0-9]{64})(?=,|$)/)?.[1]||'';
-   if(!idPattern.test(id)||!tokenPattern.test(ticket))return fail('Zugriff verweigert.',403);
+   if(!idPattern.test(id)||!tokenPattern.test(ticket)||!offered.split(',').map(x=>x.trim()).includes('bp-viewer'))return fail('Zugriff verweigert.',403);
    const row=await getRow(env,id);if(!row)return fail('Zugriff verweigert.',403);
    const d=docOf(row);
    if(!secureEq(ticket,await spectatorToken(env,d)))return fail('Zugriff verweigert.',403);
