@@ -28,7 +28,7 @@ const fixture=require('./fixture-2026.json');
      const root=document.querySelector('.page--'+name);
      if(!root){results.push({name,missing:true});continue}
      const hero=name==='home'?root.querySelector('.discovery-hero'):root.querySelector(':scope > .premium-masthead');
-     const first=name==='home'?root.querySelector('.discovery-counts>div'):name==='history'?root.querySelector('.history-entry-tile'):name==='stats'?root.querySelector('.tool-tile'):name==='players'?root.querySelector('.playercard'):name==='live'?root.querySelector('.discovery-live'):root.querySelector('.card');
+     const first=name==='home'?root.querySelector('.discovery-counts>div'):name==='history'?root.querySelector('.history-entry-tile'):name==='stats'?root.querySelector('.tool-tile'):name==='players'?root.querySelector('.playercard'):name==='live'?root.querySelector('.discovery-live,.card,.cl-block,.cl-leader'):root.querySelector('.card');
      const input=root.querySelector('select');
      const main=document.querySelector('main');
      const ground=getComputedStyle(root).backgroundColor,bodyGround=getComputedStyle(document.body).backgroundColor;
