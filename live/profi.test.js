@@ -110,7 +110,7 @@ test('official mode uses registered roster and may only write a non-public draft
  r=await c.send('/api/profi/action','PUT',{id,revision:3,action:'finish'});
  assert.equal(r.code,200);
  const d=await c.send('/api/profi/draft','POST',{id,revision:4,championshipRevision:0});
- assert.equal(d.code,200);
+ assert.equal(d.code,200,JSON.stringify(d.value));
  const state=await c.send('/api/admin/state?year=2027');
  assert.deepEqual(state.value.document.rounds[1],['Anna','Carlo','Berta']);
  assert.equal(state.value.document.published[1],undefined);
