@@ -7,6 +7,10 @@ on:
   pull_request:
     paths:
       - 'app.js'
+      - 'discovery-home.css'
+      - 'championship-live.js'
+      - 'championship-live.css'
+      - 'tests/hero-trophy-regression.cjs'
       - 'race-sticky-navigation.css'
       - 'tests/race-sticky-navigation.cjs'
       - 'duel-butterfly.css'
@@ -57,6 +61,7 @@ jobs:
       - run: npx playwright install --with-deps chromium
       - run: python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/poker-server.log 2>&1 & 
       - run: node tests/browser-audit.cjs
+      - run: node tests/hero-trophy-regression.cjs
       - run: node tests/mobile-controlled-density.cjs
       - run: node tests/mobile-bottomnav-grid-alignment.cjs
       - run: node tests/global-heritage-layers.cjs
