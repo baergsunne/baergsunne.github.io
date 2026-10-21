@@ -17,7 +17,7 @@ function enforce(condition,message,status=409){if(!condition){const e=new Error(
 async function read(req){if(Number(req.headers.get('content-length'))>12000)throw new Error('Eingabe zu gross.');const s=await req.text();if(s.length>12000)throw new Error('Eingabe zu gross.');return JSON.parse(s||'{}');}
 function docOf(row){return JSON.parse(row.document)}
 async function officialAvailable(env,doc,excludeId=null){
- const row=await env.DB.prepare('SELECT document FROM tournaments WHERE year=?').bind(doc.year).first();
+ const row=await env.DB.prepare('SELECT * FROM tournaments WHERE year=?').bind(doc.year).first();
  enforce(!!row,'Offizieller Jahrgang fehlt.',404);
  const t=JSON.parse(row.document);
  enforce(t.status!=='final','Der Jahrgang ist bereits abgeschlossen.');
