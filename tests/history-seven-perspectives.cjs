@@ -22,6 +22,9 @@ const assert=require('node:assert/strict');
    assert.equal(await page.locator('#history-view-select').count(),0,'No redundant Ansicht dropdown');
    assert.equal(await page.locator('.history-dropdown-controls select').count(),1,'Only Turnierjahr dropdown remains');
    assert.equal(await page.locator('#history-year-select option').count(),17,'All documented years remain selectable');
+   // The premium cards must match the Jahrbuch reference, not a former
+   // hard-coded green outline used by the older standalone insight views.
+   const yearbookBorder=await page.locator('.history-carousel-slide:not([inert]) .history-yearbook-card').evaluate(el=>getComputedStyle(el).borderTopColor);
    for(const view of ['records','field','compare']){
     await page.locator('.history-entry-tile[data-view="'+view+'"]').click();
     assert.equal(await page.locator('.history-entry-tile[aria-pressed="true"]').getAttribute('data-view'),view,'Tile selected '+view);
@@ -48,7 +51,7 @@ const assert=require('node:assert/strict');
     assert.ok(viewAudit.readout>130,view+' is populated from actual data');
     assert.equal(viewAudit.overflow,false,'No horizontal overflow '+width+' '+view);
     assert.ok(viewAudit.center<5,view+' active card must be centered');
-    assert.equal(viewAudit.styles,'rgb(77, 103, 82)','Green premium border '+view);
+    assert.equal(viewAudit.styles,yearbookBorder,'Match Jahrbuch premium card border '+view);
     const headline=await page.locator('.history-sticky-title h3').innerText();
     const names={records:'Rekordbuch',field:'Teilnehmerfeld',compare:'Jahresvergleich'};
     assert.equal(headline,names[view]+' 2026',view+' shared title should contain only function and year');
