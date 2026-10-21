@@ -57,11 +57,19 @@ const fixture=require('./fixture-2026.json');
    });
    assert(!histor.error,JSON.stringify(histor));
    if(width<=650){
-    assert(histor.newer.h>=44&&histor.newer.h<=60,width+'px: new title-only sticky bar must stay compact');
-    assert(histor.newer.stepHeights.every(v=>v===0),'horizontal step buttons hidden on narrow phones');
+    assert(histor.newer.h>=82,width+'px: original horizontal controller and heading initially share natural flow');
+    assert(histor.newer.stepHeights.every(v=>v>=44),'initial horizontal buttons remain touch friendly');
+    assert.equal(await page.locator('.history-mobile-rail.is-active').count(),0,'side rail is not allowed to appear above selector');
+    await page.evaluate(()=>{
+     const d=document.querySelector('.history-dropdown-controls'),g=document.querySelector('.history-sticky-group');
+     scrollTo({top:Math.max(0,scrollY+d.getBoundingClientRect().bottom+18-parseFloat(getComputedStyle(g).top)+62),behavior:'instant'});
+    });
+    await page.locator('.history-mobile-rail.is-active').waitFor({timeout:5000});
     const side=await page.evaluate(()=>({width:document.querySelector('.history-mobile-rail')?.getBoundingClientRect().width,
+     height:document.querySelector('.history-sticky-group')?.getBoundingClientRect().height,
      buttons:[...document.querySelectorAll('.history-mobile-step')].map(x=>x.getBoundingClientRect().height)}));
     assert.equal(side.width,44,'narrow side rail keeps thumb-accessible touch strip');
+    assert(side.height>=44&&side.height<=70,'after docking only the title stays sticky');
     assert(side.buttons.every(x=>x===44),'separate side arrows remain 44px high');
    }else{
     assert(histor.newer.h<histor.previous.h,width+'px: legacy landscape slider remains compact');
