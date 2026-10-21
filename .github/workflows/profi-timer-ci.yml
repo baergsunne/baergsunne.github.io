@@ -1,0 +1,36 @@
+name: Profi-Timer Isolated CI
+on:
+  push:
+    branches:
+      - feature/profi-timer-zwei-betriebsarten-20261021
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check new JavaScript files
+        run: |
+          node --check live/profi-api.js
+          node --check live/profi-core.js
+          node --check live/worker.js
+          node --check profi-qr.js
+          node --check profi-live-admin.js
+          node --check watch.js
+      - name: Test existing championship and professional timer
+        run: |
+          node --test live/*.test.js
+          node tests/profi-timer-demo.cjs
+          node --test test-live-push-safety.cjs
+      - name: Build isolated preview assets and Worker module
+        run: |
+          npm run build:preview
+          node --check dist-live-preview-worker.mjs
+          test -s dist-live/profi-live-admin.html
+          test -s dist-live/watch.html
