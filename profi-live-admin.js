@@ -1,3 +1,4 @@
+import {qrSvg} from './profi-qr.js';
 const $=id=>document.getElementById(id),say=s=>$('message').textContent=s;
 let token='',mode='official',current=null,clockOffset=0,busy=false;
 const fmt=n=>Number(n||0).toLocaleString('de-CH'),txt=s=>document.createTextNode(String(s));
@@ -104,6 +105,7 @@ function display(){
  $('chips').replaceChildren(line('Gesamtchips',fmt(r.totalChips)),line('Ø Startstack',fmt(r.averageStack)),line('Rebuys',String(r.rebuys)),line('Add-ons',String(r.addons)));
  $('events').replaceChildren(...[...r.events].reverse().map(e=>{const li=document.createElement('li');li.textContent=new Date(e.at).toLocaleTimeString('de-CH',{hour:'2-digit',minute:'2-digit'})+' · '+e.name+' · '+({out:'ausgeschieden',rebuy:'Rebuy',addon:'Add-on'}[e.type]||e.type);return li;}));
  $('share-url').textContent=current.viewerUrl;$('share-url').href=current.viewerUrl;
+ try{$('qr').innerHTML=qrSvg(current.viewerUrl);}catch(e){$('qr').textContent='QR-Code derzeit nicht verfügbar: '+e.message;}
  $('results').replaceChildren(...(places?places.map((p,i)=>line((i+1)+'. Platz',p)):[txt('Noch kein vollständiges Rundenergebnis.')]));
  $('draft').hidden=!(d.mode==='official'&&d.status==='finished');
  clockOffset=Date.now()-r.serverTime;tick();
