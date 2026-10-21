@@ -24,8 +24,8 @@ async function officialAvailable(env,doc,excludeId=null){
  enforce(doc.round>=1&&doc.round<=t.roundCount,'Runde existiert nicht.',400);
  enforce(!t.published[doc.round],'Diese Runde ist bereits veröffentlicht.');
  enforce(t.players.length===doc.names.length&&t.players.every((p,i)=>p===doc.names[i]),'Spielerliste weicht vom offiziellen Jahrgang ab.');
- const active=await env.DB.prepare("SELECT id FROM profi_sessions WHERE mode='official' AND year=? AND round=? AND status!='finished' LIMIT 1").bind(doc.year,doc.round).first();
- enforce(!active||active.id===excludeId,'Für diese Runde existiert bereits ein aktiver Profi-Timer.');
+ const active=await env.DB.prepare("SELECT id FROM profi_sessions WHERE mode='official' AND year=? AND round=? AND status!='cancelled' LIMIT 1").bind(doc.year,doc.round).first();
+ enforce(!active||active.id===excludeId,'Für diese Runde existiert bereits ein Profi-Timer.');
  return {t,row};
 }
 async function emit(env,ctx,id,revision){
@@ -45,7 +45,7 @@ export async function handleProfi({req,env,ctx,url,auth,entry,update}){
    if(!row)return fail('Zugriff verweigert.',403);
    const d=docOf(row);
    if(!secureEq(ticket,await spectatorToken(env,d)))return fail('Zugriff verweigert.',403);
-   if(d.status==='finished')return fail('Turnier beendet.',410);
+   if(d.status==='finished'||d.status==='cancelled')return fail('Turnier beendet.',410);
    return reply({revision:row.revision,...viewerSnapshot(d)});
   }
   if(!await auth(req,env))return fail('Anmeldung erforderlich.',401);
@@ -67,7 +67,7 @@ export async function handleProfi({req,env,ctx,url,auth,entry,update}){
   if(path==='/api/profi/create'&&method==='POST'){
    const data=await read(req),mode=data.mode;
    enforce(mode==='official'||mode==='free','Turnierart ungültig.',400);
-   const count=await env.DB.prepare("SELECT COUNT(*) AS n FROM profi_sessions WHERE status!='finished'").first();
+   const count=await env.DB.prepare("SELECT COUNT(*) AS n FROM profi_sessions WHERE status NOT IN ('finished','cancelled')").first();
    enforce(Number(count?.n||0)<3,'Maximal drei vorbereitete oder aktive Profi-Turniere gleichzeitig.');
    let names,year=null,round=null,title;
    if(mode==='official'){
@@ -123,6 +123,7 @@ export async function handleProfi({req,env,ctx,url,auth,entry,update}){
    const checked=await officialAvailable(env,d,id);
    // Reuse official championship's revision-controlled audited write pipeline.
    enforce(checked.row.revision===data.championshipRevision,'Offizielle Runde wurde verändert. Bitte neu laden.');
+   if(checked.t.rounds[d.round]&&JSON.stringify(checked.t.rounds[d.round])!==JSON.stringify(positions))return fail('Ein anderer Ergebnisentwurf existiert bereits. Bitte zuerst in der Administration prüfen.',409);
    checked.t.rounds[d.round]=positions;
    return update(env,checked.row,checked.t,'draft:'+d.round,ctx);
   }
