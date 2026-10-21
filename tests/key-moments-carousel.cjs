@@ -74,7 +74,7 @@ const assert=require('node:assert/strict');
      missing:false,
      design:{display:s.display,gap:s.gap,padding:s.padding,color:s.color,fontSize:s.fontSize,fontWeight:s.fontWeight,borderRadius:s.borderRadius,backgroundImage:s.backgroundImage,
        sliderMargin:t.margin,sliderAccent:t.accentColor,sliderMinHeight:t.minHeight},
-     labels:[...control.querySelectorAll(':scope > span')].map(x=>x.textContent.trim()),
+     labels:[...control.querySelectorAll(':scope > button.history-step-button')].map(x=>x.textContent.trim()),
      rows:control.querySelectorAll(':scope > input[type=range]').length,
      sameLine:Math.abs(sb.y+sb.height/2-(box.y+box.height/2))<3,
      visibleSlider:sb.width>35&&sb.height>=35,
@@ -84,7 +84,7 @@ const assert=require('node:assert/strict');
    },view);
    assert.equal(visual.missing,false,view+' missing visual slider');
    assert.equal(visual.rows,1,view+' must have one range in one row');
-   assert.equal(visual.labels.length,2,view+' needs two captions as in Jahrbuch');
+   assert.deepEqual(visual.labels,['‹ Zurück','Weiter ›'],view+' needs two identical, clickable step buttons');
    assert.equal(visual.sameLine,true,view+' range must align vertically with captions');
    assert.equal(visual.visibleSlider,true,view+' range too small');
    assert.equal(visual.offscreenReadout,true,view+' accessible round count missing');
