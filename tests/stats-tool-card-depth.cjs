@@ -6,6 +6,7 @@ const fixture=require('./fixture-2026.json');
   try{
     for(const width of [320,375,390,430,768]){
       const page=await browser.newPage({viewport:{width,height:844},isMobile:width<650,hasTouch:width<650});
+      await page.emulateMedia({reducedMotion:'reduce'}); // Compare settled colors/shadows, not transition frames.
       const errors=[];page.on('pageerror',e=>errors.push(e.message));
       await page.route('**/api/live',r=>r.fulfill({status:200,contentType:'application/json',body:JSON.stringify({status:'final',year:2026,players:fixture.editions[0].players,rounds:[],standings:fixture.editions[0].official_standings.map(x=>({player:x.player_id,rank:x.place,points:x.points}))})}));
       await page.route('**/api/editions',r=>r.fulfill({status:200,contentType:'application/json',body:JSON.stringify(fixture)}));
