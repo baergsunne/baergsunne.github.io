@@ -37,7 +37,7 @@ const assert=require('node:assert/strict');
     await page.locator('.history-entry-tile[data-view="'+view+'"]').click();
     await page.locator('#history-year-select').selectOption('2026');
     await page.waitForTimeout(180);
-    await page.evaluate(()=>{const marker=document.getElementById('history-workspace');window.scrollTo({top:Math.max(0,scrollY+marker.getBoundingClientRect().top-110),behavior:'instant'});});
+    await page.evaluate(()=>{const d=document.querySelector('.history-dropdown-controls'),g=document.querySelector('.history-sticky-group');window.scrollTo({top:Math.max(0,scrollY+d.getBoundingClientRect().bottom+18-parseFloat(getComputedStyle(g).top)+72),behavior:'instant'});});
     await page.locator('.history-mobile-rail.is-active').waitFor({timeout:5000});
     const round=view==='replay'||view==='moments';
     // Runden und Schlüsselmomente intentionally share the last chosen round.
