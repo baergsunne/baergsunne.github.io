@@ -399,45 +399,71 @@ document.addEventListener('touchcancel',ev=>{
 document.addEventListener('input',ev=>{if(ev.target.id!=='history-round-slider'||replayBusy)return;const value=Number(ev.target.value);replaySliderParts=replaySliderParts||replayParts();replaySliderDrag=value;positionReplay(value,false,replaySliderParts);updateReplayReadout(value,replaySliderParts);});
 document.addEventListener('change',ev=>{if(ev.target.id!=='history-round-slider')return;const value=replaySliderDrag===null?Number(ev.target.value):replaySliderDrag;replaySliderDrag=null;replaySliderParts=null;commitReplay(value);});
 
-/* The visible track is slim; touch targets are 44px. Outside the rail normal page scroll is native. */
+/* Mobile Historie: the horizontal slider is normal until its original
+   position reaches the measured sticky line. Only then dock the title and
+   migrate the regulator to the inset right-side thumb rail. */
 let mobileRailGesture=null,mobileRailFrame=0;
+const mobileRailClamp=(value,min,max)=>Math.max(min,Math.min(max,value));
+function mobileRailParts(){
+ const round=memory.view==='replay'||memory.view==='moments';
+ const c=round?replayParts():carouselParts();
+ return c?{...c,round}:null;
+}
 function syncMobileRail(index,total){
- const rail=document.querySelector('#history-chronicle > .history-mobile-rail');if(!rail)return;
- const current=Math.max(0,Math.min(total-1,Math.round(index)));
+ const rail=document.querySelector('#history-chronicle > .history-mobile-rail');
+ if(!rail)return;
+ const current=mobileRailClamp(Math.round(index),0,total-1);
  rail.style.setProperty('--history-mobile-position',(total>1?100*(1-current/(total-1)):50)+'%');
  const track=rail.querySelector('.history-mobile-track');
- const round=memory.view==='replay'||memory.view==='moments';
- const cards=round?replayParts():carouselParts();
- const shown=round?cards?.slides[current]?.querySelector('[data-round]')?.dataset.round:cards?.slides[current]?.querySelector('[data-year]')?.dataset.year;
+ const c=mobileRailParts();
+ const shown=c?.round?c.slides[current]?.querySelector('[data-round]')?.dataset.round:c?.slides[current]?.querySelector('[data-year]')?.dataset.year;
  track?.setAttribute('aria-valuemax',String(total));
  track?.setAttribute('aria-valuenow',String(current+1));
- track?.setAttribute('aria-valuetext',stickyTitleText(memory.view,round?memory.year:(shown||memory.year),round?(shown||memory.round):memory.round));
+ track?.setAttribute('aria-valuetext',stickyTitleText(memory.view,c?.round?memory.year:(shown||memory.year),c?.round?(shown||memory.round):memory.round));
  for(const button of rail.querySelectorAll('[data-history-mobile-step]')){
   const step=Number(button.dataset.historyMobileStep);
   button.disabled=step>0?current>=total-1:current<=0;
  }
 }
+function mobileRailPreview(value,c){
+ if(!c)return;
+ const position=mobileRailClamp(value,0,c.slides.length-1);
+ if(c.round){
+  positionReplay(position,false,c);
+  updateReplayReadout(position,c);
+ }else positionCarousel(position,false);
+}
 function mobileRailGo(target){
  if(!matchMedia('(max-width:650px)').matches)return;
  if(!document.querySelector('#history-chronicle > .history-mobile-rail.is-active'))return;
- if(memory.view==='replay'||memory.view==='moments'){if(!replayBusy)commitReplay(target);}
- else if(!carouselBusy)commitCarouselYear(target);
+ const c=mobileRailParts();
+ if(!c||(c.round?replayBusy:carouselBusy))return;
+ if(c.round)commitReplay(target);
+ else commitCarouselYear(target);
 }
 function mobileRailStep(direction){
- const round=memory.view==='replay'||memory.view==='moments';
- const current=round?replayParts()?.index:carouselParts()?.index;
- if(Number.isFinite(current))mobileRailGo(current+direction);
+ const c=mobileRailParts();
+ if(c)mobileRailGo(c.index+direction);
 }
 function syncMobileRailVisibility(){
  const root=document.getElementById('history-chronicle');
- const rail=root?.querySelector(':scope > .history-mobile-rail'),workspace=root?.querySelector('#history-workspace');
- if(!root||!rail||!workspace)return;
- const box=root.getBoundingClientRect(),r=rail.getBoundingClientRect();
- const active=matchMedia('(max-width:650px)').matches&&workspace.getBoundingClientRect().top<innerHeight*.73&&box.bottom>r.top+Math.min(100,r.height*.3);
- rail.classList.toggle('is-active',active);
- rail.setAttribute('aria-hidden',active?'false':'true');
- rail.querySelector('.history-mobile-track')?.setAttribute('tabindex',active?'0':'-1');
- for(const button of rail.querySelectorAll('button'))button.tabIndex=active?0:-1;
+ const group=root?.querySelector(':scope > .history-sticky-group');
+ const rail=root?.querySelector(':scope > .history-mobile-rail');
+ const dropdown=root?.querySelector(':scope > .history-dropdown-controls');
+ if(!root||!group||!rail||!dropdown)return;
+ const mobile=matchMedia('(max-width:650px)').matches;
+ const stickyTop=Number.parseFloat(getComputedStyle(group).top)||0;
+ // Before the dropdown scrolls clear, the original HORIZONTAL slider is visible.
+ // Its natural top is roughly dropdown.bottom + its 18px bottom margin.
+ const naturalTop=dropdown.getBoundingClientRect().bottom+18;
+ const railRect=rail.getBoundingClientRect();
+ const bottomOfExplorer=root.getBoundingClientRect().bottom;
+ const docked=mobile&&naturalTop<=stickyTop+2&&bottomOfExplorer>railRect.top+90;
+ group.classList.toggle('is-docked',docked);
+ rail.classList.toggle('is-active',docked);
+ rail.setAttribute('aria-hidden',docked?'false':'true');
+ rail.querySelector('.history-mobile-track')?.setAttribute('tabindex',docked?'0':'-1');
+ for(const button of rail.querySelectorAll('button'))button.tabIndex=docked?0:-1;
 }
 function scheduleMobileRailVisibility(){
  if(mobileRailFrame)return;
@@ -447,7 +473,8 @@ window.addEventListener('scroll',scheduleMobileRailVisibility,{passive:true});
 window.addEventListener('resize',scheduleMobileRailVisibility,{passive:true});
 document.addEventListener('click',ev=>{
  const button=ev.target.closest('#history-chronicle .history-mobile-rail [data-history-mobile-step]');
- if(!button)return;ev.preventDefault();
+ if(!button)return;
+ ev.preventDefault();
  if(!button.disabled)mobileRailStep(Number(button.dataset.historyMobileStep));
 });
 document.addEventListener('keydown',ev=>{
@@ -458,24 +485,48 @@ document.addEventListener('keydown',ev=>{
  else if(ev.key==='Home'){ev.preventDefault();mobileRailGo(0);}
  else if(ev.key==='End'){ev.preventDefault();mobileRailGo(Number(track.getAttribute('aria-valuemax'))-1);}
 });
+// A true proportional scrubber: a single finger movement can cross the whole
+// archive. Preview while dragging; commit exactly the selected year/round on release.
+function mobileRailValueAt(ev,d){
+ const height=Math.max(60,d.height-32);
+ return mobileRailClamp(d.index-(ev.clientY-d.startY)/height*d.max,0,d.max);
+}
 document.addEventListener('pointerdown',ev=>{
  const track=ev.target.closest('#history-chronicle .history-mobile-track');
  if(!ev.isPrimary||!track||!track.closest('.history-mobile-rail.is-active'))return;
- mobileRailGesture={id:ev.pointerId,startY:ev.clientY};
+ const c=mobileRailParts();
+ if(!c||(c.round?replayBusy:carouselBusy))return;
+ const bounds=track.getBoundingClientRect();
+ mobileRailGesture={id:ev.pointerId,startY:ev.clientY,height:bounds.height,
+  top:bounds.top,index:c.index,max:c.slides.length-1,moved:false,round:c.round};
  track.setPointerCapture(ev.pointerId);
 });
+document.addEventListener('pointermove',ev=>{
+ const d=mobileRailGesture;
+ if(!d||ev.pointerId!==d.id)return;
+ if(Math.abs(ev.clientY-d.startY)<4&&!d.moved)return;
+ d.moved=true;
+ if(ev.cancelable)ev.preventDefault();
+ const c=mobileRailParts();
+ if(!c||c.round!==d.round)return;
+ mobileRailPreview(mobileRailValueAt(ev,d),c);
+});
 document.addEventListener('pointerup',ev=>{
- if(!mobileRailGesture||mobileRailGesture.id!==ev.pointerId)return;
- const d=mobileRailGesture;mobileRailGesture=null;
- const dy=ev.clientY-d.startY;
- if(Math.abs(dy)>23)mobileRailStep(dy<0?1:-1);
- else{
-  const track=ev.target.closest('.history-mobile-track');
-  if(track){const b=track.getBoundingClientRect();mobileRailStep(ev.clientY<b.top+b.height/2?1:-1);}
- }
+ const d=mobileRailGesture;
+ if(!d||ev.pointerId!==d.id)return;
+ mobileRailGesture=null;
+ const c=mobileRailParts();if(!c||c.round!==d.round)return;
+ // Tapping the line jumps to that position; dragging uses the finger distance.
+ const target=d.moved?mobileRailValueAt(ev,d):
+   mobileRailClamp((1-(ev.clientY-d.top-16)/Math.max(1,d.height-32))*d.max,0,d.max);
+ mobileRailGo(Math.round(target));
 });
 document.addEventListener('pointercancel',ev=>{
- if(mobileRailGesture?.id===ev.pointerId)mobileRailGesture=null;
+ const d=mobileRailGesture;if(!d||d.id!==ev.pointerId)return;
+ mobileRailGesture=null;
+ const c=mobileRailParts();
+ if(c){if(c.round){positionReplay(c.index,false,c);updateReplayReadout(c.index,c);}
+ else positionCarousel(c.index,false);}
 });
 
 // Clicks reuse the same one-card snap and movement as a finger swipe.

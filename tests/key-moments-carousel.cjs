@@ -64,6 +64,7 @@ const assert=require('node:assert/strict');
   let baselineRail=null;
   for(const view of ['yearbook','replay','moments']){
    await page.locator('.history-entry-tile[data-view="'+view+'"]').click();
+   await page.evaluate(()=>{const d=document.querySelector('.history-dropdown-controls'),g=document.querySelector('.history-sticky-group');scrollTo({top:Math.max(0,scrollY+d.getBoundingClientRect().bottom+18-parseFloat(getComputedStyle(g).top)+72),behavior:'instant'});});
    await page.locator('.history-mobile-rail.is-active').waitFor({timeout:7000});
    const visual=await page.evaluate(()=>{
     const root=document.getElementById('history-chronicle'),group=root.querySelector('.history-sticky-group');
