@@ -62,3 +62,10 @@ Cloudflare-Anbindung wiederherstellen und **Free-Plan plus Nichtabrechnung verif
 ## Sicherer Integrationsbranch aus aktuellem main (21.10.2026)
 
 `feature/profi-timer-main-safe-20261021` wurde unmittelbar von main (Commit 932df6d) angelegt. Es wurden ausschliesslich die Profi-Timer-Module und ihre sicherheitsrelevanten Admin-/Backend-Ergänzungen sowie der unveröffentlichte Privat-Timer-Quellcode übernommen. Das alte `app.js` wurde **nicht** übernommen. Dadurch bleibt die öffentliche Navigation exakt auf dem neuesten main-Stand. Der Branch darf nur nach vollständiger Cloudflare-, Billing- und Mobilgeräte-Abnahme veröffentlicht werden; GitHub CI ist Test, keine Deployment-Freigabe.
+
+
+## Zusätzliche Browser-Abnahme im sicheren Integrationsbranch
+
+GitHub Actions Browser QA **erfolgreich**, Lauf [39618161081](https://github.com/baergsunne/baergsunne.github.io/actions/runs/39618161081), durchgeführt auf dem sicheren Integrationsbranch mit Headless-Chromium und emuliertem Smartphone-Viewport (390 × 844). Dabei wurden login-geschützte Administration, freier Profi-Modus, QR-Grafik, neutrale Zuschaueransicht mit fünf Reitern, Start, Ausscheidung, Ergebnisaktualisierung, Abbruch und Sperrung der alten Zuschaueransicht sowie der Login-Schutz auf einem Desktop-Viewport geprüft. Mobile Screenshots liegen als befristetes GitHub-Actions-Artefakt `profi-timer-mobile-qa` vor und wurden mit ausschliesslich fiktiven Testteilnehmern erstellt. **Die im Browser verwendete API war eine ausschliesslich lokale Testattrappe**, nicht der produktive oder private Cloudflare-Worker. Damit ist keine echte iOS-Safari-/Mehrgeräte-/Cloudflare-Abnahme ersetzt.
+
+Stand 21.10.2026: Das bestehende Cloudflare-Plugin liefert auch nach mehreren Versuchen interne Werkzeugfehler. **Keine echte HTTPS-Vorschau, keine isolierte Worker- oder D1-Bereitstellung und keine bestätigte Free-Plan-Abrechnungskontrolle.** Die bereits getesteten Funktionen bleiben bis zu diesen Prüfungen isoliert. Kein Deployment in GitHub Pages oder Cloudflare. Das separate zweite Jahresturnier wird weiterhin nicht begonnen.
