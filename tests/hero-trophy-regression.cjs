@@ -53,7 +53,8 @@ const live={status:'final',year:2026,players:year.players,round_count:7,rounds:[
    assert.equal(home.headerLogoLoaded,true);
    assert.equal(home.navigationItems,5);
    assert(home.horizontalOverflow<=2,width+' no home horizontal scrolling: '+home.horizontalOverflow);
-   await page.evaluate(()=>{state.page='history';state.historyYear=2026;draw();});
+   await page.evaluate(()=>{state.page='history';state.historyYear=2026;draw();document.querySelectorAll('.history-yearbook-trophy').forEach(img=>{img.loading='eager';});});
+   await page.waitForFunction(()=>[...document.querySelectorAll('.history-yearbook-trophy')].length===db.editions.length&&[...document.querySelectorAll('.history-yearbook-trophy')].every(img=>img.complete&&img.naturalWidth>0),null,{timeout:15000});
    const history=await page.evaluate(()=>{
     const mast=document.querySelector('.page--history .premium-masthead');
     const cups=[...document.querySelectorAll('.history-yearbook-cup')];
@@ -69,7 +70,7 @@ const live={status:'final',year:2026,players:year.players,round_count:7,rounds:[
    assert.equal(history.title,'Historie');
    assert.equal(history.photo,true,width+' keep alpine masthead on other pages');
    assert.equal(history.foreground,0,width+' remove only foreground trophy from masthead');
-   assert(history.cupCount>=1,width+' yearbook trophy present');
+   assert.equal(history.cupCount,fixture.editions.length,width+' real trophy in every yearbook card');
    assert(history.images.every(x=>x.count===1&&x.loaded&&x.src==='assets/trophy-premium.webp'&&!x.emoji),width+' all yearbook medals use the real trophy');
    assert(history.sticky&&history.steps===2,width+' history sticky and back/forward retained');
    assert(history.horizontalOverflow<=2,width+' no history horizontal scrolling');
