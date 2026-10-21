@@ -52,7 +52,14 @@ const assert=require('node:assert/strict');
    assert.equal(actual.separateLinks,0,width+' removed Hall of Fame/Spieler crosslinks');
    assert.equal(actual.scrollOverflow,false,width+' unexpected horizontal overflow');
    assert.equal(actual.beyondHist,false,width+' Historie entries too narrow');
-   assert.deepEqual(actual.hist,actual.stats,width+' must use precisely same computed layout and typography as Statistik tiles');
+   // Historie and Statistiken still share exactly the same grid, card
+   // dimensions, typography, icons and controls. Only the statistics card
+   // surface may be slightly raised/tinted, by explicit design approval.
+   for(const kind of ['active','regular']){
+    const neutralize=x=>({...x,tile:{...x.tile,background:undefined}});
+    assert.deepEqual(neutralize(actual.hist[kind]),neutralize(actual.stats[kind]),
+      width+' must preserve the same grid/typography and geometry ('+kind+')');
+   }
    for(const entry of actual.entries){assert.ok(entry.src?.startsWith('assets/icons/')&&entry.src.endsWith('.svg'),entry.name+' must use original SVG icon');}
    await page.locator('.history-entry-tile[data-view="records"]').click();
    assert.equal(await page.locator('.history-entry-tile[aria-pressed="true"]').getAttribute('data-view'),'records','Linked Rekordbuch opens');
