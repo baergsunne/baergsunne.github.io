@@ -11,7 +11,7 @@
   --history-design-gold:#eac78c;
   --history-design-cream:#fff1dc;
   --history-design-muted:#d0ddcf;
-  --history-design-line:rgba(222,190,128,.44);
+  --history-design-line:#4d6752;
   --history-design-inner-line:rgba(222,190,128,.33);
   --history-design-card:radial-gradient(ellipse at 50% -12%,rgba(238,185,92,.28),transparent 52%),linear-gradient(145deg,#265541 0%,#163c30 46%,#09251d 100%);
   --history-design-tile:radial-gradient(ellipse at 50% 0%,rgba(238,190,106,.13),transparent 75%),linear-gradient(155deg,#315646,#193f32 74%,#102d24);
