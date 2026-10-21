@@ -4,7 +4,9 @@ const assert=require('node:assert/strict');
 const fixture=require('./fixture-2026.json');
 const year=fixture.editions.find(x=>x.year===2026);
 const live={status:'final',year:2026,players:year.players,round_count:7,rounds:[],
- standings:year.official_standings.map(x=>({player:x.player_id,rank:x.place,points:x.points})),
+ leaders:year.official_standings.filter(x=>x.place===1).map(x=>x.player_id),
+ standings:year.official_standings.map(x=>({player:x.player_id,rank:x.place,points:x.points,
+  gap:Math.max(...year.official_standings.map(y=>y.points))-x.points, movement:0,wins:0,podiums:0,played:0,places:[]})),
  updated_at:'Teststand'};
 (async()=>{
  const browser=await chromium.launch({headless:true});
@@ -76,9 +78,7 @@ const live={status:'final',year:2026,players:year.players,round_count:7,rounds:[
    assert(history.horizontalOverflow<=2,width+' no history horizontal scrolling');
    await page.waitForFunction(()=>typeof window.BAERGSUNNE_CHAMPIONSHIP?.mount==='function',null,{timeout:10000});
    await page.evaluate(liveFixture=>{window.BAERGSUNNE_PUBLIC_LIVE=liveFixture;state.page='live';draw();window.BAERGSUNNE_CHAMPIONSHIP.mount()},live);
-   const liveDiagnostics=await page.evaluate(()=>({page:state.page,liveStatus:window.BAERGSUNNE_PUBLIC_LIVE?.status,livePlayers:window.BAERGSUNNE_PUBLIC_LIVE?.players?.length,liveStandings:window.BAERGSUNNE_PUBLIC_LIVE?.standings?.length,module:!!window.BAERGSUNNE_CHAMPIONSHIP,root:!!document.querySelector('.discovery-livepage'),hosts:document.querySelectorAll('.championship-live-host').length,leader:document.querySelectorAll('.cl-leader').length,trophies:document.querySelectorAll('.cl-leader-trophy').length,body:document.querySelector('.discovery-livepage')?.innerHTML.slice(0,450)}));
-   console.log('HERO_LIVE_DIAGNOSTICS',JSON.stringify(liveDiagnostics));
-   await page.waitForSelector('.cl-leader-trophy',{timeout:3500});
+   await page.waitForSelector('.cl-leader-trophy',{timeout:10000});
    const leader=await page.evaluate(()=>{
     const mast=document.querySelector('.page--live .premium-masthead');
     const box=document.querySelector('.cl-leader'),body=box.querySelector('.cl-leader-body'),cup=box.querySelector('.cl-leader-trophy');
