@@ -118,6 +118,24 @@ test('profi API limits creation to administrator, and viewer is read-only with a
  assert.equal(result.code,200);
  assert.equal((await c.send('/api/profi/watch?id='+id,'GET',undefined,{viewer:renewed})).code,410);
 });
+test('spectator WebSocket is origin-bound, capability-bound and never accepts a client write',async()=>{
+ const {env}=fixture(),c=client(env);await login(c);
+ const created=await c.send('/api/profi/create','POST',{mode:'free',title:'Live Abend',names:['A','B']});
+ assert.equal(created.code,201);
+ const {id,viewerUrl}=created.value,viewer=new URLSearchParams(viewerUrl.split('#')[1]).get('token');
+ let connections=0;
+ env.PROFI_EVENTS={idFromName:name=>name,get:()=>({fetch:async()=>{connections++;return new Response('upgraded',{status:200});}})};
+ const make=(ticket,origin=URL_BASE)=>new Request(URL_BASE+'/api/profi/socket?id='+id,{headers:{
+  origin,upgrade:'websocket','sec-websocket-protocol':'bp-viewer, token-'+ticket
+ }});
+ const notAllowed=await worker.fetch(make('a'.repeat(64)),env);
+ assert.equal(notAllowed.status,403);
+ const crossSite=await worker.fetch(make(viewer,'https://other.example'),env);
+ assert.equal(crossSite.status,403);
+ const authorised=await worker.fetch(make(viewer),env);
+ assert.equal(authorised.status,200);
+ assert.equal(connections,1);
+});
 test('official mode uses registered roster and may only write a non-public draft for a nonfinal round',async()=>{
  const {env,db}=fixture(),c=client(env);await login(c);
  const config={year:2027,roundCount:2,players:['Anna','Berta','Carlo'],points:[10,8,6]};
