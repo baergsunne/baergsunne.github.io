@@ -30,6 +30,7 @@ on:
       - 'history-chronicle.js'
       - 'history-mobile-rail.css'
       - 'tests/history-mobile-thumb-rail.cjs'
+      - 'tests/history-no-jolt.cjs'
       - 'tests/history-year-no-page-jump.cjs'
       - 'history-chronicle.css'
       - 'history-deep-dive.js'
@@ -90,6 +91,7 @@ jobs:
       - run: node tests/history-six-visual-unity.cjs
       - run: node tests/history-sticky-slider.cjs
       - run: node tests/history-mobile-thumb-rail.cjs
+      - run: node tests/history-no-jolt.cjs
       - run: node tests/history-year-no-page-jump.cjs
       - run: node tests/history-step-buttons.cjs
       - run: node tests/home-history-teaser.cjs
