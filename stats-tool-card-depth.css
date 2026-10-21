@@ -2,8 +2,7 @@
    Target only the selectable tool directory, not result cards or other pages. */
 #app .page--stats .tool-directory .tool-grid > button.tool-tile {
   background: linear-gradient(170deg, #1a3a2c 0%, #163327 55%, #112b21 100%);
-  border-color: #718572;
-  border-radius: 12px;
+  /* Keep the original borders and corner radius in both sections. */
   box-shadow:
     0 6px 16px rgba(0, 0, 0, .23),
     0 2px 4px rgba(0, 0, 0, .10),
