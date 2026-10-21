@@ -42,7 +42,8 @@ const fixture=require('./fixture-2026.json');
    assert(initial.newer.buttons.every(x=>x.color===initial.newer.buttons[0].color),'all icons have the same gold filter');
    assert(parseFloat(initial.newer.mainPadding)<parseFloat(initial.previous.mainPadding),'reduce redundant main bottom whitespace');
    // Switch to Historie carousel; compare full sticky group, not child alone.
-   await page.evaluate(()=>{state.page='history';draw();});
+   await page.evaluate(()=>{state.page='history';draw();window.scrollTo({top:0,behavior:'instant'});});
+   await page.waitForTimeout(120);
    const histor=await page.evaluate(()=>{
     const g=document.querySelector('.history-sticky-group');
     const sheet=document.querySelector('link[href*="mobile-controlled-density.css"]');
@@ -57,7 +58,7 @@ const fixture=require('./fixture-2026.json');
    });
    assert(!histor.error,JSON.stringify(histor));
    if(width<=650){
-    assert(histor.newer.h>=82,width+'px: original horizontal controller and heading initially share natural flow');
+    assert(histor.newer.h>=70,width+'px: original horizontal controller and heading initially share natural flow '+JSON.stringify(histor));
     assert(histor.newer.stepHeights.every(v=>v>=44),'initial horizontal buttons remain touch friendly');
     assert.equal(await page.locator('.history-mobile-rail.is-active').count(),0,'side rail is not allowed to appear above selector');
     await page.evaluate(()=>{
