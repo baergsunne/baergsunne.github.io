@@ -28,10 +28,14 @@ async function officialAvailable(env,doc,excludeId=null){
  enforce(!active||active.id===excludeId,'Für diese Runde existiert bereits ein Profi-Timer.');
  return {t,row};
 }
-async function emit(env,ctx,id,revision){
- // Optional, never await or depend on event delivery for committed writes.
+async function emit(env,ctx,id,revision,action){
+ // Notification happens only after a committed D1 revision. Never hold up official writes.
  if(typeof ctx?.waitUntil==='function'&&env.PROFI_EVENTS){
-  ctx.waitUntil(Promise.resolve().then(()=>env.PROFI_EVENTS.getByName('profi-'+id).broadcast({id,revision})).catch(()=>{}));
+  const run=async()=>{
+   const obj=env.PROFI_EVENTS.get(env.PROFI_EVENTS.idFromName('profi-'+id));
+   await obj.fetch(new Request('https://profi.internal/notify',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({revision,action})}));
+  };
+  ctx.waitUntil(run().catch(()=>{}));
  }
 }
 export async function handleProfi({req,env,ctx,url,auth,entry,update}){
@@ -47,6 +51,21 @@ export async function handleProfi({req,env,ctx,url,auth,entry,update}){
    if(!secureEq(ticket,await spectatorToken(env,d)))return fail('Zugriff verweigert.',403);
    if(d.status==='finished'||d.status==='cancelled')return fail('Turnier beendet.',410);
    return reply({revision:row.revision,...viewerSnapshot(d)});
+  }
+  if(path==='/api/profi/socket'&&method==='GET'){
+   if(!env.PROFI_EVENTS)return fail('Ereignisgesteuerte Live-Verbindung nicht aktiviert.',503);
+   if(req.headers.get('origin')!==url.origin)return fail('Herkunft nicht erlaubt.',403);
+   if(req.headers.get('upgrade')?.toLowerCase()!=='websocket')return fail('WebSocket erforderlich.',426);
+   const id=url.searchParams.get('id')||'';
+   const offered=req.headers.get('sec-websocket-protocol')||'';
+   const ticket=offered.match(/(?:^|,\\s*)token-([a-f0-9]{64})(?=,|$)/)?.[1]||'';
+   if(!idPattern.test(id)||!tokenPattern.test(ticket))return fail('Zugriff verweigert.',403);
+   const row=await getRow(env,id);if(!row)return fail('Zugriff verweigert.',403);
+   const d=docOf(row);
+   if(!secureEq(ticket,await spectatorToken(env,d)))return fail('Zugriff verweigert.',403);
+   if(d.status==='finished'||d.status==='cancelled')return fail('Turnier beendet.',410);
+   const stub=env.PROFI_EVENTS.get(env.PROFI_EVENTS.idFromName('profi-'+id));
+   return stub.fetch(new Request('https://profi.internal/join',{headers:{upgrade:'websocket','sec-websocket-protocol':'bp-viewer'}}));
   }
   if(!await auth(req,env))return fail('Anmeldung erforderlich.',401);
   if(path==='/api/profi/list'&&method==='GET'){
@@ -108,7 +127,7 @@ export async function handleProfi({req,env,ctx,url,auth,entry,update}){
    const result=await env.DB.prepare('UPDATE profi_sessions SET document=?,status=?,revision=revision+1,updated_at=? WHERE id=? AND revision=?')
      .bind(JSON.stringify(modified),modified.status,new Date().toISOString(),id,row.revision).run();
    if(result.meta.changes!==1)return fail('Turnier wurde inzwischen verändert. Bitte neu laden.',409);
-   await emit(env,ctx,id,row.revision+1);
+   await emit(env,ctx,id,row.revision+1,data.action);
    return reply({revision:row.revision+1,document:modified,summary:viewerSnapshot(modified)});
   }
   if(path==='/api/profi/draft'&&method==='POST'){
