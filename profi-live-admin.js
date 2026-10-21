@@ -9,8 +9,8 @@ async function api(path,method='GET',data){
  const response=await r.json();if(!r.ok)throw Error(response.error||'Serverfehler '+r.status);return response;
 }
 async function guard(task){
- if(busy)return;busy=true;
- try{await task();say('');}catch(e){say(e.message);if(e.message.includes('verändert')||e.message.includes('neu laden'))await refresh().catch(()=>{});}
+ if(busy)return;busy=true;say('');
+ try{await task();}catch(e){say(e.message);if(e.message.includes('verändert')||e.message.includes('neu laden'))await refresh().catch(()=>{});}
  finally{busy=false;}
 }
 function choose(value){
