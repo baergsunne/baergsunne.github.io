@@ -1,0 +1,163 @@
+/* Bärgsunne Poker — controlled mobile condensation, 21 Oct 2026.
+   Compact only the header, bottom nav, Historie sticky slider, dead footer
+   space and overview tiles. Deliberately no changes to data/table geometry. */
+:root{
+ --bp-compact-gold:#e8c37e;
+}
+@media(max-width:800px){
+ /* Header stage: preserve safe-area above it and the real 44px tap target. */
+ #app .heritage-header .topbar{
+   box-sizing:border-box;
+   min-height:60px;
+   padding-top:calc(5px + env(safe-area-inset-top));
+   padding-bottom:5px;
+   padding-left:clamp(10px,3vw,15px);
+   padding-right:clamp(10px,3vw,15px);
+   gap:9px;
+ }
+ #app .heritage-header .brand{gap:7px;min-width:0}
+ #app .heritage-header .heritage-logo{
+   width:44px;
+   height:44px;
+   flex:0 0 44px;
+ }
+ #app .heritage-header .brand b{
+   font-size:clamp(11px,3.25vw,15px);
+   line-height:1.16;
+   letter-spacing:.09em;
+   white-space:nowrap;
+ }
+ #app .heritage-header .brand small{
+   display:block;
+   margin-top:3px;
+   font-size:clamp(7px,1.9vw,9px);
+   line-height:1.25;
+ }
+ #app .heritage-header .heritage-menu{
+   display:inline-flex;
+   align-items:center;
+   justify-content:center;
+   width:44px;
+   height:44px;
+   min-height:44px;
+   padding:0;
+   font-size:21px;
+   line-height:1;
+ }
+ /* Bottom navigation: less padding and smaller gold pictograms, while each
+    full-width button remains >=44px high on mobile. */
+ #app .bottomnav{
+   box-sizing:border-box;
+   align-items:stretch;
+   padding:2px 5px calc(3px + env(safe-area-inset-bottom))!important;
+   gap:0;
+ }
+ #app .bottomnav .bottomitem{
+   display:flex;
+   flex:1 1 0;
+   min-width:0;
+   min-height:49px;
+   padding:3px 0 2px!important;
+   gap:2px;
+   align-items:center;
+   justify-content:center;
+   border-top:0;
+ }
+ #app .bottomnav .bottomitem>span{
+   display:flex;
+   align-items:center;
+   justify-content:center;
+   height:23px;
+   line-height:1;
+ }
+ #app .bottomnav .bottomitem .bp-icon{
+   width:21px;
+   height:21px;
+   filter:brightness(0) saturate(100%) invert(79%) sepia(31%) saturate(571%) hue-rotate(350deg) brightness(97%) contrast(92%)!important;
+ }
+ #app .bottomnav .bottomitem small{
+   font-size:10px;
+   line-height:1.15;
+   letter-spacing:0;
+ }
+ #app .bottomnav .bottomitem.active{
+   color:var(--bp-compact-gold)!important;
+   border-bottom:2px solid var(--bp-compact-gold)!important;
+ }
+ /* Main page and footer had independent large safe-area reservations.
+    Keep scrolling space in the footer, not twice before it. */
+ #app main{
+   padding-bottom:16px!important;
+ }
+ #app .page--stats .stat-content{
+   min-height:0;
+ }
+ #app footer.premium-footer{
+   box-sizing:border-box;
+   margin-top:0;
+   padding-top:18px;
+   padding-bottom:calc(70px + env(safe-area-inset-bottom));
+   padding-left:clamp(12px,3vw,18px);
+   padding-right:clamp(12px,3vw,18px);
+   gap:7px;
+ }
+ /* History: only the sticky carousel control+title, never the cards. */
+ #app .page--history .history-sticky-group{
+   gap:0;
+   margin-bottom:7px;
+   border-radius:13px;
+ }
+ #app .page--history .history-sticky-group > .history-carousel-control{
+   box-sizing:border-box;
+   min-height:44px;
+   padding:0 9px;
+   gap:6px;
+   margin:0;
+ }
+ #app .page--history .history-sticky-group .history-carousel-control > .history-step-button{
+   min-height:44px;
+   padding:2px 3px;
+   font-size:clamp(11px,2.8vw,13px);
+ }
+ #app .page--history .history-sticky-group > .history-carousel-control input[type=range]{
+   min-height:44px;
+   margin:0;
+   padding:0;
+ }
+ #app .page--history .history-sticky-title{
+   box-sizing:border-box;
+   min-height:28px;
+   padding:0 8px 6px;
+ }
+ #app .page--history .history-sticky-title h3{
+   margin:0;
+   font-size:clamp(17px,4.6vw,21px);
+   line-height:1.15;
+   font-weight:850;
+ }
+}
+/* Statistics overview: no horizontal decorative rules under the KPI grid.
+   Borders on individual raised tiles are preserved. */
+#app .page--stats .stat-content > .metrics{
+ border:0!important;
+ border-bottom:0!important;
+ box-shadow:none!important;
+}
+#app .page--stats .stat-content > .metrics::before,
+#app .page--stats .stat-content > .metrics::after{
+ display:none!important;
+ content:none!important;
+}
+/* The KPI labels and numerals use the same brass/gold as the website.
+   Do not recolor long explanations, headings or sortable table text. */
+#app .page--stats .stat-content > .metrics > .kpi :is(div,strong,small){
+ color:var(--bp-compact-gold)!important;
+}
+#app .page--stats .stat-content > .metrics > .kpi strong{
+ color:#f2ce8b!important;
+}
+/* No animations needed for the compact stage; sticky offsets are measured
+   from the resized header by the existing ResizeObserver implementation. */
+@media(prefers-reduced-motion:reduce){
+ #app .bottomnav, #app .page--history .history-sticky-group{transition:none!important}
+}
