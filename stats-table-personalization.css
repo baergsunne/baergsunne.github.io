@@ -17,7 +17,7 @@
  border-spacing:0 6px!important;
  table-layout:auto!important;
  width:max-content!important;
- min-width:100%!important;
+ min-width:0!important;
  max-width:none!important;
  background:transparent!important;
 }
@@ -123,8 +123,8 @@
  word-break:normal!important;
 }
 #app .page--stats table.bp-stat-personalized-table.bp-stat-first-is-name tr>:first-child{
- min-width:104px!important;max-width:175px!important;
- white-space:normal!important;overflow-wrap:anywhere!important;
+ width:1%!important;min-width:0!important;max-width:none!important;
+ white-space:nowrap!important;overflow-wrap:normal!important;
 }
 #app .page--stats table.bp-stat-personalized-table tr>:first-child:not([data-bp-column-hidden]){
  text-align:left!important;
@@ -132,7 +132,7 @@
 /* Make very wide tables readable at small widths while retaining full horizontal scroll. */
 @media(max-width:600px){
  #app .page--stats table.bp-stat-personalized-table{
-   table-layout:auto!important;width:max-content!important;min-width:100%!important;
+   table-layout:auto!important;width:max-content!important;min-width:0!important;
  }
  #app .page--stats table.bp-stat-personalized-table thead tr>*{
    font-size:10px!important;padding:8px 9px!important;
@@ -142,4 +142,60 @@
  }
  #app .page--stats .bp-stat-columns-summary{padding:12px}
  #app .page--stats .bp-stat-column-choices{padding:3px 10px 11px}
+}
+
+
+/* Compact measurements, not fixed 104/105/65px column reservations.
+   First-column width: 1% makes its intrinsic visible content determine its
+   actual width; no clipping, ellipsis, abbreviation or lost player names. */
+#app .page--stats table.bp-stat-personalized-table :is(thead,tbody,tfoot) tr>*{
+ min-width:0!important;
+ max-width:none!important;
+}
+#app .page--stats table.bp-stat-personalized-table :is(thead,tbody,tfoot) tr>:first-child{
+ width:1%!important;
+ min-width:0!important;
+ max-width:none!important;
+ white-space:nowrap!important;
+ overflow-wrap:normal!important;
+}
+#app .page--stats table.bp-stat-personalized-table :is(thead,tbody,tfoot) tr>:not(:first-child){
+ width:auto!important;
+ min-width:0!important;
+}
+/* The name is plain typography, not a wide rectangular button. */
+#app .page--stats table.bp-stat-personalized-table tbody tr>:first-child .playerlink{
+ white-space:nowrap!important;
+ overflow-wrap:normal!important;
+ padding:0!important;
+}
+/* Tight horizontal rhythm for all columns, including long numeric rankings. */
+#app .page--stats table.bp-stat-personalized-table thead tr>*{
+ padding-left:7px!important;
+ padding-right:7px!important;
+}
+#app .page--stats table.bp-stat-personalized-table tbody tr>*{
+ padding-left:7px!important;
+ padding-right:7px!important;
+}
+#app .page--stats table.bp-stat-personalized-table tbody tr>:first-child,
+#app .page--stats table.bp-stat-personalized-table thead tr>:first-child{
+ padding-left:8px!important;
+ padding-right:8px!important;
+}
+#app .page--stats table.bp-stat-personalized-table :is(.bp-smart-sort,.thbutton){
+ min-width:0!important;
+ max-width:none!important;
+ padding-inline:0!important;
+ white-space:nowrap!important;
+}
+@media(max-width:600px){
+ #app .page--stats table.bp-stat-personalized-table :is(thead,tbody,tfoot) tr>:not(:first-child){
+   padding-left:5px!important;
+   padding-right:5px!important;
+ }
+ #app .page--stats table.bp-stat-personalized-table :is(thead,tbody,tfoot) tr>:first-child{
+   padding-left:6px!important;
+   padding-right:6px!important;
+ }
 }
