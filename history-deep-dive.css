@@ -136,8 +136,8 @@
  overflow-wrap:anywhere;
 }
 #app .page.page--history .history-yearbook-extras .history-insight-metric p{
- font-size:10px;
- line-height:1.35;
+ font-size:11px;
+ line-height:1.42;
  margin:1px 0 0;
 }
 @media(max-width:350px){
