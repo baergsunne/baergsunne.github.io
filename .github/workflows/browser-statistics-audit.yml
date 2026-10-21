@@ -7,6 +7,8 @@ on:
   pull_request:
     paths:
       - 'app.js'
+      - 'duel-butterfly.css'
+      - 'tests/duel-mobile-usability.cjs'
       - 'data.js'
       - 'index.html'
       - 'stats-table-personalization.js'
@@ -46,6 +48,7 @@ jobs:
       - run: npx playwright install --with-deps chromium
       - run: python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/poker-server.log 2>&1 & 
       - run: node tests/browser-audit.cjs
+      - run: node tests/duel-mobile-usability.cjs
       - run: node tests/stats-column-personalization.cjs
       - run: node tests/real-cloudflare-audit.cjs
       - run: node tests/all-pages-audit.cjs
