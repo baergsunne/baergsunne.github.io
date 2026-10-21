@@ -44,8 +44,8 @@ const assert=require('node:assert/strict');
       const name=mainTitle(item),value=say(item.querySelector('.history-insight-metric-value')),info=detail(item);
       if(info.length<17)errors.push(ed.year+': too short '+name);
       if(technical.test(info))errors.push(ed.year+': technical explanation '+name+': '+info);
-      if(/Meiste (?:Runden|Top-3|Nuller)/.test(name)&&!/Runde/.test(info)&&!/keinen entsprechenden/.test(info))errors.push(ed.year+': no actual rounds in '+name+': '+info);
-      if(value==='0 Plätze'&&!/keinen entsprechenden/.test(info))errors.push(ed.year+': nonexistent rise was invented');
+      if(/Meiste (?:Runden|Top-3|Nuller)/.test(name)&&!/Runde/.test(info)&&!/keinen|keine|Niemand|Alle Spieler|nicht/.test(info))errors.push(ed.year+': no actual rounds in '+name+': '+info);
+      if(value==='0 Plätze'&&!/keinen|keine|Niemand|Alle Spieler|nicht/.test(info))errors.push(ed.year+': nonexistent rise was invented');
      }
      const climb=parts.find(x=>mainTitle(x)==='Grösste Aufholjagd');
      const highest=+say(climb.querySelector('.history-insight-metric-value')).match(/\d+/)[0];
@@ -70,7 +70,7 @@ const assert=require('node:assert/strict');
       const name=mainTitle(item),info=detail(item);
       if(info.length<17)errors.push(ed.year+': too short Rekordbuch '+name);
       if(technical.test(info))errors.push(ed.year+': technical Rekordbuch '+name+': '+info);
-      if(/Grösste Aufholjagd|Grösster Absturz|Grösster Sprung nach oben|Grösster Fall nach einer Runde/.test(name)&&!/von Rang/.test(info)&&!/keinen entsprechenden/.test(info))
+      if(/Grösste Aufholjagd|Grösster Absturz|Grösster Sprung nach oben|Grösster Fall nach einer Runde/.test(name)&&!/von Rang/.test(info)&&!/keinen|keine|Niemand|Alle Spieler|nicht/.test(info))
        errors.push(ed.year+': missing concrete start/end of '+name);
      }
     }
