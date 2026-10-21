@@ -1,4 +1,7 @@
 import {freshTournament,validateConfig,validatePlaces,publicSnapshot,finalizedEdition} from './core.js';
+import {handleProfi} from './profi-api.js';
+import {ProfiEvents} from './profi-events.js';
+export {ProfiEvents};
 
 const json=(value,status=200,extra={})=>new Response(JSON.stringify(value),{status,headers:{'content-type':'application/json; charset=utf-8','cache-control':'no-store','x-content-type-options':'nosniff','referrer-policy':'no-referrer',...extra}});
 // GitHub Pages may read only published results; authentication and writes stay same-origin.
@@ -32,7 +35,7 @@ export default {async fetch(req,env,ctx){
  try {
   const url=new URL(req.url),path=url.pathname,method=req.method;
   if(env.PREVIEW_REQUIRED==='true'&&!env.PREVIEW_GATE_SECRET)return fail('Private Vorschau noch nicht freigeschaltet.',503);
-  if(env.PREVIEW_GATE_SECRET){
+  if(env.PREVIEW_GATE_SECRET&&!['/watch.html','/watch.js','/live/profi-clock.js','/api/profi/watch','/api/profi/socket'].includes(path)){
    const today=new Date().toISOString().slice(0,10),valid=await digest(env.PREVIEW_GATE_SECRET+':'+today);
    const cookie=req.headers.get('cookie')?.match(/(?:^|;\s*)bp_preview=([a-f0-9]{64})(?:;|$)/)?.[1];
    if(!equal(cookie,valid)){
@@ -49,6 +52,7 @@ export default {async fetch(req,env,ctx){
    if(!env.DB)return fail('Datenbank nicht verbunden.',503);
    if(method!=='GET'&&!sameOrigin(req))return fail('Herkunft nicht erlaubt.',403);
    if(method!=='GET'&&!/^application\/json(?:;|$)/i.test(req.headers.get('content-type')||''))return fail('JSON erforderlich.',415);
+   if(path.startsWith('/api/profi/'))return handleProfi({req,env,ctx,url,auth,entry,update});
    if(path==='/api/live'&&method==='GET'){
     const requested=url.searchParams.get('year');
     const latest=requested?null:await env.DB.prepare("SELECT year FROM tournaments ORDER BY CASE WHEN json_extract(document,'$.status')='final' THEN 1 ELSE 0 END, year DESC LIMIT 1").first();
@@ -136,7 +140,7 @@ export default {async fetch(req,env,ctx){
    return fail('Route nicht vorhanden.',404);
   }
   if(!env.ASSETS)return fail('Website nicht verbunden.',503);
-  if(path==='/admin.html'||path==='/setup.html'){
+  if(path==='/admin.html'||path==='/setup.html'||path==='/profi-live-admin.html'||path==='/watch.html'){
     const response=await env.ASSETS.fetch(req);const headers=new Headers(response.headers);
     headers.set('cache-control','no-store');headers.set('x-robots-tag','noindex');headers.set('content-security-policy',"default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'");return new Response(response.body,{status:response.status,headers});
   }
