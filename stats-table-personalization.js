@@ -10,6 +10,43 @@
  try{const value=JSON.parse(localStorage.getItem(STORE)||'{}');if(value&&typeof value==='object'&&!Array.isArray(value))preferences=value;}catch(_){}
  const clean=s=>String(s||'').replace(/[↑↓↕]/g,'').replace(/\s+/g,' ').trim();
  const colKey=(text,index)=>index+':'+clean(text);
+ // Only the visible heading is abbreviated. Filter labels, sorting keys and
+ // locally saved column preferences retain the original, complete name.
+ const shortHeadings=new Map(Object.entries({
+   'Ø Platzierung im Verhältnis zur Anzahl Spieler':'Ø Platz. %',
+   'Grösster Rückstand des späteren Champions':'Max. Rückst.',
+   'Ø Rundenrang':'Ø Rd.-Rang',
+   'Führungswechsel':'Führungsw.',
+   'Originalpunkte':'Orig.-Pkt.',
+   'Neue Punkte':'Neue Pkt.',
+   'Jahrespodien':'J.-Podien',
+   'Jahresrang':'J.-Rang',
+   'Rundensiege':'Rd.-Siege',
+   'Spieler-Runden':'Sp.-Rd.',
+   'Spielerfeld':'Feld',
+   'Platzierung (%)':'Platz. %',
+   'Anzahl Spieler':'Spieler',
+   'Finalabstand':'Final-Abst.',
+   'Jahrgänge':'Jahre'
+ }));
+ function tightenHeadings(headers,labels){
+   headers.forEach((cell,i)=>{
+     const full=labels[i],short=shortHeadings.get(full);
+     if(!short||short===full)return;
+     const button=cell.querySelector('.bp-smart-sort');
+     const target=button||cell;
+     const literal=[...target.childNodes].find(n=>n.nodeType===3&&n.textContent.trim());
+     if(!literal)return; // Do not destroy nested controls or sorting logic.
+     literal.textContent=short;
+     cell.title=full;
+     if(button){
+       button.title=full;
+       button.setAttribute('aria-label',full+' sortieren');
+     }else{
+       cell.setAttribute('aria-label',full);
+     }
+   });
+ }
  function persist(){try{localStorage.setItem(STORE,JSON.stringify(preferences));}catch(_){}}
  function scopeId(table,labels){
    const panel=table.closest('.card,.bp-sim-panel,.lab-panel,.pattern-evidence');
@@ -146,6 +183,8 @@
        if(symbol)symbol.textContent=selectedHead?(ascending==='ascending'?' ↑':' ↓'):' ↕';
      });
    }
+   // Preserve stable preference keys while using shorter visual column titles.
+   tightenHeadings(headers,labels);
  }
  let pending=false;
  function scan(){
