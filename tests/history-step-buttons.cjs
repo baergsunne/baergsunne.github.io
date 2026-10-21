@@ -16,27 +16,29 @@ const assert=require('node:assert/strict');
    });
    await page.goto('http://127.0.0.1:8765/#history',{waitUntil:'domcontentloaded'});
    await page.waitForFunction(()=>typeof db!=='undefined'&&db.editions.some(x=>x.year===2026),null,{timeout:30000});
-   const prev=()=>page.locator('.history-sticky-group .history-step-button[data-history-step="-1"]');
-   const next=()=>page.locator('.history-sticky-group .history-step-button[data-history-step="1"]');
+   const prev=()=>page.locator('.history-mobile-rail .history-mobile-step[data-history-mobile-step="-1"]');
+   const next=()=>page.locator('.history-mobile-rail .history-mobile-step[data-history-mobile-step="1"]');
    const state=()=>page.evaluate(()=>{
-    const group=document.querySelector('.history-sticky-group'),year=!!group?.querySelector('#history-year-slider');
+    const group=document.querySelector('.history-sticky-group'),rail=document.querySelector('.history-mobile-rail'),year=!!group?.querySelector('#history-year-slider');
     const track=document.querySelector(year?'.history-carousel-track':'.history-replay-track');
     const slides=track?.children.length||0;
-    const current=Number(track?.dataset.index),left=group?.querySelector('[data-history-step="-1"]'),
-      right=group?.querySelector('[data-history-step="1"]'),range=group?.querySelector('input[type=range]');
+    const current=Number(track?.dataset.index),left=rail?.querySelector('[data-history-mobile-step="-1"]'),
+      right=rail?.querySelector('[data-history-mobile-step="1"]'),range=group?.querySelector('input[type=range]');
     return {year,slides,current,range:Number(range?.value),title:group?.querySelector('#history-sticky-heading')?.textContent,
      texts:[left?.textContent?.trim(),right?.textContent?.trim()],
      labels:[left?.getAttribute('aria-label'),right?.getAttribute('aria-label')],
      disabled:[left?.disabled,right?.disabled],
-     buttons:group?.querySelectorAll('.history-step-button').length,
+     buttons:rail?.querySelectorAll('.history-mobile-step').length,
      height:Math.min(left?.getBoundingClientRect().height||0,right?.getBoundingClientRect().height||0),
-     rangeWidth:range?.getBoundingClientRect().width,
+     rangeWidth:rail?.querySelector('.history-mobile-track').getBoundingClientRect().width,
      overflow:document.documentElement.scrollWidth>innerWidth+2};
    });
    for(const view of ['yearbook','replay','moments','records','field','compare']){
     await page.locator('.history-entry-tile[data-view="'+view+'"]').click();
     await page.locator('#history-year-select').selectOption('2026');
     await page.waitForTimeout(180);
+    await page.evaluate(()=>{const marker=document.getElementById('history-workspace');window.scrollTo({top:Math.max(0,scrollY+marker.getBoundingClientRect().top-110),behavior:'instant'});});
+    await page.locator('.history-mobile-rail.is-active').waitFor({timeout:5000});
     const round=view==='replay'||view==='moments';
     // Runden und Schlüsselmomente intentionally share the last chosen round.
     // Reset through the existing slider before verifying first-round boundaries.
@@ -49,10 +51,10 @@ const assert=require('node:assert/strict');
     }
     const start=await state();
     assert.equal(start.buttons,2,width+' '+view+' exactly two buttons');
-    assert.deepEqual(start.texts,['‹ Zurück','Weiter ›'],width+' '+view+' consistent labels');
+    assert.deepEqual(start.texts,['‹','›'],width+' '+view+' narrow arrow-only labels');
     assert.ok(start.labels.every(x=>x&&/zurück|weiter/i.test(x)),width+' '+view+' descriptive accessible names');
     assert.ok(start.height>=43,width+' '+view+' 44px touch targets');
-    assert.ok(start.rangeWidth>45,width+' '+view+' range remains draggable');
+    assert.ok(start.rangeWidth>=44,width+' '+view+' vertical touch rail remains draggable');
     assert.equal(start.overflow,false,width+' '+view+' no horizontal overflow');
     if(round){
      assert.equal(start.year,false);
