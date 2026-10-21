@@ -1,0 +1,304 @@
+/*
+  Bärgsunne Poker — unified Historie visual language.
+  Loaded AFTER history-chronicle.css and history-deep-dive.css.
+  One shared palette, card surface, spacing and typographic hierarchy for all
+  six views. Data, semantics, slider/swipe handlers and 850ms snap remain intact.
+*/
+#app .page.page--history .history-chronicle {
+  --history-design-forest:#102a21;
+  --history-design-green:#193f32;
+  --history-design-green-light:#315646;
+  --history-design-gold:#eac78c;
+  --history-design-cream:#fff1dc;
+  --history-design-muted:#d0ddcf;
+  --history-design-line:rgba(222,190,128,.44);
+  --history-design-inner-line:rgba(222,190,128,.33);
+  --history-design-card:radial-gradient(ellipse at 50% -12%,rgba(238,185,92,.28),transparent 52%),linear-gradient(145deg,#265541 0%,#163c30 46%,#09251d 100%);
+  --history-design-tile:radial-gradient(ellipse at 50% 0%,rgba(238,190,106,.13),transparent 75%),linear-gradient(155deg,#315646,#193f32 74%,#102d24);
+  --history-design-shadow:0 15px 34px rgba(0,0,0,.30),inset 0 1px rgba(255,236,192,.20);
+  --history-design-tile-shadow:0 6px 18px rgba(0,0,0,.16),inset 0 1px rgba(255,255,255,.085);
+}
+
+/* The outer stage never introduces a second differently framed card. */
+#app .page.page--history .history-chronicle > :is(
+  .history-feature--yearbook,.history-feature--replay,.history-feature--insights
+){
+  box-sizing:border-box;
+  width:100%;
+  min-width:0;
+  padding:0!important;
+  margin:0!important;
+  border:0!important;
+  border-radius:0;
+  background:transparent!important;
+  box-shadow:none!important;
+  overflow:visible!important;
+}
+
+/* Both carousel engines now use the same card width, side preview, track gap,
+   eased motion, center spotlight and opacity falloff. The engine continues
+   owning all drag and snap calculations. */
+#app .page.page--history .history-replay-slide{
+  width:calc(min(100vw - 98px, 520px));
+  transition:opacity .65s ease,transform .85s cubic-bezier(.25,.46,.35,1);
+}
+#app .page.page--history .history-replay-track{
+  gap:12px;
+}
+@media(max-width:350px){
+  #app .page.page--history .history-replay-slide{width:calc(100vw - 76px)}
+  #app .page.page--history .history-replay-track{gap:10px}
+}
+@media(min-width:620px){
+  #app .page.page--history .history-replay-slide{width:min(78vw,520px)}
+}
+
+/* One physical-looking premium card shell for every view. Jahrbuch retains
+   the trophy/podium; Runden the table; Schlüsselmomente the key events.
+   The three newer views inherit exactly the same external treatment. */
+#app .page.page--history .history-chronicle :is(
+  .history-carousel-slide > .history-yearbook-card,
+  .history-replay-slide > .history-replay-card
+){
+  isolation:isolate;
+  position:relative;
+  z-index:1;
+  box-sizing:border-box;
+  width:100%;
+  max-width:100%;
+  height:100%;
+  min-width:0;
+  overflow:hidden;
+  padding:clamp(13px,3.8vw,25px)!important;
+  border:1px solid var(--history-design-line)!important;
+  border-radius:22px!important;
+  background:var(--history-design-card)!important;
+  box-shadow:var(--history-design-shadow)!important;
+  color:var(--history-design-cream);
+  font-family:inherit;
+  text-align:center;
+}
+#app .page.page--history .history-chronicle :is(
+  .history-carousel-slide > .history-yearbook-card,
+  .history-replay-slide > .history-replay-card
+)::before {
+  content:"";
+  display:block;
+  position:absolute;
+  inset:8px;
+  z-index:-1;
+  pointer-events:none;
+  border:1px solid rgba(222,183,110,.24);
+  border-radius:16px;
+}
+#app .page.page--history .history-chronicle :is(
+  .history-carousel-slide > .history-yearbook-card,
+  .history-replay-slide > .history-replay-card
+)::after {
+  content:"";
+  display:block;
+  position:absolute;
+  top:-130px;
+  left:20%;
+  width:60%;
+  height:250px;
+  z-index:-1;
+  pointer-events:none;
+  background:radial-gradient(circle,rgba(244,209,137,.17),transparent 70%);
+}
+
+/* A common type scale: all six view titles in the sticky group, all content
+   section headings, then important numbers/names, labels and prose. */
+#app .page.page--history .history-chronicle :is(
+  .history-carousel-slide > .history-yearbook-card,
+  .history-replay-slide > .history-replay-card
+) :is(h3,h4,p,small,strong,span){
+  font-family:inherit;
+}
+#app .page.page--history .history-chronicle .history-sticky-title h3{
+  color:var(--history-design-cream);
+  font-size:clamp(19px,5vw,26px);
+  line-height:1.17;
+  font-weight:850;
+  letter-spacing:-.027em;
+}
+#app .page.page--history .history-chronicle :is(
+ .history-insight-section>h4,
+ .history-yearbook-participants>h4
+){
+  color:var(--history-design-gold);
+  font-size:clamp(17px,4.4vw,22px);
+  font-weight:800;
+  line-height:1.22;
+  letter-spacing:-.015em;
+  margin:0 0 7px;
+  text-align:center;
+  text-wrap:balance;
+}
+#app .page.page--history .history-chronicle :is(
+  .history-replay-card-head h4,
+  .history-moment-winner strong
+){
+  color:var(--history-design-cream);
+  font-size:clamp(24px,6.4vw,38px);
+  font-weight:850;
+  line-height:1.12;
+  letter-spacing:-.033em;
+  text-wrap:balance;
+}
+#app .page.page--history .history-chronicle :is(
+  .history-insight-metric-title,
+  .history-insight-fact>strong,
+  .history-insight-compare h4,
+  .history-moment-label,
+  .history-podium small,
+  .history-moment-winner small
+){
+  color:var(--history-design-gold);
+  font-size:clamp(11px,2.9vw,13px);
+  font-weight:800;
+  line-height:1.33;
+  letter-spacing:.03em;
+  overflow-wrap:anywhere;
+  text-wrap:balance;
+}
+#app .page.page--history .history-chronicle :is(
+  .history-insight-metric-value,
+  .history-insight-versus strong,
+  .history-moment-headline
+){
+  color:var(--history-design-cream);
+  font-size:clamp(18px,4.8vw,26px);
+  font-weight:820;
+  line-height:1.2;
+  letter-spacing:-.025em;
+  text-wrap:balance;
+  overflow-wrap:anywhere;
+}
+#app .page.page--history .history-chronicle :is(
+  .history-insight-metric-players,
+  .history-insight-names,
+  .history-podium:not(.history-podium--champion) strong
+){
+  color:#f7deb0;
+  font-size:clamp(13px,3.5vw,17px);
+  line-height:1.3;
+  font-weight:760;
+  text-wrap:balance;
+  overflow-wrap:anywhere;
+}
+#app .page.page--history .history-chronicle :is(
+  .history-insight-metric p,
+  .history-insight-fact p,
+  .history-insight-compare>p,
+  .history-moment-description,
+  .history-insight-section>p,
+  .history-yearbook-participants>p
+){
+  color:var(--history-design-muted);
+  font-size:clamp(12px,2.9vw,13px);
+  line-height:1.48;
+  text-align:center;
+  text-wrap:pretty;
+  overflow-wrap:anywhere;
+}
+
+/* One inner-kachel treatment for podiums, key moments and the newer stats.
+   Semantic gold/bronze emphasis can still distinguish real achievements. */
+#app .page.page--history .history-chronicle :is(
+  .history-podium,
+  .history-moment-event,
+  .history-moment-winner,
+  .history-insight-metric,
+  .history-insight-fact,
+  .history-insight-compare,
+  .history-yearbook-participants
+){
+  box-sizing:border-box;
+  min-width:0;
+  border:1px solid var(--history-design-inner-line);
+  border-radius:16px;
+  background:var(--history-design-tile);
+  box-shadow:var(--history-design-tile-shadow);
+  color:var(--history-design-cream);
+  font-family:inherit;
+}
+#app .page.page--history .history-chronicle :is(
+  .history-moment-event,
+  .history-insight-metric,
+  .history-insight-fact,
+  .history-insight-compare
+){
+  padding:clamp(12px,3.4vw,18px) clamp(9px,3vw,14px);
+}
+#app .page.page--history .history-chronicle :is(.history-insight-metric,.history-moment-event){
+  gap:8px;
+}
+#app .page.page--history .history-chronicle :is(
+  .history-insight-grid,
+  .history-insight-compare-grid,
+  .history-moment-events,
+  .history-insight-facts
+){
+  gap:10px;
+}
+#app .page.page--history .history-chronicle .history-insight-section{
+  margin-top:19px;
+}
+#app .page.page--history .history-chronicle .history-yearbook-extras .history-insight-section{
+  margin-top:0;
+}
+#app .page.page--history .history-chronicle .history-insight-metric--negative,
+#app .page.page--history .history-chronicle :is(.history-moment-event--lantern,.history-moment-event--down,.history-moment-event--slump){
+  border-color:rgba(218,155,122,.54);
+}
+#app .page.page--history .history-chronicle :is(
+  .history-podium--champion,
+  .history-moment-winner,
+  .history-moment-event--leader,
+  .history-moment-event--up,
+  .history-moment-event--reaction,
+  .history-moment-event--streak,
+  .history-moment-event--final
+){
+  border-color:rgba(231,192,118,.66);
+  background:radial-gradient(ellipse at 50% 0%,rgba(235,202,137,.21),transparent 87%),linear-gradient(155deg,#315646,#193f32);
+}
+#app .page.page--history .history-chronicle .history-podium--second{
+  border-color:rgba(211,220,219,.43);
+}
+#app .page.page--history .history-chronicle .history-podium--third{
+  border-color:rgba(202,142,86,.49);
+}
+#app .page.page--history .history-chronicle .history-podium--champion strong{
+  color:var(--history-design-cream);
+  font-size:clamp(27px,8.7vw,48px);
+}
+
+/* Data tables are still tables; their ranked rows now use the same forest
+   gradient and gentle borders as a statistic or key-moment inset. */
+#app .page.page--history .history-replay-card .history-table td{
+  background:linear-gradient(145deg,#315646,#193f32);
+  color:var(--history-design-cream);
+  border-top:1px solid rgba(222,190,128,.17);
+  border-bottom:1px solid rgba(222,190,128,.17);
+}
+#app .page.page--history .history-replay-card .history-table th{
+  color:var(--history-design-gold);
+}
+#app .page.page--history .history-replay-card .history-replay-card-head{
+  border-bottom-color:var(--history-design-inner-line);
+}
+#app .page.page--history .history-replay-card .history-replay-proof{
+  background:var(--history-design-tile);
+  border-color:var(--history-design-inner-line);
+  border-radius:16px;
+}
+
+/* Preserve equal motion and give users with reduced-motion preferences the
+   same accessible, instantaneous carousel behavior in all six modes. */
+@media(prefers-reduced-motion:reduce){
+  #app .page.page--history :is(.history-replay-slide,.history-carousel-slide){
+    transition:none!important;
+  }
+}
