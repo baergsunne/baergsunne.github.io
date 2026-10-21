@@ -1,5 +1,7 @@
 import {freshTournament,validateConfig,validatePlaces,publicSnapshot,finalizedEdition} from './core.js';
 import {handleProfi} from './profi-api.js';
+import {ProfiEvents} from './profi-events.js';
+export {ProfiEvents};
 
 const json=(value,status=200,extra={})=>new Response(JSON.stringify(value),{status,headers:{'content-type':'application/json; charset=utf-8','cache-control':'no-store','x-content-type-options':'nosniff','referrer-policy':'no-referrer',...extra}});
 // GitHub Pages may read only published results; authentication and writes stay same-origin.
@@ -33,7 +35,7 @@ export default {async fetch(req,env,ctx){
  try {
   const url=new URL(req.url),path=url.pathname,method=req.method;
   if(env.PREVIEW_REQUIRED==='true'&&!env.PREVIEW_GATE_SECRET)return fail('Private Vorschau noch nicht freigeschaltet.',503);
-  if(env.PREVIEW_GATE_SECRET&&!['/watch.html','/watch.js','/api/profi/watch'].includes(path)){
+  if(env.PREVIEW_GATE_SECRET&&!['/watch.html','/watch.js','/live/profi-clock.js','/api/profi/watch','/api/profi/socket'].includes(path)){
    const today=new Date().toISOString().slice(0,10),valid=await digest(env.PREVIEW_GATE_SECRET+':'+today);
    const cookie=req.headers.get('cookie')?.match(/(?:^|;\s*)bp_preview=([a-f0-9]{64})(?:;|$)/)?.[1];
    if(!equal(cookie,valid)){
