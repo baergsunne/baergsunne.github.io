@@ -1,28 +1,41 @@
-/* Bärgsunne Historie 2026-10-22: mobile-only slim thumb rail.
-   Keeps one sticky heading; desktop 651px+ retains the established horizontal control. */
+/* 2026-10-22: Progressive Historie thumb rail for iPhone.
+   Horizontal regulator & title remain in natural document flow until the regulator
+   touches its measured sticky edge; only then the title docks and a narrow, inset
+   vertical scrubber becomes reachable. Desktop remains untouched. */
 .history-mobile-rail{display:none}
 @media(max-width:650px){
+ /* Normal (undocked): original horizontal slider above the same title. */
  #app .page.page--history .history-chronicle > .history-sticky-group{
   position:sticky;
   top:var(--bp-history-sticky-top,116px);
   z-index:19;
   box-sizing:border-box;
-  width:calc(100% - 2px);
-  margin:0 0 10px;
-  min-height:48px;
-  background:linear-gradient(150deg,rgba(26,65,49,.97),rgba(10,41,31,.98));
-  border:1px solid #58775e;
-  border-radius:13px;
-  box-shadow:0 5px 15px rgba(0,0,0,.22);
+  width:100%;
+  min-width:0;
+  margin:0 0 12px;
+  border:1px solid #4d6752;
+  border-radius:15px;
+  background:linear-gradient(155deg,#254d3a,#103126 75%,#0c281e);
+  box-shadow:0 7px 19px rgba(0,0,0,.26);
  }
- #app .page.page--history .history-chronicle > .history-sticky-group > .history-carousel-control{
+ #app .page.page--history .history-chronicle > .history-sticky-group:not(.is-docked) > .history-carousel-control{
+  display:flex!important;
+  visibility:visible;
+  pointer-events:auto;
+ }
+ #app .page.page--history .history-chronicle > .history-sticky-group.is-docked > .history-carousel-control{
   display:none!important;
  }
- #app .page.page--history .history-chronicle > .history-sticky-group > .history-sticky-title{
+ #app .page.page--history .history-chronicle > .history-sticky-group.is-docked{
+  min-height:49px;
+  border-radius:13px;
+  background:linear-gradient(150deg,rgba(26,65,49,.97),rgba(10,41,31,.98));
+ }
+ #app .page.page--history .history-chronicle > .history-sticky-group.is-docked > .history-sticky-title{
   box-sizing:border-box;
   display:flex;
   width:100%;
-  min-height:48px;
+  min-height:49px;
   padding:9px 12px!important;
   align-items:center;
   justify-content:center;
@@ -30,33 +43,36 @@
  }
  #app .page.page--history .history-chronicle > .history-sticky-group .history-sticky-title h3{
   margin:0;
-  font-size:clamp(17px,4.6vw,22px);
+  font-size:clamp(17px,4.6vw,23px);
   line-height:1.16;
   color:#fff0d6;
   text-wrap:balance;
  }
+ /* 44px touch surface; visible track is 3px. It sits at least ~40px from
+    the physical iPhone display edge to avoid browser/system edge gestures. */
  #app .page.page--history .history-mobile-rail{
   position:fixed;
   z-index:22;
   display:grid;
   box-sizing:border-box;
-  top:calc(var(--bp-history-sticky-top,116px) + 59px);
-  bottom:calc(54px + env(safe-area-inset-bottom));
-  right:max(1px,env(safe-area-inset-right));
+  top:max(calc(var(--bp-history-sticky-top,116px) + 78px),31dvh);
+  right:calc(19px + env(safe-area-inset-right));
   width:44px;
-  grid-template-rows:44px minmax(48px,1fr) 44px;
+  height:min(49dvh,405px);
+  max-height:calc(100dvh - var(--bp-history-sticky-top,116px) - 169px);
+  grid-template-rows:44px minmax(56px,1fr) 44px;
   align-items:stretch;
   opacity:0;
   visibility:hidden;
   pointer-events:none;
-  transform:translateX(7px);
-  transition:opacity .18s ease,transform .18s ease,visibility .18s;
+  transform:translateY(-25px);
+  transition:opacity .23s ease,transform .23s ease,visibility .23s;
  }
  #app .page.page--history .history-mobile-rail.is-active{
   opacity:1;
   visibility:visible;
   pointer-events:auto;
-  transform:translateX(0);
+  transform:translateY(0);
  }
  #app .page.page--history .history-mobile-step{
   display:grid;
@@ -64,9 +80,10 @@
   box-sizing:border-box;
   width:44px;
   height:44px;
+  margin:0;
   padding:0;
   border:0;
-  border-radius:12px;
+  border-radius:11px;
   background:transparent;
   color:#f0c781;
   cursor:pointer;
@@ -77,23 +94,23 @@
   display:grid;
   place-items:center;
   box-sizing:border-box;
-  width:30px;
+  width:32px;
   height:34px;
+  padding-bottom:4px;
   border:1px solid #aa8954;
   border-radius:11px;
   background:linear-gradient(150deg,#1b4835,#0d2b21);
-  box-shadow:0 5px 14px rgba(0,0,0,.26);
-  font-size:30px;
+  box-shadow:0 5px 14px rgba(0,0,0,.3);
+  font-size:29px;
   font-weight:750;
   line-height:1;
-  padding-bottom:4px;
  }
- #app .page.page--history .history-mobile-step:disabled{opacity:.32;cursor:default}
+ #app .page.page--history .history-mobile-step:disabled{opacity:.34;cursor:default}
  #app .page.page--history .history-mobile-track{
   position:relative;
-  display:block;
   box-sizing:border-box;
-  min-height:48px;
+  display:block;
+  min-height:56px;
   width:44px;
   overflow:visible;
   touch-action:none;
@@ -110,8 +127,8 @@
   width:3px;
   border-radius:4px;
   transform:translateX(-50%);
-  background:linear-gradient(180deg,#f0cb8c,#af8850 50%,#6f895f);
-  box-shadow:0 0 0 5px rgba(16,50,35,.54),0 1px 8px rgba(0,0,0,.32);
+  background:linear-gradient(180deg,#f4d294,#b68c51 53%,#b2a06d);
+  box-shadow:0 0 0 5px rgba(11,44,31,.62),0 1px 8px rgba(0,0,0,.39);
   pointer-events:none;
  }
  #app .page.page--history .history-mobile-knob{
@@ -124,10 +141,10 @@
   height:32px;
   border:2px solid #f1ddae;
   border-radius:11px;
-  background:linear-gradient(140deg,#fff8ec,#ddbd80);
-  box-shadow:0 2px 11px rgba(0,0,0,.4);
+  background:linear-gradient(145deg,#fff8ec,#ddbd80);
+  box-shadow:0 2px 11px rgba(0,0,0,.42);
   pointer-events:none;
-  transition:top .18s ease;
+  transition:top .12s ease;
  }
  #app .page.page--history .history-mobile-step:focus-visible,
  #app .page.page--history .history-mobile-track:focus-visible{
