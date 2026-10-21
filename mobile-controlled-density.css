@@ -102,34 +102,34 @@
    gap:7px;
  }
  /* History: only the sticky carousel control+title, never the cards. */
- #app .page--history .history-sticky-group{
+ #app .page.page--history .history-chronicle > .history-sticky-group{
    gap:0;
    margin-bottom:7px;
    border-radius:13px;
  }
- #app .page--history .history-sticky-group > .history-carousel-control{
+ #app .page.page--history .history-chronicle > .history-sticky-group > .history-carousel-control{
    box-sizing:border-box;
    min-height:44px;
    padding:0 9px;
    gap:6px;
    margin:0;
  }
- #app .page--history .history-sticky-group .history-carousel-control > .history-step-button{
+ #app .page.page--history .history-chronicle > .history-sticky-group .history-carousel-control > .history-step-button{
    min-height:44px;
    padding:2px 3px;
    font-size:clamp(11px,2.8vw,13px);
  }
- #app .page--history .history-sticky-group > .history-carousel-control input[type=range]{
+ #app .page.page--history .history-chronicle > .history-sticky-group > .history-carousel-control input[type=range]{
    min-height:44px;
    margin:0;
    padding:0;
  }
- #app .page--history .history-sticky-title{
+ #app .page.page--history .history-chronicle > .history-sticky-group .history-sticky-title{
    box-sizing:border-box;
    min-height:28px;
    padding:0 8px 6px;
  }
- #app .page--history .history-sticky-title h3{
+ #app .page.page--history .history-chronicle > .history-sticky-group .history-sticky-title h3{
    margin:0;
    font-size:clamp(17px,4.6vw,21px);
    line-height:1.15;
