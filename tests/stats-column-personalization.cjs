@@ -28,7 +28,12 @@ const fixture=require('./fixture-2026.json');
        overflow:parent.scrollWidth-parent.clientWidth,
        rows:t.tBodies[0].rows.length,
        data:td.innerText,
-       horizontalOverflow:document.documentElement.scrollWidth-document.documentElement.clientWidth
+       horizontalOverflow:document.documentElement.scrollWidth-document.documentElement.clientWidth,
+       firstWidth:Math.round(th.getBoundingClientRect().width),
+       bodyFirstWidth:Math.round(td.getBoundingClientRect().width),
+       firstComputedMinWidth:getComputedStyle(td).minWidth,
+       secondComputedMinWidth:getComputedStyle(t.tBodies[0].rows[0].cells[1]).minWidth,
+       nameMaxWidth:Math.max(0,...[...t.tBodies[0].rows].map(row=>row.cells[0].querySelector('.playerlink')?.getBoundingClientRect().width||0))
      };
    });
    assert(original.columns>=10,'Overview must have full original metric set');
@@ -39,6 +44,10 @@ const fixture=require('./fixture-2026.json');
    assert.equal(original.stickyData,'sticky','first data column not fixed');
    assert.equal(original.nameBackground,'rgba(0, 0, 0, 0)','player name must be flat and transparent');
    assert.equal(original.nameBorder,'0px','player badge border must disappear');
+   assert(original.firstComputedMinWidth==='0px','first column must not reserve a fixed minimum width');
+   assert(original.secondComputedMinWidth==='0px','other columns must not reserve old minimum widths');
+   assert(original.firstWidth<=original.nameMaxWidth+32,'first column must closely follow longest visible player name');
+   assert(original.firstWidth<=138,'first pinned name column must stay compact');
    assert(original.overflow>30,'wide table must scroll horizontally');
    assert(original.horizontalOverflow<=1,'table must not stretch whole page');
    // The leftmost column remains fixed while another column moves underneath it.
@@ -62,10 +71,12 @@ const fixture=require('./fixture-2026.json');
      const t=document.querySelector('.page--stats .bp-stat-personalized-table');
      const cols=[...t.tHead.rows[0].cells].filter(x=>!x.hasAttribute('data-bp-column-hidden')).map(x=>x.textContent.replace(/[↕↑↓]/g,'').trim());
      const row=t.tBodies[0].rows[0];
-     return {cols,visible:[...row.cells].filter(x=>!x.hasAttribute('data-bp-column-hidden')).length,sortVisible:getComputedStyle(t.closest('.card').querySelector('.bp-unified-toolbar')).display!=='none'};
+     return {cols,visible:[...row.cells].filter(x=>!x.hasAttribute('data-bp-column-hidden')).length,sortVisible:getComputedStyle(t.closest('.card').querySelector('.bp-unified-toolbar')).display!=='none',tableWidth:t.getBoundingClientRect().width,scrollViewport:t.closest('.bp-stat-scroll').clientWidth,tableMinWidth:getComputedStyle(t).minWidth};
    });
    assert.deepEqual(reduced.cols,['Spieler','Runden','Siege'],'user choice must remove only unselected columns');
    assert.equal(reduced.visible,3,'body must agree with visible headers');
+   assert.equal(reduced.tableMinWidth,'0px','narrow tables must not force full card width');
+   assert(reduced.tableWidth<=reduced.scrollViewport+1,'three-column view must fit without unnecessary width');
    assert(!reduced.sortVisible,'old sorting toolbar must stay hidden');
    const wins=page.locator('.page--stats .bp-stat-personalized-table thead th').filter({hasText:'Siege'}).locator('button.bp-smart-sort');
    await wins.click();
@@ -84,6 +95,18 @@ const fixture=require('./fixture-2026.json');
        return {total:ts.length,missing:ts.filter(t=>t.tHead?.rows.length===1&&t.tHead.rows[0].cells.length>1&&!t.classList.contains('bp-stat-personalized-table')).length,
        bad:ts.filter(t=>t.classList.contains('bp-stat-personalized-table')&&getComputedStyle(t.tHead.rows[0].cells[0]).position!=='sticky').length};
      });
+     if(tab==='career'){
+       const abbreviated=await page.evaluate(()=>{
+         const t=[...document.querySelectorAll('.page--stats table.bp-stat-personalized-table')].find(x=>[...x.tHead.rows[0].cells].some(h=>h.title==='Jahresrang'));
+         if(!t)return null;
+         const head=[...t.tHead.rows[0].cells].find(h=>h.title==='Jahresrang');
+         const picker=t.closest('.card')?.querySelector('.bp-stat-columns');
+         return {display:head?.textContent.replace(/[↕↑↓]/g,'').trim(),full:head?.querySelector('button')?.getAttribute('aria-label'),picker:[...picker.querySelectorAll('.bp-stat-column-choice')].map(x=>x.textContent)};
+       });
+       assert.equal(abbreviated?.display,'J.-Rang','long heading should use a familiar abbreviation');
+       assert.equal(abbreviated?.full,'Jahresrang sortieren','full column description must remain accessible');
+       assert(abbreviated?.picker.some(x=>x.includes('Jahresrang')),'picker must keep unabbreviated names');
+     }
      assert.equal(check.missing,0,'all eligible '+tab+' tables should get picker');
      assert.equal(check.bad,0,'all '+tab+' tables should freeze first column');
    }
