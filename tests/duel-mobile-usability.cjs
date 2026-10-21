@@ -12,7 +12,7 @@ const fixture=require('./fixture-2026.json');
    await page.goto('http://127.0.0.1:8765/#history',{waitUntil:'domcontentloaded'});
    await page.waitForFunction(()=>typeof db!=='undefined'&&db.editions.some(e=>e.year===2026),null,{timeout:25000});
    const historyStyle=await page.evaluate(()=>{
-    const h=document.querySelector('#history-year-select');assert; // make test fail explicitly below if missing
+    const h=document.querySelector('#history-year-select');
     if(!h)return null;
     const s=getComputedStyle(h);
     return {background:s.backgroundColor,color:s.color,radius:s.borderRadius,fontSize:s.fontSize,border:s.borderTopColor,minHeight:s.minHeight};
