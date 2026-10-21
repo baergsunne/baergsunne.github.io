@@ -165,11 +165,18 @@ function stickyHistoryChrome(body,view,ed){
  const control=body.match(/^<div class="history-carousel-control[^"]*">[\s\S]*?<\/div>/);
  if(!control)return body;
  const title=stickyTitleText(view,ed.year,memory.round);
- const rail='<aside class="history-mobile-rail" aria-label="Historie seitlich steuern" aria-hidden="true">'+
-  '<button type="button" class="history-mobile-step history-mobile-step--next" data-history-mobile-step="1" aria-label="Weiter zur nächsten Karte" tabindex="-1"><span aria-hidden="true">›</span></button>'+
-  '<div class="history-mobile-track" role="slider" tabindex="-1" aria-orientation="vertical" aria-label="Historie wechseln: aufwärts weiter, abwärts zurück" aria-valuemin="1" aria-valuemax="1" aria-valuenow="1" aria-valuetext="'+e(title)+'"><span class="history-mobile-track-line" aria-hidden="true"></span><span class="history-mobile-knob" aria-hidden="true"></span></div>'+
-  '<button type="button" class="history-mobile-step history-mobile-step--prev" data-history-mobile-step="-1" aria-label="Zurück zur vorherigen Karte" tabindex="-1"><span aria-hidden="true">‹</span></button></aside>';
- return '<div class="history-sticky-group" aria-label="Aktuelle Historie-Ansicht">'+control[0]+
+ // A year change in the two round-based views still rebuilds their content.
+ // Retain the measured dock state across that rebuild, so the sticky block
+ // cannot expand for one frame and jolt the iPhone viewport.
+ const alreadyDocked=matchMedia('(max-width:650px)').matches&&
+  !!document.querySelector('#history-chronicle > .history-sticky-group.is-docked');
+ const dockedClass=alreadyDocked?' is-docked':'';
+ const tabIndex=alreadyDocked?'0':'-1';
+ const rail='<aside class="history-mobile-rail'+(alreadyDocked?' is-active':'')+'" aria-label="Historie seitlich steuern" aria-hidden="'+(!alreadyDocked)+'">'+
+  '<button type="button" class="history-mobile-step history-mobile-step--next" data-history-mobile-step="1" aria-label="Weiter zur nächsten Karte" tabindex="'+tabIndex+'"><span aria-hidden="true">›</span></button>'+
+  '<div class="history-mobile-track" role="slider" tabindex="'+tabIndex+'" aria-orientation="vertical" aria-label="Historie wechseln: aufwärts weiter, abwärts zurück" aria-valuemin="1" aria-valuemax="1" aria-valuenow="1" aria-valuetext="'+e(title)+'"><span class="history-mobile-track-line" aria-hidden="true"></span><span class="history-mobile-knob" aria-hidden="true"></span></div>'+
+  '<button type="button" class="history-mobile-step history-mobile-step--prev" data-history-mobile-step="-1" aria-label="Zurück zur vorherigen Karte" tabindex="'+tabIndex+'"><span aria-hidden="true">‹</span></button></aside>';
+ return '<div class="history-sticky-group'+dockedClass+'" aria-label="Aktuelle Historie-Ansicht">'+control[0]+
   '<div class="history-sticky-title"><h3 id="history-sticky-heading">'+e(title)+'</h3></div></div>'+
   rail+body.slice(control[0].length);
 }
@@ -227,14 +234,84 @@ function syncHistoryStepButtons(index,total){
   button.disabled=step<0?index<=0:index>=total-1;
  }
 }
+// Jahrbuch, Rekordbuch, Teilnehmerfeld and Jahresvergleich already contain
+// every year's slides. Do not call the global draw() on year changes:
+// rebuilding #app resets the sticky dock height and scroll anchoring.
+function selectCarouselYearInPlace(year){
+ const c=carouselParts();
+ if(!c)return false;
+ const target=c.slides.findIndex(slide=>Number(slide.querySelector('[data-year]')?.dataset.year)===Number(year));
+ if(target<0)return false;
+ memory.year=Number(year);
+ memory.round=1;
+ if(typeof state!=='undefined'&&state.page==='history')state.historyYear=Number(year);
+ const select=document.getElementById('history-year-select');
+ if(select)select.value=String(year);
+ c.track.dataset.index=String(target);
+ c.slides.forEach((slide,i)=>{slide.inert=i!==target;});
+ const slider=document.getElementById('history-year-slider');
+ if(slider)slider.value=String(target);
+ positionCarousel(target,false);
+ return true;
+}
+// Runden/Schlüsselmomente have a different set of slides for each year.
+// Replace only that year-dependent region; keep the explorer, scroll, sticky
+// heading, docked state and rail nodes untouched, unlike the old global draw().
+function selectRoundYearInPlace(year){
+ const root=document.getElementById('history-chronicle');
+ const editions=window.POKER_SEED?.editions;
+ const edition=editions?.find(x=>x.year===Number(year));
+ if(!root||!edition||!['replay','moments'].includes(memory.view))return false;
+ const group=root.querySelector(':scope > .history-sticky-group');
+ const rail=root.querySelector(':scope > .history-mobile-rail');
+ if(!group||!rail)return false;
+ const html=render(editions,edition.year);
+ const template=document.createElement('template');
+ template.innerHTML=html.trim();
+ const incoming=template.content.firstElementChild;
+ const nextGroup=incoming?.querySelector(':scope > .history-sticky-group');
+ const nextRail=incoming?.querySelector(':scope > .history-mobile-rail');
+ const nextControl=nextGroup?.querySelector('.history-carousel-control');
+ const oldControl=group.querySelector('.history-carousel-control');
+ if(!nextRail||!nextControl||!oldControl)return false;
+ const viewportY=window.scrollY;
+ // Round years vary in card height: keep the former explorer height as a floor
+ // so the browser cannot clamp scrollY when a shorter year's cards load.
+ root.style.minHeight=Math.ceil(Math.max(root.getBoundingClientRect().height,parseFloat(root.style.minHeight)||0))+'px';
+ // The root is never replaced: the iPhone has no reason to readjust scroll.
+ oldControl.replaceWith(nextControl);
+ const newCards=document.createDocumentFragment();
+ while(nextRail.nextSibling)newCards.appendChild(nextRail.nextSibling);
+ while(rail.nextSibling)rail.nextSibling.remove();
+ rail.after(newCards);
+ // iOS Safari may re-anchor to a card that changed size. Keep the document at
+ // exactly the same scroll offset when updating the content below the title.
+ if(Math.abs(window.scrollY-viewportY)>.5)window.scrollTo({top:viewportY,behavior:'instant'});
+ const select=root.querySelector('#history-year-select');
+ if(select)select.value=String(edition.year);
+ memory.year=edition.year;memory.round=1;
+ if(typeof state!=='undefined'&&state.page==='history')state.historyYear=edition.year;
+ updateStickyTitle(memory.view,edition.year,1);
+ initReplayCarousel();
+ scheduleMobileRailVisibility();
+ return true;
+}
 function commitCarouselYear(index,animate=true){
  const c=carouselParts();if(!c||carouselBusy)return;
  const target=Math.max(0,Math.min(c.slides.length-1,Math.round(index)));
  if(target===c.index){positionCarousel(c.index,true);return;}
+ const year=c.slides[target].querySelector('[data-year]')?.dataset.year;
+ if(!year)return;
  carouselBusy=true;
- positionCarousel(target,animate&&!matchMedia('(prefers-reduced-motion: reduce)').matches);
- const change=()=>{const year=c.slides[target].querySelector('.history-yearbook-card')?.dataset.year,select=document.getElementById('history-year-select');if(year&&select){select.value=year;select.dispatchEvent(new Event('change',{bubbles:true}));}carouselBusy=false;};
- setTimeout(change,animate&&!matchMedia('(prefers-reduced-motion: reduce)').matches?880:0);
+ // Target must be accessible as soon as its transition begins.
+ c.slides[target].inert=false;
+ const motion=animate&&!matchMedia('(prefers-reduced-motion: reduce)').matches;
+ positionCarousel(target,motion);
+ setTimeout(()=>{
+  if(document.getElementById('history-year-slider')===null){carouselBusy=false;return;}
+  selectCarouselYearInPlace(year);
+  carouselBusy=false;
+ },motion?880:0);
 }
 function initCarousel(){positionCarousel(carouselParts()?.index||0);const slider=document.getElementById('history-year-slider');if(slider)sliderDrag=null;}
 document.addEventListener('pointerdown',ev=>{
@@ -562,6 +639,28 @@ document.addEventListener('click',ev=>{
   detail.open=memory.originalResultsOpen;
  });
 },true);
-document.addEventListener('change',ev=>{const select=ev.target.closest('[data-history-select]');if(!select)return;if(select.dataset.historySelect==='year'){const button=document.createElement('button');button.dataset.action='historyyear';button.dataset.value=select.value;button.style.display='none';select.after(button);button.click();requestAnimationFrame(()=>{initCarousel();initReplayCarousel();});return;}if(select.dataset.historySelect!=='round')return;memory.round=Number(select.value);const node=document.getElementById('history-chronicle');if(node&&window.POKER_SEED)node.outerHTML=render(window.POKER_SEED.editions,memory.year);requestAnimationFrame(()=>{initCarousel();initReplayCarousel();});});
+document.addEventListener('change',ev=>{
+ const select=ev.target.closest('[data-history-select]');
+ if(!select)return;
+ if(select.dataset.historySelect==='year'){
+  if(memory.view==='replay'||memory.view==='moments'){
+   if(selectRoundYearInPlace(select.value))return;
+  }else if(selectCarouselYearInPlace(select.value))return;
+  // Unavailable carousel DOM: retain the original full-draw fallback only.
+  const button=document.createElement('button');
+  button.dataset.action='historyyear';
+  button.dataset.value=select.value;
+  button.style.display='none';
+  select.after(button);
+  button.click();
+  requestAnimationFrame(()=>{initCarousel();initReplayCarousel();});
+  return;
+ }
+ if(select.dataset.historySelect!=='round')return;
+ memory.round=Number(select.value);
+ const node=document.getElementById('history-chronicle');
+ if(node&&window.POKER_SEED)node.outerHTML=render(window.POKER_SEED.editions,memory.year);
+ requestAnimationFrame(()=>{initCarousel();initReplayCarousel();});
+});
 document.addEventListener('click',ev=>{const b=ev.target.closest('[data-his]');if(!b)return;ev.preventDefault();const action=b.dataset.his,fromEntry=action==='entry';if(action==='view'||fromEntry)memory.view=b.dataset.view;if(action==='round')memory.round=Number(b.dataset.number);if(action==='prev')memory.round=Math.max(1,memory.round-1);if(action==='next')memory.round+=1;if(action==='scene'){memory.round=Number(b.dataset.number);memory.view='replay'}const node=document.getElementById('history-chronicle');if(node&&window.POKER_SEED){const oldY=memory.year;node.outerHTML=render(window.POKER_SEED.editions,oldY);requestAnimationFrame(()=>{initCarousel();initReplayCarousel();if(fromEntry){const target=document.getElementById('history-workspace');if(target){const header=document.querySelector('.heritage-header')||document.querySelector('header');const offset=(header?.getBoundingClientRect().height||0)+12;const top=Math.max(0,window.scrollY+target.getBoundingClientRect().top-offset);window.scrollTo({top,behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});}}})}},true);
 })();

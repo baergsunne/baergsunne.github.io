@@ -4,6 +4,10 @@
    vertical scrubber becomes reachable. Desktop remains untouched. */
 .history-mobile-rail{display:none}
 @media(max-width:650px){
+ /* Do not let WebKit/Chromium shift the viewport to compensate for a
+    different round-card height during an in-place year switch. */
+ #app .page.page--history #history-chronicle{overflow-anchor:none}
+
  /* Normal (undocked): original horizontal slider above the same title. */
  #app .page.page--history .history-chronicle > .history-sticky-group{
   position:sticky;
