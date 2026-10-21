@@ -133,8 +133,16 @@ const fixture=require('./fixture-2026.json');
    const sort=await page.evaluate(()=>state.sort.overview);
    assert.equal(sort.key,'wins','table head must preserve app sorting behavior');
    await page.reload({waitUntil:'domcontentloaded'});
-   await page.waitForSelector('.page--stats .bp-stat-personalized-table');
-   const restored=await page.evaluate(()=>[...document.querySelector('.page--stats .bp-stat-personalized-table').tHead.rows[0].cells].filter(x=>!x.hasAttribute('data-bp-column-hidden')).map(x=>x.textContent.replace(/[↕↑↓]/g,'').trim()));
+   // The tables are rebuilt asynchronously after SPA hydration. Read the
+   // completed header in one stable polling expression, never between redraws.
+   const restoredHandle=await page.waitForFunction(()=>{
+     const table=document.querySelector('.page--stats .bp-stat-personalized-table');
+     const row=table?.tHead?.rows?.[0];
+     if(!row)return false;
+     const names=[...row.cells].filter(x=>!x.hasAttribute('data-bp-column-hidden')).map(x=>x.textContent.replace(/[↕↑↓]/g,'').trim());
+     return names.join('|')==='Spieler|Runden|Siege'?names:false;
+   },null,{timeout:15000});
+   const restored=await restoredHandle.jsonValue();
    assert.deepEqual(restored,['Spieler','Runden','Siege'],'column selection must survive page reload');
    // The exact same behavior applies to alternate views and rankings.
    for(const tab of ['career','rounds','lab','simulator','records']){
