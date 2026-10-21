@@ -91,6 +91,10 @@ export function change(doc,action,data={},now=Date.now()){
  }else if(action==='finish'){
   if(d.status!=='live'||!ranking(d).places)throw Error('Ergebnis noch nicht vollständig.');
   d.status='finished';d.clock.running=false;d.clock.deadline=null;
+ }else if(action==='cancel'){
+  if(d.status==='finished'||d.status==='cancelled')throw Error('Turnier bereits beendet.');
+  d.status='cancelled';d.clock.running=false;d.clock.deadline=null;
+  d.viewerVersion+=1;
  }else if(action==='revoke'){
   if(!integer(d.viewerVersion,1,10000000))throw Error('Zuschauerzugang ungültig.');
   d.viewerVersion++;
