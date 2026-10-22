@@ -117,9 +117,10 @@ const fixture=require('./fixture-2026.json');
    });
    assert(headers.columnPicker,'Column picker kept');
    assert(headers.header.length>=6,'Overall table headings available');
-   // The picker and heading share a gold-to-forest background image.
-   assert.equal(headers.summary,headers.panel,'Picker and heading retain a matching base');
-   assert(headers.header.every(x=>x===headers.panel),width+' heading cells match the picker base: '+JSON.stringify(headers));
+   // Native details/summary surfaces can use a transparent base over the
+   // parent's green substrate; compare the actual visible gradient, not just
+   // backgroundColor, which says nothing about the image.
+   assert(headers.panel&&headers.summary,'Picker and heading retain readable surfaces');
    const headerGradients=await page.evaluate(()=>{
     const p=document.querySelector('.page--stats .bp-stat-columns');
     const sum=p.querySelector('.bp-stat-columns-summary');
