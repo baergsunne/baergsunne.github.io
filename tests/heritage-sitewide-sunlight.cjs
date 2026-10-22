@@ -30,7 +30,7 @@ const sample=(node)=>node?(()=>{
     return {background:getComputedStyle(document.querySelector('.page')).backgroundColor,
      body:getComputedStyle(document.body).backgroundColor,
      header:getComputedStyle(document.querySelector('header.heritage-header')).backgroundColor,
-     desktopNav:getComputedStyle(document.querySelector('header.heritage-header .desktopnav')).backgroundColor,
+     desktopNav:getComputedStyle(document.querySelector('nav.desktopnav')).backgroundColor,
      bottomNav:getComputedStyle(document.querySelector('nav.bottomnav')).backgroundColor,
      safariTheme:document.querySelector('meta[name="theme-color"]')?.content,
      cards:[card(document.querySelector('.discovery-champion')),card(document.querySelector('.discovery-counts>div'))],
