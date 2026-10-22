@@ -27,6 +27,7 @@ on:
       - 'tests/mobile-controlled-density.cjs'
       - 'heritage-global-layers.css'
       - 'heritage-sitewide-sunlight.css'
+      - 'tests/dark-second-level-forest.cjs'
       - 'tests/heritage-sitewide-sunlight.cjs'
       - 'tests/global-heritage-layers.cjs'
       - 'stats-tool-card-depth.css'
@@ -74,6 +75,7 @@ jobs:
       # apt package refreshes delaying the actual visual regression audit.
       - run: npx playwright install chromium
       - run: python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/poker-server.log 2>&1 & 
+      - run: node tests/dark-second-level-forest.cjs
       - run: node tests/stats-single-tool-heading.cjs
       # Check the deliberately narrowed Jahrbuch padding before the longer carousels.
       - run: node tests/yearbook-metric-inner-width.cjs

@@ -191,3 +191,34 @@ html,body{background:var(--bp-heritage-surface)!important}
 }
 /* The top brand stage and pinned bottom navigation intentionally keep their
    fixed solid-color backgrounds and existing stacking / accessibility. */
+
+/* SECOND-LEVEL HERITAGE FOREST · 2026-10-22
+   Large content/background stages ONLY: quiet dark green in the upper-right,
+   subtly melting into the exact #0b241b site ground in the lower-left.
+   Deliberately leave nested metric tiles, navigation/link tiles, active
+   selections, chart colors, result rows, photos and hero compositions intact.
+   Shadows, borders and geometry are not modified. */
+:root{
+ --bp-level-two-forest:linear-gradient(225deg,
+  #203d30 0%,#1b372b 32%,#153025 64%,#0b241b 100%);
+}
+#app .page.page :is(
+ .card,.filterbar,.round-detail,.tool-choice-panel,.bp-selection-panel,
+ .duel-inputs,.discovery-live,.cl-block,.cl-leader,.cl-simulator,.cl-round,
+ .history-yearbook-card,.history-replay-card,.bp-sim,.playercard--summary
+){
+ background:var(--bp-level-two-forest)!important;
+}
+/* History has a deliberately high-specificity shared 6-view card material.
+   Only the OUTER carousel cards change; inset result and record tiles do not. */
+#app .page.page--history .history-chronicle :is(
+ .history-carousel-slide > .history-yearbook-card,
+ .history-replay-slide > .history-replay-card,
+ .history-yearbook-card,.history-replay-card
+){
+ background:var(--bp-level-two-forest)!important;
+}
+/* A large open choice panel is still a background stage, not a selected tile. */
+#app .page .tool-choice-panel[open]{
+ background:var(--bp-level-two-forest)!important;
+}
