@@ -55,11 +55,11 @@ const fixture=require('./fixture-2026.json');
       styleLoaded:!!styleTag,htmlBackground:getComputedStyle(document.documentElement).backgroundColor};
    });
    assert(rows.styleLoaded,'New global CSS must load');
-   assert.equal(rows.htmlBackground,'rgb(28, 55, 48)','Heritage ground should be muted, grey-green');
+   assert.equal(rows.htmlBackground,'rgb(48, 74, 67)','Heritage ground should be muted, grey-green');
    for(const a of rows.results){
     assert(!a.missing,a.name+' page still renders');
-    assert.equal(a.ground,'rgb(28, 55, 48)',a.name+' should use common heritage background');
-    assert.equal(a.bodyGround,'rgb(28, 55, 48)','Body should have heritage ground');
+    assert.equal(a.ground,'rgb(48, 74, 67)',a.name+' should use common heritage background');
+    assert.equal(a.bodyGround,'rgb(48, 74, 67)','Body should have heritage ground');
     assert(a.maxOverflow<=2,width+'px '+a.name+' must not overflow viewport: '+a.maxOverflow);
     assert(a.shadow&&a.shadow!=='none',a.name+' main tile/card must have elevation');
     assert(a.newHero&&a.oldHero,width+'px '+a.name+' must retain its main visual hero');
