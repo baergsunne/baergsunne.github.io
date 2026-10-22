@@ -144,7 +144,16 @@ html,body{background:var(--bp-heritage-surface)!important}
  background:transparent!important;
  box-shadow:none!important;
 }
-#app .page :is(.history-yearbook-card,.history-replay-card,.history-insight-card){
+/* Earlier historian design files use very specific nested selectors.
+   Match their specificity to unify the six carousel faces and their insets. */
+#app .page.page--history .history-chronicle :is(
+ .history-carousel-slide > .history-yearbook-card,
+ .history-replay-slide > .history-replay-card,
+ .history-yearbook-card,.history-replay-card,
+ .history-insight-card,.history-insight-metric,.history-insight-fact,
+ .history-insight-compare,.history-yearbook-participants,.history-podium,
+ .history-moment-event,.history-moment-winner,.history-replay-proof
+){
  background:var(--bp-sunlight-surface)!important;
  box-shadow:var(--bp-sunlight-shadow)!important;
 }
