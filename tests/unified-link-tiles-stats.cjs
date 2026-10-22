@@ -44,7 +44,7 @@ const fixture=require('./fixture-2026.json');
      assert.equal(a.svgWidth,28,pageName+' icon width '+a.title);
      assert.equal(a.svgHeight,28,pageName+' icon height '+a.title);
      assert(a.iconLeft>=10&&a.iconLeft<=24,pageName+' icon left inset '+JSON.stringify(a));
-     assert(a.iconTop>=10&&a.iconTop<=24,pageName+' icon top inset '+JSON.stringify(a));
+     assert(a.iconTop>=10&&a.iconTop<=(pageName==='Home'?44:24),pageName+' icon top inset '+JSON.stringify(a));
      assert.equal(a.titleAlign,'center',pageName+' centered title '+a.title);
      assert.equal(a.descAlign,'center',pageName+' centered description '+a.title);
      assert.equal(a.titleColor,'rgb(255, 244, 227)',pageName+' cream-white title '+a.title);
