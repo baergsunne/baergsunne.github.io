@@ -315,6 +315,25 @@ function statsPage(){
  ];
  const toolCards=groups.map(g=>`<section class="tool-group"><h2>${g.name}</h2><div class="tool-grid">${g.list.map(([id,title,desc,symbol])=>`<button class="tool-tile ${state.tab===id?'is-active':''}" type="button" data-action="tab" data-value="${id}"><span class="tool-tile-symbol" aria-hidden="true">${icon(TOOL_ICONS[id])}</span><span class="tool-tile-copy"><strong>${title}</strong><small>${desc}</small></span><span class="tool-tile-arrow" aria-hidden="true">↗</span></button>`).join('')}</div></section>`).join('');
  const toolDropdown='<div class="bp-selection-panel"><label for="bp-tool-select">Statistik-Werkzeug auswählen</label><select id="bp-tool-select" aria-label="Statistik-Werkzeug auswählen">'+groups.map(g=>'<optgroup label="'+esc(g.name)+'">'+g.list.map(([id,title])=>'<option value="'+id+'" '+(state.tab===id?'selected':'')+'>'+esc(title)+'</option>').join('')+'</optgroup>').join('')+'<option value="studio" '+(state.tab==='studio'?'selected':'')+'>Analyse-Studio</option></select></div>';
+ // Exactly one visible name and one plain-language explanation per statistics tool.
+ // Tool content itself is unchanged; legacy first titles are removed below.
+ const toolExplanations={
+  overview:'Sieh die wichtigsten Kennzahlen, Titel und Rekorde der Bärgsunne-Geschichte auf einen Blick.',
+  patterns:'Entdecke wiederkehrende Muster in gewählten Jahren, Spielern und Runden und prüfe die Ergebnisse.',
+  insights:'Beantworte konkrete Fragen zu den Turnierergebnissen und verstehe die Zahlen dahinter.',
+  standard:'Nutze fertige Auswertungen, um Spieler und Turniere miteinander zu vergleichen.',
+  career:'Verfolge, wie sich die Leistungen der Spieler über die Turnierjahre entwickelt haben.',
+  rivals:'Stelle zwei Spieler gegenüber und vergleiche ihre Ergebnisse bis in einzelne Runden.',
+  rounds:'Untersuche Rundensiege, Punkte und einzelne Rundenresultate der dokumentierten Turniere.',
+  heatmap:'Erkenne die Platzierungen der Spieler über die Turnierjahre hinweg auf einen Blick.',
+  race:'Verfolge Runde für Runde, wie sich die Titeljagd und die Rangliste verändert haben.',
+  simulator:'Stelle ein eigenes Turnier zusammen und berechne mögliche Endplatzierungen.',
+  records:'Entdecke die wichtigsten Bestleistungen und Rekorde aus der Turniergeschichte.',
+  lab:'Erstelle Diagramme mit selbst ausgewählten Spielern, Jahren, Runden und Kennzahlen.',
+  studio:'Stelle eigene Fragen an die Turnierdaten und kombiniere Spieler, Jahre, Runden und Bedingungen.'
+ };
+ const toolName=state.tab==='studio'?'Analyse-Studio':(groups.flatMap(g=>g.list).find(x=>x[0]===state.tab)||['','Übersicht'])[1];
+ const toolHeading='<div class="sectiontitle bp-stat-tool-heading"><div><h2>'+esc(toolName)+'</h2><p>'+esc(toolExplanations[state.tab])+'</p></div></div>';
  const previousPlayers=state.selected,previousYears=state.selectedYears,choice=activeToolChoice();
  const ownSelection=['studio','simulator','rivals','insights','race'].includes(state.tab);
  // Race and Analysen own their inputs: never apply an invisible saved tool filter.
@@ -324,11 +343,15 @@ function statsPage(){
  try{content=tools[state.tab]();}
  catch(error){console.error('Statistik-Werkzeug:',state.tab,error);content='<section class="card" role="alert"><h2>Dieses Werkzeug konnte nicht geladen werden</h2><p>Wähle ein anderes Werkzeug oder lade die Seite neu.</p><button class="btn" data-action="tab" data-value="overview">Zur Statistik-Übersicht</button></section>';}
  finally{state.selected=previousPlayers;state.selectedYears=previousYears;}
+ // Older tools supply a top-level sectionTitle with another headline.
+ // Remove only that leading heading; do not touch headings within results.
+ const hasLegacyHeading=content.startsWith('<div class="sectiontitle">');
+ if(hasLegacyHeading)content=content.replace(/^<div class="sectiontitle"><div>[\s\S]*?<\/div><\/div>/,'');
+ const playerYearPicker=!ownSelection&&hasLegacyHeading?toolChoicePanel():'';
  return hero('Statistiken<span class="gold">.</span>','Deine Poker-Geschichte hat mehr zu erzählen. Entdecke sie.','ZAHLEN & LEGENDEN')+
  `<section class="studio-flagship" aria-labelledby="studio-flagship-title"><div class="studio-flagship-visual"><span class="studio-flagship-kicker">DAS HERZSTÜCK · BÄRGSUNNE POKER</span><div class="studio-flagship-head"><span class="studio-flagship-mark" aria-hidden="true">♠</span><span class="studio-flagship-edition">DEINE FRAGE. DEINE ENTDECKUNG.</span></div><h2 id="studio-flagship-title">Analyse-<em>Studio</em></h2><p>Welche Runden entschieden über den Titel? Wer glänzte gegen wen? Erstelle deine eigene Auswertung – Spieler, Jahre, Runden und Bedingungen bestimmst du.</p><div class="studio-flagship-actions"><button class="studio-flagship-button" type="button" data-action="tab" data-value="studio">${state.tab==='studio'?'Zum Analyse-Studio':'Analyse-Studio öffnen'} <span aria-hidden="true">→</span></button><span>Deine Geschichte. Deine Regeln.</span></div></div><div class="studio-flagship-foot"><span>SPIELER VERGLEICHEN</span><span>RUNDE FÜR RUNDE</span><span>MUSTER ENTDECKEN</span></div></section>`+
  `<section class="tool-directory"><div class="tool-directory-intro"><span class="overline">MEHR ENTDECKEN</span><h2>Die ganze Pokerwelt auf einen Blick.</h2><p>Jedes Werkzeug eröffnet einen neuen Blick auf die Turniergeschichte.</p></div>${toolCards}</section>`+
- `<div class="tool-active-heading"><span class="overline">DEINE AUSWAHL</span><h2>${state.tab==='studio'?'Analyse-Studio':([...groups.flatMap(g=>g.list)].find(x=>x[0]===state.tab)||['','Übersicht'])[1]}</h2></div>`+
- `<div class="stat-content" id="selected-stat-tool">${ownSelection?content:content.replace(/<div class="sectiontitle">[\s\S]*?<\/div><\/div>/,m=>m+toolChoicePanel())}</div>`;
+ `<div class="stat-content" id="selected-stat-tool">${toolHeading}${playerYearPicker}${content}</div>`;
 }
 function metricTable(id= 'metrics'){return table(id,[{key:'name',title:'Spieler',render:x=>playerLink(x.name)},{key:'titles',title:'Titel'},{key:'seasons',title:'Jahre'},{key:'rounds',title:'Runden'},{key:'points',title:'Pkt.'},{key:'avg',title:'Pkt./R',render:x=>pointsFmt(x.avg)},{key:'placeAvg',title:'Ø Rang',render:x=>pointsFmt(x.placeAvg)},{key:'wins',title:'Siege'},{key:'winRate',title:'Sieg %',render:x=>pointsFmt(x.winRate)+' %'},{key:'top3',title:'Top 3'},{key:'top3Rate',title:'Podest %',render:x=>pointsFmt(x.top3Rate)+' %'},{key:'sd',title:'Streuung',render:x=>pointsFmt(x.sd)}],stats(),{note:'Alle Werte aus historisch erfassten Einzelplatzierungen. Tippe jeden Spaltenkopf zum Sortieren.'})}
 function overviewTab(){let st=stats(),r=rows(),leader=[...st].sort((a,b)=>a.placeAvg-b.placeAvg)[0],wins=topSorted(st,'wins')[0],champ=topSorted(st,'titles')[0];return sectionTitle('ALL-TIME','Die Zahlen hinter den Legenden','Wähle direkt in diesem Werkzeug die Spieler und Turniere aus, die dich interessieren.')+`<div class="metrics">${kpi('Runden im Filter',r.length,'Spieler-Rundenergebnisse')}${kpi('Bester Karriereschnitt',leader?pointsFmt(leader.placeAvg):'–',leader?.name||'')}${kpi('Meiste Rundensiege',wins?.wins??'–',wins?.name||'')}${kpi('Meiste Titel',champ?.titles??'–',champ?.name||'')}</div>${card('Gesamtübersicht',metricTable('overview'))}`}
