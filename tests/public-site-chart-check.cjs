@@ -37,8 +37,10 @@ for(const [name,v] of Object.entries(expected))assert(v,'Missing local site asse
     const css=await page.request.get(new URL(expected['unified-link-tiles-and-stats.css'],base).toString(),{timeout:15000});
     if(!css.ok())throw Error('Published watermark stylesheet '+css.status());
     const style=await css.text();
-    if(!style.includes('--bp-link-gradient:linear-gradient(135deg')||
-       !style.includes('width:96%!important')||
+    if(!style.includes('--bp-link-gradient:')||
+       !style.includes('linear-gradient(225deg')||
+       !style.includes('width:110%!important')||
+       !style.includes('aspect-ratio:2 / 1!important')||
        !style.includes('grid-template-columns:repeat(2,minmax(0,1fr))!important'))
      throw Error('Published stylesheet does not contain new gold-watermark grid');
     await page.waitForFunction(()=>typeof db!=='undefined'&&db.editions.some(e=>e.year===2026),null,{timeout:15000});
@@ -55,7 +57,7 @@ for(const [name,v] of Object.entries(expected))assert(v,'Missing local site asse
      const official=edition.official_standings.find(x=>x.player_id==='Schnarre');
      state.page='stats';state.tab='career';state.metric='rank';draw();
      const careerTitles=[...document.querySelectorAll('#selected-stat-tool .chart-svg circle title')].map(t=>t.textContent);
-     return {version,homeCards:links.length,columns:rects.length===4&&Math.abs(rects[0].top-rects[1].top)<2&&rects[2].top>rects[0].top+100,
+     return {version,homeCards:links.length,columns:rects.length===4&&Math.abs(rects[0].top-rects[1].top)<2&&rects[2].top>rects[0].bottom+3,
       dimensions:rects.map(r=>({width:Math.round(r.width),height:Math.round(r.height)})),
       firstIconWidth:icons[0],firstBg:style?.backgroundImage||'',
       official,profileHeading:profileText.includes('Karriere-Entwicklung · offizieller Jahresrang'),
@@ -65,7 +67,7 @@ for(const [name,v] of Object.entries(expected))assert(v,'Missing local site asse
     });
     assert.equal(data.homeCards,4,'Four entry links in live home');
     assert(data.columns,'Published homepage still lacks 2x2 grid: '+JSON.stringify(data.dimensions));
-    assert(data.dimensions.every(t=>t.height===170),'Published cards are not fixed 170px high');
+    assert(data.dimensions.every(t=>Math.abs(t.height-t.width/2)<=1),'Published cards are not exact 2:1 rectangles');
     assert(data.firstIconWidth>100,'Live giant icon watermark missing');
     assert(data.firstBg.includes('linear-gradient'),'Live gold-to-green gradient missing');
     assert.equal(data.official.place,4);
