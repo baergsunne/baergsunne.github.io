@@ -116,7 +116,8 @@ html,body{background:var(--bp-heritage-surface)!important}
  background:var(--bp-sunlight-surface)!important;
  background-color:#1c4030!important;
 }
-#app .page--stats .stat-content table.bp-stat-personalized-table thead tr>*{
+#app .page--stats .stat-content table.bp-stat-personalized-table thead tr>:first-child,
+#app .page--stats .stat-content table.bp-stat-personalized-table thead tr>:not(:first-child){
  background:var(--bp-sunlight-surface)!important;
  background-color:#1c4030!important;
  color:#e8c37e!important;
