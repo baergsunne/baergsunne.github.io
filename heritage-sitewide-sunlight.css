@@ -1,0 +1,163 @@
+/* BÄRGSUNNE POKER · SUNLIGHT HERITAGE · October 2026
+   One shared material for every content card, result row and selection tile.
+   Light comes from upper RIGHT; surfaces fade to muted forest lower LEFT.
+   Cast shadows travel LEFT and DOWN. Never recolor charts, special statuses,
+   hero photos, the main masthead, navigation bars or simulation outcomes. */
+:root{
+ --bp-shell:#304a43;
+ --heritage-ground:#304a43;
+ --bp-heritage-surface:#304a43;
+ --bp-sunlight-surface:
+  linear-gradient(225deg,rgba(234,193,115,.13) 0%,rgba(205,165,91,.07) 23%,rgba(20,57,41,0) 49%),
+  linear-gradient(225deg,#33543e 0%,#294d38 28%,#1c402f 56%,#113527 78%,#0c2c22 100%);
+ --bp-sunlight-selected:
+  linear-gradient(225deg,rgba(237,199,124,.17) 0%,rgba(209,172,100,.09) 24%,rgba(20,57,41,0) 52%),
+  linear-gradient(225deg,#395e45 0%,#2c513b 28%,#214734 56%,#153a2b 78%,#103024 100%);
+ --bp-sunlight-shadow:-6px 10px 22px rgba(6,24,19,.27),
+  -2px 3px 0 rgba(6,22,17,.17),inset 1px 1px 0 rgba(244,239,211,.075);
+ --bp-sunlight-shadow-soft:-3px 6px 12px rgba(7,27,21,.20),
+  inset 1px 1px 0 rgba(244,239,211,.06);
+ --bp-sunlight-shadow-selected:-7px 12px 23px rgba(6,24,19,.30),
+  -2px 3px 0 rgba(7,24,18,.22),inset 1px 1px 0 rgba(251,229,173,.10);
+}
+/* The outdoor world behind ALL pages becomes visibly lighter, greyer and less
+   saturated; headers, footer and fixed navigation retain their own colors. */
+html,body{background:var(--bp-heritage-surface)!important}
+#app .page,#app .page.page--home,#app .page:not(.page--home){
+ background:var(--bp-heritage-surface)!important;
+}
+/* Large content surfaces – global across every page including Start, Historie,
+   Statistik, Spieler, Hall of Fame and Live. Sizes/layout are untouched. */
+#app .page :is(
+ .card,.kpi,.kpi-click,.feature,.record,.playercard,.champ-tile,
+ .podium-card,.yearcard,.filterbar,.round-detail,.standard-card,
+ .admin-notice,.adm-box,.discovery-champion,.discovery-live,
+ .discovery-counts>div,.discovery-year-grid button,
+ .studio-flagship,.studio-flagship-foot,
+ .history-yearbook-card,.history-replay-card,.history-insight-card,
+ .history-podium,.history-yearbook-participants,
+ .history-insight-metric,.history-insight-fact,.history-insight-compare,
+ .history-moment-event,.history-moment-winner,
+ .cl-kpis>div,.cl-block,.cl-leader,.cl-simulator,.cl-round,
+ .bp-unified-explain,.bp-profile-explain,
+ .tool-choice-panel,.bp-selection-panel,.bp-stat-columns,
+ .duel-inputs,.duel-year-picker,.insight-picker,.insight-filters,
+ .tool-active-heading,.history-replay-proof
+){
+ background:var(--bp-sunlight-surface)!important;
+ box-shadow:var(--bp-sunlight-shadow)!important;
+}
+/* Keep the current panorama geometry and icon art exactly as it is; only
+   lighting depth changes. Navigation tiles have their own background gradients. */
+#app .page :is(button,a).discovery-feature,
+#app .page :is(button,a).tool-tile{
+ box-shadow:var(--bp-sunlight-shadow)!important;
+}
+#app .page :is(
+ .tool-tile.is-active,.discovery-feature.is-active,.history-entry-tile.is-active,
+ .yearcard.current,.champ-tile:focus-visible,.feature:focus-visible
+){
+ box-shadow:var(--bp-sunlight-shadow-selected)!important;
+}
+/* Smaller inset tiles, awards and supporting data: retain a gentle relief,
+   without oversized nested shadows or changing text alignment. */
+#app .page :is(
+ .history-insight-name-list>span,.history-insight-name-list span,
+ .history-moment-event,.history-podium,.history-insight-metric,
+ .bp-stat-column-choice,.bp-stat-columns-summary,
+ .bp-unified-sort button,.bp-stat-column-choices button,
+ .tool-year-range select,.history-dropdown-controls select,
+ .selectlike,.pick,.chip,.pill,.tab,.legend-item,.bp-series-pill,
+ .discovery-live-row:not(.heading),.cl-form,.cl-status-compact
+):not(.active):not(.is-active):not(.is-selected){
+ background:var(--bp-sunlight-surface)!important;
+ box-shadow:var(--bp-sunlight-shadow-soft)!important;
+}
+/* Every selectable surface gets the same directional fill. Do not touch
+   checkbox backgrounds, radio dots, slider handles, primary CTA buttons,
+   active/highlighted chips, or intentional status reds/greens. */
+#app .page :is(
+ select,textarea,input:not([type="range"]):not([type="checkbox"]):not([type="radio"]),
+ .filterrow .selectlike,.bp-selection-panel select,.tool-choice-panel select,
+ .tool-year-range select,.history-dropdown-controls select
+){
+ background:var(--bp-sunlight-surface)!important;
+ background-color:#1e4033!important;
+ box-shadow:var(--bp-sunlight-shadow-soft)!important;
+ color:#f7f0e3!important;
+}
+/* Normal result rows across every ranking/result table use exactly the
+   sunlight material. Row shadows cast down-left; no fake shadow inside data. */
+#app .page table:is(
+ .datatable,.bp-unified-table,.history-table,.bp-smart-table,
+ .cl-table,.bp-stat-personalized-table
+) tbody tr{
+ background:var(--bp-sunlight-surface)!important;
+ box-shadow:-3px 5px 10px rgba(6,25,19,.19)!important;
+ filter:none!important;
+}
+#app .page table:is(
+ .datatable,.bp-unified-table,.history-table,.bp-smart-table,
+ .cl-table,.bp-stat-personalized-table
+) tbody td{
+ background:transparent!important;
+}
+/* Sticky player names remain opaque, so horizontal scrolling cannot let
+   other data bleed through. Use the identical light direction. */
+#app .page--stats table.bp-stat-personalized-table tbody tr>:first-child{
+ background:var(--bp-sunlight-surface)!important;
+ box-shadow:-3px 5px 10px rgba(6,25,19,.19)!important;
+}
+/* The filter dropdowns and the statistics column selection should have the
+   same material as cards. Their column headings remain readable and sortable. */
+#app .page--stats .bp-stat-columns,
+#app .page--stats .bp-stat-columns-summary{
+ background:var(--bp-sunlight-surface)!important;
+}
+#app .page--stats table.bp-stat-personalized-table thead tr>*{
+ background:var(--bp-sunlight-surface)!important;
+ color:#e8c37e!important;
+}
+/* Keep visible meaningful active/selected states in warm gold framing, but
+   make the fill part of the same heritage-green sunlight family. */
+#app .page :is(
+ .bp-stat-column-choice.is-selected,.tool-tile.is-active,
+ .discovery-feature.is-active,.history-entry-tile.is-active,
+ .tool-choice-panel[open],.bp-stat-columns[open]
+){
+ background:var(--bp-sunlight-selected)!important;
+ border-color:#e8c37e!important;
+ box-shadow:var(--bp-sunlight-shadow-selected)!important;
+}
+/* Purpose-built transparent containers must NOT become false cards:
+   carousel slides, page stage, scroll shells, chart surfaces and controllers. */
+#app .page.page--history :is(
+ .history-chronicle,.history-carousel-viewport,.history-replay-viewport,
+ .history-feature--yearbook,.history-feature--replay,
+ .history-feature--insights,.history-carousel-slide,.history-replay-slide,
+ .history-carousel-track,.history-replay-track
+){
+ background:transparent!important;
+ box-shadow:none!important;
+}
+#app .page :is(.history-yearbook-card,.history-replay-card,.history-insight-card){
+ background:var(--bp-sunlight-surface)!important;
+ box-shadow:var(--bp-sunlight-shadow)!important;
+}
+/* Transparent images/hero photography still use their original art. */
+#app .page .studio-flagship-visual{
+ background:linear-gradient(90deg,rgba(12,37,30,.82),rgba(12,37,30,.48)),
+ url('assets/alpine-hero.webp') center center/cover!important;
+}
+@media(max-width:650px){
+ :root{
+  --bp-sunlight-shadow:-4px 7px 15px rgba(6,24,19,.26),
+   -1px 2px 0 rgba(6,22,17,.14),inset 1px 1px 0 rgba(244,239,211,.06);
+  --bp-sunlight-shadow-soft:-2px 4px 9px rgba(6,24,19,.18),
+   inset 1px 1px 0 rgba(244,239,211,.055);
+  --bp-sunlight-shadow-selected:-5px 9px 17px rgba(6,24,19,.29),
+   -1px 2px 0 rgba(6,22,17,.17),inset 1px 1px 0 rgba(251,229,173,.09);
+ }
+}
+/* The top brand stage and pinned bottom navigation intentionally keep their
+   fixed solid-color backgrounds and existing stacking / accessibility. */
