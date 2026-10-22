@@ -65,9 +65,15 @@ const assert=require('node:assert/strict');
     await page.waitForFunction(()=>{
      const viewport=document.querySelector('.history-carousel-viewport,.history-replay-viewport');
      const track=viewport?.querySelector('.history-carousel-track,.history-replay-track');
-     const slide=track?.children[Number(track?.dataset.index)];
+     const index=Number(track?.dataset.index);
+     const slide=track?.children[index];
      const r=slide?.getBoundingClientRect(),v=viewport?.getBoundingClientRect();
-     return r&&v&&Math.abs((r.left+r.right-v.left-v.right)/2)<4;
+     const prev=track?.children[index-1]?.getBoundingClientRect();
+     const next=track?.children[index+1]?.getBoundingClientRect();
+     const peek=rect=>rect&&v?Math.max(0,Math.min(rect.right,v.right)-Math.max(rect.left,v.left)):0;
+     // Wait for both real adjacent cards to be painted, not merely for a
+     // transient centred track position during the 850ms animation.
+     return r&&v&&Math.abs((r.left+r.right-v.left-v.right)/2)<4&&peek(prev)>1&&peek(next)>1;
     },null,{timeout:4000});
     sample[view]=await styleAudit();
     const s=sample[view];
