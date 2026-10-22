@@ -14,52 +14,59 @@ const fixture=require('./fixture-2026.json');
    await page.goto('http://127.0.0.1:8765/#home',{waitUntil:'domcontentloaded'});
    await page.waitForFunction(()=>typeof db!=='undefined'&&db.editions.some(e=>e.year===2026),null,{timeout:25000});
    const auditTiles=async(selector,count,pageName)=>{
-    const d=await page.locator(selector).evaluateAll(cards=>cards.map(el=>{
-     const st=getComputedStyle(el),icon=el.querySelector('.discovery-feature-icon,.tool-tile-symbol'),
+    const cards=await page.locator(selector).evaluateAll(nodes=>nodes.map(el=>{
+     const style=getComputedStyle(el),icon=el.querySelector('.discovery-feature-icon,.tool-tile-symbol'),
        image=icon?.querySelector('.bp-icon'),title=el.querySelector('.discovery-feature-copy strong,.tool-tile-copy strong'),
-       desc=el.querySelector('.discovery-feature-copy small,.tool-tile-copy small'),
+       description=el.querySelector('.discovery-feature-copy small,.tool-tile-copy small'),
+       copy=el.querySelector('.discovery-feature-copy,.tool-tile-copy'),
        arrow=el.querySelector('.discovery-feature-arrow,.tool-tile-arrow'),
-       copy=el.querySelector('.discovery-feature-copy,.tool-tile-copy');
-     const r=el.getBoundingClientRect(),i=icon?.getBoundingClientRect(),im=image?.getBoundingClientRect(),cr=copy?.getBoundingClientRect();
-     return {classes:el.className,title:title?.textContent,
-       bg:st.backgroundImage,display:st.display,radius:st.borderTopLeftRadius,
-       width:r.width,height:r.height,left:r.left,top:r.top,right:r.right,
-       watermarkWidth:im?.width,watermarkHeight:im?.height,iconX:i?.left-r.left,iconY:i?.top-r.top,
-       imageLoaded:!!image?.complete&&image.naturalWidth>0,
-       symbolOpacity:icon?Number.parseFloat(getComputedStyle(icon).opacity):null,
-       titleAlign:title?getComputedStyle(title).textAlign:null,titleColor:title?getComputedStyle(title).color:null,
-       descAlign:desc?getComputedStyle(desc).textAlign:null,descColor:desc?getComputedStyle(desc).color:null,
-       copyCenterX:cr?cr.left+cr.width/2:null,copyCenterY:cr?cr.top+cr.height/2:null,
+       r=el.getBoundingClientRect(),cr=copy?.getBoundingClientRect(),ir=icon?.getBoundingClientRect(),
+       before=getComputedStyle(el,'::before'),after=getComputedStyle(el,'::after');
+     return {title:title?.textContent,active:el.classList.contains('is-active'),display:style.display,
+       width:r.width,height:r.height,left:r.left,right:r.right,top:r.top,
+       aspectRatio:style.aspectRatio,bg:style.backgroundImage,border:style.borderTopColor,
+       imageLoaded:!!image?.complete&&image.naturalWidth>0,iconOpacity:icon?parseFloat(getComputedStyle(icon).opacity):null,
+       iconWidth:icon?getComputedStyle(icon).width:null,iconRight:icon?getComputedStyle(icon).right:null,
+       iconTransform:icon?getComputedStyle(icon).transform:null,iconX:ir?.left,
+       objectPosition:image?getComputedStyle(image).objectPosition:null,
+       titleAlign:title?getComputedStyle(title).textAlign:null,
+       descAlign:description?getComputedStyle(description).textAlign:null,
+       titleColor:title?getComputedStyle(title).color:null,
+       descColor:description?getComputedStyle(description).color:null,
+       copyLeft:cr?.left,copyTop:cr?.top,copyBottom:cr?.bottom,copyRight:cr?.right,
        copyHeight:copy?.scrollHeight,copyClientHeight:copy?.clientHeight,
-       arrowDisplay:arrow?getComputedStyle(arrow).display:null,
-       before:getComputedStyle(el,'::before').content,
-       active:el.classList.contains('is-active'),
+       arrow:arrow?getComputedStyle(arrow).display:null,
+       overlay:before.backgroundImage,readability:after.backgroundImage,
+       decorationClicks:icon?getComputedStyle(icon).pointerEvents:null
      };
     }));
-    assert.equal(d.length,count,pageName+' link count');
-    const wantedHeight=width<=650?170:176;
-    for(const a of d){
-     assert.equal(a.display,'flex',pageName+' shared layering');
-     assert(Math.abs(a.height-wantedHeight)<1,pageName+' identical fixed card height: '+JSON.stringify(a));
-     assert(a.width>=100&&a.right<=width+2,pageName+' out of viewport: '+JSON.stringify(a));
-     assert(a.imageLoaded,pageName+' missing existing background icon: '+a.title);
-     assert(a.watermarkWidth>=a.width*.85&&a.watermarkHeight>=a.height*.85,pageName+' watermark must span most of tile: '+JSON.stringify(a));
-     assert(a.iconX<=5&&a.iconY<=5,pageName+' watermark begins at top left: '+JSON.stringify(a));
-     assert(a.symbolOpacity>=.08&&a.symbolOpacity<=.28,pageName+' decorative icon opacity');
-     assert.equal(a.before,'""',pageName+' diagonal highlight overlay exists');
-     assert.equal(a.titleAlign,'center',pageName+' centered title '+a.title);
-     assert.equal(a.descAlign,'center',pageName+' centered description '+a.title);
-     assert.equal(a.titleColor,'rgb(255, 246, 233)',pageName+' title white '+a.title);
-     assert.equal(a.descColor,'rgb(232, 238, 227)',pageName+' desc off-white '+a.title);
-     assert(Math.abs(a.copyCenterX-a.left-a.width/2)<3,pageName+' text overlay centered: '+a.title);
-     assert(Math.abs(a.copyCenterY-a.top-a.height/2)<3,pageName+' vertical text centering: '+a.title);
-     assert(a.copyHeight<=a.copyClientHeight+2,pageName+' text must fit fixed card: '+JSON.stringify(a));
-     assert.equal(a.arrowDisplay,'none',pageName+' no duplicate decorative arrows');
-     assert(a.radius.includes('17px'),pageName+' uniform card radius');
+    assert.equal(cards.length,count,pageName+' count');
+    for(const c of cards){
+     assert.equal(c.display,'flex',pageName+' must use same card layout');
+     assert.equal(c.aspectRatio,'2 / 1',pageName+' must have 2:1 aspect ratio '+c.title);
+     assert(Math.abs(c.height-c.width/2)<=1.3,pageName+' exact 2:1 dimensions '+JSON.stringify(c));
+     assert(c.width>=100&&c.right<=width+2,pageName+' tile out of viewport '+JSON.stringify(c));
+     assert(c.imageLoaded,pageName+' icon image missing '+c.title);
+     assert(c.iconOpacity>=.08&&c.iconOpacity<=.19,pageName+' muted icon '+c.title);
+     assert(c.iconRight==='0px',pageName+' watermark must anchor to right '+c.title);
+     assert(c.iconWidth.endsWith('px')&&parseFloat(c.iconWidth)>=c.width*.99,pageName+' oversize watermark '+c.title);
+     assert(c.objectPosition==='100% 0%',pageName+' icon image anchored right-top '+c.title);
+     assert(c.iconTransform!=='none',pageName+' diagonal symbol movement '+c.title);
+     assert(c.decorationClicks==='none',pageName+' watermark cannot block clicks');
+     assert.equal(c.titleAlign,'left',pageName+' left-aligned heading '+c.title);
+     assert.equal(c.descAlign,'left',pageName+' left-aligned description '+c.title);
+     assert.equal(c.titleColor,'rgb(255, 246, 233)',pageName+' white title');
+     assert.equal(c.descColor,'rgb(232, 238, 227)',pageName+' muted-white detail');
+     assert(c.copyLeft>=c.left+4&&c.copyRight<=c.right-4,pageName+' left copy within card');
+     assert(c.copyBottom<=c.top+c.height+1,pageName+' text must fit 2:1 tile '+JSON.stringify(c));
+     assert.equal(c.arrow,'none',pageName+' no redundant arrow');
+     assert(c.bg.includes('linear-gradient(225deg'),'Diagonal gold highlight from top-right');
+     assert(c.overlay.includes('radial-gradient'),'Subtle upper right illumination');
+     assert(c.readability.includes('linear-gradient'),'Text contrast overlay');
     }
-    const allStd=d.filter(x=>!x.active);
-    if(allStd.length>1)assert.equal(new Set(allStd.map(x=>x.bg)).size,1,pageName+' shared gold-to-forest background');
-    return d;
+    const standards=cards.filter(c=>!c.active);
+    if(standards.length>1)assert.equal(new Set(standards.map(c=>c.bg)).size,1,pageName+' standard cards must share one gradient');
+    return cards;
    };
    const home=await auditTiles('.page--home button.discovery-feature',16,'Home');
    // Verify the four top-level entry cards form two rows and two columns
