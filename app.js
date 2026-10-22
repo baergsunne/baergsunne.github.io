@@ -234,18 +234,18 @@ function home(){
  <section class="discovery-champion" aria-label="Amtierender Champion ${latest.year}"><div class="discovery-champion-copy"><span class="overline">AMTIERENDER CHAMPION · ${latest.year}</span><h2>${winner?esc(winner.player_id):'Kein offizieller Sieger'}</h2><p>${winner?'<strong>'+pointsFmt(winner.points)+' Punkte</strong> · Offizieller Schlussrang 1':'Noch kein bestätigter Sieger'}</p><button type="button" data-action="openyear" data-value="${latest.year}">Titelweg im Jahrbuch ${latest.year} ansehen ↗</button></div><div class="discovery-champion-trophy"><img src="assets/trophy-premium.webp" loading="lazy" decoding="async" alt="Originaler Bärgsunne-Turnierpokal"/></div></section>
  ${live}
  <section class="discovery-section"><div class="discovery-head"><span class="overline">DEIN EINSTIEG</span><h2>Was möchtest du entdecken?</h2></div><div class="discovery-features">
- ${feature('Historie','Turniere Runde für Runde nacherleben','go','history','◷',`${ordered.length} Jahrbücher`)}
- ${feature('Statistiken','Daten untersuchen und Zusammenhänge entdecken','go','stats','◈','Analyse-Studio, Schnellanalysen und mehr')}
- ${feature('Hall of Fame','Meister, Rekorde und Hall of Shame','go','fame','♛',top?`${esc(top[0])}: ${top[1]} Titel`:null)}
- ${feature('Spieler','Historische Teilnehmer und ihre Profile','go','players','♙',`${players.size} dokumentierte Spieler`)}
+ ${feature('Historie','Turniere Runde für Runde nacherleben','go','history',icon('archive'),`${ordered.length} Jahrbücher`)}
+ ${feature('Statistiken','Daten untersuchen und Zusammenhänge entdecken','go','stats',icon('chart-trend'),'Analyse-Studio, Schnellanalysen und mehr')}
+ ${feature('Hall of Fame','Meister, Rekorde und Hall of Shame','go','fame',icon('crown'),top?`${esc(top[0])}: ${top[1]} Titel`:null)}
+ ${feature('Spieler','Historische Teilnehmer und ihre Profile','go','players',icon('players'),`${players.size} dokumentierte Spieler`)}
  </div></section>
  <section class="discovery-section"><div class="discovery-head"><span class="overline">WERKZEUGE ENTDECKEN</span><h2>Etwas genauer hinschauen</h2></div><div class="discovery-mini-grid">
- ${feature('Duelle','Zwei Spieler im Butterfly-Vergleich','statsrounds','rivals','⇄')}
- ${feature('Muster-Finder','Wiederkehrende Rundenfolgen suchen','statsrounds','patterns','⌕')}
- ${feature('Diagramme','Ergebnisse anschaulich darstellen','statsrounds','lab','▥')}
- ${feature('Simulator','Eigene Turnierverläufe durchspielen','statsrounds','simulator','♠')}
- ${feature('Analyse-Studio','Individuelle Auswertungen zusammenstellen','statsrounds','studio','◇')}
- ${feature('Schnellanalysen','Vorgefertigte Fragen untersuchen','statsrounds','standard','↗')}
+ ${feature('Duelle','Zwei Spieler im Butterfly-Vergleich','statsrounds','rivals',icon('duel'))}
+ ${feature('Muster-Finder','Wiederkehrende Rundenfolgen suchen','statsrounds','patterns',icon('pattern'))}
+ ${feature('Diagramme','Ergebnisse anschaulich darstellen','statsrounds','lab',icon('chart-selection'))}
+ ${feature('Simulator','Eigene Turnierverläufe durchspielen','statsrounds','simulator',icon('simulator'))}
+ ${feature('Analyse-Studio','Individuelle Auswertungen zusammenstellen','statsrounds','studio',icon('compare'))}
+ ${feature('Schnellanalysen','Vorgefertigte Fragen untersuchen','statsrounds','standard',icon('explanation'))}
  </div></section>
  <section class="discovery-section discovery-history-teaser" aria-label="Historie entdecken"><div class="discovery-head"><span class="overline">HISTORIE ENTDECKEN</span><h2>Unsere Turniergeschichte</h2><p>Sechs Wege durch die Bärgsunne-Geschichte. Wähle einen Bereich und entdecke die Jahrgänge direkt in der Historie.</p></div><div class="discovery-mini-grid">
  ${feature('Jahrbuch','Champions und Podestplätze','historyteaser','yearbook',icon('podium'))}
