@@ -101,6 +101,9 @@ const fixture=require('./fixture-2026.json');
    assert(headers.tableOverflow<=2,'No stats horizontal scroll on document');
    // The new standard applies to Historie as well.
    await page.evaluate(()=>{state.page='history';state.historyYear=2026;draw();});
+   // Desktop mouse hover has a distinct intentional visual state: move off
+   // the navigation cards before checking the shared *standard* design.
+   await page.mouse.move(1,1);
    const hist=await auditTiles('.page--history .history-entry button.history-entry-tile',6,'Historie');
    assert(hist.some(x=>x.active),'Selected history view keeps gold active frame');
    assert.equal(hist.find(x=>x.active).bg,active.bg,'Shared active tile color');
