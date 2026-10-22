@@ -82,7 +82,7 @@ const sample=(node)=>node?(()=>{
     ['stats control',result.stat.select],['players profile',result.player.card],
     ['history card',result.history.card],['history year choice',result.history.selector]
    ];
-   assert.equal(result.home.background,'rgb(48, 74, 67)','Lighter, greyer heritage site background');
+   assert.equal(result.home.background,'rgb(11, 36, 27)','Deep Heritage Forest site background');
    assert.equal(result.home.body,result.home.background,'Page/body background matches');
    for(const [label,item] of toTest){
     assert(item,label+' missing at '+width);
