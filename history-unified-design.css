@@ -307,7 +307,7 @@
    tiles without widening their grid, touching the carousel or shrinking type.
    Keep a visible inset from the outer card and a controlled inner text margin. */
 @media(max-width:600px){
-  #app .page.page--history .history-chronicle .history-feature--yearbook .history-yearbook-card{
+  #app .page.page--history .history-chronicle .history-feature--yearbook .history-yearbook-card:has(.history-yearbook-extras){
     padding-inline:clamp(9px,2.5vw,12px)!important;
   }
   #app .page.page--history .history-chronicle .history-yearbook-extras .history-insight-grid{
