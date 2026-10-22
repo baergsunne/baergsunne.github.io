@@ -1,81 +1,67 @@
-/* Bärgsunne Poker · Navigation tiles · Gold-to-forest edition (2026-10-22)
-   Same compact 2-column, fixed-size navigation tile in all three page families:
-   Home, Statistik, Historie. Every original SVG becomes a big semi-transparent
-   background watermark. Stat KPI/table styling below is retained unchanged. */
+/* Bärgsunne Poker · panorama navigation tiles 2026-10-22
+   Identical 2:1 cards in all link grids, icon watermark from upper right,
+   subtle gold-to-forest shading towards bottom left; left-aligned copy.
+   KPI and table color rules below are left untouched. */
 #app{
  --bp-link-gold:#e8c37e;
  --bp-link-cream:#fff6e9;
  --bp-link-muted:#e8eee3;
  --bp-stat-head-green:#17382c;
- --bp-link-fixed-height:176px;
- --bp-link-gradient:linear-gradient(135deg,#b89a60 0%,#8d7448 22%,#476346 44%,#254f3b 64%,#123629 85%,#0d2b22 100%);
- --bp-link-gradient-active:linear-gradient(135deg,#c5a76b 0%,#95774a 22%,#4d694a 44%,#2b533d 64%,#173a2c 85%,#103127 100%);
+ --bp-link-gradient:
+  linear-gradient(225deg,rgba(234,193,115,.13) 0%,rgba(205,165,91,.07) 23%,rgba(20,57,41,0) 49%),
+  linear-gradient(225deg,#33543e 0%,#294d38 28%,#1c402f 56%,#113527 78%,#0c2c22 100%);
+ --bp-link-gradient-active:
+  linear-gradient(225deg,rgba(237,199,124,.17) 0%,rgba(209,172,100,.09) 24%,rgba(20,57,41,0) 52%),
+  linear-gradient(225deg,#395e45 0%,#2c513b 28%,#214734 56%,#153a2b 78%,#103024 100%);
 }
-/* All navigation grids use two equal-width columns, including the four
-   main home entries. No one-column bars on iPhone, no three/four-column tools. */
 #app .page--home .discovery-features,
 #app .page--home .discovery-mini-grid,
 #app .page--stats .tool-grid,
 #app .page--history .history-entry-grid{
  display:grid!important;
  grid-template-columns:repeat(2,minmax(0,1fr))!important;
- grid-auto-rows:var(--bp-link-fixed-height)!important;
- align-items:stretch!important;
+ grid-auto-rows:auto!important;
+ align-items:start!important;
  gap:10px!important;
  max-width:860px!important;
  margin-inline:auto!important;
-}
-/* On iPhone the four main links must remain exactly two rows of two tiles. */
-@media(max-width:650px){
- #app{--bp-link-fixed-height:170px}
- #app .page--home .discovery-features,
- #app .page--home .discovery-mini-grid,
- #app .page--stats .tool-grid,
- #app .page--history .history-entry-grid{
-  grid-template-columns:repeat(2,minmax(0,1fr))!important;
-  grid-auto-rows:var(--bp-link-fixed-height)!important;
-  gap:9px!important;
-  max-width:100%!important;
- }
 }
 #app .page :is(button,a).discovery-feature,
 #app .page :is(button,a).tool-tile{
  position:relative!important;
  isolation:isolate!important;
+ box-sizing:border-box!important;
  display:flex!important;
  flex-direction:column!important;
  justify-content:center!important;
- align-items:center!important;
- box-sizing:border-box!important;
+ align-items:stretch!important;
  width:100%!important;
  min-width:0!important;
  min-height:0!important;
- max-height:var(--bp-link-fixed-height)!important;
- height:var(--bp-link-fixed-height)!important;
+ max-height:none!important;
+ height:auto!important;
+ aspect-ratio:2 / 1!important;
  margin:0!important;
- padding:14px 12px!important;
+ padding:11px 13px!important;
  gap:0!important;
  overflow:hidden!important;
- border:1px solid #75876c!important;
- border-radius:17px!important;
+ border:1px solid #68816a!important;
+ border-radius:15px!important;
  background:var(--bp-link-gradient)!important;
  color:var(--bp-link-cream)!important;
- text-align:center!important;
- box-shadow:0 6px 18px rgba(0,0,0,.19)!important;
+ text-align:left!important;
+ box-shadow:0 4px 14px rgba(0,0,0,.19)!important;
  transition:background .18s ease,border-color .18s ease,box-shadow .18s ease!important;
  cursor:pointer;
 }
-/* Gentle light around top left, shading towards the text in the centre;
-   decorative only, never interferes with taps or text. */
+/* The soft highlight is placed at upper RIGHT and dissipates down-left. */
 #app .page :is(.discovery-feature,.tool-tile)::before{
  content:"";
  position:absolute;
  inset:0;
  z-index:0;
  pointer-events:none;
- background:
-  radial-gradient(ellipse 100% 100% at -9% -17%,rgba(255,231,167,.40),rgba(218,177,97,.19) 43%,transparent 76%),
-  linear-gradient(135deg,rgba(255,233,180,.12),transparent 32%,rgba(6,31,23,.38) 72%);
+ background:radial-gradient(ellipse 90% 130% at 105% -10%,rgba(234,190,105,.10) 0%,rgba(207,172,101,.04) 32%,transparent 70%);
 }
 #app .page :is(.discovery-feature,.tool-tile)::after{
  content:"";
@@ -83,32 +69,35 @@
  inset:0;
  z-index:2;
  pointer-events:none;
- background:radial-gradient(ellipse 92% 60% at 55% 61%,rgba(12,43,31,.58) 0%,rgba(13,42,31,.31) 57%,transparent 100%);
+ background:linear-gradient(90deg,rgba(9,40,29,.57) 0%,rgba(11,45,32,.40) 53%,rgba(11,43,31,.03) 100%);
 }
-/* The icon is the backdrop, not a small foreground pictogram.
-   It occupies nearly the whole tile while staying top/left weighted. */
+/* Oversize original icon as right-top diagonal background, cropped by
+   its card. It is a decoration, not an extra touch target. */
 #app .page :is(.discovery-feature,.tool-tile) > :is(.discovery-feature-icon,.tool-tile-symbol){
  position:absolute!important;
- inset:0 auto auto 0!important;
+ inset:0 0 auto auto!important;
+ top:0!important;
+ right:0!important;
+ bottom:auto!important;
+ left:auto!important;
  z-index:1!important;
  display:block!important;
  box-sizing:border-box!important;
- width:96%!important;
- height:92%!important;
- max-width:none!important;
- max-height:none!important;
+ width:110%!important;
+ height:132%!important;
  min-width:0!important;
  min-height:0!important;
+ max-width:none!important;
+ max-height:none!important;
  flex:none!important;
  margin:0!important;
  padding:0!important;
- overflow:hidden!important;
- opacity:.20!important;
- transform:translate(-9%,-10%) rotate(-9deg)!important;
- transform-origin:25% 22%!important;
+ overflow:visible!important;
+ opacity:.15!important;
+ transform:translate(20%,-21%) rotate(11deg)!important;
+ transform-origin:77% 17%!important;
  pointer-events:none!important;
- color:#f6d18b!important;
- text-align:left!important;
+ text-align:right!important;
 }
 #app .page :is(.discovery-feature,.tool-tile) > :is(.discovery-feature-icon,.tool-tile-symbol) .bp-icon{
  display:block!important;
@@ -122,18 +111,19 @@
  margin:0!important;
  padding:0!important;
  object-fit:contain!important;
- object-position:left top!important;
- filter:brightness(0) saturate(100%) invert(88%) sepia(23%) saturate(727%) hue-rotate(347deg) brightness(108%) contrast(94%)!important;
+ object-position:right top!important;
+ filter:brightness(0) saturate(100%) invert(84%) sepia(19%) saturate(675%) hue-rotate(352deg) brightness(106%) contrast(91%)!important;
 }
-/* Both the title and the short description float above the large watermark,
-   kept centred and inside a protected, readable area. */
+/* Keep the full hit surface but draw the two lines above the image, left
+   aligned; never stretch text just to occupy blank space. */
 #app .page :is(.discovery-feature,.tool-tile) > :is(.discovery-feature-copy,.tool-tile-copy){
  position:relative!important;
  z-index:3!important;
  display:flex!important;
  flex-direction:column!important;
+ align-items:flex-start!important;
  justify-content:center!important;
- align-items:center!important;
+ align-self:stretch!important;
  flex:0 0 auto!important;
  box-sizing:border-box!important;
  min-width:0!important;
@@ -141,37 +131,42 @@
  width:100%!important;
  margin:0!important;
  padding:0!important;
- gap:6px!important;
- text-align:center!important;
+ gap:4px!important;
+ text-align:left!important;
 }
 #app .page :is(.discovery-feature,.tool-tile) :is(.discovery-feature-copy,.tool-tile-copy) strong{
- display:block!important;
+ display:-webkit-box!important;
+ -webkit-box-orient:vertical!important;
+ -webkit-line-clamp:2;
+ overflow:hidden!important;
  width:100%!important;
  margin:0!important;
  padding:0!important;
  color:var(--bp-link-cream)!important;
- font-size:clamp(15px,1.9vw,19px)!important;
- font-weight:850!important;
- line-height:1.21!important;
- text-align:center!important;
+ font-size:clamp(14px,1.8vw,19px)!important;
+ font-weight:800!important;
+ line-height:1.2!important;
+ text-align:left!important;
  overflow-wrap:anywhere!important;
  hyphens:auto!important;
  text-wrap:balance;
 }
 #app .page :is(.discovery-feature,.tool-tile) :is(.discovery-feature-copy,.tool-tile-copy) :is(small,em){
- display:block!important;
+ display:-webkit-box!important;
+ -webkit-box-orient:vertical!important;
+ -webkit-line-clamp:1;
+ overflow:hidden!important;
  width:100%!important;
  margin:0!important;
  padding:0!important;
  color:var(--bp-link-muted)!important;
- font-size:clamp(12px,1.5vw,14px)!important;
- font-weight:450!important;
+ font-size:clamp(11px,1.45vw,14px)!important;
+ font-weight:400!important;
  font-style:normal!important;
- line-height:1.33!important;
- text-align:center!important;
+ line-height:1.32!important;
+ text-align:left!important;
  overflow-wrap:anywhere!important;
  hyphens:auto!important;
- text-wrap:balance;
 }
 #app .page :is(.discovery-feature,.tool-tile) > :is(.discovery-feature-arrow,.tool-tile-arrow){
  display:none!important;
@@ -179,12 +174,10 @@
 #app .page :is(.discovery-feature,.tool-tile):is(.is-active,.is-current,[aria-pressed="true"]){
  border:2px solid var(--bp-link-gold)!important;
  background:var(--bp-link-gradient-active)!important;
- box-shadow:0 6px 22px rgba(0,0,0,.27),inset 0 0 0 1px rgba(244,209,147,.12)!important;
+ box-shadow:0 5px 17px rgba(0,0,0,.24),inset 0 0 0 1px rgba(244,209,147,.08)!important;
 }
 @media(hover:hover) and (pointer:fine){
- #app .page :is(.discovery-feature,.tool-tile):hover{
-  border-color:var(--bp-link-gold)!important;
- }
+ #app .page :is(.discovery-feature,.tool-tile):hover{border-color:var(--bp-link-gold)!important}
 }
 #app .page :is(button,a).discovery-feature:focus-visible,
 #app .page :is(button,a).tool-tile:focus-visible{
@@ -192,15 +185,29 @@
  outline-offset:2px!important;
 }
 @media(max-width:650px){
+ #app .page--home .discovery-features,
+ #app .page--home .discovery-mini-grid,
+ #app .page--stats .tool-grid,
+ #app .page--history .history-entry-grid{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  grid-auto-rows:auto!important;
+  gap:8px!important;
+  max-width:100%!important;
+ }
  #app .page :is(button,a).discovery-feature,
- #app .page :is(button,a).tool-tile{padding:10px 8px!important}
+ #app .page :is(button,a).tool-tile{
+  padding:6px 8px!important;
+  border-radius:12px!important;
+ }
+ #app .page :is(.discovery-feature,.tool-tile) > :is(.discovery-feature-copy,.tool-tile-copy){gap:2px!important}
  #app .page :is(.discovery-feature,.tool-tile) :is(.discovery-feature-copy,.tool-tile-copy) strong{
-  font-size:clamp(14px,3.85vw,17px)!important;
+  font-size:clamp(12px,3.25vw,15px)!important;
+  line-height:1.14!important;
  }
  #app .page :is(.discovery-feature,.tool-tile) :is(.discovery-feature-copy,.tool-tile-copy) :is(small,em){
-  font-size:clamp(11px,3.15vw,13px)!important;
+  font-size:clamp(10px,2.8vw,12px)!important;
+  line-height:1.18!important;
  }
- #app .page :is(.discovery-feature,.tool-tile) > :is(.discovery-feature-copy,.tool-tile-copy){gap:5px!important}
 }
 @media(prefers-reduced-motion:reduce){
  #app .page :is(button,a).discovery-feature,
