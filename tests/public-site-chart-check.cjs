@@ -6,7 +6,7 @@ const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const local=fs.readFileSync('index.html','utf8');
 const base='https://baergsunne.github.io/';
-const files=['app.js','history-chronicle.js','lab-premium.js','unified-link-tiles-and-stats.css'];
+const files=['app.js','history-chronicle.js','lab-premium.js','unified-link-tiles-and-stats.css','heritage-sitewide-sunlight.css'];
 function assetVersion(html,file){
  const escaped=file.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
  const m=html.match(new RegExp('(?:src|href)="([^"]*'+escaped+'\\?v=[^"]+)"'));
@@ -22,7 +22,7 @@ for(const [name,v] of Object.entries(expected))assert(v,'Missing local site asse
   for(let attempt=1;attempt<=attempts;attempt++){
    try{
     // Cache-bust the HTML. Assets still load via real published versioned paths.
-    const res=await page.goto(base+'?pages-audit='+Date.now()+'-'+attempt+'#home',{waitUntil:'domcontentloaded',timeout:25000});
+    const res=await page.goto(base+'?pages-audit='+Date.now()+'-'+attempt+'#home',{waitUntil:'load',timeout:25000});
     if(!res?.ok())throw Error('Public HTML returned '+res?.status());
     const observed={};
     for(const name of files){
@@ -43,6 +43,19 @@ for(const [name,v] of Object.entries(expected))assert(v,'Missing local site asse
        !style.includes('aspect-ratio:2 / 1!important')||
        !style.includes('grid-template-columns:repeat(2,minmax(0,1fr))!important'))
      throw Error('Published stylesheet does not contain new gold-watermark grid');
+    // The stylesheet link may exist before Safari/Chromium has applied CSS.
+    // Wait for the actual published panel material, not just index markup.
+    const forestRes=await page.request.get(new URL(expected['heritage-sitewide-sunlight.css'],base).toString(),{timeout:15000});
+    if(!forestRes.ok())throw Error('Published second-level forest stylesheet HTTP '+forestRes.status());
+    const forestCSS=await forestRes.text();
+    if(!forestCSS.includes('--bp-level-two-forest:linear-gradient(225deg')||
+       !forestCSS.includes('#203d30 0%')||
+       !forestCSS.includes('#0b241b 100%'))
+      throw Error('Published second-level forest CSS missing expected dark gradient');
+    await page.waitForFunction(()=>{
+      const link=document.querySelector('.page--home .discovery-feature');
+      return !!link&&getComputedStyle(link).backgroundImage.includes('linear-gradient');
+    },null,{timeout:12000});
     await page.waitForFunction(()=>typeof db!=='undefined'&&db.editions.some(e=>e.year===2026),null,{timeout:15000});
     const data=await page.evaluate(()=>{
      const links=[...document.querySelectorAll('.page--home .discovery-features > .discovery-feature')];
@@ -57,7 +70,12 @@ for(const [name,v] of Object.entries(expected))assert(v,'Missing local site asse
      const official=edition.official_standings.find(x=>x.player_id==='Schnarre');
      state.page='stats';state.tab='career';state.metric='rank';draw();
      const careerTitles=[...document.querySelectorAll('#selected-stat-tool .chart-svg circle title')].map(t=>t.textContent);
-     return {version,homeCards:links.length,columns:rects.length===4&&Math.abs(rects[0].top-rects[1].top)<2&&rects[2].top>rects[0].bottom+3,
+     // Explicitly check the large heatmap panel shown in the iPhone report:
+     // it must use a dark forest-only fill. Small panorama links remain golden.
+     state.page='stats';state.tab='heatmap';draw();
+     const heatmapCard=document.querySelector('.page--stats #selected-stat-tool .card');
+     const heatmapBackground=heatmapCard?getComputedStyle(heatmapCard).backgroundImage:'';
+     return {heatmapBackground,version,homeCards:links.length,columns:rects.length===4&&Math.abs(rects[0].top-rects[1].top)<2&&rects[2].top>rects[0].bottom+3,
       dimensions:rects.map(r=>({width:Math.round(r.width),height:Math.round(r.height)})),
       firstIconWidth:icons[0],firstBg:style?.backgroundImage||'',
       official,profileHeading:profileText.includes('Karriere-Entwicklung · offizieller Jahresrang'),
@@ -69,7 +87,11 @@ for(const [name,v] of Object.entries(expected))assert(v,'Missing local site asse
     assert(data.columns,'Published homepage still lacks 2x2 grid: '+JSON.stringify(data.dimensions));
     assert(data.dimensions.every(t=>Math.abs(t.height-t.width/2)<=1),'Published cards are not exact 2:1 rectangles');
     assert(data.firstIconWidth>100,'Live giant icon watermark missing');
-    assert(data.firstBg.includes('linear-gradient'),'Live gold-to-green gradient missing');
+    assert(data.firstBg.includes('linear-gradient'),'Small live home link gradient missing');
+    assert(data.heatmapBackground.includes('rgb(32, 61, 48)')&&
+           data.heatmapBackground.includes('rgb(11, 36, 27)')&&
+           !data.heatmapBackground.includes('rgba(234, 193, 115'),
+           'Live dark Heritage Forest background missing on large Heatmap card: '+data.heatmapBackground);
     assert.equal(data.official.place,4);
     assert.equal(data.official.points,28);
     assert(data.profileHeading&&data.profile2026&&data.career2026);
