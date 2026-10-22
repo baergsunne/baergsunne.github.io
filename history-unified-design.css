@@ -308,7 +308,7 @@
    Keep a visible inset from the outer card and a controlled inner text margin. */
 @media(max-width:600px){
   #app .page.page--history .history-chronicle .history-feature--yearbook .history-yearbook-card{
-    padding-inline:clamp(9px,2.5vw,12px);
+    padding-inline:clamp(9px,2.5vw,12px)!important;
   }
   #app .page.page--history .history-chronicle .history-yearbook-extras .history-insight-grid{
     gap:clamp(6px,1.8vw,8px);
