@@ -202,7 +202,7 @@ html,body{background:var(--bp-heritage-surface)!important}
  --bp-level-two-forest:linear-gradient(225deg,
   #203d30 0%,#1b372b 32%,#153025 64%,#0b241b 100%);
 }
-#app .page :is(
+#app .page.page :is(
  .card,.filterbar,.round-detail,.tool-choice-panel,.bp-selection-panel,
  .duel-inputs,.discovery-live,.cl-block,.cl-leader,.cl-simulator,.cl-round,
  .history-yearbook-card,.history-replay-card,.bp-sim
