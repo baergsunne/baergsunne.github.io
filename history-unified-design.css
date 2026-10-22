@@ -302,3 +302,27 @@
     transition:none!important;
   }
 }
+
+/* Jahrbuch on iPhone: maximise the usable width of the four record/DNA
+   tiles without widening their grid, touching the carousel or shrinking type.
+   Keep a visible inset from the outer card and a controlled inner text margin. */
+@media(max-width:600px){
+  #app .page.page--history .history-chronicle .history-feature--yearbook .history-yearbook-card:has(.history-yearbook-extras){
+    padding-inline:clamp(9px,2.5vw,12px)!important;
+  }
+  #app .page.page--history .history-chronicle .history-yearbook-extras .history-insight-grid{
+    gap:clamp(6px,1.8vw,8px);
+  }
+  #app .page.page--history .history-chronicle .history-yearbook-extras .history-insight-metric{
+    padding-inline:clamp(5px,1.7vw,7px);
+  }
+  #app .page.page--history .history-chronicle .history-yearbook-extras .history-insight-metric > :is(
+    .history-insight-metric-title,.history-insight-metric-value,
+    .history-insight-metric-players,p
+  ){
+    box-sizing:border-box;
+    width:100%;
+    min-width:0;
+    max-width:100%;
+  }
+}

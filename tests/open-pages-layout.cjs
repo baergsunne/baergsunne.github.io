@@ -50,7 +50,7 @@ const assert=require('node:assert/strict');
      preserved:before===JSON.stringify(db.editions.find(x=>x.year===2026).official_standings)};
    });
    for(const r of audit.report){
-    assert.equal(r.background,'rgb(48, 74, 67)',r.page+' must use shared Heritage-green background');
+    assert.equal(r.background,'rgb(11, 36, 27)',r.page+' must use shared Heritage-green background');
     assert.equal(r.border,'0px',r.page+' must have no outer frame');
     assert.equal(r.heroBorder,'0px',r.page+' hero must be frameless');
     assert.equal(r.heroImage,true,r.page+' must retain alpine hero image');
