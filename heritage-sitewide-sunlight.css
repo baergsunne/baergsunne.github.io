@@ -88,6 +88,7 @@ html,body{background:var(--bp-heritage-surface)!important}
 }
 /* Duel and Historie share one familiar native dropdown palette;
    the old Historie-specific background must not override the new daylight. */
+#app .page #history-year-select,
 #app .page.page--history .history-dropdown-controls select,
 #app .page.page--stats .duel-native-select{
  background:var(--bp-sunlight-surface)!important;
