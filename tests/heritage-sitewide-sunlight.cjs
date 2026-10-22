@@ -29,6 +29,10 @@ const sample=(node)=>node?(()=>{
       w:el.getBoundingClientRect().width,h:el.getBoundingClientRect().height}):null;
     return {background:getComputedStyle(document.querySelector('.page')).backgroundColor,
      body:getComputedStyle(document.body).backgroundColor,
+     header:getComputedStyle(document.querySelector('header.heritage-header')).backgroundColor,
+     desktopNav:getComputedStyle(document.querySelector('header.heritage-header .desktopnav')).backgroundColor,
+     bottomNav:getComputedStyle(document.querySelector('nav.bottomnav')).backgroundColor,
+     safariTheme:document.querySelector('meta[name="theme-color"]')?.content,
      cards:[card(document.querySelector('.discovery-champion')),card(document.querySelector('.discovery-counts>div'))],
      link:card(document.querySelector('.page--home .discovery-feature'))};
    });
@@ -84,6 +88,10 @@ const sample=(node)=>node?(()=>{
    ];
    assert.equal(result.home.background,'rgb(11, 36, 27)','Deep Heritage Forest site background');
    assert.equal(result.home.body,result.home.background,'Page/body background matches');
+   assert.equal(result.home.header,result.home.background,'Header matches dark Forest shell at '+width);
+   assert.equal(result.home.desktopNav,result.home.background,'Desktop navigation uses identical dark Forest shell');
+   assert.equal(result.home.bottomNav,result.home.background,'Bottom navigation uses identical dark Forest shell');
+   assert.equal(result.home.safariTheme,'#0b241b','Safari tint agrees with head stage');
    for(const [label,item] of toTest){
     assert(item,label+' missing at '+width);
     assert(item.bg.includes('225deg'),width+' '+label+' must use same upper-right gold/forest sunlight: '+JSON.stringify(item));
