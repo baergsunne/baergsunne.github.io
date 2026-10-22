@@ -19,13 +19,14 @@ const fixture=require('./fixture-2026.json');
       svg=icon?.querySelector('.bp-icon'),title=el.querySelector('.discovery-feature-copy strong,.tool-tile-copy strong'),
       desc=el.querySelector('.discovery-feature-copy small,.tool-tile-copy small'),
       arrow=el.querySelector('.discovery-feature-arrow,.tool-tile-arrow'),
-      r=el.getBoundingClientRect(),i=icon?.getBoundingClientRect(),s=svg?.getBoundingClientRect();
+      r=el.getBoundingClientRect(),i=icon?.getBoundingClientRect(),s=svg?.getBoundingClientRect(),copy=el.querySelector('.discovery-feature-copy,.tool-tile-copy')?.getBoundingClientRect();
      return {classes:el.className,title:title?.textContent,
       bg:st.backgroundImage,color:st.color,textAlign:st.textAlign,
       border:st.borderTopColor,grid:st.display,radius:st.borderTopLeftRadius,
       width:r.width,height:r.height,overflow:r.right>innerWidth+2,
       iconLeft:i?.left-r.left,iconTop:i?.top-r.top,
       svgWidth:s?.width,svgHeight:s?.height,svgLoaded:svg?.complete&&svg.naturalWidth>0,
+      contentGap:copy&&i?copy.top-i.bottom:null,bottomEmpty:copy?r.bottom-copy.bottom:null,
       iconColor:icon?getComputedStyle(icon).color:null,
       titleAlign:title?getComputedStyle(title).textAlign:null,titleColor:title?getComputedStyle(title).color:null,
       descAlign:desc?getComputedStyle(desc).textAlign:null,descColor:desc?getComputedStyle(desc).color:null,
@@ -36,18 +37,23 @@ const fixture=require('./fixture-2026.json');
     assert.equal(d.length,count,pageName+' link count');
     for(const a of d){
      assert.equal(a.grid,'grid',pageName+' tile needs shared grid');
-     assert(a.width>=100&&a.height>=155,pageName+' tile cramped: '+JSON.stringify(a));
+     assert(a.width>=100&&a.height>=70,pageName+' tile cramped: '+JSON.stringify(a));
+     assert(a.height<=(pageName==='Home'?160:width<=430?185:175),pageName+' tile should be compact: '+JSON.stringify(a));
      assert(!a.overflow,pageName+' horizontal overflow: '+JSON.stringify(a));
      assert(a.svgLoaded,pageName+' actual svg missing: '+a.title);
-     assert.equal(a.svgWidth,32,pageName+' icon width '+a.title);
-     assert.equal(a.svgHeight,32,pageName+' icon height '+a.title);
-     assert(a.iconLeft>=10&&a.iconLeft<=23,pageName+' icon left inset '+JSON.stringify(a));
-     assert(a.iconTop>=12&&a.iconTop<=24,pageName+' icon top inset '+JSON.stringify(a));
+     assert.equal(a.svgWidth,28,pageName+' icon width '+a.title);
+     assert.equal(a.svgHeight,28,pageName+' icon height '+a.title);
+     assert(a.iconLeft>=10&&a.iconLeft<=24,pageName+' icon left inset '+JSON.stringify(a));
+     assert(a.iconTop>=10&&a.iconTop<=24,pageName+' icon top inset '+JSON.stringify(a));
      assert.equal(a.titleAlign,'center',pageName+' centered title '+a.title);
      assert.equal(a.descAlign,'center',pageName+' centered description '+a.title);
      assert.equal(a.titleColor,'rgb(255, 244, 227)',pageName+' cream-white title '+a.title);
      assert.equal(a.descColor,'rgb(225, 233, 223)',pageName+' cream-white desc '+a.title);
      assert.equal(a.arrowDisplay,'none',pageName+' decorative arrow hidden');
+     if(pageName!=='Home'){
+      assert(a.contentGap>=4&&a.contentGap<=16,pageName+' content stays close to icon: '+JSON.stringify(a));
+      assert(a.bottomEmpty<=58,pageName+' leaves too much bottom whitespace: '+JSON.stringify(a));
+     }
      assert(a.radius.includes('17px'),pageName+' tile radius');
     }
     const allStd=d.filter(x=>!x.active);
