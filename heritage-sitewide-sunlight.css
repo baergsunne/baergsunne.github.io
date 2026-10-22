@@ -205,7 +205,7 @@ html,body{background:var(--bp-heritage-surface)!important}
 #app .page.page :is(
  .card,.filterbar,.round-detail,.tool-choice-panel,.bp-selection-panel,
  .duel-inputs,.discovery-live,.cl-block,.cl-leader,.cl-simulator,.cl-round,
- .history-yearbook-card,.history-replay-card,.bp-sim
+ .history-yearbook-card,.history-replay-card,.bp-sim,.playercard--summary
 ){
  background:var(--bp-level-two-forest)!important;
 }
