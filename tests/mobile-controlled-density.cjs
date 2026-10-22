@@ -94,7 +94,7 @@ const fixture=require('./fixture-2026.json');
       mainPadding:getComputedStyle(document.querySelector('main')).paddingBottom};
    });
    assert.equal(stats.count,4,'four original overview KPIs remain');
-   assert(stats.colors.every(x=>x.name==='rgb(232, 195, 126)'&&x.note==='rgb(232, 195, 126)'&&x.number==='rgb(242, 206, 139)'),width+'px: consistent Bärgsunne yellow KPI type');
+   assert(stats.colors.every(x=>x.name==='rgb(255, 244, 230)'&&x.note==='rgb(255, 244, 230)'&&x.number==='rgb(242, 206, 139)'),width+'px: white KPI labels/names and Bärgsunne yellow values');
    assert.equal(stats.borderBottom,'0px','no decorative line under KPI grid');
    assert(stats.overflow<=2,'no new horizontal overflow');
    assert.deepEqual(errors,[],'no runtime errors');
