@@ -71,6 +71,9 @@ jobs:
       # apt package refreshes delaying the actual visual regression audit.
       - run: npx playwright install chromium
       - run: python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/poker-server.log 2>&1 & 
+      # Check the deliberately narrowed Jahrbuch padding before the longer carousels.
+      - run: node tests/yearbook-metric-inner-width.cjs
+      - run: node tests/history-six-visual-unity.cjs
       - run: node tests/browser-audit.cjs
       - run: node tests/hero-trophy-regression.cjs
       - run: node tests/unified-link-tiles-stats.cjs
@@ -95,10 +98,8 @@ jobs:
       - run: node tests/key-moments-carousel.cjs
       - run: node tests/history-seven-perspectives.cjs
       - run: node tests/yearbook-highlights-dna.cjs
-      - run: node tests/yearbook-metric-inner-width.cjs
       - run: node tests/history-record-stories.cjs
       - run: node tests/history-insight-carousel-peek.cjs
-      - run: node tests/history-six-visual-unity.cjs
       - run: node tests/history-sticky-slider.cjs
       - run: node tests/history-mobile-thumb-rail.cjs
       - run: node tests/history-no-jolt.cjs
