@@ -3,6 +3,10 @@
 const seed=window.POKER_SEED;
 const apiBase=(window.BAERGSUNNE_API_URL||'').replace(/\/$/,'');
 let remoteRounds=null;
+// The static snapshot ends in 2025. Hydrate the official 2026 archive first.
+let appBootstrapped=false;
+let liveRefreshInFlight=false;
+function liveContentSignature(d){return d?JSON.stringify([d.status,d.year,d.round_count,d.players,d.rounds,d.standings,d.leaders]):'';}
 function validateArchiveEdition(e){
  if(!e||!Number.isInteger(e.year)||!Array.isArray(e.players)||!Array.isArray(e.rounds)||!Array.isArray(e.official_standings)||e.rounds.length!==e.round_count) return false;
  const totals=new Map(e.players.map(p=>[p,0]));
@@ -12,7 +16,7 @@ function validateArchiveEdition(e){
  if(e.year===2026){const expected={Frauchi:[1,50],König:[2,39],Mike:[3,29],Schnarre:[4,28],Bröne:[5,27],Keel:[6,26],Niko:[7,23],Mänu:[8,20],Chopfi:[9,17],Fösu:[10,11]};return e.official_standings.length===10&&e.official_standings.every(x=>expected[x.player_id]?.[0]===x.place&&expected[x.player_id]?.[1]===x.points)}
  return true;
 }
-async function refreshLive(){if(!apiBase)return;try{const r=await fetch(apiBase+'/api/live',{cache:'no-store'});if(!r.ok)throw Error('Live-Service nicht verfügbar');const d=await r.json();if(!d||!Array.isArray(d.standings))throw Error('Ungültige API-Antwort');const previous=window.BAERGSUNNE_PUBLIC_LIVE;window.BAERGSUNNE_PUBLIC_LIVE=d;
+async function refreshLive(){if(!apiBase||liveRefreshInFlight)return;liveRefreshInFlight=true;try{const r=await fetch(apiBase+'/api/live',{cache:'no-store'});if(!r.ok)throw Error('Live-Service nicht verfügbar');const d=await r.json();if(!d||!Array.isArray(d.standings))throw Error('Ungültige API-Antwort');const previous=window.BAERGSUNNE_PUBLIC_LIVE;window.BAERGSUNNE_PUBLIC_LIVE=d;
  const editionsResponse=await fetch(apiBase+'/api/editions',{cache:'no-store'});
  if(!editionsResponse.ok)throw Error('Archiv-Service nicht verfügbar');
  const archived=(await editionsResponse.json()).editions;
@@ -21,8 +25,16 @@ async function refreshLive(){if(!apiBase)return;try{const r=await fetch(apiBase+
  for(const edition of archived){if(db.editions.some(x=>x.year===edition.year))continue;if(!validateArchiveEdition(edition))throw Error('Archivprüfung fehlgeschlagen für Jahr '+edition.year);db.editions.push(edition);seed.editions.push(edition);archiveChanged=true;years.push(edition.year);for(const player of edition.players)if(!names.includes(player)){names.push(player);seed.players.push({id:player,name:player,initials:player.slice(0,1)})}db.players=clone(seed.players);}
  if(archiveChanged){state.selectedYears=state.selectedYears.filter(y=>db.editions.some(e=>e.year===y));db.editions.sort((a,b)=>a.year-b.year);seed.editions.sort((a,b)=>a.year-b.year);years.sort((a,b)=>a-b);if(db.editions.some(e=>e.year===2026))state.historyYear=2026;}
  window.BAERGSUNNE_LIVE_UNAVAILABLE=false;
- if(archiveChanged||state.page==='live'||state.page==='home'||(['players','profile'].includes(state.page)&&JSON.stringify([previous?.players,previous?.rounds,previous?.standings,previous?.status])!==JSON.stringify([d.players,d.rounds,d.standings,d.status])))draw();
- }catch(err){if(!window.BAERGSUNNE_LIVE_UNAVAILABLE){window.BAERGSUNNE_LIVE_UNAVAILABLE=true;if(state.page==='live'||state.page==='home')draw();}}}
+ // Unchanged periodic responses must NOT replace the whole page DOM.
+ // This avoids the recurring image flash, scroll jumps and a second paint.
+ const changed=liveContentSignature(previous)!==liveContentSignature(d);
+ if(appBootstrapped&&(archiveChanged||(changed&&['live','home','players','profile'].includes(state.page))))draw();
+ }catch(err){
+  if(!window.BAERGSUNNE_LIVE_UNAVAILABLE){
+   window.BAERGSUNNE_LIVE_UNAVAILABLE=true;
+   if(appBootstrapped&&['live','home'].includes(state.page))draw();
+  }
+ }finally{liveRefreshInFlight=false;}}
 const years=seed.editions.map(e=>e.year);
 const names=seed.players.map(p=>p.name);
 const GOLD='#E8C37E',GREEN='#63C7A1',VIOLET='#9A9EFA',ROSE='#ED997F',CYAN='#72BDDE';
@@ -62,7 +74,7 @@ function navigation(){return `<nav class="desktopnav">${navs.map(([id,glyph,t])=
 function filter(){const chip=(label,val,action)=>`<button class="chip chosen" data-action="${action}" data-value="${esc(val)}">${esc(label)} ×</button>`;return `<section class="filterbar"><div class="filtertop"><span>DEINE AUSWAHL</span><button class="textbtn" data-action="resetfilters">Zurücksetzen ↺</button></div><p class="filter-intro">Vergleiche beliebige Spieler über einen oder mehrere Jahrgänge.</p><div class="filterrow"><label>${icon('calendar-year')} Jahrgänge <button class="selectlike" data-action="openyears">${state.selectedYears.length?state.selectedYears.length+' Jahre gewählt':'Jahr auswählen'} <span>＋</span></button></label><label>${icon('filter-players')} Spieler <button class="selectlike" data-action="openplayers">${state.selected.length?state.selected.length+' Spieler gewählt':'Spieler auswählen'} <span>＋</span></button></label></div><div class="activechips">${state.selectedYears.map(y=>chip(y,y,'toggleyear')).join('')}${state.selected.map(p=>chip(p,p,'toggle')).join('')||'<span class="subtle"></span>'}</div></section>`}
 function kpi(label,value,note='',action='',target=''){return `<${action?'button':'div'} class="kpi ${action?'kpi-click':''}" ${action?`data-action="${action}" data-value="${esc(target)}" aria-label="${esc(label)} öffnen"`:''}><div>${esc(label)}</div><strong>${esc(value)}</strong><small>${esc(note)}</small>${action?'<span class="kpi-arrow">↗</span>':''}</${action?'button':'div'}>`}
 function sectionTitle(kicker,title,desc=''){return `<div class="sectiontitle"><div><span class="overline">${kicker}</span><h2>${title}</h2>${desc?`<p>${desc}</p>`:''}</div></div>`}
-function hero(title,subtitle,brow='2007—2025 · 16 TURNIERE'){return `<section class="hero"><div class="glow"></div><div class="hero-content"><span class="overline">${brow}</span><h1>${title}</h1><p>${subtitle}</p><div class="hero-glyph">♠</div></div></section>`}
+function hero(title,subtitle,brow='TURNIERARCHIV · SEIT 2007'){return `<section class="hero"><div class="glow"></div><div class="hero-content"><span class="overline">${brow}</span><h1>${title}</h1><p>${subtitle}</p><div class="hero-glyph">♠</div></div></section>`}
 // v1.8.1: Consistent accessible, expandable explanations for data displays.
 const EXPLAIN_RULES=[
  [/Championship Drama/i,['Wie spannend verlief diese Meisterschaft?','Wir lesen nach jeder Runde die Meisterschaftstabelle mit allen bisher gesammelten Punkten und zählen nur Wechsel zwischen zwei eindeutig allein Führenden. Der grösste Rückstand des späteren Champions zeigt, wie weit er zwischendurch zurücklag.','Vier Führungswechsel bedeuten vier tatsächliche Wechsel der alleinigen Führung – nicht vier Verschiebungen irgendeines Tabellenplatzes.','Eine Punktgleichheit ist keine eindeutige Führung. Die Zahl sagt nichts darüber, wie knapp einzelne Pokerhände waren.']],
@@ -231,7 +243,7 @@ function home(){
  const feature=(title,desc,action,value,icon,content)=>`<button class="discovery-feature" data-action="${action}" data-value="${esc(value)}"><span class="discovery-feature-icon">${icon}</span><span class="discovery-feature-copy"><strong>${title}</strong><small>${desc}</small>${content?`<em>${content}</em>`:''}</span><span class="discovery-feature-arrow">↗</span></button>`;
  return `<div class="discovery-home"><section class="discovery-hero" aria-label="Bärgsunne Poker"><div class="discovery-hero-inner"><img class="discovery-hero-logo" src="assets/logo-premium.webp" alt="Bärgsunne Poker – Lenk" decoding="async"/></div></section>
  <section class="discovery-counts" aria-label="Archiv in Zahlen"><div><strong>${db.editions.length}</strong><span>Turniere</span></div><div><strong>${players.size}</strong><span>Spieler</span></div><div><strong>${numRounds}</strong><span>Runden</span></div></section>
- <section class="discovery-champion" aria-label="Amtierender Champion ${latest.year}"><div class="discovery-champion-copy"><span class="overline">AMTIERENDER CHAMPION · ${latest.year}</span><h2>${winner?esc(winner.player_id):'Kein offizieller Sieger'}</h2><p>${winner?'<strong>'+pointsFmt(winner.points)+' Punkte</strong> · Offizieller Schlussrang 1':'Noch kein bestätigter Sieger'}</p><button type="button" data-action="openyear" data-value="${latest.year}">Titelweg im Jahrbuch ${latest.year} ansehen ↗</button></div><div class="discovery-champion-trophy"><img src="assets/trophy-premium.webp" loading="lazy" decoding="async" alt="Originaler Bärgsunne-Turnierpokal"/></div></section>
+ <section class="discovery-champion" aria-label="Amtierender Champion ${latest.year}"><div class="discovery-champion-copy"><span class="overline">AMTIERENDER CHAMPION · ${latest.year}</span><h2>${winner?esc(winner.player_id):'Kein offizieller Sieger'}</h2><p>${winner?'<strong>'+pointsFmt(winner.points)+' Punkte</strong> · Offizieller Schlussrang 1':'Noch kein bestätigter Sieger'}</p><button type="button" data-action="openyear" data-value="${latest.year}">Titelweg im Jahrbuch ${latest.year} ansehen ↗</button></div><div class="discovery-champion-trophy"><img src="assets/trophy-premium.webp" loading="eager" fetchpriority="high" decoding="async" alt="Originaler Bärgsunne-Turnierpokal"/></div></section>
  ${live}
  <section class="discovery-section"><div class="discovery-head"><span class="overline">DEIN EINSTIEG</span><h2>Was möchtest du entdecken?</h2></div><div class="discovery-features">
  ${feature('Historie','Turniere erleben','go','history',icon('archive'),`${ordered.length} Jahrbücher`)}
@@ -688,7 +700,7 @@ function standardTab(){return sectionTitle('STANDARD-KATALOG','Schnellanalysen',
 function patternsTab(){if(window.BAERGSUNNE_PATTERN_FINDER)return window.BAERGSUNNE_PATTERN_FINDER(db);let facts=patternFacts();const pct=n=>pointsFmt(Math.round(n*10)/10)+' %';return sectionTitle('WENN → DANN','Muster-Finder','Die App sucht nach Zusammenhängen in den ausgewählten echten Turnierrunden. Auffällige Muster können Zufall sein.')+`<div class="datawarn">Die gefundenen Muster sind keine sicheren Vorhersagen. Auffällige Werte können zufällig entstehen, besonders weil viele Muster geprüft werden.</div>${facts.length?facts.map(f=>`<article class="card" style="margin:14px 0;padding:18px"><div class="eyebrow">${esc(f.p||'MEISTERSCHAFT')} · ${esc(f.unit)}</div><h3>${esc(f.title)}</h3><p><strong>WENN</strong> ${esc(f.condition)}, <strong>DANN</strong> wurde ${esc(f.consequence)}.</p><div class="metrics">${kpi('Beobachtet',f.yes+' von '+f.total,pct(f.rate)+' der Fälle')}${kpi('Ohne diese Bedingung',f.comparison+' von '+f.baseTotal,pct(f.base)+' der Vergleichsfälle')}</div><p><strong>Einfach erklärt:</strong> In ${f.total} passenden Fällen traf die Folge ${f.yes}-mal ein. Ohne die genannte Voraussetzung waren es ${f.comparison} von ${f.baseTotal} Fällen. Der Unterschied beträgt ${pointsFmt(Math.round(f.diff*10)/10)} Prozentpunkte. Das ist ein beobachteter Zusammenhang, keine Ursache und keine sichere Regel.</p><details><summary>Wie wurde das berechnet? Beispiele anzeigen</summary><p>Wir betrachten nur die ausgewählten Jahrgänge und Spieler. Zunächst zählen wir alle Fälle mit der Wenn-Bedingung. Danach prüfen wir bei jedem Fall, ob das Dann-Ereignis tatsächlich folgte. Zur Einordnung rechnen wir denselben Anteil für Fälle ohne die Wenn-Bedingung aus.</p><p>Belege für erfüllte Folge: ${f.samples.length?esc(f.samples.join(', ')):'In dieser Auswahl kein erfüllter Fall'}. Für die vollständige Prüfung zählen auch die Fälle ohne Folge.</p><p><strong>Gegenbeispiele zur Wenn-dann-Aussage:</strong> ${f.counterexamples?.length?esc(f.counterexamples.join(', ')):'In dieser Auswahl keine – das macht die Aussage noch nicht zu einer sicheren Regel.'}</p><p><strong>So liest du den Vergleich:</strong> Die beiden Gruppen haben ${f.total} beziehungsweise ${f.baseTotal} Fälle. Ein Unterschied kann durch Zufall, unterschiedlich grosse Gruppen oder andere Umstände entstehen. Aus diesem Ergebnis kann man weder Spielverhalten noch künftige Siege ableiten.</p>${f.caution?'<p><strong>Vorsicht:</strong> Kleine Vergleichsgruppe – dieses Muster ist besonders unsicher.</p>':''}</details></article>`).join(''):'<div class="empty">Für diese Auswahl gibt es keine Muster mit mindestens drei Fällen pro Vergleichsgruppe. Wähle mehr Spieler oder Jahre.</div>'}`;}
 
 function premiumMasthead(page){
- const labels={history:['DAS ARCHIV','Historie','16 Turniere. Eine Geschichte seit 2007.'],stats:['DIE ZAHLEN','Statistiken','Vergleiche, Rekorde und Meisterschaftsverläufe.'],players:['DIE TEILNEHMER','Spieler','Karrieren und Duelle aus den Originalergebnissen.'],profile:['DAS DOSSIER','Spielerprofil','Die Geschichte hinter den Platzierungen.'],fame:['DIE EHRENTAFEL','Hall of Fame','Alle Champions. Alle Titel.'],live:['AM POKERTISCH','Live','Aktueller Spielstand und Rundenergebnisse.'],admin:['VERWALTUNG','Administration','Geschützter Zugriff auf die Turnierverwaltung.']};
+ const labels={history:['DAS ARCHIV','Historie',`${db.editions.length} Turniere. Eine Geschichte seit 2007.`],stats:['DIE ZAHLEN','Statistiken','Vergleiche, Rekorde und Meisterschaftsverläufe.'],players:['DIE TEILNEHMER','Spieler','Karrieren und Duelle aus den Originalergebnissen.'],profile:['DAS DOSSIER','Spielerprofil','Die Geschichte hinter den Platzierungen.'],fame:['DIE EHRENTAFEL','Hall of Fame','Alle Champions. Alle Titel.'],live:['AM POKERTISCH','Live','Aktueller Spielstand und Rundenergebnisse.'],admin:['VERWALTUNG','Administration','Geschützter Zugriff auf die Turnierverwaltung.']};
  const v=labels[page];if(!v)return '';
  return `<section class="premium-masthead premium-masthead--${page}"><div class="premium-masthead-copy"><span>${v[0]} · BÄRGSUNNE POKER</span><h1>${v[1]}</h1><p>${v[2]}</p></div></section>`;
 }
@@ -793,9 +805,16 @@ let touchStart=null;document.addEventListener('touchstart',e=>{if(!e.target.clos
 function syncRoute(){const page=location.hash.slice(1)||'home';state.page=['home','history','stats','players','live','admin','fame','profile'].includes(page)?page:'home';state.menuOpen=false;draw();}
 window.addEventListener('popstate',syncRoute);
 window.addEventListener('hashchange',syncRoute);
-document.addEventListener('DOMContentLoaded',syncRoute,{once:true});
-
-if(apiBase){refreshLive();setInterval(refreshLive,15000);}
+// Render once after the canonical archive request. Before then, the HTML
+// displays a neutral loading stage rather than the obsolete 16-year view.
+const initialArchiveRequest=apiBase?refreshLive():Promise.resolve();
+document.addEventListener('DOMContentLoaded',()=>{
+ initialArchiveRequest.finally(()=>{
+  appBootstrapped=true;
+  syncRoute();
+ });
+},{once:true});
+if(apiBase)setInterval(()=>{if(appBootstrapped)refreshLive();},15000);
 
 // Ein gemeinsamer, frei kombinierbarer Fragenbaukasten.
 function studioTab(){return universalStudioTab()}
