@@ -17,16 +17,16 @@
  box-sizing:border-box!important;
  display:grid!important;
  grid-template-columns:minmax(0,1fr)!important;
- grid-template-rows:34px minmax(0,1fr)!important;
- align-content:stretch!important;
+ grid-template-rows:30px auto!important;
+ align-content:start!important;
  align-items:start!important;
  justify-items:stretch!important;
- gap:12px!important;
+ gap:7px!important;
  width:100%!important;
  min-width:0!important;
- min-height:162px!important;
+ min-height:0!important;
  height:auto!important;
- padding:17px 15px 18px!important;
+ padding:13px 13px 14px!important;
  border:1px solid #63816a!important;
  border-radius:17px!important;
  background:var(--bp-link-forest)!important;
@@ -45,11 +45,11 @@
  justify-self:start!important;
  align-self:start!important;
  box-sizing:border-box!important;
- width:34px!important;
- height:34px!important;
- min-width:34px!important;
- min-height:34px!important;
- flex:0 0 34px!important;
+ width:30px!important;
+ height:30px!important;
+ min-width:30px!important;
+ min-height:30px!important;
+ flex:0 0 30px!important;
  margin:0!important;
  padding:0!important;
  color:var(--bp-link-gold)!important;
@@ -60,11 +60,11 @@
 #app .page :is(.discovery-feature,.tool-tile) :is(.discovery-feature-icon,.tool-tile-symbol) .bp-icon{
  display:block!important;
  box-sizing:border-box!important;
- width:32px!important;
- height:32px!important;
- min-width:32px!important;
- min-height:32px!important;
- flex:0 0 32px!important;
+ width:28px!important;
+ height:28px!important;
+ min-width:28px!important;
+ min-height:28px!important;
+ flex:0 0 28px!important;
  object-fit:contain!important;
  object-position:center!important;
  margin:0!important;
@@ -77,13 +77,13 @@
  display:flex!important;
  flex-direction:column!important;
  align-items:center!important;
- justify-content:center!important;
+ justify-content:flex-start!important;
  justify-self:stretch!important;
- align-self:stretch!important;
- flex:1 1 auto!important;
+ align-self:start!important;
+ flex:0 1 auto!important;
  min-width:0!important;
  width:100%!important;
- gap:8px!important;
+ gap:5px!important;
  margin:0!important;
  padding:0!important;
  text-align:center!important;
@@ -136,15 +136,60 @@
  outline:3px solid #ffe0a0!important;
  outline-offset:2px!important;
 }
+/* Distinct presentation by available width, one unified palette and icon system.
+   Hero links keep the original horizontal, compact index-card shape.
+   Two-column tools retain an icon at upper left, text immediately below. */
+#app .page--home .discovery-features > .discovery-feature{
+ grid-template-columns:32px minmax(0,1fr)!important;
+ grid-template-rows:auto!important;
+ align-items:center!important;
+ align-content:center!important;
+ column-gap:12px!important;
+ row-gap:0!important;
+ min-height:88px!important;
+ padding:14px!important;
+}
+#app .page--home .discovery-features > .discovery-feature > .discovery-feature-icon{
+ grid-column:1!important;
+ grid-row:1!important;
+ align-self:center!important;
+}
+#app .page--home .discovery-features > .discovery-feature > .discovery-feature-copy{
+ grid-column:2!important;
+ grid-row:1!important;
+ justify-content:center!important;
+ align-self:center!important;
+}
+/* Tools & six History entries: naturally content-sized, never a forced empty stage. */
+#app .page :is(.tool-grid,.discovery-mini-grid) > :is(.tool-tile,.discovery-feature){
+ min-height:0!important;
+}
 @media(max-width:650px){
  #app .page :is(button,a).discovery-feature,
  #app .page :is(button,a).tool-tile{
-  min-height:169px!important;
-  padding:13px 11px 16px!important;
+  grid-template-rows:30px auto!important;
+  min-height:0!important;
+  height:auto!important;
+  padding:12px 10px 13px!important;
+  gap:7px!important;
+ }
+ #app .page :is(.discovery-feature,.tool-tile) :is(.discovery-feature-copy,.tool-tile-copy) strong{
+  font-size:clamp(14px,4vw,16px)!important;
+ }
+ #app .page :is(.discovery-feature,.tool-tile) :is(.discovery-feature-copy,.tool-tile-copy) :is(small,em){
+  font-size:clamp(11px,3.15vw,13px)!important;
+ }
+ #app .page--home .discovery-features > .discovery-feature{
+  grid-template-rows:auto!important;
+  min-height:84px!important;
+  padding:13px 12px!important;
   gap:11px!important;
  }
- #app .page :is(.discovery-feature,.tool-tile) :is(.discovery-feature-copy,.tool-tile-copy) strong{font-size:clamp(14px,4.0vw,17px)!important}
- #app .page :is(.discovery-feature,.tool-tile) :is(.discovery-feature-copy,.tool-tile-copy) :is(small,em){font-size:clamp(11px,3.2vw,13px)!important}
+}
+/* Equalize the visual rhythm without setting a large fixed card height. 
+   CSS Grid makes adjacent cards share row height; content stays near its icon. */
+#app .page :is(.tool-grid,.discovery-mini-grid) > :is(.tool-tile,.discovery-feature) :is(.tool-tile-copy,.discovery-feature-copy){
+ align-self:start!important;
 }
 /* Statistics summary KPI: white/white labels & names; gold only for big values.
    This intentionally supersedes the previous all-gold compact override. */
