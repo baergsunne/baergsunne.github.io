@@ -81,9 +81,21 @@ const assert=require('node:assert/strict');
     assert.ok(s.slide.width>170,width+' '+view+' carousel card not collapsed');
    }
    const base=sample.yearbook;
+   const sharedAppearance=card=>{
+    // Jahrbuch alone now has slimmer *horizontal* padding on iPhone so its
+    // two-column text can occupy the usable width. All six views must still
+    // share every other premium-card material, shadow and typography rule.
+    const {padding,...appearance}=card;
+    return appearance;
+   };
    for(const view of ['replay','moments','records','field','compare']){
     const other=sample[view];
-    assert.deepEqual(other.card,base.card,width+' '+view+' card surface/padding/typography must match Jahrbuch');
+    assert.deepEqual(sharedAppearance(other.card),sharedAppearance(base.card),
+      width+' '+view+' keeps the exact shared material/typography');
+    if(width>600) assert.equal(other.card.padding,base.card.padding,
+      width+' '+view+' desktop card padding stays unified');
+    else assert.equal(other.card.padding,sample.replay.card.padding,
+      width+' '+view+' non-Jahrbuch carousel padding remains unchanged');
     assert.deepEqual(other.stage,base.stage,width+' '+view+' outer carousel stage must match Jahrbuch');
     assert.deepEqual(other.slide,base.slide,width+' '+view+' same carousel dimensions/easing as Jahrbuch');
    }
