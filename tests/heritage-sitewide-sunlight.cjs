@@ -19,45 +19,61 @@ const sample=(node)=>node?(()=>{
    await page.route('**/api/live',r=>r.fulfill({status:200,contentType:'application/json',body:JSON.stringify({status:'planned',players:[],standings:[],rounds:[]})}));
    await page.goto('http://127.0.0.1:8765/#home',{waitUntil:'domcontentloaded'});
    await page.waitForFunction(()=>typeof db!=='undefined'&&db.editions.some(x=>x.year===2026),null,{timeout:20000});
-   const result=await page.evaluate(()=>{
-    const sample=(node)=>node?(()=>{
-     const s=getComputedStyle(node),r=node.getBoundingClientRect();
-     return {bg:s.backgroundImage,color:s.backgroundColor,shadow:s.boxShadow,w:r.width,h:r.height,
-      x:r.x,y:r.y,position:s.position,display:s.display};
-    })():null;
-    const bg=getComputedStyle(document.querySelector('.page')).backgroundColor;
-    const home={
-     background:bg,body:getComputedStyle(document.body).backgroundColor,
-     cards:[sample(document.querySelector('.discovery-champion')),sample(document.querySelector('.discovery-counts>div'))],
-     link:sample(document.querySelector('.page--home .discovery-feature'))
-    };
-    state.page='stats';state.tab='overview';draw();
-    const stat={
-     kpi:sample(document.querySelector('.page--stats .stat-content>.metrics>.kpi')),
-     card:sample(document.querySelector('.page--stats .stat-content .card')),
-     picker:sample(document.querySelector('.page--stats .bp-stat-columns')),
-     header:sample(document.querySelector('.page--stats .bp-stat-personalized-table thead th')),
-     row:sample(document.querySelector('.page--stats .bp-stat-personalized-table tbody tr')),
-     name:sample(document.querySelector('.page--stats .bp-stat-personalized-table tbody tr>:first-child')),
-     select:sample(document.querySelector('#bp-tool-select')),
-     active:sample(document.querySelector('.page--stats .tool-tile.is-active')),
+   const onPage=async(name,callback)=>{
+    await page.evaluate(next=>{state.page=next;if(next==='stats')state.tab='overview';if(next==='history')state.historyYear=2026;draw();},name);
+    await page.waitForTimeout(170);
+    return page.evaluate(callback);
+   };
+   const home=await page.evaluate(()=>{
+    const card=el=>el?({bg:getComputedStyle(el).backgroundImage,shadow:getComputedStyle(el).boxShadow,
+      w:el.getBoundingClientRect().width,h:el.getBoundingClientRect().height}):null;
+    return {background:getComputedStyle(document.querySelector('.page')).backgroundColor,
+     body:getComputedStyle(document.body).backgroundColor,
+     cards:[card(document.querySelector('.discovery-champion')),card(document.querySelector('.discovery-counts>div'))],
+     link:card(document.querySelector('.page--home .discovery-feature'))};
+   });
+   await onPage('stats',()=>true);
+   await page.locator('.page--stats .bp-stat-columns').first().waitFor({timeout:8000});
+   const stat=await page.evaluate(()=>{
+    const card=el=>el?({bg:getComputedStyle(el).backgroundImage,color:getComputedStyle(el).backgroundColor,
+     shadow:getComputedStyle(el).boxShadow,w:el.getBoundingClientRect().width,h:el.getBoundingClientRect().height,
+     position:getComputedStyle(el).position}):null;
+    return {
+     kpi:card(document.querySelector('.page--stats .stat-content>.metrics>.kpi')),
+     card:card(document.querySelector('.page--stats .stat-content .card')),
+     picker:card(document.querySelector('.page--stats .bp-stat-columns')),
+     header:card(document.querySelector('.page--stats .bp-stat-personalized-table thead th')),
+     row:card(document.querySelector('.page--stats .bp-stat-personalized-table tbody tr')),
+     name:card(document.querySelector('.page--stats .bp-stat-personalized-table tbody tr>:first-child')),
+     select:card(document.querySelector('#bp-tool-select')),
+     active:card(document.querySelector('.page--stats .tool-tile.is-active')),
      golden:getComputedStyle(document.querySelector('.page--stats .stat-content>.metrics>.kpi>strong')).color,
      sort:!!document.querySelector('.page--stats .bp-stat-personalized-table thead button')
     };
-    state.page='players';draw();
-    const player={card:sample(document.querySelector('.playercard--summary')),
-      name:document.querySelector('.playercard--summary strong')?.textContent};
-    state.page='history';state.historyYear=2026;draw();
-    const history={card:sample(document.querySelector('.history-yearbook-card')),
-      stage:sample(document.querySelector('.history-chronicle')),
-      selector:sample(document.querySelector('#history-year-select')),
-      inner:sample(document.querySelector('.history-yearbook-participants'))};
-    state.page='live';draw();
-    const live={card:sample(document.querySelector('.page--live .cl-block,.page--live .card,.page--live .discovery-live')),
-       row:sample(document.querySelector('.page--live .discovery-live-row:not(.heading)'))};
-    const chrome={head:sample(document.querySelector('.heritage-header')),bottom:sample(document.querySelector('.bottomnav'))};
-    return {home,stat,player,history,live,chrome,overflow:document.documentElement.scrollWidth-innerWidth};
    });
+   await onPage('players',()=>true);
+   const player=await page.evaluate(()=>{
+    const el=document.querySelector('.playercard--summary');
+    return {card:el?{bg:getComputedStyle(el).backgroundImage,shadow:getComputedStyle(el).boxShadow,
+      w:el.getBoundingClientRect().width,h:el.getBoundingClientRect().height}:null,
+      name:el?.querySelector('strong')?.textContent};
+   });
+   await onPage('history',()=>true);
+   const history=await page.evaluate(()=>{
+    const card=el=>el?({bg:getComputedStyle(el).backgroundImage,color:getComputedStyle(el).backgroundColor,
+      shadow:getComputedStyle(el).boxShadow,w:el.getBoundingClientRect().width,h:el.getBoundingClientRect().height}):null;
+    return {card:card(document.querySelector('.history-yearbook-card')),
+     stage:card(document.querySelector('.history-chronicle')),
+     selector:card(document.querySelector('#history-year-select')),
+     inner:card(document.querySelector('.history-yearbook-participants'))};
+   });
+   await onPage('live',()=>true);
+   const live=await page.evaluate(()=>{
+    const el=document.querySelector('.page--live .cl-block,.page--live .card,.page--live .discovery-live');
+    return {card:el?{bg:getComputedStyle(el).backgroundImage,shadow:getComputedStyle(el).boxShadow}:null};
+   });
+   const result={home,stat,player,history,live,
+    overflow:await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)};
    const toTest=[
     ['home champion',result.home.cards[0]],['home count',result.home.cards[1]],
     ['home navigation',result.home.link],['stats KPI',result.stat.kpi],
