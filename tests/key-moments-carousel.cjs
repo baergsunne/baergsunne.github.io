@@ -30,7 +30,7 @@ const assert=require('node:assert/strict');
   assert.deepEqual(landing.labels,['Jahrbuch','Runden','Schlüsselmomente','Rekordbuch','Teilnehmerfeld','Jahresvergleich']);
   assert.equal(landing.toolClasses,true,'Reuse genuine statistics tool tile class');
   assert.ok(landing.sectionBeforeFilters,'Entry cards precede unchanged selectors');
-  assert.equal(landing.pageBg,'rgb(48, 74, 67)','History uses dark homepage background');
+  assert.equal(landing.pageBg,'rgb(11, 36, 27)','History uses dark homepage background');
   assert.equal(landing.pageBorder,'0px','History must have no outer page frame');
   assert.equal(landing.rootColor,'0px','Chronicle must be frameless and airy');
   assert.equal(landing.tileBorder,'rgb(232, 195, 126)','Selected entry uses unified Bärgsunne gold border');
