@@ -86,6 +86,14 @@ html,body{background:var(--bp-heritage-surface)!important}
  box-shadow:var(--bp-sunlight-shadow-soft)!important;
  color:#f7f0e3!important;
 }
+/* Duel and Historie share one familiar native dropdown palette;
+   the old Historie-specific background must not override the new daylight. */
+#app .page.page--history .history-dropdown-controls select,
+#app .page.page--stats .duel-native-select{
+ background:var(--bp-sunlight-surface)!important;
+ background-color:#1e4033!important;
+ box-shadow:var(--bp-sunlight-shadow-soft)!important;
+}
 /* Normal result rows across every ranking/result table use exactly the
    sunlight material. Row shadows cast down-left; no fake shadow inside data. */
 #app .page table:is(
