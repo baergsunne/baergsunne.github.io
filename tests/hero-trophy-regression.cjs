@@ -18,6 +18,10 @@ const live={status:'final',year:2026,players:year.players,round_count:7,rounds:[
    await page.route('**/api/live',r=>r.fulfill({status:200,contentType:'application/json',body:JSON.stringify(live)}));
    await page.goto('http://127.0.0.1:8765/#home',{waitUntil:'domcontentloaded'});
    await page.waitForFunction(()=>typeof db!=='undefined'&&db.editions.some(x=>x.year===2026)&&document.querySelector('.discovery-hero-logo'),null,{timeout:25000});
+   // Image is intentionally lazy-loaded; wait for decode rather than sampling
+   // its naturalWidth during the first paint of a slow runner.
+   await page.evaluate(()=>{const image=document.querySelector('.discovery-champion-trophy img');if(image)image.loading='eager';});
+   await page.waitForFunction(()=>{const img=document.querySelector('.discovery-champion-trophy img');return !!img&&img.complete&&img.naturalWidth>0;},null,{timeout:15000});
    const home=await page.evaluate(()=>{
     const rect=e=>{const r=e.getBoundingClientRect();return {left:r.left,right:r.right,top:r.top,bottom:r.bottom,width:r.width,height:r.height}};
     const hero=document.querySelector('.discovery-hero'),logo=hero.querySelector('.discovery-hero-logo');

@@ -1,0 +1,178 @@
+/* Bärgsunne Poker · UI consistency 2026-10-22
+   Scope: link tiles (Home/Statistik/Historie) and Statistik overview only.
+   Archive, result cards, live/admin and sorting functionality stay unchanged. */
+#app{
+ --bp-link-forest:linear-gradient(165deg,#214735 0%,#173b2d 62%,#102b21 100%);
+ --bp-link-active-forest:linear-gradient(165deg,#305942 0%,#234b36 58%,#193e2e 100%);
+ --bp-link-cream:#fff4e3;
+ --bp-link-gold:#e8c37e;
+ --bp-link-muted:#e1e9df;
+ --bp-stat-head-green:#17382c;
+}
+/* A consistent grid on all actionable navigation cards. Same geometry and
+   gold icon system; copy is centered, icon is pinned to the top-left corner. */
+#app .page :is(button,a).discovery-feature,
+#app .page :is(button,a).tool-tile{
+ position:relative!important;
+ box-sizing:border-box!important;
+ display:grid!important;
+ grid-template-columns:minmax(0,1fr)!important;
+ grid-template-rows:34px minmax(0,1fr)!important;
+ align-content:stretch!important;
+ align-items:start!important;
+ justify-items:stretch!important;
+ gap:12px!important;
+ width:100%!important;
+ min-width:0!important;
+ min-height:162px!important;
+ height:auto!important;
+ padding:17px 15px 18px!important;
+ border:1px solid #63816a!important;
+ border-radius:17px!important;
+ background:var(--bp-link-forest)!important;
+ color:var(--bp-link-cream)!important;
+ text-align:center!important;
+ overflow:hidden!important;
+ transform:none;
+ transition:border-color .17s ease,background .17s ease,box-shadow .17s ease!important;
+}
+#app .page :is(.discovery-feature,.tool-tile) > :is(.discovery-feature-icon,.tool-tile-symbol){
+ grid-column:1!important;
+ grid-row:1!important;
+ display:flex!important;
+ align-items:center!important;
+ justify-content:flex-start!important;
+ justify-self:start!important;
+ align-self:start!important;
+ box-sizing:border-box!important;
+ width:34px!important;
+ height:34px!important;
+ min-width:34px!important;
+ min-height:34px!important;
+ flex:0 0 34px!important;
+ margin:0!important;
+ padding:0!important;
+ color:var(--bp-link-gold)!important;
+ font-size:28px!important;
+ line-height:1!important;
+ text-align:left!important;
+}
+#app .page :is(.discovery-feature,.tool-tile) :is(.discovery-feature-icon,.tool-tile-symbol) .bp-icon{
+ display:block!important;
+ box-sizing:border-box!important;
+ width:32px!important;
+ height:32px!important;
+ min-width:32px!important;
+ min-height:32px!important;
+ flex:0 0 32px!important;
+ object-fit:contain!important;
+ object-position:center!important;
+ margin:0!important;
+ padding:0!important;
+ filter:brightness(0) saturate(100%) invert(79%) sepia(31%) saturate(571%) hue-rotate(350deg) brightness(97%) contrast(92%)!important;
+}
+#app .page :is(.discovery-feature,.tool-tile) > :is(.discovery-feature-copy,.tool-tile-copy){
+ grid-column:1!important;
+ grid-row:2!important;
+ display:flex!important;
+ flex-direction:column!important;
+ align-items:center!important;
+ justify-content:center!important;
+ justify-self:stretch!important;
+ align-self:stretch!important;
+ flex:1 1 auto!important;
+ min-width:0!important;
+ width:100%!important;
+ gap:8px!important;
+ margin:0!important;
+ padding:0!important;
+ text-align:center!important;
+}
+#app .page :is(.discovery-feature,.tool-tile) :is(.discovery-feature-copy,.tool-tile-copy) strong{
+ display:block!important;
+ width:100%!important;
+ margin:0!important;
+ padding:0!important;
+ color:var(--bp-link-cream)!important;
+ font-size:clamp(15px,2vw,18px)!important;
+ font-weight:800!important;
+ line-height:1.23!important;
+ text-align:center!important;
+ overflow-wrap:anywhere!important;
+ hyphens:auto!important;
+ text-wrap:balance;
+}
+#app .page :is(.discovery-feature,.tool-tile) :is(.discovery-feature-copy,.tool-tile-copy) :is(small,em){
+ display:block!important;
+ width:100%!important;
+ margin:0!important;
+ color:var(--bp-link-muted)!important;
+ font-size:clamp(12px,1.5vw,14px)!important;
+ font-weight:400!important;
+ font-style:normal!important;
+ line-height:1.4!important;
+ text-align:center!important;
+ overflow-wrap:anywhere!important;
+ hyphens:auto!important;
+ text-wrap:pretty;
+}
+#app .page :is(.discovery-feature,.tool-tile) > :is(.discovery-feature-arrow,.tool-tile-arrow){
+ display:none!important; /* no inconsistent right-aligned decorative icon */
+}
+/* Exactly two versions: forest-green standard and gold-framed active state. */
+#app .page :is(.discovery-feature,.tool-tile):is(.is-active,.is-current,[aria-pressed="true"]){
+ background:var(--bp-link-active-forest)!important;
+ border:2px solid var(--bp-link-gold)!important;
+ box-shadow:var(--heritage-active-shadow,0 9px 23px rgba(0,0,0,.32))!important;
+}
+@media(hover:hover) and (pointer:fine){
+ #app .page :is(.discovery-feature,.tool-tile):not(.is-active):not(.is-current):hover{
+  background:var(--bp-link-active-forest)!important;
+  border-color:#cba96d!important;
+ }
+}
+#app .page :is(button,a).discovery-feature:focus-visible,
+#app .page :is(button,a).tool-tile:focus-visible{
+ outline:3px solid #ffe0a0!important;
+ outline-offset:2px!important;
+}
+@media(max-width:650px){
+ #app .page :is(button,a).discovery-feature,
+ #app .page :is(button,a).tool-tile{
+  min-height:169px!important;
+  padding:13px 11px 16px!important;
+  gap:11px!important;
+ }
+ #app .page :is(.discovery-feature,.tool-tile) :is(.discovery-feature-copy,.tool-tile-copy) strong{font-size:clamp(14px,4.0vw,17px)!important}
+ #app .page :is(.discovery-feature,.tool-tile) :is(.discovery-feature-copy,.tool-tile-copy) :is(small,em){font-size:clamp(11px,3.2vw,13px)!important}
+}
+/* Statistics summary KPI: white/white labels & names; gold only for big values.
+   This intentionally supersedes the previous all-gold compact override. */
+#app .page--stats .stat-content > .metrics > .kpi > div,
+#app .page--stats .stat-content > .metrics > .kpi > small{
+ color:#fff4e6!important;
+}
+#app .page--stats .stat-content > .metrics > .kpi > strong{
+ color:#f2ce8b!important;
+}
+/* Column picker and stats table headings read as one forest-green design.
+   Every header cell, including the fixed first column, shares the same
+   background as its immediately preceding "Spalten auswählen" surface. */
+#app .page--stats .stat-content .bp-stat-columns,
+#app .page--stats .stat-content .bp-stat-columns-summary{
+ background:var(--bp-stat-head-green)!important;
+}
+#app .page--stats .stat-content table.bp-stat-personalized-table thead,
+#app .page--stats .stat-content table.bp-stat-personalized-table thead tr,
+#app .page--stats .stat-content table.bp-stat-personalized-table thead th{
+ background:var(--bp-stat-head-green)!important;
+ color:#e8c37e!important;
+}
+#app .page--stats .stat-content table.bp-stat-personalized-table thead th:first-child{
+ background:var(--bp-stat-head-green)!important;
+}
+/* Do not change sortable controls, sticky left offset, hidden columns or cells. */
+@media(prefers-reduced-motion:reduce){
+ #app .page :is(button,a).discovery-feature,
+ #app .page :is(button,a).tool-tile{transition:none!important}
+}
