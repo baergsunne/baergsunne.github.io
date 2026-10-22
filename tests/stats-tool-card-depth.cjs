@@ -69,13 +69,13 @@ const fixture=require('./fixture-2026.json');
         const before=document.querySelector('.page--stats .tool-tile[data-value="overview"]');
         const active=getComputedStyle(tile),inactive=getComputedStyle(before);
         return {tab:state.tab,active:tile?.classList.contains('is-active'),previous:before?.classList.contains('is-active'),activeBorder:active.borderTopColor,previousBorder:inactive.borderTopColor,
-          selectedLabel:document.querySelector('.page--stats .tool-active-heading h2')?.textContent.trim()};
+          selectedLabel:document.querySelector('.page--stats #selected-stat-tool > .bp-stat-tool-heading h2')?.textContent.trim()};
       });
       assert.equal(after.tab,'patterns','Tile navigation still opens the desired tool');
       assert(after.active&&!after.previous,'Gold highlight must follow selected tool');
       assert.equal(after.activeBorder,'rgb(232, 195, 126)','New selected card remains Bärgsunne gold');
       assert.notEqual(after.previousBorder,'rgb(232, 195, 126)','Previous card loses the selected border');
-      assert(after.selectedLabel.includes('Muster-Finder'),'Tool content stays correctly associated with tile');
+      assert.equal(after.selectedLabel,'Muster-Finder','Only the tool name appears in the active heading');
       assert.deepEqual(errors,[],'No browser errors');
       console.log('STATS_TILE_DEPTH_PASS',JSON.stringify({width,style,after}));
       await page.close();
