@@ -234,18 +234,18 @@ function home(){
  <section class="discovery-champion" aria-label="Amtierender Champion ${latest.year}"><div class="discovery-champion-copy"><span class="overline">AMTIERENDER CHAMPION · ${latest.year}</span><h2>${winner?esc(winner.player_id):'Kein offizieller Sieger'}</h2><p>${winner?'<strong>'+pointsFmt(winner.points)+' Punkte</strong> · Offizieller Schlussrang 1':'Noch kein bestätigter Sieger'}</p><button type="button" data-action="openyear" data-value="${latest.year}">Titelweg im Jahrbuch ${latest.year} ansehen ↗</button></div><div class="discovery-champion-trophy"><img src="assets/trophy-premium.webp" loading="lazy" decoding="async" alt="Originaler Bärgsunne-Turnierpokal"/></div></section>
  ${live}
  <section class="discovery-section"><div class="discovery-head"><span class="overline">DEIN EINSTIEG</span><h2>Was möchtest du entdecken?</h2></div><div class="discovery-features">
- ${feature('Historie','Turniere Runde für Runde nacherleben','go','history',icon('archive'),`${ordered.length} Jahrbücher`)}
- ${feature('Statistiken','Daten untersuchen und Zusammenhänge entdecken','go','stats',icon('chart-trend'),'Analyse-Studio, Schnellanalysen und mehr')}
- ${feature('Hall of Fame','Meister, Rekorde und Hall of Shame','go','fame',icon('crown'),top?`${esc(top[0])}: ${top[1]} Titel`:null)}
- ${feature('Spieler','Historische Teilnehmer und ihre Profile','go','players',icon('players'),`${players.size} dokumentierte Spieler`)}
+ ${feature('Historie','Turniere erleben','go','history',icon('archive'),`${ordered.length} Jahrbücher`)}
+ ${feature('Statistiken','Analysen & Rekorde','go','stats',icon('chart-trend'),'Studio & mehr')}
+ ${feature('Hall of Fame','Meister & Rekorde','go','fame',icon('crown'),top?`${esc(top[0])}: ${top[1]} Titel`:null)}
+ ${feature('Spieler','Profile entdecken','go','players',icon('players'),`${players.size} Spieler`)}
  </div></section>
  <section class="discovery-section"><div class="discovery-head"><span class="overline">WERKZEUGE ENTDECKEN</span><h2>Etwas genauer hinschauen</h2></div><div class="discovery-mini-grid">
- ${feature('Duelle','Zwei Spieler im Butterfly-Vergleich','statsrounds','rivals',icon('duel'))}
- ${feature('Muster-Finder','Wiederkehrende Rundenfolgen suchen','statsrounds','patterns',icon('pattern'))}
- ${feature('Diagramme','Ergebnisse anschaulich darstellen','statsrounds','lab',icon('chart-selection'))}
- ${feature('Simulator','Eigene Turnierverläufe durchspielen','statsrounds','simulator',icon('simulator'))}
- ${feature('Analyse-Studio','Individuelle Auswertungen zusammenstellen','statsrounds','studio',icon('compare'))}
- ${feature('Schnellanalysen','Vorgefertigte Fragen untersuchen','statsrounds','standard',icon('explanation'))}
+ ${feature('Duelle','Spieler vergleichen','statsrounds','rivals',icon('duel'))}
+ ${feature('Muster-Finder','Serien entdecken','statsrounds','patterns',icon('pattern'))}
+ ${feature('Diagramme','Zahlen als Grafik','statsrounds','lab',icon('chart-selection'))}
+ ${feature('Simulator','Turniere durchspielen','statsrounds','simulator',icon('simulator'))}
+ ${feature('Analyse-Studio','Eigene Auswertungen','statsrounds','studio',icon('compare'))}
+ ${feature('Schnellanalysen','Fragen untersuchen','statsrounds','standard',icon('explanation'))}
  </div></section>
  <section class="discovery-section discovery-history-teaser" aria-label="Historie entdecken"><div class="discovery-head"><span class="overline">HISTORIE ENTDECKEN</span><h2>Unsere Turniergeschichte</h2><p>Sechs Wege durch die Bärgsunne-Geschichte. Wähle einen Bereich und entdecke die Jahrgänge direkt in der Historie.</p></div><div class="discovery-mini-grid">
  ${feature('Jahrbuch','Champions und Podestplätze','historyteaser','yearbook',icon('podium'))}
@@ -309,9 +309,9 @@ function statsPage(){
  const tools={overview:overviewTab,career:careerTab,rounds:roundTab,rivals:rivalsTab,heatmap:heatmapTab,race:raceTab,simulator:simulatorTab,records:legacyRecordsTab,lab:labTab,insights:insightsTab,studio:studioTab,patterns:patternsTab,standard:standardTab};
  if(!Object.hasOwn(tools,state.tab))state.tab='overview';
  const groups=[
-  {name:'Entdecken',list:[['overview','Übersicht','Die wichtigsten Zahlen und Rekorde','◈'],['patterns','Muster-Finder','Auffällige Serien und Überraschungen','✧'],['insights','Analysen','Geschichten hinter den Ergebnissen','◇'],['standard','Schnellanalysen','Fertige Analysen selbst auswählen','≋']]},
-  {name:'Vergleichen',list:[['career','Karrieren','Wie sich Spieler über Jahre entwickeln','↗'],['rivals','Duelle','Direkte Vergleiche und Rivalitäten','⚔'],['rounds','Runden','Siege, Podestplätze und Punkte','◎'],['heatmap','Heatmap','Rundenergebnisse im Überblick','▦']]},
-  {name:'Geschichte & Szenarien',list:[['race','Race','So veränderte sich die Rangliste','↝'],['simulator','Simulator','Was wäre anders gelaufen?','♢'],['records','Rekorde','Bestleistungen und Meilensteine','♛'],['lab','Diagramme','Zahlen grafisch untersuchen','⌕']]}
+  {name:'Entdecken',list:[['overview','Übersicht','Zahlen & Rekorde','◈'],['patterns','Muster-Finder','Serien entdecken','✧'],['insights','Analysen','Ergebnisse verstehen','◇'],['standard','Schnellanalysen','Fragen untersuchen','≋']]},
+  {name:'Vergleichen',list:[['career','Karrieren','Spieler im Wandel','↗'],['rivals','Duelle','Spieler vergleichen','⚔'],['rounds','Runden','Siege & Punkte','◎'],['heatmap','Heatmap','Runden im Blick','▦']]},
+  {name:'Geschichte & Szenarien',list:[['race','Race','Die Titeljagd','↝'],['simulator','Simulator','Andere Verläufe','♢'],['records','Rekorde','Bestleistungen','♛'],['lab','Diagramme','Zahlen als Grafik','⌕']]}
  ];
  const toolCards=groups.map(g=>`<section class="tool-group"><h2>${g.name}</h2><div class="tool-grid">${g.list.map(([id,title,desc,symbol])=>`<button class="tool-tile ${state.tab===id?'is-active':''}" type="button" data-action="tab" data-value="${id}"><span class="tool-tile-symbol" aria-hidden="true">${icon(TOOL_ICONS[id])}</span><span class="tool-tile-copy"><strong>${title}</strong><small>${desc}</small></span><span class="tool-tile-arrow" aria-hidden="true">↗</span></button>`).join('')}</div></section>`).join('');
  const toolDropdown='<div class="bp-selection-panel"><label for="bp-tool-select">Statistik-Werkzeug auswählen</label><select id="bp-tool-select" aria-label="Statistik-Werkzeug auswählen">'+groups.map(g=>'<optgroup label="'+esc(g.name)+'">'+g.list.map(([id,title])=>'<option value="'+id+'" '+(state.tab===id?'selected':'')+'>'+esc(title)+'</option>').join('')+'</optgroup>').join('')+'<option value="studio" '+(state.tab==='studio'?'selected':'')+'>Analyse-Studio</option></select></div>';

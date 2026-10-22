@@ -16,54 +16,64 @@ const fixture=require('./fixture-2026.json');
    const auditTiles=async(selector,count,pageName)=>{
     const d=await page.locator(selector).evaluateAll(cards=>cards.map(el=>{
      const st=getComputedStyle(el),icon=el.querySelector('.discovery-feature-icon,.tool-tile-symbol'),
-      svg=icon?.querySelector('.bp-icon'),title=el.querySelector('.discovery-feature-copy strong,.tool-tile-copy strong'),
-      desc=el.querySelector('.discovery-feature-copy small,.tool-tile-copy small'),
-      arrow=el.querySelector('.discovery-feature-arrow,.tool-tile-arrow'),
-      r=el.getBoundingClientRect(),i=icon?.getBoundingClientRect(),s=svg?.getBoundingClientRect(),copy=el.querySelector('.discovery-feature-copy,.tool-tile-copy')?.getBoundingClientRect();
+       image=icon?.querySelector('.bp-icon'),title=el.querySelector('.discovery-feature-copy strong,.tool-tile-copy strong'),
+       desc=el.querySelector('.discovery-feature-copy small,.tool-tile-copy small'),
+       arrow=el.querySelector('.discovery-feature-arrow,.tool-tile-arrow'),
+       copy=el.querySelector('.discovery-feature-copy,.tool-tile-copy');
+     const r=el.getBoundingClientRect(),i=icon?.getBoundingClientRect(),im=image?.getBoundingClientRect(),cr=copy?.getBoundingClientRect();
      return {classes:el.className,title:title?.textContent,
-      bg:st.backgroundImage,color:st.color,textAlign:st.textAlign,
-      border:st.borderTopColor,grid:st.display,radius:st.borderTopLeftRadius,
-      width:r.width,height:r.height,overflow:r.right>innerWidth+2,
-      iconLeft:i?.left-r.left,iconTop:i?.top-r.top,
-      svgWidth:s?.width,svgHeight:s?.height,svgLoaded:svg?.complete&&svg.naturalWidth>0,
-      contentGap:copy&&i?copy.top-i.bottom:null,bottomEmpty:copy?r.bottom-copy.bottom:null,
-      iconColor:icon?getComputedStyle(icon).color:null,
-      titleAlign:title?getComputedStyle(title).textAlign:null,titleColor:title?getComputedStyle(title).color:null,
-      descAlign:desc?getComputedStyle(desc).textAlign:null,descColor:desc?getComputedStyle(desc).color:null,
-      arrowDisplay:arrow?getComputedStyle(arrow).display:null,
-      active:el.classList.contains('is-active'),
+       bg:st.backgroundImage,display:st.display,radius:st.borderTopLeftRadius,
+       width:r.width,height:r.height,left:r.left,top:r.top,right:r.right,
+       watermarkWidth:im?.width,watermarkHeight:im?.height,iconX:i?.left-r.left,iconY:i?.top-r.top,
+       imageLoaded:!!image?.complete&&image.naturalWidth>0,
+       symbolOpacity:icon?Number.parseFloat(getComputedStyle(icon).opacity):null,
+       titleAlign:title?getComputedStyle(title).textAlign:null,titleColor:title?getComputedStyle(title).color:null,
+       descAlign:desc?getComputedStyle(desc).textAlign:null,descColor:desc?getComputedStyle(desc).color:null,
+       copyCenterX:cr?cr.left+cr.width/2:null,copyCenterY:cr?cr.top+cr.height/2:null,
+       copyHeight:copy?.scrollHeight,copyClientHeight:copy?.clientHeight,
+       arrowDisplay:arrow?getComputedStyle(arrow).display:null,
+       before:getComputedStyle(el,'::before').content,
+       active:el.classList.contains('is-active'),
      };
     }));
     assert.equal(d.length,count,pageName+' link count');
+    const wantedHeight=width<=650?170:176;
     for(const a of d){
-     assert.equal(a.grid,'grid',pageName+' tile needs shared grid');
-     assert(a.width>=100&&a.height>=70,pageName+' tile cramped: '+JSON.stringify(a));
-     assert(a.height<=(pageName==='Home'?160:width<=430?185:175),pageName+' tile should be compact: '+JSON.stringify(a));
-     assert(!a.overflow,pageName+' horizontal overflow: '+JSON.stringify(a));
-     assert(a.svgLoaded,pageName+' actual svg missing: '+a.title);
-     assert.equal(a.svgWidth,28,pageName+' icon width '+a.title);
-     assert.equal(a.svgHeight,28,pageName+' icon height '+a.title);
-     assert(a.iconLeft>=10&&a.iconLeft<=24,pageName+' icon left inset '+JSON.stringify(a));
-     assert(a.iconTop>=10&&a.iconTop<=(pageName==='Home'?44:24),pageName+' icon top inset '+JSON.stringify(a));
+     assert.equal(a.display,'flex',pageName+' shared layering');
+     assert(Math.abs(a.height-wantedHeight)<1,pageName+' identical fixed card height: '+JSON.stringify(a));
+     assert(a.width>=100&&a.right<=width+2,pageName+' out of viewport: '+JSON.stringify(a));
+     assert(a.imageLoaded,pageName+' missing existing background icon: '+a.title);
+     assert(a.watermarkWidth>=a.width*.85&&a.watermarkHeight>=a.height*.85,pageName+' watermark must span most of tile: '+JSON.stringify(a));
+     assert(a.iconX<=5&&a.iconY<=5,pageName+' watermark begins at top left: '+JSON.stringify(a));
+     assert(a.symbolOpacity>=.08&&a.symbolOpacity<=.28,pageName+' decorative icon opacity');
+     assert.equal(a.before,'""',pageName+' diagonal highlight overlay exists');
      assert.equal(a.titleAlign,'center',pageName+' centered title '+a.title);
      assert.equal(a.descAlign,'center',pageName+' centered description '+a.title);
-     assert.equal(a.titleColor,'rgb(255, 244, 227)',pageName+' cream-white title '+a.title);
-     assert.equal(a.descColor,'rgb(225, 233, 223)',pageName+' cream-white desc '+a.title);
-     assert.equal(a.arrowDisplay,'none',pageName+' decorative arrow hidden');
-     if(pageName!=='Home'){
-      assert(a.contentGap>=4&&a.contentGap<=16,pageName+' content stays close to icon: '+JSON.stringify(a));
-      assert(a.bottomEmpty<=58,pageName+' leaves too much bottom whitespace: '+JSON.stringify(a));
-     }
-     assert(a.radius.includes('17px'),pageName+' tile radius');
+     assert.equal(a.titleColor,'rgb(255, 246, 233)',pageName+' title white '+a.title);
+     assert.equal(a.descColor,'rgb(232, 238, 227)',pageName+' desc off-white '+a.title);
+     assert(Math.abs(a.copyCenterX-a.left-a.width/2)<3,pageName+' text overlay centered: '+a.title);
+     assert(Math.abs(a.copyCenterY-a.top-a.height/2)<3,pageName+' vertical text centering: '+a.title);
+     assert(a.copyHeight<=a.copyClientHeight+2,pageName+' text must fit fixed card: '+JSON.stringify(a));
+     assert.equal(a.arrowDisplay,'none',pageName+' no duplicate decorative arrows');
+     assert(a.radius.includes('17px'),pageName+' uniform card radius');
     }
     const allStd=d.filter(x=>!x.active);
-    if(allStd.length>1){
-     assert.equal(new Set(allStd.map(x=>x.bg)).size,1,pageName+' must share standard forest gradient');
-     assert.equal(new Set(allStd.map(x=>x.border)).size,1,pageName+' must share border color');
-    }
+    if(allStd.length>1)assert.equal(new Set(allStd.map(x=>x.bg)).size,1,pageName+' shared gold-to-forest background');
     return d;
    };
    const home=await auditTiles('.page--home button.discovery-feature',16,'Home');
+   // Verify the four top-level entry cards form two rows and two columns
+   // with exactly the same width and height (not four horizontal bars).
+   const four=await page.locator('.page--home .discovery-features > .discovery-feature').evaluateAll(els=>els.map(el=>{
+    const r=el.getBoundingClientRect();return {left:r.left,top:r.top,width:r.width,height:r.height};
+   }));
+   assert.equal(four.length,4,'Four main navigation cards');
+   assert(Math.abs(four[0].top-four[1].top)<1&&Math.abs(four[2].top-four[3].top)<1,'Two same-row cards');
+   assert(four[2].top>four[0].top+four[0].height-1,'Two rows of cards');
+   assert(Math.abs(four[0].left-four[2].left)<1&&Math.abs(four[1].left-four[3].left)<1,'Two aligned columns');
+   assert.equal(new Set(four.map(t=>Math.round(t.height))).size,1,'All home cards have identical height');
+   assert.equal(new Set(four.map(t=>Math.round(t.width))).size,1,'All home cards have identical width');
+   assert(four[1].left>four[0].left+four[0].width-1,'Two distinct columns');
    const appOverflow=await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth);
    assert(appOverflow<=2,'No home overflow '+width);
    await page.locator('.discovery-feature[data-value="stats"]').first().click();

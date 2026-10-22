@@ -1,91 +1,147 @@
-/* Bärgsunne Poker · UI consistency 2026-10-22
-   Scope: link tiles (Home/Statistik/Historie) and Statistik overview only.
-   Archive, result cards, live/admin and sorting functionality stay unchanged. */
+/* Bärgsunne Poker · Navigation tiles · Gold-to-forest edition (2026-10-22)
+   Same compact 2-column, fixed-size navigation tile in all three page families:
+   Home, Statistik, Historie. Every original SVG becomes a big semi-transparent
+   background watermark. Stat KPI/table styling below is retained unchanged. */
 #app{
- --bp-link-forest:linear-gradient(165deg,#214735 0%,#173b2d 62%,#102b21 100%);
- --bp-link-active-forest:linear-gradient(165deg,#305942 0%,#234b36 58%,#193e2e 100%);
- --bp-link-cream:#fff4e3;
  --bp-link-gold:#e8c37e;
- --bp-link-muted:#e1e9df;
+ --bp-link-cream:#fff6e9;
+ --bp-link-muted:#e8eee3;
  --bp-stat-head-green:#17382c;
+ --bp-link-fixed-height:176px;
+ --bp-link-gradient:linear-gradient(135deg,#b89a60 0%,#8d7448 22%,#476346 44%,#254f3b 64%,#123629 85%,#0d2b22 100%);
+ --bp-link-gradient-active:linear-gradient(135deg,#c5a76b 0%,#95774a 22%,#4d694a 44%,#2b533d 64%,#173a2c 85%,#103127 100%);
 }
-/* A consistent grid on all actionable navigation cards. Same geometry and
-   gold icon system; copy is centered, icon is pinned to the top-left corner. */
+/* All navigation grids use two equal-width columns, including the four
+   main home entries. No one-column bars on iPhone, no three/four-column tools. */
+#app .page--home .discovery-features,
+#app .page--home .discovery-mini-grid,
+#app .page--stats .tool-grid,
+#app .page--history .history-entry-grid{
+ display:grid!important;
+ grid-template-columns:repeat(2,minmax(0,1fr))!important;
+ grid-auto-rows:var(--bp-link-fixed-height)!important;
+ align-items:stretch!important;
+ gap:10px!important;
+ max-width:860px!important;
+ margin-inline:auto!important;
+}
+/* On iPhone the four main links must remain exactly two rows of two tiles. */
+@media(max-width:650px){
+ #app{--bp-link-fixed-height:170px}
+ #app .page--home .discovery-features,
+ #app .page--home .discovery-mini-grid,
+ #app .page--stats .tool-grid,
+ #app .page--history .history-entry-grid{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  grid-auto-rows:var(--bp-link-fixed-height)!important;
+  gap:9px!important;
+  max-width:100%!important;
+ }
+}
 #app .page :is(button,a).discovery-feature,
 #app .page :is(button,a).tool-tile{
  position:relative!important;
+ isolation:isolate!important;
+ display:flex!important;
+ flex-direction:column!important;
+ justify-content:center!important;
+ align-items:center!important;
  box-sizing:border-box!important;
- display:grid!important;
- grid-template-columns:minmax(0,1fr)!important;
- grid-template-rows:30px auto!important;
- align-content:start!important;
- align-items:start!important;
- justify-items:stretch!important;
- gap:7px!important;
  width:100%!important;
  min-width:0!important;
  min-height:0!important;
- height:auto!important;
- padding:13px 13px 14px!important;
- border:1px solid #63816a!important;
+ max-height:var(--bp-link-fixed-height)!important;
+ height:var(--bp-link-fixed-height)!important;
+ margin:0!important;
+ padding:14px 12px!important;
+ gap:0!important;
+ overflow:hidden!important;
+ border:1px solid #75876c!important;
  border-radius:17px!important;
- background:var(--bp-link-forest)!important;
+ background:var(--bp-link-gradient)!important;
  color:var(--bp-link-cream)!important;
  text-align:center!important;
- overflow:hidden!important;
- transform:none;
- transition:border-color .17s ease,background .17s ease,box-shadow .17s ease!important;
+ box-shadow:0 6px 18px rgba(0,0,0,.19)!important;
+ transition:background .18s ease,border-color .18s ease,box-shadow .18s ease!important;
+ cursor:pointer;
 }
+/* Gentle light around top left, shading towards the text in the centre;
+   decorative only, never interferes with taps or text. */
+#app .page :is(.discovery-feature,.tool-tile)::before{
+ content:"";
+ position:absolute;
+ inset:0;
+ z-index:0;
+ pointer-events:none;
+ background:
+  radial-gradient(ellipse 100% 100% at -9% -17%,rgba(255,231,167,.40),rgba(218,177,97,.19) 43%,transparent 76%),
+  linear-gradient(135deg,rgba(255,233,180,.12),transparent 32%,rgba(6,31,23,.38) 72%);
+}
+#app .page :is(.discovery-feature,.tool-tile)::after{
+ content:"";
+ position:absolute;
+ inset:0;
+ z-index:2;
+ pointer-events:none;
+ background:radial-gradient(ellipse 92% 60% at 55% 61%,rgba(12,43,31,.58) 0%,rgba(13,42,31,.31) 57%,transparent 100%);
+}
+/* The icon is the backdrop, not a small foreground pictogram.
+   It occupies nearly the whole tile while staying top/left weighted. */
 #app .page :is(.discovery-feature,.tool-tile) > :is(.discovery-feature-icon,.tool-tile-symbol){
- grid-column:1!important;
- grid-row:1!important;
- display:flex!important;
- align-items:center!important;
- justify-content:flex-start!important;
- justify-self:start!important;
- align-self:start!important;
- box-sizing:border-box!important;
- width:30px!important;
- height:30px!important;
- min-width:30px!important;
- min-height:30px!important;
- flex:0 0 30px!important;
- margin:0!important;
- padding:0!important;
- color:var(--bp-link-gold)!important;
- font-size:28px!important;
- line-height:1!important;
- text-align:left!important;
-}
-#app .page :is(.discovery-feature,.tool-tile) :is(.discovery-feature-icon,.tool-tile-symbol) .bp-icon{
+ position:absolute!important;
+ inset:0 auto auto 0!important;
+ z-index:1!important;
  display:block!important;
  box-sizing:border-box!important;
- width:28px!important;
- height:28px!important;
- min-width:28px!important;
- min-height:28px!important;
- flex:0 0 28px!important;
- object-fit:contain!important;
- object-position:center!important;
+ width:96%!important;
+ height:92%!important;
+ max-width:none!important;
+ max-height:none!important;
+ min-width:0!important;
+ min-height:0!important;
+ flex:none!important;
  margin:0!important;
  padding:0!important;
- filter:brightness(0) saturate(100%) invert(79%) sepia(31%) saturate(571%) hue-rotate(350deg) brightness(97%) contrast(92%)!important;
+ overflow:hidden!important;
+ opacity:.20!important;
+ transform:translate(-9%,-10%) rotate(-9deg)!important;
+ transform-origin:25% 22%!important;
+ pointer-events:none!important;
+ color:#f6d18b!important;
+ text-align:left!important;
 }
+#app .page :is(.discovery-feature,.tool-tile) > :is(.discovery-feature-icon,.tool-tile-symbol) .bp-icon{
+ display:block!important;
+ box-sizing:border-box!important;
+ width:100%!important;
+ height:100%!important;
+ min-width:0!important;
+ min-height:0!important;
+ max-width:none!important;
+ max-height:none!important;
+ margin:0!important;
+ padding:0!important;
+ object-fit:contain!important;
+ object-position:left top!important;
+ filter:brightness(0) saturate(100%) invert(88%) sepia(23%) saturate(727%) hue-rotate(347deg) brightness(108%) contrast(94%)!important;
+}
+/* Both the title and the short description float above the large watermark,
+   kept centred and inside a protected, readable area. */
 #app .page :is(.discovery-feature,.tool-tile) > :is(.discovery-feature-copy,.tool-tile-copy){
- grid-column:1!important;
- grid-row:2!important;
+ position:relative!important;
+ z-index:3!important;
  display:flex!important;
  flex-direction:column!important;
+ justify-content:center!important;
  align-items:center!important;
- justify-content:flex-start!important;
- justify-self:stretch!important;
- align-self:start!important;
- flex:0 1 auto!important;
+ flex:0 0 auto!important;
+ box-sizing:border-box!important;
  min-width:0!important;
+ max-width:100%!important;
  width:100%!important;
- gap:5px!important;
  margin:0!important;
  padding:0!important;
+ gap:6px!important;
  text-align:center!important;
 }
 #app .page :is(.discovery-feature,.tool-tile) :is(.discovery-feature-copy,.tool-tile-copy) strong{
@@ -94,9 +150,9 @@
  margin:0!important;
  padding:0!important;
  color:var(--bp-link-cream)!important;
- font-size:clamp(15px,2vw,18px)!important;
- font-weight:800!important;
- line-height:1.23!important;
+ font-size:clamp(15px,1.9vw,19px)!important;
+ font-weight:850!important;
+ line-height:1.21!important;
  text-align:center!important;
  overflow-wrap:anywhere!important;
  hyphens:auto!important;
@@ -106,29 +162,28 @@
  display:block!important;
  width:100%!important;
  margin:0!important;
+ padding:0!important;
  color:var(--bp-link-muted)!important;
  font-size:clamp(12px,1.5vw,14px)!important;
- font-weight:400!important;
+ font-weight:450!important;
  font-style:normal!important;
- line-height:1.4!important;
+ line-height:1.33!important;
  text-align:center!important;
  overflow-wrap:anywhere!important;
  hyphens:auto!important;
- text-wrap:pretty;
+ text-wrap:balance;
 }
 #app .page :is(.discovery-feature,.tool-tile) > :is(.discovery-feature-arrow,.tool-tile-arrow){
- display:none!important; /* no inconsistent right-aligned decorative icon */
+ display:none!important;
 }
-/* Exactly two versions: forest-green standard and gold-framed active state. */
 #app .page :is(.discovery-feature,.tool-tile):is(.is-active,.is-current,[aria-pressed="true"]){
- background:var(--bp-link-active-forest)!important;
  border:2px solid var(--bp-link-gold)!important;
- box-shadow:var(--heritage-active-shadow,0 9px 23px rgba(0,0,0,.32))!important;
+ background:var(--bp-link-gradient-active)!important;
+ box-shadow:0 6px 22px rgba(0,0,0,.27),inset 0 0 0 1px rgba(244,209,147,.12)!important;
 }
 @media(hover:hover) and (pointer:fine){
- #app .page :is(.discovery-feature,.tool-tile):not(.is-active):not(.is-current):hover{
-  background:var(--bp-link-active-forest)!important;
-  border-color:#cba96d!important;
+ #app .page :is(.discovery-feature,.tool-tile):hover{
+  border-color:var(--bp-link-gold)!important;
  }
 }
 #app .page :is(button,a).discovery-feature:focus-visible,
@@ -136,60 +191,20 @@
  outline:3px solid #ffe0a0!important;
  outline-offset:2px!important;
 }
-/* Distinct presentation by available width, one unified palette and icon system.
-   Hero links keep the original horizontal, compact index-card shape.
-   Two-column tools retain an icon at upper left, text immediately below. */
-#app .page--home .discovery-features > .discovery-feature{
- grid-template-columns:32px minmax(0,1fr)!important;
- grid-template-rows:auto!important;
- align-items:center!important;
- align-content:center!important;
- column-gap:12px!important;
- row-gap:0!important;
- min-height:88px!important;
- padding:14px!important;
-}
-#app .page--home .discovery-features > .discovery-feature > .discovery-feature-icon{
- grid-column:1!important;
- grid-row:1!important;
- align-self:center!important;
-}
-#app .page--home .discovery-features > .discovery-feature > .discovery-feature-copy{
- grid-column:2!important;
- grid-row:1!important;
- justify-content:center!important;
- align-self:center!important;
-}
-/* Tools & six History entries: naturally content-sized, never a forced empty stage. */
-#app .page :is(.tool-grid,.discovery-mini-grid) > :is(.tool-tile,.discovery-feature){
- min-height:0!important;
-}
 @media(max-width:650px){
  #app .page :is(button,a).discovery-feature,
- #app .page :is(button,a).tool-tile{
-  grid-template-rows:30px auto!important;
-  min-height:0!important;
-  height:auto!important;
-  padding:12px 10px 13px!important;
-  gap:7px!important;
- }
+ #app .page :is(button,a).tool-tile{padding:10px 8px!important}
  #app .page :is(.discovery-feature,.tool-tile) :is(.discovery-feature-copy,.tool-tile-copy) strong{
-  font-size:clamp(14px,4vw,16px)!important;
+  font-size:clamp(14px,3.85vw,17px)!important;
  }
  #app .page :is(.discovery-feature,.tool-tile) :is(.discovery-feature-copy,.tool-tile-copy) :is(small,em){
   font-size:clamp(11px,3.15vw,13px)!important;
  }
- #app .page--home .discovery-features > .discovery-feature{
-  grid-template-rows:auto!important;
-  min-height:84px!important;
-  padding:13px 12px!important;
-  gap:11px!important;
- }
+ #app .page :is(.discovery-feature,.tool-tile) > :is(.discovery-feature-copy,.tool-tile-copy){gap:5px!important}
 }
-/* Equalize the visual rhythm without setting a large fixed card height. 
-   CSS Grid makes adjacent cards share row height; content stays near its icon. */
-#app .page :is(.tool-grid,.discovery-mini-grid) > :is(.tool-tile,.discovery-feature) :is(.tool-tile-copy,.discovery-feature-copy){
- align-self:start!important;
+@media(prefers-reduced-motion:reduce){
+ #app .page :is(button,a).discovery-feature,
+ #app .page :is(button,a).tool-tile{transition:none!important}
 }
 /* Statistics summary KPI: white/white labels & names; gold only for big values.
    This intentionally supersedes the previous all-gold compact override. */

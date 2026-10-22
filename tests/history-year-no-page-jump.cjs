@@ -19,7 +19,15 @@ const fixture=require('./fixture-2026.json');
      const sticky=Number.parseFloat(getComputedStyle(group).top)||0;
      scrollTo({top:Math.max(0,scrollY+dropdown.getBoundingClientRect().bottom+18-sticky+75),behavior:'instant'});
     });
-    await page.locator('.history-mobile-rail.is-active').waitFor({timeout:5000});
+    // Shorter entry cards can leave too little scroll room to dock the
+    // side rail. The horizontal arrows remain accessible in that case.
+    await page.waitForTimeout(70);
+   }
+   async function step(direction){
+    const active=await page.locator('.history-mobile-rail.is-active').isVisible().catch(()=>false);
+    const selector=active?'.history-mobile-step--'+(direction>0?'next':'prev'):
+      '.history-sticky-group .history-step-button[data-history-step="'+direction+'"]';
+    await page.locator(selector).click();
    }
    async function remember(){
     await page.evaluate(()=>{
@@ -71,11 +79,11 @@ const fixture=require('./fixture-2026.json');
     await verify(view,2025,'year-dropdown');
     if(!['replay','moments'].includes(view)){
      await remember();
-     await page.locator('.history-mobile-step--next').click();
+     await step(1);
      await page.waitForFunction(()=>document.querySelector('#history-year-select')?.value==='2026',null,{timeout:3000});
      await verify(view,2026,'next-arrow');
      await remember();
-     await page.locator('.history-mobile-step--prev').click();
+     await step(-1);
      await page.waitForFunction(()=>document.querySelector('#history-year-select')?.value==='2025');
      await verify(view,2025,'previous-arrow');
      await remember();
@@ -88,7 +96,7 @@ const fixture=require('./fixture-2026.json');
     }else{
      // New round data may replace the cards; the sticky shell must not be replaced.
      await remember();
-     await page.locator('.history-mobile-step--next').click();
+     await step(1);
      await page.waitForFunction(()=>Number(document.querySelector('.history-replay-track')?.dataset.index)===1);
      await verify(view,2025,'round-arrow');
     }

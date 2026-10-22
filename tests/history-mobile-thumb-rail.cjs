@@ -80,6 +80,11 @@ const fixture=require('./fixture-2026.json');
    await page.waitForTimeout(100);
    assert.equal(await page.locator('#history-year-select').inputValue(),oldYear);
    await page.locator('.history-entry-tile[data-view="moments"]').click();
+   // The new compact 2×2 entry tiles shorten the document. This specific
+   // regression needs a *scrollable* Moments workspace to exercise the
+   // multi-round drag controller; normally a short page retains the
+   // horizontal control and never attempts to dock the side rail.
+   await page.evaluate(()=>{document.getElementById('history-chronicle').style.paddingBottom='650px';});
    await dock();
    const native=page.locator('#history-round-slider');
    await native.evaluate(el=>{el.value='0';el.dispatchEvent(new Event('input',{bubbles:true}));el.dispatchEvent(new Event('change',{bubbles:true}));});

@@ -33,7 +33,7 @@ const assert=require('node:assert/strict');
   assert.equal(landing.pageBg,'rgb(28, 55, 48)','History uses dark homepage background');
   assert.equal(landing.pageBorder,'0px','History must have no outer page frame');
   assert.equal(landing.rootColor,'0px','Chronicle must be frameless and airy');
-  assert.equal(landing.tileBorder,'rgb(214, 176, 109)','Selected entry uses statistics gold border');
+  assert.equal(landing.tileBorder,'rgb(232, 195, 126)','Selected entry uses unified Bärgsunne gold border');
   assert.equal(landing.links,true);
   assert.equal(landing.horizontalOverflow,false,'No mobile overflow');
   for(const view of ['moments','replay','yearbook']){

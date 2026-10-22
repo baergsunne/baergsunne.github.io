@@ -49,7 +49,7 @@ const assert=require('node:assert/strict');
    assert.equal(teaser.oldYearSelector,false,'Old home-year dropdown removed');
    assert.equal(teaser.oldYearSection,false,'Old year section removed');
    assert.equal(teaser.overflows,false,'No mobile horizontal overflow');
-   assert.equal(teaser.cols,width<=650?2:3,'Responsive teaser columns');
+   assert.equal(teaser.cols,2,'All linked teaser cards use the same two-column layout');
    assert.ok(teaser.buttonWidths.every(x=>x>90),'Teaser tiles must be readable');
    for(const src of teaser.images)assert.ok(src?.startsWith('assets/icons/')&&src.endsWith('.svg'),'Gold SVG icons needed');
    for(const view of views){

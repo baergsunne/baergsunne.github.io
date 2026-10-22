@@ -144,12 +144,12 @@ function archive(ed){return `<section class="history-feature"><div class="histor
 /* Three home-style navigation cards, without replacing the existing explorer. */
 function historyEntry(){
  const entries=[
-  ['yearbook','Jahrbuch','Champions und Podestplätze entdecken','♛'],
-  ['replay','Runden','Runde für Runde nacherleben','◷'],
-  ['moments','Schlüsselmomente','Führungswechsel und Wendepunkte entdecken','✦'],
-  ['records','Rekordbuch','Bestwerte und Negativrekorde','♛'],
-  ['field','Teilnehmerfeld','Neulinge und Stammgäste','♙'],
-  ['compare','Jahresvergleich','Was hat sich verändert?','⇄']
+  ['yearbook','Jahrbuch','Sieger & Podest','♛'],
+  ['replay','Runden','Runde für Runde','◷'],
+  ['moments','Schlüsselmomente','Wendepunkte','✦'],
+  ['records','Rekordbuch','Best- & Negativwerte','♛'],
+  ['field','Teilnehmerfeld','Neulinge & Stammgäste','♙'],
+  ['compare','Jahresvergleich','Jahrgänge vergleichen','⇄']
  ];
  const icons={yearbook:'podium',replay:'rounds',moments:'pattern',records:'record',field:'players',compare:'compare'};
  return '<section class="history-entry" aria-label="Historie entdecken"><div class="history-entry-head"><span class="history-entry-kicker">DEIN EINSTIEG</span><h2>Was möchtest du entdecken?</h2></div><div class="tool-grid history-entry-grid">'+entries.map(([view,title,detail])=>

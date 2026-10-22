@@ -64,7 +64,9 @@ jobs:
         with:
           node-version: '22'
       - run: npm install --no-save playwright
-      - run: npx playwright install --with-deps chromium
+      # Ubuntu Actions already provides the shared browser libraries; avoid
+      # apt package refreshes delaying the actual visual regression audit.
+      - run: npx playwright install chromium
       - run: python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/poker-server.log 2>&1 & 
       - run: node tests/browser-audit.cjs
       - run: node tests/hero-trophy-regression.cjs
