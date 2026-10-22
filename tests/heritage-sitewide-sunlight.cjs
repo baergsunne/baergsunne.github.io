@@ -45,7 +45,7 @@ const sample=(node)=>node?(()=>{
      header:card(document.querySelector('.page--stats .bp-stat-personalized-table thead th')),
      row:card(document.querySelector('.page--stats .bp-stat-personalized-table tbody tr')),
      name:card(document.querySelector('.page--stats .bp-stat-personalized-table tbody tr>:first-child')),
-     select:card(document.querySelector('#bp-tool-select')),
+     select:card(document.querySelector('.page--stats .bp-stat-columns-summary')),
      active:card(document.querySelector('.page--stats .tool-tile.is-active')),
      golden:getComputedStyle(document.querySelector('.page--stats .stat-content>.metrics>.kpi>strong')).color,
      sort:!!document.querySelector('.page--stats .bp-stat-personalized-table thead button')
