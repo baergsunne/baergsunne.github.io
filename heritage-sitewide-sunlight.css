@@ -30,7 +30,7 @@ html,body{background:var(--bp-heritage-surface)!important}
    Tile gradients/shadows, selected states, images and the content typography
    remain completely unchanged. */
 #app header.heritage-header,
-#app header.heritage-header .desktopnav,
+#app nav.desktopnav,
 #app nav.bottomnav{
  background:var(--bp-heritage-surface)!important;
 }
