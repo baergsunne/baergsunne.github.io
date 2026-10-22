@@ -110,12 +110,15 @@ html,body{background:var(--bp-heritage-surface)!important}
 }
 /* The filter dropdowns and the statistics column selection should have the
    same material as cards. Their column headings remain readable and sortable. */
-#app .page--stats .bp-stat-columns,
-#app .page--stats .bp-stat-columns-summary{
+#app .page--stats .stat-content .bp-stat-columns,
+#app .page--stats .stat-content .bp-stat-columns-summary,
+#app .page--stats .stat-content .bp-stat-columns .bp-stat-columns-summary{
  background:var(--bp-sunlight-surface)!important;
+ background-color:#1c4030!important;
 }
-#app .page--stats table.bp-stat-personalized-table thead tr>*{
+#app .page--stats .stat-content table.bp-stat-personalized-table thead tr>*{
  background:var(--bp-sunlight-surface)!important;
+ background-color:#1c4030!important;
  color:#e8c37e!important;
 }
 /* Keep visible meaningful active/selected states in warm gold framing, but
