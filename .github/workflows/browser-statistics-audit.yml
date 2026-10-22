@@ -23,6 +23,8 @@ on:
       - 'tests/mobile-bottomnav-grid-alignment.cjs'
       - 'tests/mobile-controlled-density.cjs'
       - 'heritage-global-layers.css'
+      - 'heritage-sitewide-sunlight.css'
+      - 'tests/heritage-sitewide-sunlight.cjs'
       - 'tests/global-heritage-layers.cjs'
       - 'stats-tool-card-depth.css'
       - 'tests/stats-tool-card-depth.cjs'
@@ -74,6 +76,7 @@ jobs:
       - run: node tests/mobile-controlled-density.cjs
       - run: node tests/mobile-bottomnav-grid-alignment.cjs
       - run: node tests/global-heritage-layers.cjs
+      - run: node tests/heritage-sitewide-sunlight.cjs
       - run: node tests/race-sticky-navigation.cjs
       - run: node tests/duel-mobile-usability.cjs
       - run: node tests/stats-column-personalization.cjs
