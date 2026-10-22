@@ -33,13 +33,17 @@ const fixture=require('./fixture-2026.json');
       large:['.page--stats #baergsunne-simulator'],
       unchanged:['.page--stats .tool-tile']
      }],
+     ['profile','profile',null,{
+      large:['.page--profile .playercard--summary'],
+      unchanged:['.page--profile .kpi']
+     }],
      ['live','live',null,{
       large:['.page--live .cl-block,.page--live .cl-leader,.page--live .discovery-live'],
       unchanged:['.page--live .cl-kpis>div']
      }]
     ];
     for(const [key,view,tab,selectors] of scenes){
-     state.page=view;if(tab)state.tab=tab;if(view==='history')state.historyYear=2026;draw();
+     state.page=view;if(tab)state.tab=tab;if(view==='history')state.historyYear=2026;if(view==='profile')state.profile='Schnarre';draw();
      report[key]={large:selectors.large.map(background),unchanged:selectors.unchanged.map(background),
       overflow:document.documentElement.scrollWidth-document.documentElement.clientWidth};
     }
