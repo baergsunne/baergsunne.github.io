@@ -7,6 +7,9 @@ on:
   pull_request:
     paths:
       - 'app.js'
+      - 'analyse-studio.js'
+      - 'pattern-finder.js'
+      - 'tests/stats-single-tool-heading.cjs'
       - 'discovery-home.css'
       - 'unified-link-tiles-and-stats.css'
       - 'tests/unified-link-tiles-stats.cjs'
@@ -71,6 +74,7 @@ jobs:
       # apt package refreshes delaying the actual visual regression audit.
       - run: npx playwright install chromium
       - run: python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/poker-server.log 2>&1 & 
+      - run: node tests/stats-single-tool-heading.cjs
       # Check the deliberately narrowed Jahrbuch padding before the longer carousels.
       - run: node tests/yearbook-metric-inner-width.cjs
       - run: node tests/history-six-visual-unity.cjs
