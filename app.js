@@ -241,7 +241,7 @@ function home(){
  const hall=db.editions.flatMap(e=>e.official_standings.filter(x=>x.place===1).map(x=>({year:e.year,player:x.player_id})));const counts={};hall.forEach(x=>counts[x.player]=(counts[x.player]||0)+1);
  const top=Object.entries(counts).sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0],'de'))[0];
  const live=liveWidget(true);
- const feature=(title,desc,action,value,icon,content)=>`<button class="discovery-feature" data-action="${action}" data-value="${esc(value)}"><span class="discovery-feature-icon">${icon}</span><span class="discovery-feature-copy"><strong>${title}</strong><small>${desc}</small>${content?`<em>${content}</em>`:''}</span><span class="discovery-feature-arrow">↗</span></button>`;
+ const feature=(title,desc,action,value,icon,content)=>`<button class="discovery-feature${value==='studio'?' discovery-feature--featured':''}" data-action="${action}" data-value="${esc(value)}"><span class="discovery-feature-icon">${icon}</span><span class="discovery-feature-copy"><strong>${title}</strong><small>${desc}</small>${content?`<em>${content}</em>`:''}</span><span class="discovery-feature-arrow">↗</span></button>`;
  return `<div class="discovery-home"><section class="discovery-hero" aria-label="Bärgsunne Poker"><div class="discovery-hero-inner"><img class="discovery-hero-logo" src="assets/logo-premium.webp" alt="Bärgsunne Poker – Lenk" decoding="async"/></div></section>
  <section class="discovery-counts" aria-label="Archiv in Zahlen"><div><strong>${db.editions.length}</strong><span>Turniere</span></div><div><strong>${players.size}</strong><span>Spieler</span></div><div><strong>${numRounds}</strong><span>Runden</span></div></section>
  <section class="discovery-champion" aria-label="Amtierender Champion ${latest.year}"><div class="discovery-champion-copy"><span class="overline">AMTIERENDER CHAMPION</span><strong class="discovery-champion-year">${latest.year}</strong><h2>${winner?esc(winner.player_id):'Kein offizieller Sieger'}</h2><p>${winner?'<strong>'+pointsFmt(winner.points)+' Punkte</strong>':'Noch kein bestätigter Sieger'}</p><button type="button" data-action="openyear" data-value="${latest.year}">Titelweg im Jahrbuch ${latest.year} ansehen</button></div><div class="discovery-champion-trophy"><img src="assets/trophy-premium.webp" loading="eager" fetchpriority="high" decoding="async" alt="Originaler Bärgsunne-Turnierpokal"/></div></section>
@@ -253,11 +253,11 @@ function home(){
  ${feature('Spieler','Profile entdecken','go','players',icon('players'),`${players.size} Spieler`)}
  </div></section>
  <section class="discovery-section"><div class="discovery-head discovery-head--single"><h2>Werkzeuge entdecken</h2></div><div class="discovery-mini-grid">
+ ${feature('Analyse-Studio','Eigene Auswertungen','statsrounds','studio',icon('compare'))}
  ${feature('Duelle','Spieler vergleichen','statsrounds','rivals',icon('duel'))}
  ${feature('Muster-Finder','Serien entdecken','statsrounds','patterns',icon('pattern'))}
  ${feature('Diagramme','Zahlen als Grafik','statsrounds','lab',icon('chart-selection'))}
  ${feature('Simulator','Turniere durchspielen','statsrounds','simulator',icon('simulator'))}
- ${feature('Analyse-Studio','Eigene Auswertungen','statsrounds','studio',icon('compare'))}
  ${feature('Schnellanalysen','Fragen untersuchen','statsrounds','standard',icon('explanation'))}
  </div></section>
  <section class="discovery-section discovery-history-teaser" aria-label="Historie entdecken"><div class="discovery-head discovery-head--single"><h2>Historie entdecken</h2></div><div class="discovery-mini-grid">
@@ -327,6 +327,8 @@ function statsPage(){
   {name:'Geschichte & Szenarien',list:[['race','Race','Die Titeljagd','↝'],['simulator','Simulator','Andere Verläufe','♢'],['records','Rekorde','Bestleistungen','♛'],['lab','Diagramme','Zahlen als Grafik','⌕']]}
  ];
  const toolCards=groups.map(g=>`<section class="tool-group"><h2>${g.name}</h2><div class="tool-grid">${g.list.map(([id,title,desc,symbol])=>`<button class="tool-tile ${state.tab===id?'is-active':''}" type="button" data-action="tab" data-value="${id}"><span class="tool-tile-symbol" aria-hidden="true">${icon(TOOL_ICONS[id])}</span><span class="tool-tile-copy"><strong>${title}</strong><small>${desc}</small></span><span class="tool-tile-arrow" aria-hidden="true">↗</span></button>`).join('')}</div></section>`).join('');
+ // A leading, full-width tool tile replaces the separate photographic 'heartpiece' stage.
+ const featuredStudio=`<div class="tool-grid tool-grid--featured"><button class="tool-tile tool-tile--featured ${state.tab==='studio'?'is-active':''}" type="button" data-action="tab" data-value="studio"><span class="tool-tile-symbol" aria-hidden="true">${icon(TOOL_ICONS.studio)}</span><span class="tool-tile-copy"><strong>Analyse-Studio</strong><small>Eigene Auswertungen</small></span><span class="tool-tile-arrow" aria-hidden="true">↗</span></button></div>`;
  const toolDropdown='<div class="bp-selection-panel"><label for="bp-tool-select">Statistik-Werkzeug auswählen</label><select id="bp-tool-select" aria-label="Statistik-Werkzeug auswählen">'+groups.map(g=>'<optgroup label="'+esc(g.name)+'">'+g.list.map(([id,title])=>'<option value="'+id+'" '+(state.tab===id?'selected':'')+'>'+esc(title)+'</option>').join('')+'</optgroup>').join('')+'<option value="studio" '+(state.tab==='studio'?'selected':'')+'>Analyse-Studio</option></select></div>';
  // Exactly one visible name and one plain-language explanation per statistics tool.
  // Tool content itself is unchanged; legacy first titles are removed below.
@@ -362,8 +364,7 @@ function statsPage(){
  if(hasLegacyHeading)content=content.replace(/^<div class="sectiontitle"><div>[\s\S]*?<\/div><\/div>/,'');
  const playerYearPicker=!ownSelection&&hasLegacyHeading?toolChoicePanel():'';
  return hero('Statistiken<span class="gold">.</span>','Deine Poker-Geschichte hat mehr zu erzählen. Entdecke sie.','ZAHLEN & LEGENDEN')+
- `<section class="studio-flagship" aria-labelledby="studio-flagship-title"><div class="studio-flagship-visual"><span class="studio-flagship-kicker">DAS HERZSTÜCK · BÄRGSUNNE POKER</span><div class="studio-flagship-head"><span class="studio-flagship-mark" aria-hidden="true">♠</span><span class="studio-flagship-edition">DEINE FRAGE. DEINE ENTDECKUNG.</span></div><h2 id="studio-flagship-title">Analyse-<em>Studio</em></h2><p>Welche Runden entschieden über den Titel? Wer glänzte gegen wen? Erstelle deine eigene Auswertung – Spieler, Jahre, Runden und Bedingungen bestimmst du.</p><div class="studio-flagship-actions"><button class="studio-flagship-button" type="button" data-action="tab" data-value="studio">${state.tab==='studio'?'Zum Analyse-Studio':'Analyse-Studio öffnen'} <span aria-hidden="true">→</span></button><span>Deine Geschichte. Deine Regeln.</span></div></div><div class="studio-flagship-foot"><span>SPIELER VERGLEICHEN</span><span>RUNDE FÜR RUNDE</span><span>MUSTER ENTDECKEN</span></div></section>`+
- `<section class="tool-directory"><div class="tool-directory-intro"><span class="overline">MEHR ENTDECKEN</span><h2>Die ganze Pokerwelt auf einen Blick.</h2><p>Jedes Werkzeug eröffnet einen neuen Blick auf die Turniergeschichte.</p></div>${toolCards}</section>`+
+ `<section class="tool-directory">${featuredStudio}${toolCards}</section>`+
  `<div class="stat-content" id="selected-stat-tool">${toolHeading}${playerYearPicker}${content}</div>`;
 }
 function metricTable(id= 'metrics'){return table(id,[{key:'name',title:'Spieler',render:x=>playerLink(x.name)},{key:'titles',title:'Titel'},{key:'seasons',title:'Jahre'},{key:'rounds',title:'Runden'},{key:'points',title:'Pkt.'},{key:'avg',title:'Pkt./R',render:x=>pointsFmt(x.avg)},{key:'placeAvg',title:'Ø Rang',render:x=>pointsFmt(x.placeAvg)},{key:'wins',title:'Siege'},{key:'winRate',title:'Sieg %',render:x=>pointsFmt(x.winRate)+' %'},{key:'top3',title:'Top 3'},{key:'top3Rate',title:'Podest %',render:x=>pointsFmt(x.top3Rate)+' %'},{key:'sd',title:'Streuung',render:x=>pointsFmt(x.sd)}],stats(),{note:'Alle Werte aus historisch erfassten Einzelplatzierungen. Tippe jeden Spaltenkopf zum Sortieren.'})}
