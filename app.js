@@ -29,7 +29,7 @@ async function refreshLive(){if(!apiBase||liveRefreshInFlight)return;liveRefresh
  // Unchanged periodic responses must NOT replace the whole page DOM.
  // This avoids the recurring image flash, scroll jumps and a second paint.
  const changed=liveContentSignature(previous)!==liveContentSignature(d);
- if(appBootstrapped&&(archiveChanged||(changed&&(state.page==='live'||(!!previous&&['home','players','profile'].includes(state.page)))))draw();
+ if(appBootstrapped&&(archiveChanged||(changed&&(state.page==='live'||(!!previous&&['home','players','profile'].includes(state.page))))))draw();
  }catch(err){
   if(!window.BAERGSUNNE_LIVE_UNAVAILABLE){
    window.BAERGSUNNE_LIVE_UNAVAILABLE=true;
