@@ -258,6 +258,7 @@ function home(){
  ${feature('Diagramme','Zahlen als Grafik','statsrounds','lab',icon('chart-selection'))}
  ${feature('Simulator','Turniere durchspielen','statsrounds','simulator',icon('simulator'))}
  ${feature('Schnellanalysen','Fragen untersuchen','statsrounds','standard',icon('explanation'))}
+ ${feature('Übersicht','Zahlen & Rekorde','statsrounds','overview',icon('chart-trend'))}
  </div></section>
  <section class="discovery-section discovery-history-teaser" aria-label="Historie entdecken"><div class="discovery-head discovery-head--single"><h2>Historie entdecken</h2></div><div class="discovery-mini-grid">
  ${feature('Jahrbuch','Champions und Podestplätze','historyteaser','yearbook',icon('podium'))}
