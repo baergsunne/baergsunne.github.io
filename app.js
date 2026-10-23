@@ -241,7 +241,7 @@ function home(){
  const hall=db.editions.flatMap(e=>e.official_standings.filter(x=>x.place===1).map(x=>({year:e.year,player:x.player_id})));const counts={};hall.forEach(x=>counts[x.player]=(counts[x.player]||0)+1);
  const top=Object.entries(counts).sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0],'de'))[0];
  const live=liveWidget(true);
- const feature=(title,desc,action,value,icon,content)=>`<button class="discovery-feature${value==='studio'?' discovery-feature--featured':''}" data-action="${action}" data-value="${esc(value)}"><span class="discovery-feature-icon">${icon}</span><span class="discovery-feature-copy"><strong>${title}</strong><small>${desc}</small>${content?`<em>${content}</em>`:''}</span><span class="discovery-feature-arrow">↗</span></button>`;
+ const feature=(title,desc,action,value,icon,content)=>`<button class="discovery-feature" data-action="${action}" data-value="${esc(value)}"><span class="discovery-feature-icon">${icon}</span><span class="discovery-feature-copy"><strong>${title}</strong><small>${desc}</small>${content?`<em>${content}</em>`:''}</span><span class="discovery-feature-arrow">↗</span></button>`;
  return `<div class="discovery-home"><section class="discovery-hero" aria-label="Bärgsunne Poker"><div class="discovery-hero-inner"><img class="discovery-hero-logo" src="assets/logo-premium.webp" alt="Bärgsunne Poker – Lenk" decoding="async"/></div></section>
  <section class="discovery-counts" aria-label="Archiv in Zahlen"><div><strong>${db.editions.length}</strong><span>Turniere</span></div><div><strong>${players.size}</strong><span>Spieler</span></div><div><strong>${numRounds}</strong><span>Runden</span></div></section>
  <section class="discovery-champion" aria-label="Amtierender Champion ${latest.year}"><div class="discovery-champion-copy"><span class="overline">AMTIERENDER CHAMPION</span><strong class="discovery-champion-year">${latest.year}</strong><h2>${winner?esc(winner.player_id):'Kein offizieller Sieger'}</h2><p>${winner?'<strong>'+pointsFmt(winner.points)+' Punkte</strong>':'Noch kein bestätigter Sieger'}</p><button type="button" data-action="openyear" data-value="${latest.year}">Titelweg im Jahrbuch ${latest.year} ansehen</button></div><div class="discovery-champion-trophy"><img src="assets/trophy-premium.webp" loading="eager" fetchpriority="high" decoding="async" alt="Originaler Bärgsunne-Turnierpokal"/></div></section>
@@ -253,7 +253,6 @@ function home(){
  ${feature('Spieler','Profile entdecken','go','players',icon('players'),`${players.size} Spieler`)}
  </div></section>
  <section class="discovery-section"><div class="discovery-head discovery-head--single"><h2>Werkzeuge entdecken</h2></div><div class="discovery-mini-grid">
- ${feature('Analyse-Studio','Eigene Auswertungen','statsrounds','studio',icon('compare'))}
  ${feature('Duelle','Spieler vergleichen','statsrounds','rivals',icon('duel'))}
  ${feature('Muster-Finder','Serien entdecken','statsrounds','patterns',icon('pattern'))}
  ${feature('Diagramme','Zahlen als Grafik','statsrounds','lab',icon('chart-selection'))}
