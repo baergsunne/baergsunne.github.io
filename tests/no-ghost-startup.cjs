@@ -1,5 +1,5 @@
-/* Reproduce the iPhone ghost page: a static 16-edition seed is hydrated
-   into the official 17-edition archive, then periodically refreshed. */
+/* The official 17-edition archive must be visible instantly, BEFORE
+   deliberately delayed Cloudflare responses, without remounting on refresh. */
 const {chromium}=require('playwright');
 const assert=require('node:assert/strict');
 const fixture=require('./fixture-2026.json');
@@ -24,15 +24,14 @@ const fixture=require('./fixture-2026.json');
    const before=await page.evaluate(()=>({
     number:document.querySelector('.discovery-counts strong')?.textContent||null,
     splash:!!document.querySelector('.bp-initial-stage'),
-    visibleText:document.body.innerText,
     dataCount:db.editions.length,
     bootstrapped:appBootstrapped
    }));
-   assert.equal(before.dataCount,16,'Bundled historical snapshot is 16 before the API');
-   assert.equal(before.bootstrapped,false,'Do not render the historic snapshot as the complete site');
-   assert.equal(before.number,null,'No false 16-tourneys card is painted');
-   assert(before.splash&&before.visibleText.includes('Turnierarchiv wird geladen'),width+' calm loading stage');
-   await page.waitForFunction(()=>document.querySelector('.discovery-counts strong')?.textContent==='17',null,{timeout:15000});
+   assert.equal(before.dataCount,17,'All 17 verified tournament years are bundled before the API');
+   assert.equal(before.bootstrapped,true,'No network gate before the first real paint');
+   assert.equal(before.number,'17','No phantom 16: the very first card is canonical');
+   assert.equal(before.splash,false,'Loading stage vanishes without waiting on network');
+   assert.equal(responses.length,0,width+' the API must still be deliberately pending');
    const first=await page.evaluate(()=>{
     const img=document.querySelector('.discovery-champion-trophy img');
     window.__stableTrophy=img;
@@ -47,6 +46,17 @@ const fixture=require('./fixture-2026.json');
    });
    assert.equal(first.heading,'17');assert.equal(first.noSplash,true);assert.equal(first.logoCount,1);
    assert.equal(first.championName,'Frauchi');assert.equal(first.loading,'eager');assert.equal(first.priority,'high');
+   // The response arrives after a slow start; it must not overwrite the
+   // complete static edition or tear down the already visible home.
+   await page.waitForFunction(()=>!liveRefreshInFlight&&window.BAERGSUNNE_PUBLIC_LIVE?.status==='final',null,{timeout:15000});
+   const afterInitial=await page.evaluate(()=>({
+    sameTrophy:document.querySelector('.discovery-champion-trophy img')===window.__stableTrophy,
+    replacements:window.__domReplacementCount,
+    count:document.querySelector('.discovery-counts strong')?.textContent
+   }));
+   assert(afterInitial.sameTrophy,width+' initial API response must not remount the trophy');
+   assert.equal(afterInitial.replacements,0,width+' initial API response must not repaint the home');
+   assert.equal(afterInitial.count,'17');
    generation=1;
    await page.evaluate(async()=>{await refreshLive();await refreshLive();await refreshLive();});
    const stable=await page.evaluate(()=>({
@@ -62,7 +72,7 @@ const fixture=require('./fixture-2026.json');
    assert.equal(stable.count,'17');assert.equal(stable.champion,'Frauchi');
    assert.equal(stable.headerCount,1);assert.equal(stable.navigationCount,1);
    assert.deepEqual(errors,[],width+' browser exceptions');
-   console.log('NO_GHOST_STARTUP_AND_PERIODIC_REPAINT_PASS',JSON.stringify({width,splash:true,count:stable.count,replacements:stable.replacements,requests:responses.length}));
+   console.log('NO_GHOST_STARTUP_AND_PERIODIC_REPAINT_PASS',JSON.stringify({width,firstPaint:before.number,count:stable.count,replacements:stable.replacements,requests:responses.length}));
    await page.close();
   }
  }finally{await browser.close();}
