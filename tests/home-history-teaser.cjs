@@ -65,8 +65,8 @@ const assert=require('node:assert/strict');
      window.BAERGSUNNE_PUBLIC_LIVE={
       status:'final',year:2026,round_count:7,latest_round:7,updated_at:'2026-10-18T12:26:00.319Z',
       leaders:['Frauchi'],rounds:[],standings:[
-       {rank:1,player:'Frauchi',points:50,wins:3,gap:0,movement:0},
-       {rank:4,player:'Schnarre',points:28,wins:1,gap:22,movement:4}
+       {rank:1,player:'Frauchi',points:50,wins:3,gap:0,movement:0,podiums:5,played:7,places:[1,2,1,3,1,2,3]},
+       {rank:4,player:'Schnarre',points:28,wins:1,gap:22,movement:4,podiums:1,played:7,places:[4,5,8,3,3,3,2]}
       ]
      };
      draw();
@@ -82,7 +82,7 @@ const assert=require('node:assert/strict');
       points:champion.querySelector('p')?.textContent.trim(),
       button:action?.textContent.trim(),action:action?.dataset.action,
       liveText:live.textContent,
-      introduction:live.querySelector('h2 + p')?.textContent.trim(),
+      introduction:live.querySelector('.discovery-live-table')?.previousElementSibling?.textContent.trim(),
       ranking,fullLiveMarkup:liveWidget(false)
      };
     }finally{window.BAERGSUNNE_PUBLIC_LIVE=snapshot;draw();}
