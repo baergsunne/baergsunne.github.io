@@ -32,3 +32,24 @@
  border-radius:0!important;
  color:#e8c37e!important;
 }
+
+/* Exactly the same calm Forest header material in every Profile ranking. 
+   Scoped after the existing sunlight rules, without altering sorting buttons. */
+#app .page.page--profile table.bp-stat-personalized-table thead,
+#app .page.page--profile table.bp-stat-personalized-table thead tr,
+#app .page.page--profile table.bp-stat-personalized-table thead tr > th:first-child,
+#app .page.page--profile table.bp-stat-personalized-table thead tr > th:not(:first-child){
+ background:#102b22!important;
+ background-color:#102b22!important;
+ background-image:none!important;
+ box-shadow:none!important;
+ border-radius:0!important;
+ filter:none!important;
+ color:#e8c37e!important;
+}
+#app .page.page--profile table.bp-stat-personalized-table thead tr > th{
+ border-right:1px solid rgba(232,195,126,.12)!important;
+}
+#app .page.page--profile table.bp-stat-personalized-table thead tr > th:last-child{
+ border-right:0!important;
+}
