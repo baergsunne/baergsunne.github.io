@@ -278,6 +278,11 @@
 #app .page.page--history .history-chronicle > .history-dropdown-controls > label{
  width:100%;
  min-width:0;
+ text-align:center;
+}
+/* Keep the year value left aligned; centre only the "Turnierjahr" caption. */
+#app .page.page--history .history-chronicle > .history-dropdown-controls > label > select{
+ text-align:start;
 }
 /* A single native sticky unit (not a cloned overlay): slider and dynamic year
    or round title travel together beneath the measured site header. */
