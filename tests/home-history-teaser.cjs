@@ -28,6 +28,12 @@ const assert=require('node:assert/strict');
       titleFont:title.fontSize,titleWeight:title.fontWeight,smallFont:sub.fontSize,smallColor:sub.color};
     };
     return {
+     sectionHeadings:[...document.querySelectorAll('.discovery-home .discovery-section > .discovery-head')].map(head=>{
+       const title=head.querySelector('h2'),cs=title?getComputedStyle(title):null;
+       return {text:title?.textContent.trim(),color:cs?.color,fontSize:cs?parseFloat(cs.fontSize):0,
+        eyebrowCount:head.querySelectorAll('.overline').length,paragraphCount:head.querySelectorAll('p').length,
+        titleCount:head.querySelectorAll('h1,h2,h3').length};
+     }),
      count:buttons.length,views:buttons.map(x=>x.dataset.value),titles:buttons.map(x=>x.querySelector('strong')?.textContent),
      images:buttons.map(x=>x.querySelector('.discovery-feature-icon img.bp-icon')?.getAttribute('src')),
      sameStyle:JSON.stringify(styles(historyGrid))===JSON.stringify(styles(statsGrid)),
@@ -41,6 +47,16 @@ const assert=require('node:assert/strict');
     };
    });
    const views=['yearbook','replay','moments','records','field','compare'];
+   assert.deepEqual(teaser.sectionHeadings.map(h=>h.text),
+    ['Der Einstieg','Werkzeuge entdecken','Historie entdecken'],
+    width+' all three section entrances have exactly one requested heading');
+   for(const h of teaser.sectionHeadings){
+    assert.equal(h.titleCount,1,width+' '+h.text+' exactly one title');
+    assert.equal(h.eyebrowCount,0,width+' '+h.text+' no obsolete overline');
+    assert.equal(h.paragraphCount,0,width+' '+h.text+' no explanatory paragraph');
+    assert.equal(h.color,'rgb(232, 195, 126)',width+' '+h.text+' must use heritage gold');
+    assert(h.fontSize>=25,width+' '+h.text+' must be large enough to read');
+   }
    assert.equal(teaser.count,6,width+' needs six Historie teasers');
    assert.deepEqual(teaser.views,views,'Historie teaser order');
    assert.deepEqual(teaser.titles,['Jahrbuch','Runden','Schlüsselmomente','Rekordbuch','Teilnehmerfeld','Jahresvergleich']);
