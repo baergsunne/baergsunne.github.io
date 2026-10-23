@@ -20,3 +20,15 @@
 #app .page--stats .stat-content table thead th:last-child{
  border-right:0!important;
 }
+
+/* Higher specificity than the previous sitewide sunlight rule that matched
+   each personalizable table TH separately. Keep sticky positioning intact. */
+#app .page.page--stats .stat-content table.bp-stat-personalized-table thead tr > th:first-child,
+#app .page.page--stats .stat-content table.bp-stat-personalized-table thead tr > th:not(:first-child){
+ background:#102b22!important;
+ background-color:#102b22!important;
+ background-image:none!important;
+ box-shadow:none!important;
+ border-radius:0!important;
+ color:#e8c37e!important;
+}
