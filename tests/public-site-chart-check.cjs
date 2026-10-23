@@ -6,7 +6,7 @@ const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const local=fs.readFileSync('index.html','utf8');
 const base='https://baergsunne.github.io/';
-const files=['app.js','history-chronicle.js','lab-premium.js','unified-link-tiles-and-stats.css','heritage-sitewide-sunlight.css'];
+const files=['data.js','app.js','history-chronicle.js','lab-premium.js','unified-link-tiles-and-stats.css','heritage-sitewide-sunlight.css'];
 function assetVersion(html,file){
  const escaped=file.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
  const m=html.match(new RegExp('(?:src|href)="([^"]*'+escaped+'\\?v=[^"]+)"'));
@@ -18,6 +18,22 @@ for(const [name,v] of Object.entries(expected))assert(v,'Missing local site asse
  const browser=await chromium.launch({headless:true});
  try{
   const page=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
+  // Record the FIRST app paint, before any later API update or audit draw().
+  await page.addInitScript(()=>{
+    window.__firstHomeEditionCount=null;
+    document.addEventListener('DOMContentLoaded',()=>{
+      const root=document.getElementById('app');
+      if(!root)return;
+      const sample=()=>{
+        if(window.__firstHomeEditionCount!==null)return;
+        const el=root.querySelector('.discovery-counts strong');
+        if(el)window.__firstHomeEditionCount=el.textContent.trim();
+      };
+      const observer=new MutationObserver(sample);
+      observer.observe(root,{childList:true,subtree:true});
+      sample();
+    },{once:true});
+  });
   const attempts=40;let last='';
   for(let attempt=1;attempt<=attempts;attempt++){
    try{
@@ -32,6 +48,14 @@ for(const [name,v] of Object.entries(expected))assert(v,'Missing local site asse
     }
     const missing=files.filter(name=>observed[name]!==expected[name]);
     if(missing.length)throw Error('Published index differs from main: '+JSON.stringify(missing.map(n=>({name:n,expected:expected[n],got:observed[n]}))));
+    // Check the complete 2026 edition is in the actual published JS file.
+    // A 17-edition DOM reached by later API hydration is not sufficient.
+    const archiveRes=await page.request.get(new URL(expected['data.js'],base).toString(),{timeout:15000});
+    if(!archiveRes.ok())throw Error('Published canonical archive HTTP '+archiveRes.status());
+    const archiveJS=await archiveRes.text();
+    const actualSeed=JSON.parse(archiveJS.replace(/^window\.POKER_SEED=/,'').replace(/;\s*$/,''));
+    if(actualSeed.editions.length!==17||!actualSeed.editions.some(e=>e.year===2026&&e.rounds.length===7&&e.official_standings.some(p=>p.player_id==='Schnarre'&&p.place===4&&p.points===28)))
+      throw Error('Published static archive is missing the full official 2026 tournament');
     // Verify the physical new stylesheet is served by GitHub Pages, not just
     // referenced by an outdated or cached index.
     const css=await page.request.get(new URL(expected['unified-link-tiles-and-stats.css'],base).toString(),{timeout:15000});
@@ -60,7 +84,9 @@ for(const [name,v] of Object.entries(expected))assert(v,'Missing local site asse
     const data=await page.evaluate(()=>{
      const links=[...document.querySelectorAll('.page--home .discovery-features > .discovery-feature')];
      const rects=links.map(c=>c.getBoundingClientRect());
-     const style=links[0]?getComputedStyle(links[0]):null;
+     // Snapshot the *string* before later draw() replaces #app. Holding a
+     // CSSStyleDeclaration from a detached node returns an empty background.
+     const firstBg=links[0]?getComputedStyle(links[0]).backgroundImage:'';
      const icons=links.map(c=>c.querySelector('.discovery-feature-icon .bp-icon')?.getBoundingClientRect().width||0);
      const version=document.querySelector('link[href*="unified-link-tiles-and-stats.css"]')?.getAttribute('href');
      state.page='profile';state.profile='Schnarre';draw();
@@ -77,11 +103,11 @@ for(const [name,v] of Object.entries(expected))assert(v,'Missing local site asse
      const heatmapBackground=heatmapCard?getComputedStyle(heatmapCard).backgroundImage:'';
      return {heatmapBackground,version,homeCards:links.length,columns:rects.length===4&&Math.abs(rects[0].top-rects[1].top)<2&&rects[2].top>rects[0].bottom+3,
       dimensions:rects.map(r=>({width:Math.round(r.width),height:Math.round(r.height)})),
-      firstIconWidth:icons[0],firstBg:style?.backgroundImage||'',
+      firstIconWidth:icons[0],firstBg,
       official,profileHeading:profileText.includes('Karriere-Entwicklung · offizieller Jahresrang'),
       profile2026:profileTitles.includes('Schnarre · 2026: 4'),
       career2026:careerTitles.includes('Schnarre · 2026: 4'),
-      editionCount:db.editions.length};
+      editionCount:db.editions.length,firstPaintCount:window.__firstHomeEditionCount};
     });
     assert.equal(data.homeCards,4,'Four entry links in live home');
     assert(data.columns,'Published homepage still lacks 2x2 grid: '+JSON.stringify(data.dimensions));
@@ -96,6 +122,7 @@ for(const [name,v] of Object.entries(expected))assert(v,'Missing local site asse
     assert.equal(data.official.points,28);
     assert(data.profileHeading&&data.profile2026&&data.career2026);
     assert.equal(data.editionCount,17);
+    assert.equal(data.firstPaintCount,'17','The FIRST visible tournament count must be 17 (no 16-year flash)');
     console.log('PUBLIC_SITE_LIVE_DESIGN_AND_CHARTS_SUCCESS',JSON.stringify({expected,data}));
     return;
    }catch(err){
