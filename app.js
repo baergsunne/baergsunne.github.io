@@ -257,6 +257,7 @@ function home(){
  ${feature('Wenn–Dann-Finder','Ereignisse verknüpfen','statsrounds','patterns',icon('pattern'))}
  ${feature('Diagramme','Zahlen als Grafik','statsrounds','lab',icon('chart-selection'))}
  ${feature('Simulator','Turniere durchspielen','statsrounds','simulator',icon('simulator'))}
+ ${feature('Karrieren','Spieler im Wandel','statsrounds','career',icon('streak'))}
  ${feature('Übersicht','Zahlen & Rekorde','statsrounds','overview',icon('chart-trend'))}
  </div></section>
  <section class="discovery-section discovery-history-teaser" aria-label="Historie entdecken"><div class="discovery-head discovery-head--single"><h2>Historie entdecken</h2></div><div class="discovery-mini-grid">
