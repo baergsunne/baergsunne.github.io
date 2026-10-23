@@ -40,6 +40,8 @@ const assert=require('node:assert/strict');
      oldYearSelector:!!document.getElementById('bp-home-year'),
      oldYearSection:!!document.querySelector('.discovery-years'),
      statisticTeaserCount:statsGrid.querySelectorAll('.discovery-feature').length,
+     statisticTitles:[...statsGrid.querySelectorAll('.discovery-feature strong')].map(x=>x.textContent.trim()),
+     overviewAction:statsGrid.querySelector('.discovery-feature[data-value="overview"]')?.dataset.action,
      gapToFooter:document.querySelector('.discovery-history-teaser').getBoundingClientRect().bottom,
      overflows:document.documentElement.scrollWidth>innerWidth+2,
      cols:styles(historyGrid).columns,
@@ -100,7 +102,9 @@ const assert=require('node:assert/strict');
    assert.equal(teaser.count,6,width+' needs six Historie teasers');
    assert.deepEqual(teaser.views,views,'Historie teaser order');
    assert.deepEqual(teaser.titles,['Jahrbuch','Runden','Schlüsselmomente','Rekordbuch','Teilnehmerfeld','Jahresvergleich']);
-   assert.equal(teaser.statisticTeaserCount,5,'Homepage shows five tool links without Analyse-Studio');
+   assert.equal(teaser.statisticTeaserCount,6,'Homepage shows six ordinary tool links');
+   assert.deepEqual(teaser.statisticTitles,['Duelle','Muster-Finder','Diagramme','Simulator','Schnellanalysen','Übersicht'],width+' overview is sixth tool');
+   assert.equal(teaser.overviewAction,'statsrounds',width+' overview links to correct statistics tool');
    assert.equal(await page.locator('.page--home .discovery-mini-grid [data-value="studio"]').count(),0,width+' no Analyse-Studio teaser on home');
    assert.equal(teaser.sameStyle,true,'Historie and Statistik teaser must reuse the identical CSS');
    assert.equal(teaser.oldYearSelector,false,'Old home-year dropdown removed');
