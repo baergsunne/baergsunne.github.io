@@ -3,5 +3,8 @@ await page.route('**/api/live',async route=>{const r=await route.fetch({headers:
 await page.route('**/api/editions',async route=>{const r=await route.fetch({headers:{...route.request().headers(),origin:'https://baergsunne.github.io'}});const h={...r.headers(),'access-control-allow-origin':'http://127.0.0.1:8765'};await route.fulfill({response:r,headers:h});});
 await page.goto('http://127.0.0.1:8765/#stats',{waitUntil:'domcontentloaded'});
 await page.waitForFunction(()=>typeof db!=='undefined'&&db.editions.some(e=>e.year===2026),null,{timeout:35000});
+// 2026 is bundled, so the first DOM is ready before Cloudflare responds. Wait
+// for the separately required *real* API status before closing the route.
+await page.waitForFunction(()=>window.BAERGSUNNE_PUBLIC_LIVE?.status==='final'&&!liveRefreshInFlight,null,{timeout:35000});
 const a=await page.evaluate(()=>{const x=yearly('Schnarre').find(r=>r.year===2026);const ed=db.editions.find(e=>e.year===2026);return {schnarre:x,year2021:db.editions.some(e=>e.year===2021),editionCount:db.editions.length,ranked:ed.official_standings.map(s=>[s.player_id,s.place,s.points]),live:window.BAERGSUNNE_PUBLIC_LIVE?.status};});
 assert.equal(a.schnarre?.place,4);assert.equal(a.schnarre?.points,28);assert(a.year2021);assert.equal(a.editionCount,17);assert.equal(a.ranked.length,10);assert.equal(a.live,'final');assert.deepEqual(errors,[]);console.log('REAL_CLOUDFLARE_ARCHIVE_SUCCESS',JSON.stringify(a));}finally{await browser.close();}})().catch(e=>{console.error('REAL_CLOUDFLARE_ARCHIVE_FAILURE',e);process.exit(1)});
