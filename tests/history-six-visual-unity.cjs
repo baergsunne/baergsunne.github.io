@@ -15,6 +15,24 @@ const assert=require('node:assert/strict');
    });
    await page.goto('http://127.0.0.1:8765/#history',{waitUntil:'domcontentloaded'});
    await page.waitForFunction(()=>typeof db!=='undefined'&&db.editions.some(x=>x.year===2026),null,{timeout:30000});
+   // Focused regression: the caption is centred above its native picker.
+   const yearLabel=await page.evaluate(()=>{
+    const label=document.querySelector('.history-chronicle > .history-dropdown-controls > label');
+    const select=label?.querySelector('#history-year-select');
+    const l=label?.getBoundingClientRect(),s=select?.getBoundingClientRect();
+    return {
+      labelText:label?.firstChild?.textContent?.trim(),
+      captionAlign:label?getComputedStyle(label).textAlign:null,
+      yearAlign:select?getComputedStyle(select).textAlign:null,
+      selected:select?.value,
+      aligned:l&&s?Math.abs((l.left+l.right)-(s.left+s.right))<2:false,
+      width:s?.width||0
+    };
+   });
+   assert.equal(yearLabel.labelText,'Turnierjahr',width+' native year caption retained');
+   assert.equal(yearLabel.captionAlign,'center',width+' Turnierjahr caption centred above selector');
+   assert.equal(yearLabel.yearAlign,'start',width+' selected year keeps its original alignment');
+   assert(yearLabel.aligned&&yearLabel.width>100,width+' picker geometry unchanged');
    const styleAudit=()=>page.evaluate(()=>{
     const root=document.querySelector('.history-chronicle'),sticky=root?.querySelector('.history-sticky-group');
     const stage=root?.querySelector('.history-feature'),viewport=root?.querySelector('.history-carousel-viewport,.history-replay-viewport');
