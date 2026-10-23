@@ -73,13 +73,13 @@ const fixture=require('./fixture-2026.json');
     if(standards.length>1)assert.equal(new Set(standards.map(c=>c.bg)).size,1,pageName+' standard cards must share one gradient');
     return cards;
    };
-   const home=await auditTiles('.page--home button.discovery-feature',15,'Home');
+   const home=await auditTiles('.page--home button.discovery-feature',16,'Home');
    assert.equal(home.filter(c=>c.featured).length,0,width+' no featured home tile');
    assert.equal(home.some(c=>c.title==='Analyse-Studio'),false,width+' no Analyse-Studio teaser on start page');
    assert.equal(home[4].title,'Duelle',width+' ordinary tools begin directly with Duelle');
-   assert.deepEqual(home.slice(4,9).map(c=>c.title),
-    ['Duelle','Muster-Finder','Diagramme','Simulator','Schnellanalysen'],
-    width+' five existing homepage tool links remain');
+   assert.deepEqual(home.slice(4,10).map(c=>c.title),
+    ['Duelle','Muster-Finder','Diagramme','Simulator','Schnellanalysen','Übersicht'],
+    width+' six homepage tool links, overview in sixth position');
    // Verify the four top-level entry cards form two rows and two columns
    // with exactly the same width and height (not four horizontal bars).
    const four=await page.locator('.page--home .discovery-features > .discovery-feature').evaluateAll(els=>els.map(el=>{
@@ -94,6 +94,10 @@ const fixture=require('./fixture-2026.json');
    assert(four[1].left>four[0].left+four[0].width-1,'Two distinct columns');
    const appOverflow=await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth);
    assert(appOverflow<=2,'No home overflow '+width);
+   await page.locator('.page--home .discovery-mini-grid .discovery-feature[data-value="overview"]').click();
+   assert.equal(await page.evaluate(()=>state.page),'stats',width+' overview opens statistics page');
+   assert.equal(await page.evaluate(()=>state.tab),'overview',width+' overview is the active statistics tab');
+   await page.evaluate(()=>{state.page='home';draw()});
    await page.locator('.discovery-feature[data-value="stats"]').first().click();
    await page.waitForSelector('.page--stats .tool-directory .tool-tile');
    const stats=await auditTiles('.page--stats .tool-directory button.tool-tile',13,'Statistics');
