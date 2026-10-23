@@ -3,7 +3,7 @@ const assert=require('node:assert/strict');
 const fixture=require('./fixture-2026.json');
 
 const names={
- overview:'Übersicht',patterns:'Muster-Finder',insights:'Analysen',
+ overview:'Übersicht',patterns:'Wenn–Dann-Finder',insights:'Analysen',
  standard:'Schnellanalysen',career:'Karrieren',rivals:'Duelle',
  rounds:'Runden',heatmap:'Heatmap',race:'Race',simulator:'Simulator',
  records:'Rekorde',lab:'Diagramme',studio:'Analyse-Studio'
@@ -46,7 +46,7 @@ const names={
       oldHeaderCount:document.querySelectorAll('.page--stats .tool-active-heading').length,
       oldInternalHeadingCount:scope?.querySelectorAll('.pattern-head,.ab-top').length,
       legacyTitleCount:scope?.querySelectorAll(':scope > .sectiontitle:not(.bp-stat-tool-heading)').length,
-      toolExists:!!scope?.querySelector(tab==='patterns'?'#pattern-finder':tab==='studio'?'#abStudio':tab==='simulator'?'#baergsunne-simulator':'.card,.metrics,.datawarn,.story-section,.heat-scroll,.record-grid,.insight-workspace'),
+      toolExists:!!scope?.querySelector(tab==='patterns'?'#wenn-dann-finder':tab==='studio'?'#abStudio':tab==='simulator'?'#baergsunne-simulator':'.card,.metrics,.datawarn,.story-section,.heat-scroll,.record-grid,.insight-workspace'),
       pickerCount:scope?.querySelectorAll('.tool-choice-panel').length,
       headingWidth:rect?.width||0,overflow:document.documentElement.scrollWidth-document.documentElement.clientWidth});
     }
