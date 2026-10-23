@@ -1,0 +1,26 @@
+name: Wenn–Dann-Finder targeted regression
+on:
+  pull_request:
+    paths:
+      - 'wenn-dann-finder.js'
+      - 'wenn-dann-finder.css'
+      - 'app.js'
+      - 'index.html'
+      - 'tests/wenn-dann-finder.cjs'
+      - '.github/workflows/wenn-dann-finder.yml'
+jobs:
+  finder:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --check wenn-dann-finder.js && node --check app.js && node --check tests/wenn-dann-finder.cjs
+      - run: npm install --no-save playwright
+      - run: npx playwright install chromium
+      - run: python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/poker-wd-server.log 2>&1 &
+      - run: node tests/wenn-dann-finder.cjs

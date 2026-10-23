@@ -254,7 +254,7 @@ function home(){
  </div></section>
  <section class="discovery-section"><div class="discovery-head discovery-head--single"><h2>Werkzeuge entdecken</h2></div><div class="discovery-mini-grid">
  ${feature('Duelle','Spieler vergleichen','statsrounds','rivals',icon('duel'))}
- ${feature('Muster-Finder','Serien entdecken','statsrounds','patterns',icon('pattern'))}
+ ${feature('Wenn–Dann-Finder','Ereignisse verknüpfen','statsrounds','patterns',icon('pattern'))}
  ${feature('Diagramme','Zahlen als Grafik','statsrounds','lab',icon('chart-selection'))}
  ${feature('Simulator','Turniere durchspielen','statsrounds','simulator',icon('simulator'))}
  ${feature('Schnellanalysen','Fragen untersuchen','statsrounds','standard',icon('explanation'))}
@@ -311,7 +311,7 @@ function redrawToolChoice(){
  window.scrollTo({top:Math.max(0,window.scrollY+newTop-anchorTop),left:x,behavior:'instant'});
 }
 function toolChoicePanel(){
- if(['studio','simulator','rivals','insights','race'].includes(state.tab))return '';
+ if(['studio','simulator','rivals','insights','race','patterns'].includes(state.tab))return '';
  const t=activeToolChoice(),allPlayers=eligibleToolPlayers(t);
  const yearList=db.editions.map(e=>e.year).sort((a,b)=>b-a);
  const yearOptions=yearList.map(y=>`<option value="${y}">${y}</option>`).join('');
@@ -322,7 +322,7 @@ function statsPage(){
  const tools={overview:overviewTab,career:careerTab,rounds:roundTab,rivals:rivalsTab,heatmap:heatmapTab,race:raceTab,simulator:simulatorTab,records:legacyRecordsTab,lab:labTab,insights:insightsTab,studio:studioTab,patterns:patternsTab,standard:standardTab};
  if(!Object.hasOwn(tools,state.tab))state.tab='overview';
  const groups=[
-  {name:'Entdecken',list:[['overview','Übersicht','Zahlen & Rekorde','◈'],['patterns','Muster-Finder','Serien entdecken','✧'],['insights','Analysen','Ergebnisse verstehen','◇'],['standard','Schnellanalysen','Fragen untersuchen','≋']]},
+  {name:'Entdecken',list:[['overview','Übersicht','Zahlen & Rekorde','◈'],['patterns','Wenn–Dann-Finder','Ereignisse verknüpfen','✧'],['insights','Analysen','Ergebnisse verstehen','◇'],['standard','Schnellanalysen','Fragen untersuchen','≋']]},
   {name:'Vergleichen',list:[['career','Karrieren','Spieler im Wandel','↗'],['rivals','Duelle','Spieler vergleichen','⚔'],['rounds','Runden','Siege & Punkte','◎'],['heatmap','Heatmap','Runden im Blick','▦']]},
   {name:'Geschichte & Szenarien',list:[['race','Race','Die Titeljagd','↝'],['simulator','Simulator','Andere Verläufe','♢'],['records','Rekorde','Bestleistungen','♛'],['lab','Diagramme','Zahlen als Grafik','⌕']]}
  ];
@@ -334,7 +334,7 @@ function statsPage(){
  // Tool content itself is unchanged; legacy first titles are removed below.
  const toolExplanations={
   overview:'Sieh die wichtigsten Kennzahlen, Titel und Rekorde der Bärgsunne-Geschichte auf einen Blick.',
-  patterns:'Entdecke wiederkehrende Muster in gewählten Jahren, Spielern und Runden und prüfe die Ergebnisse.',
+  patterns:'Verbinde ein Ausgangsereignis mit seinem späteren Ergebnis und lies sofort die Erklärung aus dem Originalarchiv.',
   insights:'Beantworte konkrete Fragen zu den Turnierergebnissen und verstehe die Zahlen dahinter.',
   standard:'Nutze fertige Auswertungen, um Spieler und Turniere miteinander zu vergleichen.',
   career:'Verfolge, wie sich die Leistungen der Spieler über die Turnierjahre entwickelt haben.',
@@ -350,7 +350,7 @@ function statsPage(){
  const toolName=state.tab==='studio'?'Analyse-Studio':(groups.flatMap(g=>g.list).find(x=>x[0]===state.tab)||['','Übersicht'])[1];
  const toolHeading='<div class="sectiontitle bp-stat-tool-heading"><div><h2>'+esc(toolName)+'</h2><p>'+esc(toolExplanations[state.tab])+'</p></div></div>';
  const previousPlayers=state.selected,previousYears=state.selectedYears,choice=activeToolChoice();
- const ownSelection=['studio','simulator','rivals','insights','race'].includes(state.tab);
+ const ownSelection=['studio','simulator','rivals','insights','race','patterns'].includes(state.tab);
  // Race and Analysen own their inputs: never apply an invisible saved tool filter.
  state.selected=(state.tab==='race'||state.tab==='insights')?[]:choice.players;
  state.selectedYears=(state.tab==='race'||state.tab==='insights')?[]:choice.years;
@@ -730,7 +730,7 @@ function standardFacts(scope,subject){let records=standardContext(scope,subject)
 function standardCards(scope,subject,limit=30){const facts=standardFacts(scope,subject);return `<section class="standard-catalog"><div class="sectiontitle"><div><span class="overline">AUFFÄLLIGE GESCHICHTEN</span><h2>${scope==='Ligaweit'?'Allgemeine Poker-Muster':scope==='Spieler'?'Analyse: '+esc(subject):scope==='Jahrgang'?'Analyse: '+esc(subject):'Spielervergleiche'}</h2><p>Entdecke, welche Geschichten sich hinter den Ergebnissen verbergen.</p></div></div><div class="standard-grid">${facts.slice(0,limit).map(f=>{const n=f.total,yes=f.yes,rate=n?pointsFmt(Math.round(f.rate*10)/10)+' %':'–';return `<article class="card standard-card"><div class="overline">${esc(f[0])} · WENN → DANN</div><h3>${esc(f[2])}</h3><p><b>Unsere Frage:</b> ${esc(f[3])}</p><p><b>Das Ergebnis:</b> ${n?`In ${yes} von ${n} passenden Fällen traf die untersuchte Folge ein (${rate}).`:'Mit den gewählten Spielern und Jahren ist diese Situation nicht vorgekommen. Wir können deshalb keine Antwort ausrechnen.'}</p><details><summary>Ausführliche Erklärung und Beispiele</summary><p><b>Welche Fälle schauen wir uns an?</b> Wir betrachten die unter den aktuellen Filtern verfügbaren Spieler-Rundenergebnisse. Zuerst suchen wir alle Fälle, in denen die Wenn-Bedingung eintritt. Nur diese ${n} Fälle stehen im Ausgangszahl. Danach zählen wir, in wie vielen Fällen auch das Dann-Ereignis eingetreten ist: ${yes}.</p><p><b>Rechenbeispiel:</b> ${n?`${yes} geteilt durch ${n} und mit 100 multipliziert ergibt ${rate}.`:'Ohne passende Fälle können wir keinen Prozentwert berechnen.'} Das zeigt, was in diesen Runden passiert ist. Was beim nächsten Poker-Wochenende geschieht, wissen wir damit nicht.</p><p><b>Beispiele mit erfüllter Bedingung und Folge:</b> ${f.examples.length?esc(f.examples.join('; ')):'Keine in der Auswahl.'}</p><p><b>Gegenbeispiele:</b> ${f.noExamples.length?esc(f.noExamples.join('; ')):'Keine in der Auswahl.'}</p><p><b>Wie viel kann man daraus ableiten?</b> ${n<10?'Weniger als zehn Fälle: Einzelne Runden verändern die Quote stark.':'Die Fallzahl ist sichtbar, trotzdem kann ein beobachtetes Muster zufällig entstanden sein.'} Nur weil zwei Dinge gemeinsam vorkommen, muss das eine nicht der Grund für das andere sein. Die nächste Runde kann ganz anders ausgehen.</p></details></article>`}).join('')}</div></section>`;}
 function standardTab(){return sectionTitle('STANDARD-KATALOG','Schnellanalysen','Die Auswertungen folgen festen, erklärten Regeln und passen sich den Jahres- und Spielerfiltern an.')+`<div class="datawarn">Ausschliesslich originale Turnierergebnisse: 17 Austragungen von 2007 bis 2026. 2014, 2020 und 2023 fanden keine Turniere statt. Turi 2008 wurde bestätigt: Runde 5 = 6 Punkte (Rang 3), Gesamt = 61 Punkte.</div>`+standardCards('Ligaweit',null)+standardCards('Vergleich',null);}
 
-function patternsTab(){if(window.BAERGSUNNE_PATTERN_FINDER)return window.BAERGSUNNE_PATTERN_FINDER(db);let facts=patternFacts();const pct=n=>pointsFmt(Math.round(n*10)/10)+' %';return sectionTitle('WENN → DANN','Muster-Finder','Die App sucht nach Zusammenhängen in den ausgewählten echten Turnierrunden. Auffällige Muster können Zufall sein.')+`<div class="datawarn">Die gefundenen Muster sind keine sicheren Vorhersagen. Auffällige Werte können zufällig entstehen, besonders weil viele Muster geprüft werden.</div>${facts.length?facts.map(f=>`<article class="card" style="margin:14px 0;padding:18px"><div class="eyebrow">${esc(f.p||'MEISTERSCHAFT')} · ${esc(f.unit)}</div><h3>${esc(f.title)}</h3><p><strong>WENN</strong> ${esc(f.condition)}, <strong>DANN</strong> wurde ${esc(f.consequence)}.</p><div class="metrics">${kpi('Beobachtet',f.yes+' von '+f.total,pct(f.rate)+' der Fälle')}${kpi('Ohne diese Bedingung',f.comparison+' von '+f.baseTotal,pct(f.base)+' der Vergleichsfälle')}</div><p><strong>Einfach erklärt:</strong> In ${f.total} passenden Fällen traf die Folge ${f.yes}-mal ein. Ohne die genannte Voraussetzung waren es ${f.comparison} von ${f.baseTotal} Fällen. Der Unterschied beträgt ${pointsFmt(Math.round(f.diff*10)/10)} Prozentpunkte. Das ist ein beobachteter Zusammenhang, keine Ursache und keine sichere Regel.</p><details><summary>Wie wurde das berechnet? Beispiele anzeigen</summary><p>Wir betrachten nur die ausgewählten Jahrgänge und Spieler. Zunächst zählen wir alle Fälle mit der Wenn-Bedingung. Danach prüfen wir bei jedem Fall, ob das Dann-Ereignis tatsächlich folgte. Zur Einordnung rechnen wir denselben Anteil für Fälle ohne die Wenn-Bedingung aus.</p><p>Belege für erfüllte Folge: ${f.samples.length?esc(f.samples.join(', ')):'In dieser Auswahl kein erfüllter Fall'}. Für die vollständige Prüfung zählen auch die Fälle ohne Folge.</p><p><strong>Gegenbeispiele zur Wenn-dann-Aussage:</strong> ${f.counterexamples?.length?esc(f.counterexamples.join(', ')):'In dieser Auswahl keine – das macht die Aussage noch nicht zu einer sicheren Regel.'}</p><p><strong>So liest du den Vergleich:</strong> Die beiden Gruppen haben ${f.total} beziehungsweise ${f.baseTotal} Fälle. Ein Unterschied kann durch Zufall, unterschiedlich grosse Gruppen oder andere Umstände entstehen. Aus diesem Ergebnis kann man weder Spielverhalten noch künftige Siege ableiten.</p>${f.caution?'<p><strong>Vorsicht:</strong> Kleine Vergleichsgruppe – dieses Muster ist besonders unsicher.</p>':''}</details></article>`).join(''):'<div class="empty">Für diese Auswahl gibt es keine Muster mit mindestens drei Fällen pro Vergleichsgruppe. Wähle mehr Spieler oder Jahre.</div>'}`;}
+function patternsTab(){return typeof window.BAERGSUNNE_WENNDANN_FINDER==='function'?window.BAERGSUNNE_WENNDANN_FINDER(db):'<div class="empty">Der Wenn–Dann-Finder konnte nicht geladen werden. Bitte die Seite neu laden.</div>';}
 
 function premiumMasthead(page){
  const labels={history:['DAS ARCHIV','Historie',`${db.editions.length} Turniere. Eine Geschichte seit 2007.`],stats:['DIE ZAHLEN','Statistiken','Vergleiche, Rekorde und Meisterschaftsverläufe.'],players:['DIE TEILNEHMER','Spieler','Karrieren und Duelle aus den Originalergebnissen.'],profile:['DAS DOSSIER','Spielerprofil','Die Geschichte hinter den Platzierungen.'],fame:['DIE EHRENTAFEL','Hall of Fame','Alle Champions. Alle Titel.'],live:['AM POKERTISCH','Live','Aktueller Spielstand und Rundenergebnisse.'],admin:['VERWALTUNG','Administration','Geschützter Zugriff auf die Turnierverwaltung.']};

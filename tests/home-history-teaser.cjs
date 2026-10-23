@@ -103,7 +103,7 @@ const assert=require('node:assert/strict');
    assert.deepEqual(teaser.views,views,'Historie teaser order');
    assert.deepEqual(teaser.titles,['Jahrbuch','Runden','Schlüsselmomente','Rekordbuch','Teilnehmerfeld','Jahresvergleich']);
    assert.equal(teaser.statisticTeaserCount,6,'Homepage shows six ordinary tool links');
-   assert.deepEqual(teaser.statisticTitles,['Duelle','Muster-Finder','Diagramme','Simulator','Schnellanalysen','Übersicht'],width+' overview is sixth tool');
+   assert.deepEqual(teaser.statisticTitles,['Duelle','Wenn–Dann-Finder','Diagramme','Simulator','Schnellanalysen','Übersicht'],width+' overview is sixth tool');
    assert.equal(teaser.overviewAction,'statsrounds',width+' overview links to correct statistics tool');
    assert.equal(await page.locator('.page--home .discovery-mini-grid [data-value="studio"]').count(),0,width+' no Analyse-Studio teaser on home');
    assert.equal(teaser.sameStyle,true,'Historie and Statistik teaser must reuse the identical CSS');
