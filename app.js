@@ -471,8 +471,8 @@ function labTab(){
  return sectionTitle('DATEN SICHTBAR MACHEN','Diagramme','Jahre, Spieler, Runden und Kennzahlen selbst auswählen.')+card('Diagramm einstellen',controls)+card('Dein Diagramm',chart)+card('Werte zum Diagramm',table('diagram-values',[{key:'name',title:'Spieler'},{key:'rounds',title:'Runden'},{key:'wins',title:'Siege'},{key:'points',title:'Punkte'},{key:'avg',title:'Ø Rang',render:x=>x.avg===null?'–':pointsFmt(x.avg)}],byPlayer));
 }
 function playersPage(){
- // Current participation and ranking use only the last officially archived
- // tournament, never a temporarily live ranking or historical name order.
+ // Show players individually in the order of the last archived tournament.
+ // No ranking numbers, ranking table, or position labels are displayed.
  const latest=[...db.editions].sort((a,b)=>b.year-a.year)[0];
  const current=latest?[...latest.official_standings].sort((a,b)=>Number(a.place)-Number(b.place)||a.player_id.localeCompare(b.player_id,'de')).map(x=>x.player_id):[];
  const all=availableNames();
@@ -497,7 +497,7 @@ function playersPage(){
  };
  const debuts=provisionalPlayers();
  return hero('Players<span class="gold">.</span>','Persönliche Karrieren. Jede Saison, jede Runde, jeder Rivale.','PLAYER PROFILES')+
- `<section class="player-roster-group player-roster-group--current" aria-labelledby="current-roster-title"><div class="player-roster-heading"><h2 id="current-roster-title">Aktuelles Teilnehmerfeld</h2><span>${latest?esc(latest.year)+' · Schlussrangliste':''}</span></div><div class="playergrid">${current.map(tile).join('')}</div></section>`+
+ `<section class="player-roster-group player-roster-group--current" aria-labelledby="current-roster-title"><div class="player-roster-heading"><h2 id="current-roster-title">Aktuelles Teilnehmerfeld</h2></div><div class="playergrid">${current.map(tile).join('')}</div></section>`+
  `<section class="player-roster-group player-roster-group--former" aria-labelledby="former-roster-title"><div class="player-roster-heading"><h2 id="former-roster-title">Ehemalige Teilnehmer</h2></div><div class="playergrid">${former.map(tile).join('')}</div></section>`+
  (debuts.length?`<section class="provisional-list"><h2>Neue Spieler · ${esc(window.BAERGSUNNE_PUBLIC_LIVE.year)}</h2><p>Vorläufige Profile. Historische Karrieredaten folgen nach dem bestätigten Turnierabschluss.</p><div class="playergrid">${debuts.map(p=>`<button type="button" class="playercard playercard--summary playercard--provisional" data-action="profile" data-value="${esc(p)}" aria-label="Vorläufiges Spielerprofil ${esc(p)} öffnen"><strong class="playercard-summary-name">${esc(p)}</strong><span class="provisional-badge">Debüt ${esc(window.BAERGSUNNE_PUBLIC_LIVE.year)} · vorläufig</span></button>`).join('')}</div></section>`:'')+
  card('Spielerstatistiken',metricTable('players-table'));
