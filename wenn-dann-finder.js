@@ -5,12 +5,6 @@ const KEY='baergsunne-wenn-dann-v1';
 const SAVED='baergsunne-wenn-dann-collection-v1';
 const E=[['win','Rundensieg'],['top2','Top 2'],['top3','Top 3'],['upper','Obere Hälfte'],['bottom','Untere Hälfte'],['last','Letzter Platz'],['last2','Letzte 2'],['last3','Letzte 3'],['pointsGe','Mindestens X Punkte'],['pointsLe','Höchstens X Punkte'],['placeLe','Platz X oder besser'],['placeGe','Platz X oder schlechter']];
 const OUT=E.concat([['improve','Mindestens X Plätze besser'],['decline','Mindestens X Plätze schlechter'],['gainPoints','Mindestens X Punkte mehr'],['losePoints','Mindestens X Punkte weniger']]);
-const PRESETS=[
- {label:'Nach einem Sieg · Top 3',a:'win',b:'top3',distance:1},
- {label:'Nach einem letzten Platz · Top 3',a:'last',b:'top3',distance:1},
- {label:'Zwei Siege hintereinander',a:'win',b:'win',distance:1},
- {label:'Comeback nach unterer Hälfte',a:'bottom',b:'improve',distance:1}
-];
 const validEvents=new Set(OUT.map(x=>x[0]));
 const defaults=()=>({a:'win',b:'top3',distance:1,amountA:5,amountB:5,delta:3,years:[],players:[],rounds:[]});
 const copy=v=>JSON.parse(JSON.stringify(v));
@@ -122,7 +116,7 @@ function explain(result,c){
 }
 function details(cases,title,success){
  const selected=cases.filter(x=>x.success===success);
- return '<details class="wd-evidence"><summary>'+esc(title)+' · '+selected.length+'</summary><div class="wd-scroll"><table><thead><tr><th>Jahr</th><th>Spieler</th><th>Von</th><th>Nach</th><th>Platz vorher</th><th>Platz danach</th><th>Punkte vorher</th><th>Punkte danach</th></tr></thead><tbody>'+selected.map(x=>'<tr><td>'+x.year+'</td><td>'+esc(x.player)+'</td><td>R'+x.from+'</td><td>R'+x.to+'</td><td>'+x.placeA+'</td><td>'+x.placeB+'</td><td>'+fmt(x.pointsA)+'</td><td>'+fmt(x.pointsB)+'</td></tr>').join('')+'</tbody></table></div></details>';
+ return '<details class="wd-evidence"><summary>'+esc(title)+' · '+selected.length+'</summary><div class="wd-scroll table-scroll bp-unified-shell"><table class="datatable datatable--compact bp-unified-table bp-unified-table--wide" aria-label="'+esc(title)+'"><thead><tr><th>Jahr</th><th>Spieler</th><th>Von</th><th>Nach</th><th>Platz vorher</th><th>Platz danach</th><th>Punkte vorher</th><th>Punkte danach</th></tr></thead><tbody>'+selected.map(x=>'<tr><td>'+x.year+'</td><td>'+esc(x.player)+'</td><td>R'+x.from+'</td><td>R'+x.to+'</td><td>'+x.placeA+'</td><td>'+x.placeB+'</td><td>'+fmt(x.pointsA)+'</td><td>'+fmt(x.pointsB)+'</td></tr>').join('')+'</tbody></table></div></details>';
 }
 function currentYears(db){return db.editions.map(e=>e.year).sort((a,b)=>b-a)}
 function listPicker(key,title,items){
@@ -146,12 +140,9 @@ function render(db) {
  const maxRounds=Math.max(1,...db.editions.filter(e=>allowed(c.years,e.year)).map(e=>e.rounds.length));
  const rounds=Array.from({length:maxRounds},(_,i)=>i+1);
  const allSaved=loadSaved();
- const question='Wenn '+phrase(c.a,c.amountA,c.delta)+', wie oft '+(c.distance===1?'in der direkt nächsten Runde':'nach '+c.distance+' Runden')+' '+phrase(c.b,c.amountB,c.delta)+'?';
  const top3=r.total?fmt(r.percent)+' %':'–';
  const noun='Treffer';
  return '<section class="wd-finder" id="wenn-dann-finder" aria-label="Wenn-Dann-Finder">'+
- '<div class="wd-question"><span>DEINE FRAGE</span><p>'+esc(question)+'</p></div>'+
- '<div class="wd-presets"><span>Beispiele:</span>'+PRESETS.map((p,i)=>'<button type="button" data-wd-preset="'+i+'">'+esc(p.label)+'</button>').join('')+'</div>'+
  '<div class="wd-builder"><div class="wd-condition"><div class="wd-step">WENN …</div><label>Ausgangsereignis<select data-wd-event="a">'+selectOptions(E,c.a)+'</select></label>'+valueOptions('a')+'</div>'+
  '<div class="wd-arrow" aria-hidden="true">↓</div>'+
  '<div class="wd-condition"><div class="wd-step">DANN …</div><label>Gesuchtes Ergebnis<select data-wd-event="b">'+selectOptions(OUT,c.b)+'</select></label>'+valueOptions('b')+'</div>'+
@@ -193,12 +184,11 @@ document.addEventListener('change',event=>{
  refresh();
 },true);
 document.addEventListener('click',event=>{
- const el=event.target.closest('[data-wd-all],[data-wd-none],[data-wd-preset],[data-wd-save],[data-wd-load],[data-wd-reset]');
+ const el=event.target.closest('[data-wd-all],[data-wd-none],[data-wd-save],[data-wd-load],[data-wd-reset]');
  if(!el||!document.getElementById('wenn-dann-finder')?.contains(el))return;
  event.preventDefault();
  if(el.dataset.wdAll){state[el.dataset.wdAll]=[];}
  else if(el.dataset.wdNone){state[el.dataset.wdNone]=['__none__'];}
- else if(el.dataset.wdPreset!==undefined){const p=PRESETS[Number(el.dataset.wdPreset)];state={...state,a:p.a,b:p.b,distance:p.distance};}
  else if(el.dataset.wdSave){saveChoice();}
  else if(el.dataset.wdLoad!==undefined){state=normalize(loadSaved()[Number(el.dataset.wdLoad)]);}
  else if(el.dataset.wdReset){state=defaults();}
