@@ -51,7 +51,7 @@ const state={hiddenSeries:[],page:'home',year:'all',selectedYears:[],selected:[]
 const AVAILABLE_ICONS=new Set('alpine-timeline archive calendar-year chart-selection chart-trend chip-stack compare crown duel explanation filter-players fish-shark heatmap live-dot mountain-home original-source pattern players podium record round-win rounds royal-flush simulator streak'.split(' '));
 function icon(name){return AVAILABLE_ICONS.has(name)?`<img class="bp-icon" src="assets/icons/${name}.svg" alt="" aria-hidden="true">`:'';}
 const PAGE_ICONS={home:'mountain-home',history:'archive',stats:'chart-trend',players:'players',live:'live-dot',fame:'crown'};
-const TOOL_ICONS={overview:'chart-trend',patterns:'pattern',insights:'explanation',standard:'compare',career:'streak',rivals:'duel',rounds:'rounds',heatmap:'heatmap',race:'alpine-timeline',simulator:'simulator',records:'record',lab:'chart-selection',studio:'compare'};
+const TOOL_ICONS={overview:'chart-trend',patterns:'pattern',muster:'pattern',insights:'explanation',standard:'compare',career:'streak',rivals:'duel',rounds:'rounds',heatmap:'heatmap',race:'alpine-timeline',simulator:'simulator',records:'record',lab:'chart-selection',studio:'compare'};
 const adminLink = () => { const url = new URL('/admin.html', apiBase || location.origin); if(location.hostname === 'baergsunne-push-work12-20261015.baergsunne-poker-2026.workers.dev'){url.hostname='baergsunne-live-isolated-20261015.baergsunne-poker-2026.workers.dev';url.searchParams.set('return','push-work12');}return url.href; };
 const navs=[['home','⌂','Start'],['history','◷','Historie'],['stats','◈','Statistiken'],['players','♙','Spieler'],['live','♠','Live']];
 function eyear(y){return db.editions.find(e=>e.year===Number(y))}
@@ -257,7 +257,7 @@ function home(){
  ${feature('Wenn–Dann-Finder','Ereignisse verknüpfen','statsrounds','patterns',icon('pattern'))}
  ${feature('Diagramme','Zahlen als Grafik','statsrounds','lab',icon('chart-selection'))}
  ${feature('Simulator','Turniere durchspielen','statsrounds','simulator',icon('simulator'))}
- ${feature('Schnellanalysen','Fragen untersuchen','statsrounds','standard',icon('explanation'))}
+ ${feature('Muster-Finder','Muster entdecken','statsrounds','muster',icon('pattern'))}
  ${feature('Übersicht','Zahlen & Rekorde','statsrounds','overview',icon('chart-trend'))}
  </div></section>
  <section class="discovery-section discovery-history-teaser" aria-label="Historie entdecken"><div class="discovery-head discovery-head--single"><h2>Historie entdecken</h2></div><div class="discovery-mini-grid">
@@ -311,7 +311,7 @@ function redrawToolChoice(){
  window.scrollTo({top:Math.max(0,window.scrollY+newTop-anchorTop),left:x,behavior:'instant'});
 }
 function toolChoicePanel(){
- if(['studio','simulator','rivals','insights','race','patterns'].includes(state.tab))return '';
+ if(['studio','simulator','rivals','insights','race','patterns','muster'].includes(state.tab))return '';
  const t=activeToolChoice(),allPlayers=eligibleToolPlayers(t);
  const yearList=db.editions.map(e=>e.year).sort((a,b)=>b-a);
  const yearOptions=yearList.map(y=>`<option value="${y}">${y}</option>`).join('');
@@ -319,10 +319,11 @@ function toolChoicePanel(){
  return `<details class="tool-choice-panel"><summary><span><strong>Jahr und Spieler auswählen</strong><small>${t.years.includes('__none__')?'Keine Turniere':t.years.length?t.years.length+' Turniere':'Jahr auswählen'} · ${t.players.includes('__none__')?'Keine Spieler':t.players.length?t.players.length+' Spieler':'Spieler auswählen'}</small></span><span aria-hidden="true">⌄</span></summary><div class="tool-choice-body"><div class="tool-choice-set"><strong>${icon('calendar-year')} 1 · Jahr auswählen</strong><p class="tool-choice-caption">Wähle zuerst ein oder mehrere Turnierjahre.</p><div class="tool-choice-actions"><button type="button" data-tool-pick="years" data-tool-mode="all">Alle</button><button type="button" data-tool-pick="years" data-tool-mode="none">Keine</button></div><div class="tool-year-range"><label>Von <select id="tool-year-from"><option value="">Jahr</option>${yearOptions}</select></label><label>Bis <select id="tool-year-to"><option value="">Jahr</option>${yearOptions}</select></label><button type="button" data-tool-range="years">Anwenden</button></div><div class="tool-choice-list tool-year-list">${yearList.map(v=>checkbox('years',v,String(v),(t.years.length===0||t.years.includes(v)))).join('')}</div></div><div class="tool-choice-set"><strong>${icon('filter-players')} 2 · Spieler auswählen</strong><p class="tool-choice-caption">Nur Spieler, die in den gewählten Jahren teilgenommen haben (${allPlayers.length}).</p><div class="tool-choice-actions"><button type="button" data-tool-pick="players" data-tool-mode="all">Alle</button><button type="button" data-tool-pick="players" data-tool-mode="none">Keine</button></div><div class="tool-choice-list">${allPlayers.length?allPlayers.map(v=>checkbox('players',v,v,(t.players.length===0||t.players.includes(v)))).join(''):'<span class="tool-choice-caption">Keine Spieler für diesen Zeitraum vorhanden.</span>'}</div></div></div><div class="tool-choice-footer"><button type="button" data-tool-reset="true">Dieses Werkzeug zurücksetzen</button></div><p class="tool-choice-help">Alle Werkzeuge nutzen dieselbe Auswahl. Einstellungen gelten ausschliesslich für dieses Werkzeug.</p></details>`;
 }
 function statsPage(){
- const tools={overview:overviewTab,career:careerTab,rounds:roundTab,rivals:rivalsTab,heatmap:heatmapTab,race:raceTab,simulator:simulatorTab,records:legacyRecordsTab,lab:labTab,insights:insightsTab,studio:studioTab,patterns:patternsTab,standard:standardTab};
+ const tools={overview:overviewTab,career:careerTab,rounds:roundTab,rivals:rivalsTab,heatmap:heatmapTab,race:raceTab,simulator:simulatorTab,records:legacyRecordsTab,lab:labTab,insights:insightsTab,studio:studioTab,patterns:patternsTab,muster:musterTab};
+ if(state.tab==='standard')state.tab='patterns'; // Migrate the retired Schnellanalysen tab.
  if(!Object.hasOwn(tools,state.tab))state.tab='overview';
  const groups=[
-  {name:'Entdecken',list:[['overview','Übersicht','Zahlen & Rekorde','◈'],['patterns','Wenn–Dann-Finder','Ereignisse verknüpfen','✧'],['insights','Analysen','Ergebnisse verstehen','◇'],['standard','Schnellanalysen','Fragen untersuchen','≋']]},
+  {name:'Entdecken',list:[['overview','Übersicht','Zahlen & Rekorde','◈'],['patterns','Wenn–Dann-Finder','Ereignisse verknüpfen','✧'],['muster','Muster-Finder','Muster entdecken','✧'],['insights','Analysen','Ergebnisse verstehen','◇']]},
   {name:'Vergleichen',list:[['career','Karrieren','Spieler im Wandel','↗'],['rivals','Duelle','Spieler vergleichen','⚔'],['rounds','Runden','Siege & Punkte','◎'],['heatmap','Heatmap','Runden im Blick','▦']]},
   {name:'Geschichte & Szenarien',list:[['race','Race','Die Titeljagd','↝'],['simulator','Simulator','Andere Verläufe','♢'],['records','Rekorde','Bestleistungen','♛'],['lab','Diagramme','Zahlen als Grafik','⌕']]}
  ];
@@ -335,8 +336,8 @@ function statsPage(){
  const toolExplanations={
   overview:'Sieh die wichtigsten Kennzahlen, Titel und Rekorde der Bärgsunne-Geschichte auf einen Blick.',
   patterns:'Verbinde ein Ausgangsereignis mit seinem späteren Ergebnis und lies sofort die Erklärung aus dem Originalarchiv.',
+  muster:'Entdecke wiederkehrende Muster, Serien und überraschende Entwicklungen in den Turnierdaten.',
   insights:'Beantworte konkrete Fragen zu den Turnierergebnissen und verstehe die Zahlen dahinter.',
-  standard:'Nutze fertige Auswertungen, um Spieler und Turniere miteinander zu vergleichen.',
   career:'Verfolge, wie sich die Leistungen der Spieler über die Turnierjahre entwickelt haben.',
   rivals:'Stelle zwei Spieler gegenüber und vergleiche ihre Ergebnisse bis in einzelne Runden.',
   rounds:'Untersuche Rundensiege, Punkte und einzelne Rundenresultate der dokumentierten Turniere.',
@@ -350,7 +351,7 @@ function statsPage(){
  const toolName=state.tab==='studio'?'Analyse-Studio':(groups.flatMap(g=>g.list).find(x=>x[0]===state.tab)||['','Übersicht'])[1];
  const toolHeading='<div class="sectiontitle bp-stat-tool-heading"><div><h2>'+esc(toolName)+'</h2><p>'+esc(toolExplanations[state.tab])+'</p></div></div>';
  const previousPlayers=state.selected,previousYears=state.selectedYears,choice=activeToolChoice();
- const ownSelection=['studio','simulator','rivals','insights','race','patterns'].includes(state.tab);
+ const ownSelection=['studio','simulator','rivals','insights','race','patterns','muster'].includes(state.tab);
  // Race and Analysen own their inputs: never apply an invisible saved tool filter.
  state.selected=(state.tab==='race'||state.tab==='insights')?[]:choice.players;
  state.selectedYears=(state.tab==='race'||state.tab==='insights')?[]:choice.years;
@@ -713,12 +714,12 @@ const STANDARD_CATALOG=[
  ['L23','Ligaweit','Letzter Platz und Jahres-Podest','Wenn jemand nach der ersten Runde Letzter ist, erreicht er am Jahresende das Podest?','firstLast','finalPodium'],
  ['L24','Ligaweit','Zwei Siege hintereinander','Wie häufig folgt auf einen Rundensieg direkt ein weiterer?','win','nextWin']
 ];
-function standardContext(scope,subject){const ed=eds().filter(e=>scope!=='Jahrgang'||e.year===Number(subject));let result=[];for(const e of ed){let accum=new Map(e.players.map(p=>[p,0])),previous=null,mid=null,late=null;const chron=[];
+function standardContext(scope,subject,opts){const ed=(opts?db.editions:eds()).filter(e=>scope!=='Jahrgang'||e.year===Number(subject));const rivalA=opts?.rivalA??state.rivalA,rivalB=opts?.rivalB??state.rivalB;let result=[];for(const e of ed){let accum=new Map(e.players.map(p=>[p,0])),previous=null,mid=null,late=null;const chron=[];
  for(const round of e.rounds){let entry=new Map(round.results.map(x=>[x.player_id,x]));for(const [p,x] of entry)accum.set(p,(accum.get(p)||0)+x.points);let board=[...e.players].sort((a,b)=>(accum.get(b)||0)-(accum.get(a)||0));let leaders=board.filter(x=>accum.get(x)===accum.get(board[0]));chron.push({entry,points:new Map(accum),board,leaders});}
  const positions=(snapshot)=>new Map(snapshot.board.map((p,i)=>[p,i+1]));const half=Math.max(1,Math.floor(chron.length/2));const lateIndex=Math.max(1,Math.floor(chron.length*2/3));const official=new Map(e.official_standings.map(x=>[x.player_id,x]));
- for(const p of e.players){if(scope==='Spieler'&&p!==subject)continue;if(scope==='Vergleich'&&state.selected.length&& !state.selected.includes(p))continue;for(let i=0;i<chron.length;i++){const x=chron[i].entry.get(p),next=chron[i+1]?.entry.get(p),prev=chron[i-1],st=official.get(p),leadPrev=prev?.leaders.includes(p)||false;const beforeBoard=prev?positions(prev):null;const currBoard=positions(chron[i]);const context={year:e.year,round:i+1,name:p,place:x?.place,field:e.players.length,points:x?.points,roundCount:chron.length,opener:i===0&&x?.place===1,win:x?.place===1,last:x?.points===0||x?.place===e.players.length,podium:x?.place<=3,leader:i>0&&leadPrev,staysLeader:i>0&&leadPrev&&chron[i].leaders.includes(p),nextWin:next?.place===1,nextPodium:next?.place<=3,laterWin:chron.slice(i+1).some(a=>a.entry.get(p)?.place===1),bigField:e.players.length>=8,champion:st?.place===1,finalPodium:st?.place<=3,firstLast:i===0&&(x?.points===0||x?.place===e.players.length),roundOne:i===0,championPlayer:i===0&&st?.place===1,openerWon:chron[0].entry.get(p)?.place===1,halfLeader:i===half-1&&chron[i].leaders.includes(p),halfOutside:i===half-1&&currBoard.get(p)>3,lateOutside:i===lateIndex-1&&currBoard.get(p)>3,threeNoWin:i>=3&&chron.slice(i-3,i).every(a=>a.entry.get(p)?.place!==1),soleLeader:i>0&&prev.leaders.length===1&&prev.leaders[0]===p,leaderChanges:i>0&&prev.leaders.length===1&&chron[i].leaders.length===1&&prev.leaders[0]!==chron[i].leaders[0],afterFirst:i>0,sameRanks:i>0&&e.players.every(q=>positions(prev).get(q)===currBoard.get(q)),preFinal:i===chron.length-2&&chron[i].leaders.includes(p),mathematicallySafe:false,anyRound:true,removeChangesLeader:false,lastRound:i===chron.length-1,early:i<Math.ceil(chron.length/3),lateHigher:false,secondHalf:i>=Math.floor(chron.length/2),both:false,ahead:false,podiumA:false};
+ for(const p of e.players){if(scope==='Spieler'&&p!==subject)continue;if(scope==='Vergleich'&&!opts&&state.selected.length&&!state.selected.includes(p))continue;for(let i=0;i<chron.length;i++){const x=chron[i].entry.get(p),next=chron[i+1]?.entry.get(p),prev=chron[i-1],st=official.get(p),leadPrev=prev?.leaders.includes(p)||false;const beforeBoard=prev?positions(prev):null;const currBoard=positions(chron[i]);const context={year:e.year,round:i+1,name:p,place:x?.place,field:e.players.length,points:x?.points,roundCount:chron.length,opener:i===0&&x?.place===1,win:x?.place===1,last:x?.points===0||x?.place===e.players.length,podium:x?.place<=3,leader:i>0&&leadPrev,staysLeader:i>0&&leadPrev&&chron[i].leaders.includes(p),nextWin:next?.place===1,nextPodium:next?.place<=3,laterWin:chron.slice(i+1).some(a=>a.entry.get(p)?.place===1),bigField:e.players.length>=8,champion:st?.place===1,finalPodium:st?.place<=3,firstLast:i===0&&(x?.points===0||x?.place===e.players.length),roundOne:i===0,championPlayer:i===0&&st?.place===1,openerWon:chron[0].entry.get(p)?.place===1,halfLeader:i===half-1&&chron[i].leaders.includes(p),halfOutside:i===half-1&&currBoard.get(p)>3,lateOutside:i===lateIndex-1&&currBoard.get(p)>3,threeNoWin:i>=3&&chron.slice(i-3,i).every(a=>a.entry.get(p)?.place!==1),soleLeader:i>0&&prev.leaders.length===1&&prev.leaders[0]===p,leaderChanges:i>0&&prev.leaders.length===1&&chron[i].leaders.length===1&&prev.leaders[0]!==chron[i].leaders[0],afterFirst:i>0,sameRanks:i>0&&e.players.every(q=>positions(prev).get(q)===currBoard.get(q)),preFinal:i===chron.length-2&&chron[i].leaders.includes(p),mathematicallySafe:false,anyRound:true,removeChangesLeader:false,lastRound:i===chron.length-1,early:i<Math.ceil(chron.length/3),lateHigher:false,secondHalf:i>=Math.floor(chron.length/2),both:false,ahead:false,podiumA:false};
  if(i===chron.length-1){const start=chron.slice(0,Math.ceil(chron.length/3)).reduce((t,a)=>t+ratio({field:e.players.length,place:a.entry.get(p)?.place||e.players.length}),0)/Math.ceil(chron.length/3);const endRows=chron.slice(-Math.ceil(chron.length/3));const end=endRows.reduce((t,a)=>t+ratio({field:e.players.length,place:a.entry.get(p)?.place||e.players.length}),0)/endRows.length;context.lateHigher=end>start;}
- if(scope==='Vergleich'){const ra=chron[i].entry.get(state.rivalA),rb=chron[i].entry.get(state.rivalB);context.both=state.rivalA!==state.rivalB&&p===state.rivalA&&!!ra&&!!rb;context.ahead=context.both&&ra.place<rb.place;context.podiumA=context.both&&ra.place<=3;}
+ if(scope==='Vergleich'){const ra=chron[i].entry.get(rivalA),rb=chron[i].entry.get(rivalB);context.both=rivalA!==rivalB&&p===rivalA&&!!ra&&!!rb;context.ahead=context.both&&ra.place<rb.place;context.podiumA=context.both&&ra.place<=3;}
  // Conservative bound: even if an opponent obtained the maximum points in all remaining rounds.
  if(context.preFinal){const left=chron.length-i-1;const maximum=Math.max(...e.scoring.points_by_place||[0]);context.mathematicallySafe=chron[i].leaders.length===1&&p===chron[i].leaders[0]&&e.players.every(q=>q===p||(chron[i].points.get(p)-chron[i].points.get(q)>maximum*left));}
  if(context.anyRound){const sums=e.players.map(q=>({p:q,sum:e.rounds.reduce((t,r)=>t+(r.results.find(z=>z.player_id===q)?.points||0),0)-(e.rounds[i].results.find(z=>z.player_id===q)?.points||0)})).sort((a,b)=>b.sum-a.sum);context.removeChangesLeader=st?.place===1&&sums[0]?.sum>sums.find(a=>a.p===p)?.sum;}
@@ -726,11 +727,51 @@ function standardContext(scope,subject){const ed=eds().filter(e=>scope!=='Jahrga
  }}
  }
  return result;}
-function standardFacts(scope,subject){let records=standardContext(scope,subject);const eligible=STANDARD_CATALOG.filter(d=>scope==='Ligaweit'?d[1]==='Ligaweit':scope==='Jahrgang'?d[1]==='Jahrgang':scope==='Spieler'?d[1]==='Spieler':d[1]==='Vergleich');return eligible.map(d=>{let a=records.filter(x=>x[d[4]]), yes=a.filter(x=>x[d[5]]), n=a.length;return {...d,yes:yes.length,total:n,rate:n?yes.length/n*100:null,examples:yes.slice(0,3).map(x=>`${x.year}, Runde ${x.round}: ${x.name}`),noExamples:a.filter(x=>!x[d[5]]).slice(0,2).map(x=>`${x.year}, Runde ${x.round}: ${x.name}`)};});}
+function standardFacts(scope,subject,opts){let records=standardContext(scope,subject,opts);const eligible=STANDARD_CATALOG.filter(d=>scope==='Ligaweit'?d[1]==='Ligaweit':scope==='Jahrgang'?d[1]==='Jahrgang':scope==='Spieler'?d[1]==='Spieler':d[1]==='Vergleich');return eligible.map(d=>{let a=records.filter(x=>x[d[4]]), yes=a.filter(x=>x[d[5]]), n=a.length;return {...d,yes:yes.length,total:n,rate:n?yes.length/n*100:null,examples:yes.slice(0,3).map(x=>`${x.year}, Runde ${x.round}: ${x.name}`),noExamples:a.filter(x=>!x[d[5]]).slice(0,2).map(x=>`${x.year}, Runde ${x.round}: ${x.name}`)};});}
 function standardCards(scope,subject,limit=30){const facts=standardFacts(scope,subject);return `<section class="standard-catalog"><div class="sectiontitle"><div><span class="overline">AUFFÄLLIGE GESCHICHTEN</span><h2>${scope==='Ligaweit'?'Allgemeine Poker-Muster':scope==='Spieler'?'Analyse: '+esc(subject):scope==='Jahrgang'?'Analyse: '+esc(subject):'Spielervergleiche'}</h2><p>Entdecke, welche Geschichten sich hinter den Ergebnissen verbergen.</p></div></div><div class="standard-grid">${facts.slice(0,limit).map(f=>{const n=f.total,yes=f.yes,rate=n?pointsFmt(Math.round(f.rate*10)/10)+' %':'–';return `<article class="card standard-card"><div class="overline">${esc(f[0])} · WENN → DANN</div><h3>${esc(f[2])}</h3><p><b>Unsere Frage:</b> ${esc(f[3])}</p><p><b>Das Ergebnis:</b> ${n?`In ${yes} von ${n} passenden Fällen traf die untersuchte Folge ein (${rate}).`:'Mit den gewählten Spielern und Jahren ist diese Situation nicht vorgekommen. Wir können deshalb keine Antwort ausrechnen.'}</p><details><summary>Ausführliche Erklärung und Beispiele</summary><p><b>Welche Fälle schauen wir uns an?</b> Wir betrachten die unter den aktuellen Filtern verfügbaren Spieler-Rundenergebnisse. Zuerst suchen wir alle Fälle, in denen die Wenn-Bedingung eintritt. Nur diese ${n} Fälle stehen im Ausgangszahl. Danach zählen wir, in wie vielen Fällen auch das Dann-Ereignis eingetreten ist: ${yes}.</p><p><b>Rechenbeispiel:</b> ${n?`${yes} geteilt durch ${n} und mit 100 multipliziert ergibt ${rate}.`:'Ohne passende Fälle können wir keinen Prozentwert berechnen.'} Das zeigt, was in diesen Runden passiert ist. Was beim nächsten Poker-Wochenende geschieht, wissen wir damit nicht.</p><p><b>Beispiele mit erfüllter Bedingung und Folge:</b> ${f.examples.length?esc(f.examples.join('; ')):'Keine in der Auswahl.'}</p><p><b>Gegenbeispiele:</b> ${f.noExamples.length?esc(f.noExamples.join('; ')):'Keine in der Auswahl.'}</p><p><b>Wie viel kann man daraus ableiten?</b> ${n<10?'Weniger als zehn Fälle: Einzelne Runden verändern die Quote stark.':'Die Fallzahl ist sichtbar, trotzdem kann ein beobachtetes Muster zufällig entstanden sein.'} Nur weil zwei Dinge gemeinsam vorkommen, muss das eine nicht der Grund für das andere sein. Die nächste Runde kann ganz anders ausgehen.</p></details></article>`}).join('')}</div></section>`;}
-function standardTab(){return sectionTitle('STANDARD-KATALOG','Schnellanalysen','Die Auswertungen folgen festen, erklärten Regeln und passen sich den Jahres- und Spielerfiltern an.')+`<div class="datawarn">Ausschliesslich originale Turnierergebnisse: 17 Austragungen von 2007 bis 2026. 2014, 2020 und 2023 fanden keine Turniere statt. Turi 2008 wurde bestätigt: Runde 5 = 6 Punkte (Rang 3), Gesamt = 61 Punkte.</div>`+standardCards('Ligaweit',null)+standardCards('Vergleich',null);}
-
-function patternsTab(){return typeof window.BAERGSUNNE_WENNDANN_FINDER==='function'?window.BAERGSUNNE_WENNDANN_FINDER(db):'<div class="empty">Der Wenn–Dann-Finder konnte nicht geladen werden. Bitte die Seite neu laden.</div>';}
+// The 24 archived Schnellanalysen are retained as one selectable library inside
+// the Wenn–Dann-Finder. They are not a second statistics tool.
+const archiveQuestionChoice={scope:'Ligaweit',subject:'',id:'L21',rivalA:'',rivalB:'',open:false};
+function archiveQuestionPanel(){
+ const c=archiveQuestionChoice,scopes=[['Ligaweit','Alle Turniere'],['Spieler','Einzelne Spieler'],['Jahrgang','Turnierjahr'],['Vergleich','Zwei Spieler']];
+ const names=availableNames(),years=[...db.editions].sort((a,b)=>b.year-a.year).map(e=>e.year);
+ const choice=(values,selected)=>values.map(([id,name])=>'<option value="'+esc(id)+'"'+(String(id)===String(selected)?' selected':'')+'>'+esc(name)+'</option>').join('');
+ const subject=c.scope==='Spieler'?(names.includes(c.subject)?c.subject:names[0]):c.scope==='Jahrgang'?(years.includes(Number(c.subject))?Number(c.subject):years[0]):null;
+ const rivalA=names.includes(c.rivalA)?c.rivalA:names[0],rivalB=names.includes(c.rivalB)&&c.rivalB!==rivalA?c.rivalB:names.find(n=>n!==rivalA);
+ const opts={rivalA,rivalB};
+ const facts=standardFacts(c.scope,subject,opts),selected=facts.find(f=>f[0]===c.id)||facts[0];
+ const filter=c.scope==='Spieler'?'<label>Spieler<select data-wd-archive="subject">'+choice(names.map(n=>[n,n]),subject)+'</select></label>':
+ c.scope==='Jahrgang'?'<label>Turnierjahr<select data-wd-archive="subject">'+choice(years.map(y=>[y,String(y)]),subject)+'</select></label>':
+ c.scope==='Vergleich'?'<label>Spieler A<select data-wd-archive="rivalA">'+choice(names.map(n=>[n,n]),rivalA)+'</select></label><label>Spieler B<select data-wd-archive="rivalB">'+choice(names.filter(n=>n!==rivalA).map(n=>[n,n]),rivalB)+'</select></label>':'';
+ let result='<p>Keine Frage für diese Auswahl verfügbar.</p>';
+ if(selected){
+  const total=selected.total,yes=selected.yes,rate=total?fmtArchiveRate(yes/total*100)+' %':'–';
+  result='<div class="wd-result"><div class="wd-result-top"><div><span>ERGEBNIS · ORIGINALARCHIV</span><strong>'+rate+'</strong></div><div><strong>'+yes+' / '+total+'</strong><span>Treffer / passende Fälle</span></div></div>'+
+  '<div class="wd-explainer"><p><strong>Deine Frage:</strong> '+esc(selected[3])+'</p>'+
+  '<p><strong>Das zeigt das Archiv:</strong> '+(total?'In '+yes+' von '+total+' passenden Fällen traf das untersuchte Ergebnis ein.':'Für diese Frage liegen keine passenden Fälle vor.')+'</p>'+
+  '<p><strong>So wird gerechnet:</strong> Zuerst zählen wir alle Fälle, in denen die Ausgangsbedingung erfüllt ist. Dann zählen wir die Fälle mit dem gesuchten Ergebnis. '+(total?'Die Trefferquote beträgt '+rate+'.':'Ohne passende Fälle ist keine Quote möglich.')+'</p>'+
+  '<p>Die Zahlen beschreiben vergangene Turniere und sind keine Vorhersage.</p></div>'+
+  '<details class="wd-evidence"><summary>Beispiele und Gegenbeispiele</summary><p><strong>Treffer:</strong> '+(selected.examples.length?esc(selected.examples.join('; ')):'Keine')+'</p><p><strong>Gegenbeispiele:</strong> '+(selected.noExamples.length?esc(selected.noExamples.join('; ')):'Keine')+'</p></details></div>';
+ }
+ return '<details class="card wd-archive" id="wd-archive"'+(c.open?' open':'')+'><summary><strong>Weitere Archivfragen</strong> · 24 fertige Auswertungen</summary>'+
+ '<div class="wd-archive-controls"><label>Fragenbereich<select data-wd-archive="scope">'+choice(scopes,c.scope)+'</select></label>'+filter+
+ '<label>Frage auswählen<select data-wd-archive="id">'+choice(facts.map(f=>[f[0],f[2]]),selected?.[0])+'</select></label></div>'+result+'</details>';
+}
+function fmtArchiveRate(n){return Number(n).toLocaleString('de-CH',{maximumFractionDigits:1});}
+document.addEventListener('toggle',event=>{if(event.target?.id==='wd-archive')archiveQuestionChoice.open=event.target.open},true);
+document.addEventListener('change',event=>{
+ const el=event.target;if(!el.dataset?.wdArchive)return;
+ const key=el.dataset.wdArchive;archiveQuestionChoice[key]=el.value;
+ if(key==='scope')archiveQuestionChoice.id='';
+ if(key==='rivalA'&&archiveQuestionChoice.rivalB===el.value)archiveQuestionChoice.rivalB='';
+ archiveQuestionChoice.open=true;
+ const before=document.getElementById('wd-archive')?.getBoundingClientRect().top??0,y=window.scrollY;
+ draw();
+ const next=document.getElementById('wd-archive');
+ if(next){next.open=true;window.scrollTo({top:Math.max(0,y+next.getBoundingClientRect().top-before),behavior:'instant'});}
+},true);
+function musterTab(){return typeof window.BAERGSUNNE_PATTERN_FINDER==='function'?window.BAERGSUNNE_PATTERN_FINDER(db):'<div class="empty">Der Muster-Finder konnte nicht geladen werden. Bitte die Seite neu laden.</div>';}
+function patternsTab(){return (typeof window.BAERGSUNNE_WENNDANN_FINDER==='function'?window.BAERGSUNNE_WENNDANN_FINDER(db):'<div class="empty">Der Wenn–Dann-Finder konnte nicht geladen werden. Bitte die Seite neu laden.</div>')+archiveQuestionPanel();}
 
 function premiumMasthead(page){
  const labels={history:['DAS ARCHIV','Historie',`${db.editions.length} Turniere. Eine Geschichte seit 2007.`],stats:['DIE ZAHLEN','Statistiken','Vergleiche, Rekorde und Meisterschaftsverläufe.'],players:['DIE TEILNEHMER','Spieler','Karrieren und Duelle aus den Originalergebnissen.'],profile:['DAS DOSSIER','Spielerprofil','Die Geschichte hinter den Platzierungen.'],fame:['DIE EHRENTAFEL','Hall of Fame','Alle Champions. Alle Titel.'],live:['AM POKERTISCH','Live','Aktueller Spielstand und Rundenergebnisse.'],admin:['VERWALTUNG','Administration','Geschützter Zugriff auf die Turnierverwaltung.']};

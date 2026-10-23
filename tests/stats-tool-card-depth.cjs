@@ -75,7 +75,7 @@ const fixture=require('./fixture-2026.json');
       assert(after.active&&!after.previous,'Gold highlight must follow selected tool');
       assert.equal(after.activeBorder,'rgb(232, 195, 126)','New selected card remains Bärgsunne gold');
       assert.notEqual(after.previousBorder,'rgb(232, 195, 126)','Previous card loses the selected border');
-      assert.equal(after.selectedLabel,'Muster-Finder','Only the tool name appears in the active heading');
+      assert.equal(after.selectedLabel,'Wenn–Dann-Finder','Only the tool name appears in the active heading');
       assert.deepEqual(errors,[],'No browser errors');
       console.log('STATS_TILE_DEPTH_PASS',JSON.stringify({width,style,after}));
       await page.close();
