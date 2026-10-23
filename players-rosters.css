@@ -1,0 +1,36 @@
+/* Player roster headings – scoped to the Players page. Card geometry,
+   trophy data, career charts and navigation remain unchanged. */
+#app .page.page--players .player-roster-group{
+ min-width:0;
+ margin-top:24px!important;
+ margin-bottom:30px!important;
+}
+#app .page.page--players .player-roster-group--former{
+ margin-top:38px!important;
+}
+#app .page.page--players .player-roster-heading{
+ display:flex;
+ flex-direction:column;
+ align-items:flex-start;
+ gap:6px;
+ margin:0 0 16px;
+ min-width:0;
+}
+#app .page.page--players .player-roster-heading h2{
+ margin:0;
+ color:#e8c37e;
+ font-size:clamp(24px,5.5vw,34px);
+ font-weight:800;
+ letter-spacing:-.025em;
+ line-height:1.18;
+ text-wrap:balance;
+}
+#app .page.page--players .player-roster-heading > span{
+ color:#d5dfd1;
+ font-size:clamp(12px,2.9vw,14px);
+ line-height:1.3;
+}
+#app .page.page--players .player-roster-group > .playergrid{
+ margin:0!important;
+ grid-template-columns:minmax(0,1fr)!important;
+}
