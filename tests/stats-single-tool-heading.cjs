@@ -18,6 +18,20 @@ const names={
    await page.route('**/api/editions',r=>r.fulfill({status:200,contentType:'application/json',body:JSON.stringify(fixture)}));
    await page.goto('http://127.0.0.1:8765/#stats',{waitUntil:'domcontentloaded'});
    await page.waitForFunction(()=>typeof db!=='undefined'&&db.editions.some(e=>e.year===2026),null,{timeout:20000});
+   const featured=await page.evaluate(()=>{
+    const pageRoot=document.querySelector('.page--stats');
+    const tile=pageRoot?.querySelector('.tool-directory .tool-tile--featured');
+    const all=[...pageRoot?.querySelectorAll('.tool-directory button.tool-tile')||[]];
+    return {flagship:!!pageRoot?.querySelector('.studio-flagship'),oldIntro:!!pageRoot?.querySelector('.tool-directory-intro'),
+     count:all.length,first:all[0]?.dataset.value,studioTiles:all.filter(t=>t.dataset.value==='studio').length,
+     activeTitle:pageRoot?.querySelector('#selected-stat-tool > .bp-stat-tool-heading h2')?.textContent,
+     featured:!!tile,overflow:document.documentElement.scrollWidth-document.documentElement.clientWidth};
+   });
+   assert(!featured.flagship&&!featured.oldIntro,width+' old heartpiece and double introductory text removed');
+   assert.equal(featured.count,13,width+' all 13 statistics tools accessible');
+   assert.equal(featured.first,'studio',width+' Analyse-Studio appears first');
+   assert.equal(featured.studioTiles,1,width+' exactly one studio tile');
+   assert(featured.featured&&featured.overflow<=2,width+' prominent studio tile fits screen');
    const results=await page.evaluate(names=>{
     const out=[];
     for(const [tab,label] of Object.entries(names)){

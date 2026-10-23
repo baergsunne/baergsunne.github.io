@@ -1,0 +1,38 @@
+/* Analyse-Studio: primary TOOL tile, not a separate flagship or hero.
+   Keep the same forest/gold material, top-right icon watermark and
+   bottom-left shadow as all other navigation cards. */
+#app .page--stats .tool-directory{margin-top:18px!important}
+#app .page--stats .tool-grid--featured{margin-bottom:13px!important}
+#app .page--stats .tool-grid--featured > .tool-tile--featured,
+#app .page--home .discovery-mini-grid > .discovery-feature--featured{
+ grid-column:1 / -1!important;
+ aspect-ratio:auto!important;
+ height:clamp(148px,34vw,250px)!important;
+ min-height:148px!important;
+ padding:clamp(17px,3.5vw,30px)!important;
+ border:1.5px solid rgba(232,195,126,.87)!important;
+ box-shadow:var(--bp-sunlight-shadow)!important;
+}
+#app .page--stats .tool-grid--featured > .tool-tile--featured.is-active{
+ border:2px solid #e8c37e!important;
+ box-shadow:var(--bp-sunlight-shadow-selected)!important;
+}
+#app .page--stats .tool-grid--featured .tool-tile--featured .tool-tile-copy strong,
+#app .page--home .discovery-mini-grid .discovery-feature--featured .discovery-feature-copy strong{
+ font-size:clamp(23px,4.4vw,34px)!important;
+ font-weight:850!important;
+ line-height:1.15!important;
+ color:#f6d69d!important;
+}
+#app .page--stats .tool-grid--featured .tool-tile--featured .tool-tile-copy small,
+#app .page--home .discovery-mini-grid .discovery-feature--featured .discovery-feature-copy small{
+ font-size:clamp(13px,2.1vw,16px)!important;
+ line-height:1.32!important;
+}
+@media(max-width:650px){
+ #app .page--stats .tool-grid--featured > .tool-tile--featured,
+ #app .page--home .discovery-mini-grid > .discovery-feature--featured{
+  height:clamp(148px,37vw,175px)!important;
+  padding:17px 19px!important;
+ }
+}

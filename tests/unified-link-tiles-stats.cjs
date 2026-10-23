@@ -22,7 +22,7 @@ const fixture=require('./fixture-2026.json');
        arrow=el.querySelector('.discovery-feature-arrow,.tool-tile-arrow'),
        r=el.getBoundingClientRect(),cr=copy?.getBoundingClientRect(),ir=icon?.getBoundingClientRect(),
        before=getComputedStyle(el,'::before'),after=getComputedStyle(el,'::after');
-     return {title:title?.textContent,active:el.classList.contains('is-active'),display:style.display,
+     return {title:title?.textContent,active:el.classList.contains('is-active'),featured:el.classList.contains('tool-tile--featured')||el.classList.contains('discovery-feature--featured'),display:style.display,
        width:r.width,height:r.height,left:r.left,right:r.right,top:r.top,
        aspectRatio:style.aspectRatio,bg:style.backgroundImage,border:style.borderTopColor,
        imageLoaded:!!image?.complete&&image.naturalWidth>0,iconOpacity:icon?parseFloat(getComputedStyle(icon).opacity):null,
@@ -43,8 +43,13 @@ const fixture=require('./fixture-2026.json');
     assert.equal(cards.length,count,pageName+' count');
     for(const c of cards){
      assert.equal(c.display,'flex',pageName+' must use same card layout');
-     assert.equal(c.aspectRatio,'2 / 1',pageName+' must have 2:1 aspect ratio '+c.title);
-     assert(Math.abs(c.height-c.width/2)<=1.3,pageName+' exact 2:1 dimensions '+JSON.stringify(c));
+     if(c.featured){
+      assert.equal(c.aspectRatio,'auto',pageName+' featured tile is an intentional larger card');
+      assert(c.height>=140,pageName+' featured tile needs useful height '+JSON.stringify(c));
+     }else{
+      assert.equal(c.aspectRatio,'2 / 1',pageName+' normal cards retain 2:1 ratio '+c.title);
+      assert(Math.abs(c.height-c.width/2)<=1.3,pageName+' standard tile geometry '+JSON.stringify(c));
+     }
      assert(c.width>=100&&c.right<=width+2,pageName+' tile out of viewport '+JSON.stringify(c));
      assert(c.imageLoaded,pageName+' icon image missing '+c.title);
      assert(c.iconOpacity>=.08&&c.iconOpacity<=.19,pageName+' muted icon '+c.title);
@@ -55,7 +60,7 @@ const fixture=require('./fixture-2026.json');
      assert(c.decorationClicks==='none',pageName+' watermark cannot block clicks');
      assert.equal(c.titleAlign,'left',pageName+' left-aligned heading '+c.title);
      assert.equal(c.descAlign,'left',pageName+' left-aligned description '+c.title);
-     assert.equal(c.titleColor,'rgb(255, 246, 233)',pageName+' white title');
+     assert.equal(c.titleColor,c.featured?'rgb(246, 214, 157)':'rgb(255, 246, 233)',pageName+' heading color');
      assert.equal(c.descColor,'rgb(232, 238, 227)',pageName+' muted-white detail');
      assert(c.copyLeft>=c.left+4&&c.copyRight<=c.right-4,pageName+' left copy within card');
      assert(c.copyBottom<=c.top+c.height+1,pageName+' text must fit 2:1 tile '+JSON.stringify(c));
@@ -64,11 +69,16 @@ const fixture=require('./fixture-2026.json');
      assert(c.overlay.includes('radial-gradient'),'Subtle upper right illumination');
      assert(c.readability.includes('linear-gradient'),'Text contrast overlay');
     }
-    const standards=cards.filter(c=>!c.active);
+    const standards=cards.filter(c=>!c.active&&!c.featured);
     if(standards.length>1)assert.equal(new Set(standards.map(c=>c.bg)).size,1,pageName+' standard cards must share one gradient');
     return cards;
    };
    const home=await auditTiles('.page--home button.discovery-feature',16,'Home');
+   assert.equal(home.filter(c=>c.featured).length,1,width+' one featured home Analyse-Studio tile');
+   const homeFeature=home.find(c=>c.featured);
+   assert.equal(homeFeature.title,'Analyse-Studio',width+' featured home tool name');
+   assert.equal(home[4].title,'Analyse-Studio',width+' first home tools row is featured');
+   assert(homeFeature.width>home[5].width*1.7,width+' featured home tile spans both columns');
    // Verify the four top-level entry cards form two rows and two columns
    // with exactly the same width and height (not four horizontal bars).
    const four=await page.locator('.page--home .discovery-features > .discovery-feature').evaluateAll(els=>els.map(el=>{
@@ -85,7 +95,10 @@ const fixture=require('./fixture-2026.json');
    assert(appOverflow<=2,'No home overflow '+width);
    await page.locator('.discovery-feature[data-value="stats"]').first().click();
    await page.waitForSelector('.page--stats .tool-directory .tool-tile');
-   const stats=await auditTiles('.page--stats .tool-directory button.tool-tile',12,'Statistics');
+   const stats=await auditTiles('.page--stats .tool-directory button.tool-tile',13,'Statistics');
+   assert.equal(stats[0].title,'Analyse-Studio',width+' studio first in statistics tool directory');
+   assert(stats[0].featured,width+' leading statistics tile must be featured');
+   assert(stats[0].width>stats[1].width*1.7,width+' studio featured tile spans two columns');
    assert(stats.some(x=>x.active),width+' selected stats tool must have active variant');
    const standard=stats.find(x=>!x.active),active=stats.find(x=>x.active);
    assert.notEqual(standard.bg,active.bg,'Active tools must use other forest variation');
