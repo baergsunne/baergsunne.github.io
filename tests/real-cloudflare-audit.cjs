@@ -1,7 +1,7 @@
 const {chromium}=require('playwright');const assert=require('node:assert/strict');(async()=>{const browser=await chromium.launch({headless:true});try{const page=await browser.newPage({viewport:{width:390,height:844},isMobile:true});const errors=[];page.on('pageerror',e=>errors.push(e.message));const base='https://baergsunne-live-isolated-20261015.baergsunne-poker-2026.workers.dev';
 await page.route('**/api/live',async route=>{const r=await route.fetch({headers:{...route.request().headers(),origin:'https://baergsunne.github.io'}});const h={...r.headers(),'access-control-allow-origin':'http://127.0.0.1:8765'};await route.fulfill({response:r,headers:h});});
 await page.route('**/api/editions',async route=>{const r=await route.fetch({headers:{...route.request().headers(),origin:'https://baergsunne.github.io'}});const h={...r.headers(),'access-control-allow-origin':'http://127.0.0.1:8765'};await route.fulfill({response:r,headers:h});});
-await page.goto('http://127.0.0.1:8765/#stats',{waitUntil:'domcontentloaded'});
+await page.goto('http://127.0.0.1:8765/#live',{waitUntil:'domcontentloaded'});
 await page.waitForFunction(()=>typeof db!=='undefined'&&db.editions.some(e=>e.year===2026),null,{timeout:35000});
 // 2026 is bundled, so the first DOM is ready before Cloudflare responds. Wait
 // for the separately required *real* API status before closing the route.
