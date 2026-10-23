@@ -51,7 +51,7 @@ const state={hiddenSeries:[],page:'home',year:'all',selectedYears:[],selected:[]
 const AVAILABLE_ICONS=new Set('alpine-timeline archive calendar-year chart-selection chart-trend chip-stack compare crown duel explanation filter-players fish-shark heatmap live-dot mountain-home original-source pattern players podium record round-win rounds royal-flush simulator streak'.split(' '));
 function icon(name){return AVAILABLE_ICONS.has(name)?`<img class="bp-icon" src="assets/icons/${name}.svg" alt="" aria-hidden="true">`:'';}
 const PAGE_ICONS={home:'mountain-home',history:'archive',stats:'chart-trend',players:'players',live:'live-dot',fame:'crown'};
-const TOOL_ICONS={overview:'chart-trend',patterns:'pattern',insights:'explanation',standard:'compare',career:'streak',rivals:'duel',rounds:'rounds',heatmap:'heatmap',race:'alpine-timeline',simulator:'simulator',records:'record',lab:'chart-selection',studio:'compare'};
+const TOOL_ICONS={overview:'chart-trend',patterns:'pattern',muster:'pattern',insights:'explanation',standard:'compare',career:'streak',rivals:'duel',rounds:'rounds',heatmap:'heatmap',race:'alpine-timeline',simulator:'simulator',records:'record',lab:'chart-selection',studio:'compare'};
 const adminLink = () => { const url = new URL('/admin.html', apiBase || location.origin); if(location.hostname === 'baergsunne-push-work12-20261015.baergsunne-poker-2026.workers.dev'){url.hostname='baergsunne-live-isolated-20261015.baergsunne-poker-2026.workers.dev';url.searchParams.set('return','push-work12');}return url.href; };
 const navs=[['home','⌂','Start'],['history','◷','Historie'],['stats','◈','Statistiken'],['players','♙','Spieler'],['live','♠','Live']];
 function eyear(y){return db.editions.find(e=>e.year===Number(y))}
@@ -257,7 +257,7 @@ function home(){
  ${feature('Wenn–Dann-Finder','Ereignisse verknüpfen','statsrounds','patterns',icon('pattern'))}
  ${feature('Diagramme','Zahlen als Grafik','statsrounds','lab',icon('chart-selection'))}
  ${feature('Simulator','Turniere durchspielen','statsrounds','simulator',icon('simulator'))}
- ${feature('Karrieren','Spieler im Wandel','statsrounds','career',icon('streak'))}
+ ${feature('Muster-Finder','Muster entdecken','statsrounds','muster',icon('pattern'))}
  ${feature('Übersicht','Zahlen & Rekorde','statsrounds','overview',icon('chart-trend'))}
  </div></section>
  <section class="discovery-section discovery-history-teaser" aria-label="Historie entdecken"><div class="discovery-head discovery-head--single"><h2>Historie entdecken</h2></div><div class="discovery-mini-grid">
@@ -311,7 +311,7 @@ function redrawToolChoice(){
  window.scrollTo({top:Math.max(0,window.scrollY+newTop-anchorTop),left:x,behavior:'instant'});
 }
 function toolChoicePanel(){
- if(['studio','simulator','rivals','insights','race','patterns'].includes(state.tab))return '';
+ if(['studio','simulator','rivals','insights','race','patterns','muster'].includes(state.tab))return '';
  const t=activeToolChoice(),allPlayers=eligibleToolPlayers(t);
  const yearList=db.editions.map(e=>e.year).sort((a,b)=>b-a);
  const yearOptions=yearList.map(y=>`<option value="${y}">${y}</option>`).join('');
@@ -319,11 +319,11 @@ function toolChoicePanel(){
  return `<details class="tool-choice-panel"><summary><span><strong>Jahr und Spieler auswählen</strong><small>${t.years.includes('__none__')?'Keine Turniere':t.years.length?t.years.length+' Turniere':'Jahr auswählen'} · ${t.players.includes('__none__')?'Keine Spieler':t.players.length?t.players.length+' Spieler':'Spieler auswählen'}</small></span><span aria-hidden="true">⌄</span></summary><div class="tool-choice-body"><div class="tool-choice-set"><strong>${icon('calendar-year')} 1 · Jahr auswählen</strong><p class="tool-choice-caption">Wähle zuerst ein oder mehrere Turnierjahre.</p><div class="tool-choice-actions"><button type="button" data-tool-pick="years" data-tool-mode="all">Alle</button><button type="button" data-tool-pick="years" data-tool-mode="none">Keine</button></div><div class="tool-year-range"><label>Von <select id="tool-year-from"><option value="">Jahr</option>${yearOptions}</select></label><label>Bis <select id="tool-year-to"><option value="">Jahr</option>${yearOptions}</select></label><button type="button" data-tool-range="years">Anwenden</button></div><div class="tool-choice-list tool-year-list">${yearList.map(v=>checkbox('years',v,String(v),(t.years.length===0||t.years.includes(v)))).join('')}</div></div><div class="tool-choice-set"><strong>${icon('filter-players')} 2 · Spieler auswählen</strong><p class="tool-choice-caption">Nur Spieler, die in den gewählten Jahren teilgenommen haben (${allPlayers.length}).</p><div class="tool-choice-actions"><button type="button" data-tool-pick="players" data-tool-mode="all">Alle</button><button type="button" data-tool-pick="players" data-tool-mode="none">Keine</button></div><div class="tool-choice-list">${allPlayers.length?allPlayers.map(v=>checkbox('players',v,v,(t.players.length===0||t.players.includes(v)))).join(''):'<span class="tool-choice-caption">Keine Spieler für diesen Zeitraum vorhanden.</span>'}</div></div></div><div class="tool-choice-footer"><button type="button" data-tool-reset="true">Dieses Werkzeug zurücksetzen</button></div><p class="tool-choice-help">Alle Werkzeuge nutzen dieselbe Auswahl. Einstellungen gelten ausschliesslich für dieses Werkzeug.</p></details>`;
 }
 function statsPage(){
- const tools={overview:overviewTab,career:careerTab,rounds:roundTab,rivals:rivalsTab,heatmap:heatmapTab,race:raceTab,simulator:simulatorTab,records:legacyRecordsTab,lab:labTab,insights:insightsTab,studio:studioTab,patterns:patternsTab};
+ const tools={overview:overviewTab,career:careerTab,rounds:roundTab,rivals:rivalsTab,heatmap:heatmapTab,race:raceTab,simulator:simulatorTab,records:legacyRecordsTab,lab:labTab,insights:insightsTab,studio:studioTab,patterns:patternsTab,muster:musterTab};
  if(state.tab==='standard')state.tab='patterns'; // Migrate the retired Schnellanalysen tab.
  if(!Object.hasOwn(tools,state.tab))state.tab='overview';
  const groups=[
-  {name:'Entdecken',list:[['overview','Übersicht','Zahlen & Rekorde','◈'],['patterns','Wenn–Dann-Finder','Ereignisse verknüpfen','✧'],['insights','Analysen','Ergebnisse verstehen','◇']]},
+  {name:'Entdecken',list:[['overview','Übersicht','Zahlen & Rekorde','◈'],['patterns','Wenn–Dann-Finder','Ereignisse verknüpfen','✧'],['muster','Muster-Finder','Muster entdecken','✧'],['insights','Analysen','Ergebnisse verstehen','◇']]},
   {name:'Vergleichen',list:[['career','Karrieren','Spieler im Wandel','↗'],['rivals','Duelle','Spieler vergleichen','⚔'],['rounds','Runden','Siege & Punkte','◎'],['heatmap','Heatmap','Runden im Blick','▦']]},
   {name:'Geschichte & Szenarien',list:[['race','Race','Die Titeljagd','↝'],['simulator','Simulator','Andere Verläufe','♢'],['records','Rekorde','Bestleistungen','♛'],['lab','Diagramme','Zahlen als Grafik','⌕']]}
  ];
@@ -336,6 +336,7 @@ function statsPage(){
  const toolExplanations={
   overview:'Sieh die wichtigsten Kennzahlen, Titel und Rekorde der Bärgsunne-Geschichte auf einen Blick.',
   patterns:'Verbinde ein Ausgangsereignis mit seinem späteren Ergebnis und lies sofort die Erklärung aus dem Originalarchiv.',
+  muster:'Entdecke wiederkehrende Muster, Serien und überraschende Entwicklungen in den Turnierdaten.',
   insights:'Beantworte konkrete Fragen zu den Turnierergebnissen und verstehe die Zahlen dahinter.',
   career:'Verfolge, wie sich die Leistungen der Spieler über die Turnierjahre entwickelt haben.',
   rivals:'Stelle zwei Spieler gegenüber und vergleiche ihre Ergebnisse bis in einzelne Runden.',
@@ -350,7 +351,7 @@ function statsPage(){
  const toolName=state.tab==='studio'?'Analyse-Studio':(groups.flatMap(g=>g.list).find(x=>x[0]===state.tab)||['','Übersicht'])[1];
  const toolHeading='<div class="sectiontitle bp-stat-tool-heading"><div><h2>'+esc(toolName)+'</h2><p>'+esc(toolExplanations[state.tab])+'</p></div></div>';
  const previousPlayers=state.selected,previousYears=state.selectedYears,choice=activeToolChoice();
- const ownSelection=['studio','simulator','rivals','insights','race','patterns'].includes(state.tab);
+ const ownSelection=['studio','simulator','rivals','insights','race','patterns','muster'].includes(state.tab);
  // Race and Analysen own their inputs: never apply an invisible saved tool filter.
  state.selected=(state.tab==='race'||state.tab==='insights')?[]:choice.players;
  state.selectedYears=(state.tab==='race'||state.tab==='insights')?[]:choice.years;
@@ -769,6 +770,7 @@ document.addEventListener('change',event=>{
  const next=document.getElementById('wd-archive');
  if(next){next.open=true;window.scrollTo({top:Math.max(0,y+next.getBoundingClientRect().top-before),behavior:'instant'});}
 },true);
+function musterTab(){return typeof window.BAERGSUNNE_PATTERN_FINDER==='function'?window.BAERGSUNNE_PATTERN_FINDER(db):'<div class="empty">Der Muster-Finder konnte nicht geladen werden. Bitte die Seite neu laden.</div>';}
 function patternsTab(){return (typeof window.BAERGSUNNE_WENNDANN_FINDER==='function'?window.BAERGSUNNE_WENNDANN_FINDER(db):'<div class="empty">Der Wenn–Dann-Finder konnte nicht geladen werden. Bitte die Seite neu laden.</div>')+archiveQuestionPanel();}
 
 function premiumMasthead(page){
