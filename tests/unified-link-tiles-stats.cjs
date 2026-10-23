@@ -73,12 +73,13 @@ const fixture=require('./fixture-2026.json');
     if(standards.length>1)assert.equal(new Set(standards.map(c=>c.bg)).size,1,pageName+' standard cards must share one gradient');
     return cards;
    };
-   const home=await auditTiles('.page--home button.discovery-feature',16,'Home');
-   assert.equal(home.filter(c=>c.featured).length,1,width+' one featured home Analyse-Studio tile');
-   const homeFeature=home.find(c=>c.featured);
-   assert.equal(homeFeature.title,'Analyse-Studio',width+' featured home tool name');
-   assert.equal(home[4].title,'Analyse-Studio',width+' first home tools row is featured');
-   assert(homeFeature.width>home[5].width*1.7,width+' featured home tile spans both columns');
+   const home=await auditTiles('.page--home button.discovery-feature',15,'Home');
+   assert.equal(home.filter(c=>c.featured).length,0,width+' no featured home tile');
+   assert.equal(home.some(c=>c.title==='Analyse-Studio'),false,width+' no Analyse-Studio teaser on start page');
+   assert.equal(home[4].title,'Duelle',width+' ordinary tools begin directly with Duelle');
+   assert.deepEqual(home.slice(4,9).map(c=>c.title),
+    ['Duelle','Muster-Finder','Diagramme','Simulator','Schnellanalysen'],
+    width+' five existing homepage tool links remain');
    // Verify the four top-level entry cards form two rows and two columns
    // with exactly the same width and height (not four horizontal bars).
    const four=await page.locator('.page--home .discovery-features > .discovery-feature').evaluateAll(els=>els.map(el=>{
