@@ -103,3 +103,15 @@
  #app .page--home .discovery-champion-copy h2{font-size:clamp(29px,8.3vw,37px);margin:11px 0}
  #app .page--home .discovery-champion-trophy img{height:clamp(128px,41vw,177px)}
 }
+
+/* Home discovery headings · one gold title per section, no duplicate
+   eyebrow or paragraph. Matches the existing premium heading scale. */
+#app .page--home .discovery-head--single h2{
+  color:#e8c37e;
+  font-size:clamp(26px,5.8vw,38px);
+  font-weight:800;
+  line-height:1.18;
+  letter-spacing:-.025em;
+  margin:0 0 clamp(16px,3vw,22px);
+  text-wrap:balance;
+}
