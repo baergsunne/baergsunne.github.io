@@ -311,7 +311,7 @@ function redrawToolChoice(){
  window.scrollTo({top:Math.max(0,window.scrollY+newTop-anchorTop),left:x,behavior:'instant'});
 }
 function toolChoicePanel(){
- if(['studio','simulator','rivals','insights','race'].includes(state.tab))return '';
+ if(['studio','simulator','rivals','insights','race','patterns'].includes(state.tab))return '';
  const t=activeToolChoice(),allPlayers=eligibleToolPlayers(t);
  const yearList=db.editions.map(e=>e.year).sort((a,b)=>b-a);
  const yearOptions=yearList.map(y=>`<option value="${y}">${y}</option>`).join('');
@@ -350,7 +350,7 @@ function statsPage(){
  const toolName=state.tab==='studio'?'Analyse-Studio':(groups.flatMap(g=>g.list).find(x=>x[0]===state.tab)||['','Übersicht'])[1];
  const toolHeading='<div class="sectiontitle bp-stat-tool-heading"><div><h2>'+esc(toolName)+'</h2><p>'+esc(toolExplanations[state.tab])+'</p></div></div>';
  const previousPlayers=state.selected,previousYears=state.selectedYears,choice=activeToolChoice();
- const ownSelection=['studio','simulator','rivals','insights','race'].includes(state.tab);
+ const ownSelection=['studio','simulator','rivals','insights','race','patterns'].includes(state.tab);
  // Race and Analysen own their inputs: never apply an invisible saved tool filter.
  state.selected=(state.tab==='race'||state.tab==='insights')?[]:choice.players;
  state.selectedYears=(state.tab==='race'||state.tab==='insights')?[]:choice.years;
