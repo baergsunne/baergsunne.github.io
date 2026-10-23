@@ -61,6 +61,7 @@ const fixture=require('./fixture-2026.json');
    await page.locator('[data-wd-save]').click();
    assert.equal(await page.locator('details.wd-saved').count(),1,'Can save a question locally');
    await page.locator('[data-wd-event="b"]').selectOption('win');
+   await page.locator('details.wd-saved > summary').click();
    await page.locator('[data-wd-load="0"]').click();
    assert.equal(await scope.locator('[data-wd-event="b"]').inputValue(),'top3','Saved question can be restored');
    await page.reload({waitUntil:'domcontentloaded'});
