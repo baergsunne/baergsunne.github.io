@@ -9,7 +9,7 @@ for(const e of data.editions){assert(!years.has(e.year),'duplicate year '+e.year
 assert(years.has(2021),'2021 must be present');
 const studio=fs.readFileSync('analyse-studio.js','utf8');assert(studio.includes('function abYears()'),'dynamic year selector absent');assert(!studio.includes('const AB_YEARS=['),'hardcoded year selector remains');
 const app=fs.readFileSync('app.js','utf8');assert(app.includes('validateArchiveEdition(edition)'),'archive validation absent');assert(app.includes('appBootstrapped&&(archiveChanged||(changed&&'),'archive redraw must require meaningful change');
-assert(app.includes('appBootstrapped=true;\n syncRoute();\n if(apiBase)'),'first paint must use bundled, canonical 17-year data without waiting for Cloudflare');
+assert(app.includes('appBootstrapped=true;\n syncRoute();'),'first paint must use bundled canonical 17-year data without Cloudflare');assert(app.includes("if(needsLivePolling(state.page))refreshLive()"),'only active Home/Live may poll the remote backend');
 assert(!app.includes('const initialArchiveRequest=apiBase?refreshLive():Promise.resolve()'),'remote fetch must not gate first paint');
 console.log(JSON.stringify({success:true,years:years.size,rounds:totalRounds,player_rounds:totalResults,year2021:true,archiveValidation:true,dynamicYearSelection:true}));
 // Confirmed owner rule: every zero-point round is a last-place result;
