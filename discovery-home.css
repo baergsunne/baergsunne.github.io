@@ -53,7 +53,8 @@
 }
 #app .page--home .discovery-champion-copy{min-width:0;position:relative;z-index:1}
 #app .page--home .discovery-champion-copy .overline{display:block;line-height:1.5;font-size:clamp(10px,1.4vw,12px);font-weight:850;letter-spacing:.14em}
-#app .page--home .discovery-champion-copy h2{font-size:clamp(34px,6.5vw,65px);line-height:1.03;margin:12px 0 12px;letter-spacing:-.045em;overflow-wrap:anywhere;text-wrap:balance}
+#app .page--home .discovery-champion-copy .discovery-champion-year{display:block;margin-top:12px;color:#efc786;font-size:clamp(31px,5.8vw,49px);font-weight:850;line-height:1.05;letter-spacing:-.035em}
+#app .page--home .discovery-champion-copy h2{font-size:clamp(34px,6.5vw,65px);line-height:1.03;margin:7px 0 12px;letter-spacing:-.045em;overflow-wrap:anywhere;text-wrap:balance}
 #app .page--home .discovery-champion-copy p{font-size:clamp(12px,1.85vw,16px);line-height:1.45;color:#d3decb}
 #app .page--home .discovery-champion-copy p strong{color:#f1d6a0;font-weight:800}
 #app .page--home .discovery-champion-copy button{
@@ -100,7 +101,7 @@
  #app .page--home .discovery-hero-inner{padding:17px 14px}
  #app .page--home .discovery-hero-logo{max-height:clamp(251px,78vw,332px)}
  #app .page--home .discovery-champion{grid-template-columns:minmax(0,1fr) minmax(76px,30%);gap:8px;padding:15px 12px;min-height:230px}
- #app .page--home .discovery-champion-copy h2{font-size:clamp(29px,8.3vw,37px);margin:11px 0}
+ #app .page--home .discovery-champion-copy h2{font-size:clamp(29px,8.3vw,37px);margin:7px 0 11px}
  #app .page--home .discovery-champion-trophy img{height:clamp(128px,41vw,177px)}
 }
 
