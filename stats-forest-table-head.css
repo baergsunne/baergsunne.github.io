@@ -1,0 +1,22 @@
+/* Stats-only uniform table header. The sunlit card/table BODY remains intact.
+   Headers are one calm, continuous opaque Forest surface without per-column
+   gradients, shadows or rounded individual-cell capsules. */
+#app .page--stats .stat-content table thead,
+#app .page--stats .stat-content table thead tr,
+#app .page--stats .stat-content table thead th{
+ background:#102b22!important;
+ background-color:#102b22!important;
+ background-image:none!important;
+ filter:none!important;
+}
+#app .page--stats .stat-content table thead th{
+ box-shadow:none!important;
+ border-radius:0!important;
+ border-right:1px solid rgba(232,195,126,.12)!important;
+ color:#e8c37e!important;
+}
+/* Keep the sorted-column controls untouched; remove only the last divider.
+   The sticky first column's positioning and z-index remain as implemented. */
+#app .page--stats .stat-content table thead th:last-child{
+ border-right:0!important;
+}
