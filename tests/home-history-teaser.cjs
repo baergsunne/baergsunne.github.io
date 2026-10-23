@@ -20,7 +20,7 @@ const assert=require('node:assert/strict');
     const grids=[...document.querySelectorAll('.discovery-mini-grid')];
     const statsGrid=grids.find(x=>!x.closest('.discovery-history-teaser')),historyGrid=area?.querySelector('.discovery-mini-grid');
     const styles=grid=>{
-     const box=grid.querySelector('.discovery-feature'),g=getComputedStyle(grid),b=getComputedStyle(box);
+     const box=grid.querySelector('.discovery-feature:not(.discovery-feature--featured)'),g=getComputedStyle(grid),b=getComputedStyle(box);
      const title=getComputedStyle(box.querySelector('strong')),sub=getComputedStyle(box.querySelector('small'));
      return {columns:g.gridTemplateColumns.split(' ').length,gap:g.gap,background:b.backgroundImage,
       border:b.borderTopColor,borderWidth:b.borderTopWidth,borderRadius:b.borderTopLeftRadius,padding:b.padding,
