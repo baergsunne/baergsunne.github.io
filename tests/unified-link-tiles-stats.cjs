@@ -78,7 +78,7 @@ const fixture=require('./fixture-2026.json');
    assert.equal(home.some(c=>c.title==='Analyse-Studio'),false,width+' no Analyse-Studio teaser on start page');
    assert.equal(home[4].title,'Duelle',width+' ordinary tools begin directly with Duelle');
    assert.deepEqual(home.slice(4,10).map(c=>c.title),
-    ['Duelle','Muster-Finder','Diagramme','Simulator','Schnellanalysen','Übersicht'],
+    ['Duelle','Wenn–Dann-Finder','Diagramme','Simulator','Schnellanalysen','Übersicht'],
     width+' six homepage tool links, overview in sixth position');
    // Verify the four top-level entry cards form two rows and two columns
    // with exactly the same width and height (not four horizontal bars).
