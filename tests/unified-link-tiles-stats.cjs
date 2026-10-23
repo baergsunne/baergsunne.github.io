@@ -129,7 +129,10 @@ const fixture=require('./fixture-2026.json');
     const heads=[...(table?.tHead?.rows[0]?.cells||[])];
     return {panel:panel?getComputedStyle(panel).backgroundColor:null,
       summary:summary?getComputedStyle(summary).backgroundColor:null,
-      header:heads.map(x=>getComputedStyle(x).backgroundColor),firstPosition:heads[0]?getComputedStyle(heads[0]).position:null,
+      header:heads.map(x=>getComputedStyle(x).backgroundColor),headerImages:heads.map(x=>getComputedStyle(x).backgroundImage),
+      headerShadows:heads.map(x=>getComputedStyle(x).boxShadow),
+      headerRadii:heads.map(x=>getComputedStyle(x).borderTopLeftRadius),
+      firstPosition:heads[0]?getComputedStyle(heads[0]).position:null,
       tableOverflow:document.documentElement.scrollWidth-innerWidth,
       columnPicker:!!summary,sortControls:heads.some(x=>x.querySelector('button'))};
    });
@@ -147,7 +150,11 @@ const fixture=require('./fixture-2026.json');
    });
    assert(headerGradients.picker.includes('225deg'),'Picker has sunlight gradient');
    assert.equal(headerGradients.picker,headerGradients.summary,'Column picker has same sunlight gradient');
-   assert(headerGradients.cells.every(x=>x===headerGradients.picker),'Table headers share sunlight direction');
+   assert(headerGradients.cells.every(x=>x==='none'),'Each statistics header has no individual gradient');
+   assert(headers.header.every(x=>x==='rgb(16, 43, 34)'),width+' all heading cells have identical dark Forest background');
+   assert(headers.headerShadows.every(x=>x==='none'),width+' no individual header-cell shadows');
+   assert(headers.headerRadii.every(x=>x==='0px'),width+' no rounded header-cell capsules');
+   assert(headers.sortControls,width+' interactive sorting controls retained');
    assert.equal(headers.firstPosition,'sticky','Sticky first column remains sticky');
    assert(headers.tableOverflow<=2,'No stats horizontal scroll on document');
    // The new standard applies to Historie as well.
