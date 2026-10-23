@@ -15,7 +15,7 @@ const roster=await page.evaluate(()=>{
  const expectedValues=[seasons.length,rounds.length,seasons.filter(e=>e.official_standings.some(s=>s.player_id===player&&s.place===1)).length,rounds.filter(x=>x.place===1).length,rounds.filter(x=>x.place<=3).length];
  return {
   headings:sections.map(s=>s.querySelector('h2')?.textContent.trim()),
-  yearText:sections[0]?.querySelector('.player-roster-heading > span')?.textContent.trim(),
+  yearSubtitle:!!sections[0]?.querySelector('.player-roster-heading > span'),
   year:latest.year,
   current:current.map(c=>c.dataset.value),former:former.map(c=>c.dataset.value),
   expectedCurrent,expectedFormer,allCards:current.length+former.length,
@@ -24,10 +24,11 @@ const roster=await page.evaluate(()=>{
  };
 });
 assert.deepEqual(roster.headings,['Aktuelles Teilnehmerfeld','Ehemalige Teilnehmer']);
-assert.equal(roster.yearText,roster.year+' · Schlussrangliste');
+assert.equal(roster.yearSubtitle,false,'No ranking heading or subtitle in the player roster');
 assert.equal(roster.year,2026,'Last officially documented tournament');
 assert.deepEqual(roster.current,roster.expectedCurrent,'Latest participants are in official ranking order');
 assert.equal(roster.current.length,10,'All ten 2026 participants');
+assert.deepEqual(roster.current,['Frauchi','König','Mike','Schnarre','Bröne','Keel','Niko','Mänu','Chopfi','Fösu'],'Expected display order without rank numbers');
 assert.deepEqual(roster.former,roster.expectedFormer,'Former participants A–Z');
 assert.equal(roster.allCards,roster.current.length+roster.former.length,'Every archived player occurs once');
 assert.deepEqual(roster.sampleValues.map(x=>x.label),['Turniere','Runden','Titel','Siege','Top 3']);
