@@ -43,3 +43,13 @@
 #app .page--stats .wd-evidence>p{padding:0 12px 13px;color:#cad8c9;font-size:.83rem;line-height:1.5}
 @media(min-width:700px){#app .page--stats .wd-builder,#app .page--stats .wd-result{padding:22px}#app .page--stats .wd-filter-grid{grid-template-columns:repeat(3,minmax(0,1fr))}#app .page--stats .wd-filter-options{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:370px){#app .page--stats .wd-builder,#app .page--stats .wd-result{padding:12px}#app .page--stats .wd-result-top{gap:5px}}
+
+/* Retained Schnellanalysen: one compact archive-question selector within Wenn–Dann. */
+#app .page--stats .wd-archive{margin-top:22px;padding:15px;border:1px solid rgba(218,184,118,.42);border-radius:18px;background:linear-gradient(135deg,#103529,#234333)}
+#app .page--stats .wd-archive>summary{cursor:pointer;color:#f3d4a0;font-weight:650;font-size:1rem;line-height:1.5;padding:5px 0}
+#app .page--stats .wd-archive-controls{display:grid;grid-template-columns:minmax(0,1fr);gap:12px;margin:17px 0}
+#app .page--stats .wd-archive-controls label{display:block;min-width:0;font-size:.91rem;font-weight:600;color:#f2e1c3}
+#app .page--stats .wd-archive-controls select{display:block;width:100%;max-width:100%;margin-top:7px;min-height:44px}
+#app .page--stats .wd-archive .wd-result{margin-top:12px;padding:15px}
+#app .page--stats .wd-archive .wd-evidence{padding:0 6px}
+@media(min-width:700px){#app .page--stats .wd-archive-controls{grid-template-columns:repeat(2,minmax(0,1fr))}}
