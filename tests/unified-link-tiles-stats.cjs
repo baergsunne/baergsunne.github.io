@@ -150,7 +150,7 @@ const fixture=require('./fixture-2026.json');
    });
    assert(headerGradients.picker.includes('225deg'),'Picker has sunlight gradient');
    assert.equal(headerGradients.picker,headerGradients.summary,'Column picker has same sunlight gradient');
-   assert(headerGradients.cells.every(x=>x==='none'),'Each statistics header has no individual gradient');
+   assert(headerGradients.cells.every(x=>x==='none'),'Each statistics header has no individual gradient: '+JSON.stringify(headerGradients.cells));
    assert(headers.header.every(x=>x==='rgb(16, 43, 34)'),width+' all heading cells have identical dark Forest background');
    assert(headers.headerShadows.every(x=>x==='none'),width+' no individual header-cell shadows');
    assert(headers.headerRadii.every(x=>x==='0px'),width+' no rounded header-cell capsules');
