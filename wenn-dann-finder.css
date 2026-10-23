@@ -1,14 +1,8 @@
 /* Bärgsunne · Wenn–Dann-Finder – same Forest/Gold design family as Stats */
 #app .page--stats .wd-finder{min-width:0;color:#f4ebd9;margin:13px 0 24px}
 #app .page--stats .wd-finder *{box-sizing:border-box;min-width:0}
-#app .page--stats .wd-question{border:1px solid rgba(232,195,126,.64);border-radius:16px;padding:20px;background:linear-gradient(225deg,rgba(115,146,103,.2),rgba(22,59,44,.96) 64%);box-shadow:-5px 10px 18px rgba(0,0,0,.15)}
-#app .page--stats .wd-question>span,#app .page--stats .wd-result-top span,#app .page--stats .wd-step{font-size:.76rem;letter-spacing:.12em;font-weight:800;color:#e8c37e}
-#app .page--stats .wd-question p{font-size:clamp(1.08rem,3vw,1.5rem);line-height:1.5;font-weight:720;margin:9px 0 0}
-#app .page--stats .wd-presets{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:14px 0}
-#app .page--stats .wd-presets>span{font-size:.85rem;color:#d8ddce;margin-right:5px}
 #app .page--stats .wd-finder button{cursor:pointer;border:1px solid rgba(226,195,139,.55);border-radius:10px;background:#204638;color:#faecda;padding:10px 12px;font:inherit;font-size:.89rem;min-height:42px}
 #app .page--stats .wd-finder button:focus-visible,#app .page--stats .wd-finder select:focus-visible,#app .page--stats .wd-finder input:focus-visible{outline:2px solid #ecc481;outline-offset:2px}
-#app .page--stats .wd-presets button{font-size:.8rem;padding:8px 10px;background:rgba(38,81,61,.88)}
 #app .page--stats .wd-builder,#app .page--stats .wd-result{border:1px solid rgba(232,195,126,.28);border-radius:16px;background:linear-gradient(225deg,rgba(98,139,101,.14),rgba(15,48,35,.92) 74%);padding:16px;margin-top:15px}
 #app .page--stats .wd-condition{display:grid;grid-template-columns:minmax(0,1fr);gap:8px;padding:16px;border:1px solid rgba(232,195,126,.33);border-radius:12px;background:rgba(11,39,29,.43)}
 #app .page--stats .wd-condition label,#app .page--stats .wd-distance,#app .page--stats .wd-amount{display:block;font-weight:650;font-size:.88rem;line-height:1.5}
@@ -43,8 +37,9 @@
 #app .page--stats .wd-explainer .wd-caution{color:#cad9c8;font-size:.81rem}
 #app .page--stats .wd-proof{margin-top:17px}
 #app .page--stats .wd-scroll{overflow-x:auto;width:100%;overscroll-behavior-x:contain}
-#app .page--stats .wd-scroll table{width:100%;min-width:630px;white-space:nowrap;font-size:.78rem}
-#app .page--stats .wd-scroll th,#app .page--stats .wd-scroll td{padding:9px 7px}
+/* Evidence rows use the identical shared table shell and row design as Übersicht. */
+#app .page--stats .wd-scroll{max-width:100%;-webkit-overflow-scrolling:touch}
+#app .page--stats .wd-scroll table.bp-unified-table{font-variant-numeric:tabular-nums}
 #app .page--stats .wd-evidence>p{padding:0 12px 13px;color:#cad8c9;font-size:.83rem;line-height:1.5}
 @media(min-width:700px){#app .page--stats .wd-builder,#app .page--stats .wd-result{padding:22px}#app .page--stats .wd-filter-grid{grid-template-columns:repeat(3,minmax(0,1fr))}#app .page--stats .wd-filter-options{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:370px){#app .page--stats .wd-builder,#app .page--stats .wd-result{padding:12px}#app .page--stats .wd-result-top{gap:5px}}
