@@ -101,7 +101,8 @@ const sample=(node)=>node?(()=>{
      assert(/-\d+px\s+\d+px/.test(item.shadow),width+' '+label+' shadow must cast left and down: '+item.shadow);
     }
    }
-   assert(result.stat.header?.bg.includes('225deg'),'Table headers stay in sunlight family');
+   assert.equal(result.stat.header?.bg,'none','Statistics table head uses flat Forest green, not a per-column sunlight gradient');
+   assert.equal(result.stat.header?.color,'rgb(16, 43, 34)','Statistics table header has uniform dark Forest fill');
    assert.equal(result.stat.name.position,'sticky','Pinned table name column stays sticky');
    assert.equal(result.stat.golden,'rgb(242, 206, 139)','Big KPI numbers remain Bärgsunne gold');
    assert(result.stat.sort,'Sorting controls retained');
