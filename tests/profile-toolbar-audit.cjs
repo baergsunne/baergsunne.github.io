@@ -49,4 +49,59 @@ for(const width of [320,390,430,768]){
  assert(layout.textFits,width+' all five career metrics fit');
  assert.equal(layout.allCards,roster.allCards,width+' all cards remain visible');
 }
+
+// Profile tables now use the same statistics-table picker and forest styling,
+// without losing the existing native per-column sorting.
+await page.evaluate(()=>{state.page='profile';state.profile='Borer';draw()});
+await page.waitForFunction(()=>{
+ const eligible=[...document.querySelectorAll('.page--profile table')].filter(t=>t.tHead?.rows?.length===1&&t.tHead.rows[0].cells.length>=2&&[...t.tHead.rows[0].cells].every(h=>h.colSpan===1&&h.rowSpan===1));
+ return eligible.length>0&&eligible.every(t=>t.dataset.bpStatPersonalized==='1');
+},null,{timeout:12000});
+const initial=await page.evaluate(()=>{
+ const tables=[...document.querySelectorAll('.page--profile table')];
+ const eligible=tables.filter(t=>t.tHead?.rows?.length===1&&t.tHead.rows[0].cells.length>=2&&[...t.tHead.rows[0].cells].every(h=>h.colSpan===1&&h.rowSpan===1));
+ const enhanced=tables.filter(t=>t.classList.contains('bp-stat-personalized-table'));
+ const table=enhanced.find(t=>t.tHead.rows[0].cells.length>=3);
+ const th=[...table.tHead.rows[0].cells];
+ const css=th.map(h=>({background:getComputedStyle(h).backgroundColor,image:getComputedStyle(h).backgroundImage,shadow:getComputedStyle(h).boxShadow}));
+ const scroll=table.parentElement;
+ return {eligible:eligible.length,enhanced:enhanced.length,pickers:document.querySelectorAll('.page--profile .bp-stat-columns').length,
+  css,firstPosition:getComputedStyle(th[0]).position,
+  scrollScrollable:scroll.classList.contains('bp-stat-scroll'),sorted:!!th[0].querySelector('.bp-smart-sort'),
+  duplicateToolbar:!!document.querySelector('.page--profile .bp-unified-toolbar')};
+});
+assert(initial.eligible>0&&initial.enhanced===initial.eligible,'Every eligible profile table enhanced');
+assert.equal(initial.pickers,initial.enhanced,'One independent picker per profile table');
+assert(initial.css.every(h=>h.background==='rgb(16, 43, 34)'&&h.image==='none'&&h.shadow==='none'),'Identical flat Forest-green header cells in profile');
+assert.equal(initial.firstPosition,'sticky','First profile column stays sticky');
+assert(initial.scrollScrollable&&initial.sorted,'Scrolling and sorting work in profile');
+assert(!initial.duplicateToolbar,'No duplicated sorting toolbar');
+const profileTable=page.locator('.page--profile table.bp-stat-personalized-table').filter({has:page.locator('thead th:nth-child(3)')}).first();
+const wrapper=profileTable.locator('xpath=..');
+const picker=wrapper.locator('xpath=preceding-sibling::details[contains(@class,"bp-stat-columns")][1]');
+assert.equal(await picker.count(),1,'Picker immediately precedes its profile table');
+const summary=picker.locator('summary');
+await summary.click();
+const choices=picker.locator('.bp-stat-column-choice');
+const total=await choices.count();
+assert(total>=3,'Profile column choices available');
+assert.equal(await choices.first().isDisabled(),true,'First column always visible');
+await choices.nth(1).click();
+assert.equal(await profileTable.locator('thead th:nth-child(2)').getAttribute('data-bp-column-hidden'),'','Second column hidden');
+assert.equal(await choices.nth(1).getAttribute('aria-pressed'),'false');
+assert((await summary.innerText()).includes((total-1)+' von '+total+' sichtbar'),'Visible column count updates');
+await profileTable.locator('thead th:first-child .bp-smart-sort').click();
+assert.equal(await profileTable.locator('thead th:first-child').getAttribute('aria-sort'),'ascending','Native table sorting retained');
+await page.evaluate(()=>{state.page='profile';state.profile='Bröne';draw()});
+await page.waitForFunction(()=>[...document.querySelectorAll('.page--profile table')].some(t=>t.dataset.bpStatPersonalized==='1'),null,{timeout:10000});
+assert.equal(await page.locator('.page--profile table.bp-stat-personalized-table').first().locator('thead th:nth-child(2)').getAttribute('data-bp-column-hidden'),null,'Another player uses independent column choice');
+await page.evaluate(()=>{state.page='profile';state.profile='Borer';draw()});
+await page.waitForFunction(()=>[...document.querySelectorAll('.page--profile table')].some(t=>t.dataset.bpStatPersonalized==='1'),null,{timeout:10000});
+assert.equal(await page.locator('.page--profile table.bp-stat-personalized-table').first().locator('thead th:nth-child(2)').getAttribute('data-bp-column-hidden'),'','Saved profile choice survives redraw');
+for(const width of [320,390,430,768]){
+ await page.setViewportSize({width,height:844});
+ const d=await page.evaluate(()=>({overflow:document.documentElement.scrollWidth-innerWidth,controls:document.querySelectorAll('.page--profile .bp-stat-columns-summary').length}));
+ assert(d.overflow<=2,width+' profile tables must scroll internally without horizontal page overflow');
+ assert(d.controls>=initial.enhanced,width+' dropdowns must remain available');
+}
 const results=await page.evaluate(()=>{const failures=[];for(const player of db.players.map(p=>p.name)){state.page='profile';state.profile=player;draw();const tables=[...document.querySelectorAll('#page table')];if(!tables.length)failures.push(player+': no tables');if(document.querySelector('#page .bp-unified-toolbar'))failures.push(player+': redundant toolbar');for(const t of tables){if(!t.tHead?.querySelector('th'))failures.push(player+': missing table header')}}state.page='stats';state.tab='career';draw();return{failures,players:db.players.length,otherToolbar:!!document.querySelector('#page .bp-unified-toolbar')}});assert.deepEqual(results.failures,[]);assert(results.otherToolbar,'other pages unexpectedly changed');console.log('PROFILE_SORT_TOOLBAR_SUCCESS',JSON.stringify(results));}finally{await browser.close()}})().catch(e=>{console.error(e);process.exit(1)});
