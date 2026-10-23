@@ -24,6 +24,8 @@ const roster=await page.evaluate(()=>{
  };
 });
 assert.deepEqual(roster.headings,['Aktuelles Teilnehmerfeld','Ehemalige Teilnehmer']);
+assert.equal(await page.locator('.page--players h2, .page--players h3').filter({hasText:'Spielerstatistiken'}).count(),0,'Duplicate Spielerstatistiken heading is removed from players page');
+assert.equal(await page.locator('.page--players .player-roster-group .playercard--summary').count(),roster.allCards,'All player tiles remain present');
 assert.equal(roster.yearSubtitle,false,'No ranking heading or subtitle in the player roster');
 assert.equal(roster.year,2026,'Last officially documented tournament');
 assert.deepEqual(roster.current,roster.expectedCurrent,'Latest participants are in official ranking order');
