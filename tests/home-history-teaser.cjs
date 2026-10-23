@@ -57,6 +57,46 @@ const assert=require('node:assert/strict');
     assert.equal(h.color,'rgb(232, 195, 126)',width+' '+h.text+' must use heritage gold');
     assert(h.fontSize>=25,width+' '+h.text+' must be large enough to read');
    }
+   // User-facing home snapshot: year above champion name, no technical
+   // status/timestamp or movement arrows in the compact live ranking.
+   const homeCards=await page.evaluate(()=>{
+    const snapshot=window.BAERGSUNNE_PUBLIC_LIVE;
+    try{
+     window.BAERGSUNNE_PUBLIC_LIVE={
+      status:'final',year:2026,round_count:7,latest_round:7,updated_at:'2026-10-18T12:26:00.319Z',
+      leaders:['Frauchi'],rounds:[],standings:[
+       {rank:1,player:'Frauchi',points:50,wins:3,gap:0,movement:0,podiums:5,played:7,places:[1,2,1,3,1,2,3]},
+       {rank:4,player:'Schnarre',points:28,wins:1,gap:22,movement:4,podiums:1,played:7,places:[4,5,8,3,3,3,2]}
+      ]
+     };
+     draw();
+     const champion=document.querySelector('.page--home .discovery-champion');
+     const live=document.querySelector('.page--home .discovery-live');
+     const year=champion.querySelector('.discovery-champion-year');
+     const name=champion.querySelector('h2');
+     const action=champion.querySelector('button[data-action="openyear"]');
+     const ranking=[...live.querySelectorAll('.discovery-live-row:not(.heading)>span:first-child')].map(x=>x.textContent.trim());
+     return {
+      year:year?.textContent.trim(),yearTop:year?.getBoundingClientRect().top,
+      name:name?.textContent.trim(),nameTop:name?.getBoundingClientRect().top,
+      points:champion.querySelector('p')?.textContent.trim(),
+      button:action?.textContent.trim(),action:action?.dataset.action,
+      liveText:live.textContent,
+      introduction:live.querySelector('.discovery-live-table')?.previousElementSibling?.textContent.trim(),
+      ranking,fullLiveMarkup:liveWidget(false)
+     };
+    }finally{window.BAERGSUNNE_PUBLIC_LIVE=snapshot;draw();}
+   });
+   assert.equal(homeCards.year,'2026',width+' year shown separately');
+   assert(homeCards.yearTop<homeCards.nameTop,width+' year above champion name');
+   assert.equal(homeCards.name,'Frauchi',width+' champion preserved');
+   assert.equal(homeCards.points,'50 Punkte',width+' no official rank explanation');
+   assert.equal(homeCards.button,'Titelweg im Jahrbuch 2026 ansehen',width+' no arrow glyph');
+   assert.equal(homeCards.action,'openyear',width+' yearbook link stays functional');
+   assert.equal(homeCards.introduction,'2026',width+' compact status details hidden');
+   assert(!homeCards.liveText.includes('Letzte Aktualisierung:'),width+' raw timestamp hidden');
+   assert.deepEqual(homeCards.ranking,['1.','4.'],width+' compact ranking without movement');
+   assert(homeCards.fullLiveMarkup.includes('↑4'),width+' detailed live ranking preserved');
    assert.equal(teaser.count,6,width+' needs six Historie teasers');
    assert.deepEqual(teaser.views,views,'Historie teaser order');
    assert.deepEqual(teaser.titles,['Jahrbuch','Runden','Schlüsselmomente','Rekordbuch','Teilnehmerfeld','Jahresvergleich']);
