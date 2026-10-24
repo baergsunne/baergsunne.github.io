@@ -5,6 +5,53 @@ const escape=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>'
 const round=x=>Number.isFinite(x)?Math.round(x*100)/100:0;
 const sevenRoundValue=(value,roundCount)=>Number.isFinite(value)&&Number.isInteger(roundCount)&&roundCount>0?value*7/roundCount:NaN;
 const seasonValue=(name,year,rawValue,rawUnit,roundCount)=>({name:`${name} (${year})`,year,value:sevenRoundValue(rawValue,roundCount),rawValue,rawUnit,roundCount});
+
+/* Historical round-by-round records; source chronology remains immutable. */
+function annualMetrics(e){
+ const rs=[...e.rounds].sort((a,b)=>a.number-b.number);
+ const points=new Map(e.players.map(p=>[p,0])),wins=new Map(e.players.map(p=>[p,0]));
+ const snapshots=[];
+ for(const r of rs){
+  for(const x of r.results){
+   points.set(x.player_id,(points.get(x.player_id)||0)+x.points);
+   if(x.place===1)wins.set(x.player_id,(wins.get(x.player_id)||0)+1);
+  }
+  const order=[...e.players].sort((a,b)=>points.get(b)-points.get(a)||wins.get(b)-wins.get(a)||a.localeCompare(b,'de'));
+  const maximum=points.get(order[0]),minimum=points.get(order.at(-1));
+  snapshots.push({
+   ranks:new Map(order.map((p,i)=>[p,i+1])),
+   leaders:order.filter(p=>points.get(p)===maximum),
+   lantern:order.filter(p=>points.get(p)===minimum),
+   points:new Map(points)
+  });
+ }
+ const changes=snapshots.slice(1).filter((x,i)=>x.leaders.length===1&&snapshots[i].leaders.length===1&&x.leaders[0]!==snapshots[i].leaders[0]).length;
+ const champion=e.official_standings.find(x=>x.place===1)?.player_id;
+ let comeback=0;
+ if(champion)for(const snap of snapshots){
+  const own=snap.points.get(champion)||0;
+  const biggestRival=Math.max(0,...e.players.filter(p=>p!==champion).map(p=>snap.points.get(p)||0));
+  comeback=Math.max(comeback,biggestRival-own);
+ }
+ const people=e.players.map(name=>{
+  const rank=snapshots.map(s=>s.ranks.get(name));
+  let good=rank[0],bad=rank[0],climb=0,fall=0,singleRise=0,singleFall=0;
+  for(let i=1;i<rank.length;i++){
+   const now=rank[i],before=rank[i-1];
+   climb=Math.max(climb,bad-now);
+   fall=Math.max(fall,now-good);
+   singleRise=Math.max(singleRise,before-now);
+   singleFall=Math.max(singleFall,now-before);
+   good=Math.min(good,now);bad=Math.max(bad,now);
+  }
+  return {name,year:e.year,roundCount:rs.length,
+    top5:rs.filter(r=>r.results.some(x=>x.player_id===name&&x.place<=5)).length,
+    leads:snapshots.filter(x=>x.leaders.includes(name)).length,
+    lantern:snapshots.filter(x=>x.lantern.includes(name)).length,
+    climb,fall,singleRise,singleFall};
+ });
+ return {year:e.year,roundCount:rs.length,champion,changes,comeback,people};
+}
 function calculate(seed){
  const editions=seed.editions||[];
  const players=new Map();const seasons=[];const yearRows=[];const pair=new Map();
