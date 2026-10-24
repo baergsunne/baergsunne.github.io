@@ -18,6 +18,7 @@
     best={n,relative:avg,start:slice[0],end:slice[n-1],
       wins:slice.filter(r=>Number(r.place)===1).length,
       top3:slice.filter(r=>Number(r.place)<=3).length,
+      zeros:slice.filter(r=>Number(r.points)===0).length,
       totalPoints,averagePoints:totalPoints/n,rounds:slice};
    }
   }
@@ -36,7 +37,8 @@
    ['Punkte insgesamt',format(result.totalPoints,Number.isInteger(result.totalPoints)?0:1)],
    ['Ø Punkte pro Runde',format(result.averagePoints)],
    ['Top-3-Platzierungen',result.top3],
-   ['Ø Position im Feld',format(result.relative)+' %']
+   ['Ø Position im Feld',format(result.relative)+' %'],
+   ['Nuller',result.zeros]
   ];
   return '<div class="bp-phase-dynamic" data-phase-profile="'+esc(player)+'">'+
    '<div class="bp-form-controls"><span class="bp-form-controls-title">Beste Karrierephase auswählen</span>'+
@@ -44,7 +46,7 @@
    '<label class="bp-form-custom-label">Eigene Rundenzahl <input type="number" inputmode="numeric" min="1" max="'+max+'" step="1" value="'+n+'" data-phase-custom aria-label="Anzahl Runden für die beste Karrierephase"></label>'+
    '<span class="bp-form-available">'+max+' gespielte Runden verfügbar</span></div>'+
    '<div class="bp-phase-grid">'+metrics.map(([label,value])=>'<div class="bp-phase-tile"><small>'+esc(label)+'</small><strong>'+esc(value)+'</strong></div>').join('')+'</div>'+
-   '<p class="bp-phase-summary">Die stärkste zusammenhängende Phase aus <strong>'+n+'</strong> eigenen gespielten '+(n===1?'Runde':'Runden')+' lag zwischen <strong>'+esc(result.start.year+' · Runde '+result.start.round)+'</strong> und <strong>'+esc(result.end.year+' · Runde '+result.end.round)+'</strong>. In dieser Phase erreichte '+esc(player)+' '+result.wins+' '+(result.wins===1?'Rundensieg':'Rundensiege')+', '+result.top3+' Top-3-Platzierungen und insgesamt '+format(result.totalPoints,Number.isInteger(result.totalPoints)?0:1)+' Punkte.</p>'+
+   '<p class="bp-phase-summary">Die stärkste zusammenhängende Phase aus <strong>'+n+'</strong> eigenen gespielten '+(n===1?'Runde':'Runden')+' lag zwischen <strong>'+esc(result.start.year+' · Runde '+result.start.round)+'</strong> und <strong>'+esc(result.end.year+' · Runde '+result.end.round)+'</strong>. In dieser Phase erreichte '+esc(player)+' '+result.wins+' '+(result.wins===1?'Rundensieg':'Rundensiege')+', '+result.top3+' Top-3-Platzierungen, '+result.zeros+' '+(result.zeros===1?'Runde':'Runden')+' mit null Punkten und insgesamt '+format(result.totalPoints,Number.isInteger(result.totalPoints)?0:1)+' Punkte.</p>'+
    '<p class="hint">Für jede mögliche Folge von '+n+' eigenen gespielten Runden wird die durchschnittliche relative Platzierung berechnet. Das Fenster mit dem höchsten Wert gewinnt. 100 % = immer Platz 1; 0 % = immer letzter Platz. Die Runden können über mehrere Turnierjahre reichen. Bei exakt gleichem Ergebnis zählt die frühere Phase. Die Punkte und Siege stammen ausschliesslich aus den tatsächlich gespeicherten Runden; die Kennzahlen ändern sich gemeinsam mit der Auswahl.</p></div>';
  }
  function update(el,value){
