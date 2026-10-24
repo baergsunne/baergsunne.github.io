@@ -9,7 +9,7 @@ function ensureTooltip(){
  tooltip.setAttribute('aria-live','off');tooltip.hidden=true;document.body.append(tooltip);return tooltip;
 }
 function hide(){if(tooltip)tooltip.hidden=true;if(guide)guide.remove();guide=null;active=null;}
-function points(svg){return [...svg.querySelectorAll('[data-bp-point]')].filter(el=>el.getAttribute('data-bp-value')!==null);}
+function points(svg){return [...svg.querySelectorAll('[data-bp-point]')].filter(el=>el.getAttribute('data-bp-value')!==null&&el.getClientRects().length>0);}
 function screenX(svg,x){const pt=svg.createSVGPoint();pt.x=x;pt.y=0;const matrix=svg.getScreenCTM();return matrix?pt.matrixTransform(matrix).x:svg.getBoundingClientRect().left+x;}
 function chartX(svg,clientX){const matrix=svg.getScreenCTM();if(!matrix)return null;const pt=svg.createSVGPoint();pt.x=clientX;pt.y=0;return pt.matrixTransform(matrix.inverse()).x;}
 function info(el){return {x:Number(el.getAttribute('data-bp-x')),label:el.getAttribute('data-bp-label')||'',value:el.getAttribute('data-bp-value')||'',series:el.getAttribute('data-bp-series')||'',color:el.getAttribute('fill')||el.getAttribute('stroke')||'#e8c37e'};}
