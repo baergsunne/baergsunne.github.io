@@ -44,14 +44,23 @@ const assert=(condition,message)=>{if(!condition)throw new Error(message)};
      assert(state.pageWidth<=state.viewport+3,"Page horizontally overflows: "+state.pageWidth+" > "+state.viewport);
      if(name==="home"){
       assert(await page.locator(".x-result-layout").count()===1,"Data-first result sheet missing");
+      assert(await page.locator(".x-table-row").count()===10,"Ten verified final standings not visible");
+      assert(await page.locator(".discovery-features").count()===0,"Obsolete card navigation still mounted");
       const text=await page.locator(".x-result-layout").innerText();
       assert(text.includes("Frauchi")&&text.includes("König")&&text.includes("+11"),"Real-data endstand/lead not correct");
       assert(await page.locator(".x-cover .discovery-hero-logo").count()===1,"Premium logo hero missing");
      }
      if(name==="history")assert(await page.locator(".history-chronicle").count()===1,"History carousel missing");
-     if(name==="stats"){assert(await page.locator(".x-stats-workspace .stat-content").count()===1,"Active statistics first missing");assert(await page.locator(".tool-directory .tool-tile").count()>=10,"Statistics tools missing");}
+     if(name==="stats"){assert(await page.locator(".x-stats-workspace .stat-content").count()===1,"Active statistics first missing");assert(await page.locator(".premium-masthead").count()===0,"Legacy statistics masthead still mounted");assert(await page.locator(".tool-directory .tool-tile").count()>=10,"Statistics tools missing");}
      if(name==="players")assert((await page.locator(".page--players").innerText()).includes("Frauchi"),"Players missing");
-     if(name==="fame"){assert((await page.locator(".page--fame .podium").innerText()).includes("Mike"),"Record champion missing");assert(await page.locator(".x-fame-dominant").count()===1,"New recordmaster stage missing");}
+     if(name==="fame"){assert((await page.locator(".page--fame .podium").innerText()).includes("Mike"),"Record champion missing");assert(await page.locator(".x-fame-dominant").count()===1,"New recordmaster stage missing");assert(await page.locator(".premium-masthead").count()===0,"Legacy hall masthead still mounted");}
+     if(name==="stats"&&width===390){
+      await page.locator("#bp-tool-select").selectOption("career");
+      await page.waitForTimeout(250);
+      assert((await page.locator(".x-stats-workspace").innerText()).includes("Karrieren"),"Tool selection did not update active analysis");
+      await page.locator("#bp-tool-select").selectOption("overview");
+      await page.waitForTimeout(200);
+     }
      if(name==="live")assert(await page.locator(".discovery-livepage").count()===1,"Live page missing");
      if((width===390||width===1440)&&["home","stats","fame"].includes(name))
       await page.screenshot({path:path.join(out,name+"-"+width+".png"),fullPage:true});
