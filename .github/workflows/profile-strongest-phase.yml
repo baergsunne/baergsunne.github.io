@@ -1,0 +1,26 @@
+name: Strongest career phase regression
+on:
+  pull_request:
+    paths:
+      - 'profile-strongest-phase.js'
+      - 'profile-strongest-phase.css'
+      - 'app.js'
+      - 'index.html'
+      - 'tests/profile-strongest-phase.cjs'
+      - '.github/workflows/profile-strongest-phase.yml'
+jobs:
+  strongest-phase:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --check profile-strongest-phase.js && node --check app.js && node --check tests/profile-strongest-phase.cjs
+      - run: npm install --no-save playwright
+      - run: npx playwright install chromium
+      - run: python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/poker-phase-server.log 2>&1 &
+      - run: node tests/profile-strongest-phase.cjs
