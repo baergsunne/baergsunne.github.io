@@ -6,7 +6,7 @@ const path=require("node:path");
 const base="http://127.0.0.1:8765";
 const routes=["home","history","stats","players","fame","live"];
 const sizes=[320,375,390,430,768,1440];
-const report={branch:"design/alpine-data-heritage-phase3-20261024",status:"running",runs:[],errors:[]};
+const report={branch:"design/data-first-recomposition-20261025",status:"running",runs:[],errors:[]};
 const assert=(condition,message)=>{if(!condition)throw new Error(message)};
 (async()=>{
  const browser=await chromium.launch({headless:true,args:["--no-sandbox"]});
@@ -36,7 +36,7 @@ const assert=(condition,message)=>{if(!condition)throw new Error(message)};
       pageWidth:document.documentElement.scrollWidth,
       viewport:window.innerWidth,
       rootClass:document.documentElement.classList.contains("bp-adh"),
-      stylesheetLoaded:!![...document.styleSheets].find(s=>s.href?.includes("alpine-data-heritage.css"))
+      stylesheetLoaded:!![...document.styleSheets].find(s=>s.href?.includes("data-first-recomposition.css"))
      }));
      item.metrics=state;
      assert(state.rootClass,"Relaunch root marker missing");
@@ -70,6 +70,14 @@ const assert=(condition,message)=>{if(!condition)throw new Error(message)};
    }
    if(width===390){
     try{
+     await page.goto(base+"/#stats",{waitUntil:"domcontentloaded"});
+     await page.locator("#bp-tool-select").selectOption("career",{timeout:6000});
+     assert(await page.locator(".bp-stat-tool-heading h2").first().innerText()==="Karrieren","Statistics dropdown must switch to career");
+     report.statsToolNavigation=true;
+    }catch(e){report.statsToolNavigation=false;report.errors.push({route:"stats → Karrieren",error:String(e)})}
+   }
+   if(width===390){
+    try{
      await page.goto(base+"/#home",{waitUntil:"domcontentloaded"});
      await page.locator('.x-table-row[data-value="Frauchi"]').first().click({timeout:5000});
      await page.locator(".page--profile").first().waitFor({timeout:6000});
@@ -83,7 +91,7 @@ const assert=(condition,message)=>{if(!condition)throw new Error(message)};
   await browser.close();
   report.status=report.errors.length?"failed":"passed";
   fs.writeFileSync(path.join(__dirname,"qa-phase3-results.json"),JSON.stringify(report,null,2));
-  console.log("PHASE3 QA",report.status,report.runs.filter(x=>x.ok).length+"/"+report.runs.length,"routes","profile",report.playerNavigation);
+  console.log("PHASE4 QA",report.status,report.runs.filter(x=>x.ok).length+"/"+report.runs.length,"routes","profile",report.playerNavigation,"tool",report.statsToolNavigation);
   if(report.errors.length)console.error("QA ERRORS",JSON.stringify(report.errors,null,2));
  }
  if(report.errors.length)process.exitCode=1;
