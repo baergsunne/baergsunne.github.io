@@ -1,0 +1,21 @@
+name: Tournament phase thirds regression
+on:
+  pull_request:
+    paths:
+      - 'app.js'
+      - 'index.html'
+      - 'tests/profile-tournament-phases.cjs'
+      - '.github/workflows/profile-tournament-phases.yml'
+jobs:
+  phase-thirds:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --check app.js && node --check tests/profile-tournament-phases.cjs
+      - run: node tests/profile-tournament-phases.cjs

@@ -1,0 +1,31 @@
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const vm=require('node:vm');
+const src=fs.readFileSync('app.js','utf8');
+const begin=src.indexOf('function aPhaseSizes(');
+const end=src.indexOf('\nfunction aPressure(',begin);
+assert(begin>=0&&end>begin,'phase functions must exist');
+const funcs=src.slice(begin,end);
+const makeEdition=(year,n,missing=[])=>({year,players:['Schnarre','Test'],rounds:Array.from({length:n},(_,i)=>({number:i+1,results:missing.includes(i+1)?[]:[{player_id:'Schnarre',place:i+1,points:i+1}]}))});
+const editions=[makeEdition(2007,7),makeEdition(2016,10),makeEdition(2026,11,[5])];
+const ctx={eds:()=>editions,aRounds:e=>[...e.rounds].sort((a,b)=>a.number-b.number),ratio:r=>r.place,};
+vm.createContext(ctx);
+vm.runInContext(funcs+';this.phaseSizes=aPhaseSizes;this.phases=aPhases;',ctx);
+const asJson=x=>JSON.parse(JSON.stringify(x));
+for(const [n,expected] of [[1,[1,0,0]],[2,[1,1,0]],[3,[1,1,1]],[4,[1,2,1]],[5,[2,2,1]],[6,[2,2,2]],[7,[2,3,2]],[8,[3,3,2]],[9,[3,3,3]],[10,[3,4,3]],[11,[4,4,3]],[12,[4,4,4]],[13,[4,5,4]]]){
+ const sizes=asJson(ctx.phaseSizes(n));
+ assert.deepEqual(sizes,expected,'split '+n);
+ assert.equal(sizes.reduce((a,b)=>a+b,0),n,'all rounds accounted for '+n);
+ assert(Math.max(...sizes)-Math.min(...sizes)<=1,'as close to thirds as possible '+n);
+}
+const phases=asJson(ctx.phases('Schnarre'));
+assert.deepEqual(phases.map(p=>p.phase),['Anfangsphase','Mittelphase','Schlussphase']);
+assert.deepEqual(phases.map(p=>p.order),[0,1,2]);
+assert.deepEqual(phases.map(p=>p.n),[2+3+4,3+4+4-1,2+3+3]);
+assert.equal(phases.reduce((sum,p)=>sum+p.n,0),7+10+11-1);
+assert(phases.every(p=>Number.isFinite(p.avg)));
+assert(src.includes("title:'Turnierphase'"),'human-readable table column');
+assert(src.includes("In welcher Turnierphase spielt "),'human-readable card title');
+assert(!src.includes("card('Start, Mitte oder Schluss?'"),'old title removed');
+assert(src.includes('Runde 1–3, 4–7 und 8–10'),'10-round example explained');
+console.log('TURNIERPHASEN_SUCCESS: 1–13 rounds, 10 -> 3/4/3, season and missing-round grouping');
