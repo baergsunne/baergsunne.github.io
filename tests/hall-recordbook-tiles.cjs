@@ -24,6 +24,27 @@ const assert=require('node:assert/strict');
     };
    });
    assert.equal(await page.locator('.page--fame .hof-record').count(),56,'56 historic record podiums');
+
+   // Screenshot regression: all record surfaces share the dark 225-degree
+   // forest material, including the mini podium and the expanded rankings.
+   const materials=await page.evaluate(()=>{
+    const css=x=>getComputedStyle(x).backgroundImage;
+    const cards=[...document.querySelectorAll('.page--fame .hof-record')];
+    const first=cards[0];
+    const tabs=[...document.querySelectorAll('.page--fame .hof-tab')];
+    return {
+     allCardsDark:cards.every(x=>css(x).includes('rgb(23, 75, 54)')&&css(x).includes('225deg')),
+     allPodiumsDark:cards.every(x=>[...x.querySelectorAll('.hof-mini-step')].every(p=>
+       css(p).includes(p.classList.contains('hof-mini-step--1')?'rgb(35, 92, 64)':'rgb(26, 81, 58)'))),
+     categoryTilesDark:tabs.every(x=>css(x).includes(x.classList.contains('selected')?'rgb(35, 92, 64)':'rgb(26, 81, 58)')),
+     noUnwantedMainPodiumChanges:!!document.querySelector('.page--fame > .podium, .page--fame .podium')
+    };
+   });
+   assert(materials.allCardsDark,'all 56 record cards use the darker approved gradient');
+   assert(materials.allPodiumsDark,'all 56 three-step record podiums use darker gradients');
+   assert(materials.categoryTilesDark,'all four recordbook category tiles use dark gradients');
+   assert(materials.noUnwantedMainPodiumChanges,'championship podium remains separate');
+
    assert.equal(await page.locator('.page--fame .record-grid').count(),0,'duplicate record tiles removed');
    assert.equal(await page.getByText('Die Rekorde',{exact:true}).count(),0,'legacy heading removed');
    assert(layout.podiumBeforeBook,'podium precedes record book');
@@ -54,6 +75,20 @@ const assert=require('node:assert/strict');
      await details.locator('summary').first().click();
      assert(await details.evaluate(x=>x.open),'complete ranking opens below podium');
      assert(await details.locator('table tbody tr').count()>0,'ranking contains entries');
+     if(i===0){
+      const nested=await details.evaluate(el=>{
+       const root=el.closest('.hof-record');
+       const row=el.querySelector('tbody tr');
+       const picker=root.querySelector('.bp-stat-columns');
+       return {
+        row:getComputedStyle(row).backgroundImage,
+        picker:picker?getComputedStyle(picker).backgroundImage:''
+       };
+      });
+      assert(nested.row.includes('rgb(18, 69, 49)'),'expanded ranking rows use dark forest gradient');
+      assert(nested.picker.includes('rgb(18, 69, 49)'),'column selection uses dark forest gradient');
+     }
+
      await details.locator('summary').first().click();
      assert(!(await details.evaluate(x=>x.open)),'ranking closes again');
     }

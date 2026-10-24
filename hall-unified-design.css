@@ -291,3 +291,70 @@
  #app .page--fame .hof-mini-value{font-size:clamp(12px,3.3vw,15px)!important}
  #app .page--fame .hof-mini-tie{font-size:10px!important}
 }
+
+
+/* HALL OF FAME · DARK RECORDBOOK MATERIAL · 2026-10-24
+   Apply the approved dark-forest mockup to ALL 56 record cards, their three
+   podiums, category choices, ranking controls and rows. The gold illumination
+   still arrives from upper right (225deg); the shadow falls down-left.
+   Only the recordbook is affected, NOT the separate championship podium,
+   other Hall of Fame sections or other pages. */
+#app .page--fame .hof-extended{
+ --bp-hof-dark-record:
+  linear-gradient(225deg,rgba(233,199,128,.075) 0%,rgba(215,181,112,.025) 27%,transparent 54%),
+  linear-gradient(225deg,#174b36 0%,#103f2f 30%,#0a3126 67%,#05241b 100%);
+ --bp-hof-dark-podium:
+  linear-gradient(225deg,rgba(231,196,129,.095) 0%,transparent 50%),
+  linear-gradient(225deg,#1a513a 0%,#0e3b2c 48%,#06271e 100%);
+ --bp-hof-dark-winner:
+  linear-gradient(225deg,rgba(237,203,138,.12) 0%,transparent 50%),
+  linear-gradient(225deg,#235c40 0%,#124430 42%,#082c21 100%);
+ --bp-hof-dark-inset:
+  linear-gradient(225deg,rgba(223,190,122,.055) 0%,transparent 48%),
+  linear-gradient(225deg,#124531 0%,#092f24 65%,#04241b 100%);
+ --bp-hof-dark-shadow:-5px 9px 18px rgba(3,18,13,.29),inset 1px 1px 0 rgba(248,226,177,.065);
+}
+#app .page--fame .hof-extended .hof-record{
+ background:var(--bp-hof-dark-record)!important;
+ border-color:rgba(228,194,127,.36)!important;
+ box-shadow:var(--bp-hof-dark-shadow)!important;
+}
+#app .page--fame .hof-extended .hof-mini-step{
+ background:var(--bp-hof-dark-podium)!important;
+ box-shadow:-3px 6px 12px rgba(3,18,13,.29)!important;
+}
+#app .page--fame .hof-extended .hof-mini-step--1{
+ background:var(--bp-hof-dark-winner)!important;
+}
+#app .page--fame .hof-extended .hof-tabs .hof-tab{
+ background:var(--bp-hof-dark-podium)!important;
+ color:#f0d39c!important;
+ -webkit-text-fill-color:#f0d39c!important;
+ border-color:rgba(232,195,126,.40)!important;
+}
+#app .page--fame .hof-extended .hof-tabs .hof-tab.selected{
+ background:var(--bp-hof-dark-winner)!important;
+ color:#ffdf9d!important;
+ -webkit-text-fill-color:#ffdf9d!important;
+ border-color:#eac57f!important;
+ box-shadow:0 0 0 1px rgba(232,195,126,.34),-3px 6px 12px rgba(3,18,13,.29)!important;
+}
+#app .page--fame .hof-extended .bp-stat-columns,
+#app .page--fame .hof-extended .bp-stat-columns-summary,
+#app .page--fame .hof-extended .bp-stat-columns .bp-stat-columns-summary{
+ background:var(--bp-hof-dark-inset)!important;
+ box-shadow:-3px 6px 12px rgba(3,18,13,.24)!important;
+}
+#app .page--fame .hof-extended .hof-scroll table.bp-stat-personalized-table tbody tr,
+#app .page--fame .hof-extended .hof-scroll tbody tr{
+ background:var(--bp-hof-dark-inset)!important;
+ box-shadow:-3px 5px 10px rgba(3,18,13,.20)!important;
+}
+#app .page--fame .hof-extended .hof-scroll table.bp-stat-personalized-table tbody td,
+#app .page--fame .hof-extended .hof-scroll tbody td{
+ background:transparent!important;
+}
+#app .page--fame .hof-extended .hof-scroll table.bp-stat-personalized-table thead th{
+ background:var(--bp-hof-dark-inset)!important;
+ color:#edca88!important;
+}
