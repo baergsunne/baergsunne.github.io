@@ -57,7 +57,7 @@ const live={status:'final',year:2026,players:year.players,round_count:7,rounds:[
    assert(home.trophyLoaded&&home.trophySrc==='assets/trophy-premium.webp',width+' real champion trophy must load');
    assert(home.copyRect.right<=home.cupRect.left+2||home.copyRect.left>=home.cupRect.right-2,width+' champion text and trophy columns may not overlap');
    assert.equal(home.headerLogoLoaded,true);
-   assert.equal(home.navigationItems,5);
+   assert.equal(home.navigationItems,6);
    assert(home.horizontalOverflow<=2,width+' no home horizontal scrolling: '+home.horizontalOverflow);
    await page.evaluate(()=>{state.page='history';state.historyYear=2026;draw();document.querySelectorAll('.history-yearbook-trophy').forEach(img=>{img.loading='eager';});});
    await page.waitForFunction(()=>[...document.querySelectorAll('.history-yearbook-trophy')].length===db.editions.length&&[...document.querySelectorAll('.history-yearbook-trophy')].every(img=>img.complete&&img.naturalWidth>0),null,{timeout:15000});
