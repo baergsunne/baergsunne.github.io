@@ -1,9 +1,9 @@
-/* Bärgsunne Poker – shared Stats/Profile table personalization and sticky first column.
+/* Bärgsunne Poker – shared Stats/Profile/Hall table personalization and sticky first column.
    The simpler, unboxed names and flat forest-green rows follow Historie > Runden. */
 /* Suppress obsolete sort rail only when its table was successfully enhanced. */
-#app :is(.page--stats,.page--profile) .bp-unified-toolbar.bp-stat-hidden-sort{display:none!important}
+#app :is(.page--stats,.page--profile,.page--fame) .bp-unified-toolbar.bp-stat-hidden-sort{display:none!important}
 /* Horizontal movement belongs to the table, not to the page. */
-#app :is(.page--stats,.page--profile) .bp-stat-scroll{
+#app :is(.page--stats,.page--profile,.page--fame) .bp-stat-scroll{
  width:100%;max-width:100%;min-width:0;
  overflow-x:auto!important;overflow-y:auto;
  -webkit-overflow-scrolling:touch;
@@ -12,7 +12,7 @@
  border-radius:12px;
 }
 /* Ensure the table keeps all chosen columns, even under old mobile fixed-layout rules. */
-#app :is(.page--stats,.page--profile) table.bp-stat-personalized-table{
+#app :is(.page--stats,.page--profile,.page--fame) table.bp-stat-personalized-table{
  border-collapse:separate!important;
  border-spacing:0 6px!important;
  table-layout:auto!important;
@@ -22,28 +22,28 @@
  background:transparent!important;
 }
 /* A column picker shared by EVERY statistics table, including lab/simulator tables. */
-#app :is(.page--stats,.page--profile) .bp-stat-columns{
+#app :is(.page--stats,.page--profile,.page--fame) .bp-stat-columns{
  margin:10px 0 13px;
  border:1px solid rgba(232,196,126,.32);
  border-radius:13px;
  background:rgba(12,35,27,.40);
  overflow:hidden;
 }
-#app :is(.page--stats,.page--profile) .bp-stat-columns-summary{
+#app :is(.page--stats,.page--profile,.page--fame) .bp-stat-columns-summary{
  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;
  gap:9px;padding:13px 14px;
  color:#f5eddc;cursor:pointer;
  font-size:13px;font-weight:750;line-height:1.35;
 }
-#app :is(.page--stats,.page--profile) .bp-stat-columns-summary::marker{color:#dfbd82}
-#app :is(.page--stats,.page--profile) .bp-stat-columns-summary small{
+#app :is(.page--stats,.page--profile,.page--fame) .bp-stat-columns-summary::marker{color:#dfbd82}
+#app :is(.page--stats,.page--profile,.page--fame) .bp-stat-columns-summary small{
  color:#e3c388;font-size:11px;font-weight:650;white-space:nowrap;
 }
-#app :is(.page--stats,.page--profile) .bp-stat-column-choices{
+#app :is(.page--stats,.page--profile,.page--fame) .bp-stat-column-choices{
  display:flex;flex-wrap:wrap;gap:7px;
  padding:3px 12px 12px;
 }
-#app :is(.page--stats,.page--profile) .bp-stat-column-choice{
+#app :is(.page--stats,.page--profile,.page--fame) .bp-stat-column-choice{
  display:inline-flex;align-items:center;gap:7px;
  min-height:38px;max-width:100%;
  padding:8px 11px;
@@ -53,31 +53,31 @@
  color:#f0e8d8;font-size:12px;font-weight:650;line-height:1.25;
  text-align:left;white-space:normal;overflow-wrap:anywhere;
 }
-#app :is(.page--stats,.page--profile) .bp-stat-column-choice.is-selected{
+#app :is(.page--stats,.page--profile,.page--fame) .bp-stat-column-choice.is-selected{
  background:rgba(227,192,125,.13);
  border-color:rgba(227,192,125,.65);
  color:#fff0d9;
 }
-#app :is(.page--stats,.page--profile) .bp-stat-column-choice:disabled{
+#app :is(.page--stats,.page--profile,.page--fame) .bp-stat-column-choice:disabled{
  opacity:1;cursor:default;
 }
-#app :is(.page--stats,.page--profile) .bp-stat-choice-mark{
+#app :is(.page--stats,.page--profile,.page--fame) .bp-stat-choice-mark{
  display:grid;place-items:center;flex:0 0 17px;
  width:17px;height:17px;line-height:1;
  border:1px solid rgba(227,192,125,.56);
  border-radius:4px;color:#eac78c;font-size:12px;
 }
-#app :is(.page--stats,.page--profile) .bp-stat-columns-hint{
+#app :is(.page--stats,.page--profile,.page--fame) .bp-stat-columns-hint{
  margin:0;padding:0 13px 13px;
  color:#b6cbbd;font-size:11px;line-height:1.5;
 }
 /* Unselected columns are physically absent from the table layout, not just faded. */
-#app :is(.page--stats,.page--profile) table.bp-stat-personalized-table [data-bp-column-hidden]{
+#app :is(.page--stats,.page--profile,.page--fame) table.bp-stat-personalized-table [data-bp-column-hidden]{
  display:none!important;
 }
 /* The first visible/leftmost column stays under the finger while scrolling sideways.
    Stick the actual cell, not an overlay: header and data always stay aligned. */
-#app :is(.page--stats,.page--profile) table.bp-stat-personalized-table thead tr>:first-child{
+#app :is(.page--stats,.page--profile,.page--fame) table.bp-stat-personalized-table thead tr>:first-child{
  position:sticky!important;
  left:0!important;
  z-index:5!important;
@@ -85,7 +85,7 @@
  color:#eac78c!important;
  box-shadow:7px 0 11px -10px rgba(0,0,0,.95)!important;
 }
-#app :is(.page--stats,.page--profile) table.bp-stat-personalized-table tbody tr>:first-child{
+#app :is(.page--stats,.page--profile,.page--fame) table.bp-stat-personalized-table tbody tr>:first-child{
  position:sticky!important;
  left:0!important;
  z-index:4!important;
@@ -95,13 +95,13 @@
  border-radius:8px 0 0 8px!important;
  font-weight:750;
 }
-#app :is(.page--stats,.page--profile) table.bp-stat-personalized-table tfoot tr>:first-child{
+#app :is(.page--stats,.page--profile,.page--fame) table.bp-stat-personalized-table tfoot tr>:first-child{
  position:sticky!important;left:0!important;z-index:4!important;
  background:#254a39!important;
 }
 /* Flat, clean player names, matching Historie > Runden; NO separate name capsules. */
-#app :is(.page--stats,.page--profile) table.bp-stat-personalized-table .playerlink,
-#app :is(.page--stats,.page--profile) table.bp-stat-personalized-table .playerlink:link{
+#app :is(.page--stats,.page--profile,.page--fame) table.bp-stat-personalized-table .playerlink,
+#app :is(.page--stats,.page--profile,.page--fame) table.bp-stat-personalized-table .playerlink:link{
  display:inline!important;
  min-height:0!important;
  width:auto!important;max-width:100%!important;
@@ -113,88 +113,88 @@
  text-decoration:none!important;
  white-space:normal!important;overflow-wrap:anywhere!important;
 }
-#app :is(.page--stats,.page--profile) table.bp-stat-personalized-table .playerlink:focus-visible{
+#app :is(.page--stats,.page--profile,.page--fame) table.bp-stat-personalized-table .playerlink:focus-visible{
  outline:2px solid #eac78c!important;outline-offset:3px!important;
 }
 /* Preserve comfortable widths, without wasting iPhone space when there are few columns. */
-#app :is(.page--stats,.page--profile) table.bp-stat-personalized-table :is(thead,tbody,tfoot) tr>*{
+#app :is(.page--stats,.page--profile,.page--fame) table.bp-stat-personalized-table :is(thead,tbody,tfoot) tr>*{
  white-space:nowrap!important;
  overflow-wrap:normal!important;
  word-break:normal!important;
 }
-#app :is(.page--stats,.page--profile) table.bp-stat-personalized-table.bp-stat-first-is-name tr>:first-child{
+#app :is(.page--stats,.page--profile,.page--fame) table.bp-stat-personalized-table.bp-stat-first-is-name tr>:first-child{
  width:1%!important;min-width:0!important;max-width:none!important;
  white-space:nowrap!important;overflow-wrap:normal!important;
 }
-#app :is(.page--stats,.page--profile) table.bp-stat-personalized-table tr>:first-child:not([data-bp-column-hidden]){
+#app :is(.page--stats,.page--profile,.page--fame) table.bp-stat-personalized-table tr>:first-child:not([data-bp-column-hidden]){
  text-align:left!important;
 }
 /* Make very wide tables readable at small widths while retaining full horizontal scroll. */
 @media(max-width:600px){
- #app :is(.page--stats,.page--profile) table.bp-stat-personalized-table{
+ #app :is(.page--stats,.page--profile,.page--fame) table.bp-stat-personalized-table{
    table-layout:auto!important;width:max-content!important;min-width:0!important;
  }
- #app :is(.page--stats,.page--profile) table.bp-stat-personalized-table thead tr>*{
+ #app :is(.page--stats,.page--profile,.page--fame) table.bp-stat-personalized-table thead tr>*{
    font-size:10px!important;padding:8px 9px!important;
  }
- #app :is(.page--stats,.page--profile) table.bp-stat-personalized-table tbody tr>*{
+ #app :is(.page--stats,.page--profile,.page--fame) table.bp-stat-personalized-table tbody tr>*{
    font-size:12px!important;padding:11px 9px!important;
  }
- #app :is(.page--stats,.page--profile) .bp-stat-columns-summary{padding:12px}
- #app :is(.page--stats,.page--profile) .bp-stat-column-choices{padding:3px 10px 11px}
+ #app :is(.page--stats,.page--profile,.page--fame) .bp-stat-columns-summary{padding:12px}
+ #app :is(.page--stats,.page--profile,.page--fame) .bp-stat-column-choices{padding:3px 10px 11px}
 }
 
 
 /* Compact measurements, not fixed 104/105/65px column reservations.
    First-column width: 1% makes its intrinsic visible content determine its
    actual width; no clipping, ellipsis, abbreviation or lost player names. */
-#app :is(.page--stats,.page--profile) table.bp-stat-personalized-table :is(thead,tbody,tfoot) tr>*{
+#app :is(.page--stats,.page--profile,.page--fame) table.bp-stat-personalized-table :is(thead,tbody,tfoot) tr>*{
  min-width:0!important;
  max-width:none!important;
 }
-#app :is(.page--stats,.page--profile) table.bp-stat-personalized-table :is(thead,tbody,tfoot) tr>:first-child{
+#app :is(.page--stats,.page--profile,.page--fame) table.bp-stat-personalized-table :is(thead,tbody,tfoot) tr>:first-child{
  width:1%!important;
  min-width:0!important;
  max-width:none!important;
  white-space:nowrap!important;
  overflow-wrap:normal!important;
 }
-#app :is(.page--stats,.page--profile) table.bp-stat-personalized-table :is(thead,tbody,tfoot) tr>:not(:first-child){
+#app :is(.page--stats,.page--profile,.page--fame) table.bp-stat-personalized-table :is(thead,tbody,tfoot) tr>:not(:first-child){
  width:auto!important;
  min-width:0!important;
 }
 /* The name is plain typography, not a wide rectangular button. */
-#app :is(.page--stats,.page--profile) table.bp-stat-personalized-table tbody tr>:first-child .playerlink{
+#app :is(.page--stats,.page--profile,.page--fame) table.bp-stat-personalized-table tbody tr>:first-child .playerlink{
  white-space:nowrap!important;
  overflow-wrap:normal!important;
  padding:0!important;
 }
 /* Tight horizontal rhythm for all columns, including long numeric rankings. */
-#app :is(.page--stats,.page--profile) table.bp-stat-personalized-table thead tr>*{
+#app :is(.page--stats,.page--profile,.page--fame) table.bp-stat-personalized-table thead tr>*{
  padding-left:7px!important;
  padding-right:7px!important;
 }
-#app :is(.page--stats,.page--profile) table.bp-stat-personalized-table tbody tr>*{
+#app :is(.page--stats,.page--profile,.page--fame) table.bp-stat-personalized-table tbody tr>*{
  padding-left:7px!important;
  padding-right:7px!important;
 }
-#app :is(.page--stats,.page--profile) table.bp-stat-personalized-table tbody tr>:first-child,
-#app :is(.page--stats,.page--profile) table.bp-stat-personalized-table thead tr>:first-child{
+#app :is(.page--stats,.page--profile,.page--fame) table.bp-stat-personalized-table tbody tr>:first-child,
+#app :is(.page--stats,.page--profile,.page--fame) table.bp-stat-personalized-table thead tr>:first-child{
  padding-left:8px!important;
  padding-right:8px!important;
 }
-#app :is(.page--stats,.page--profile) table.bp-stat-personalized-table :is(.bp-smart-sort,.thbutton){
+#app :is(.page--stats,.page--profile,.page--fame) table.bp-stat-personalized-table :is(.bp-smart-sort,.thbutton){
  min-width:0!important;
  max-width:none!important;
  padding-inline:0!important;
  white-space:nowrap!important;
 }
 @media(max-width:600px){
- #app :is(.page--stats,.page--profile) table.bp-stat-personalized-table :is(thead,tbody,tfoot) tr>:not(:first-child){
+ #app :is(.page--stats,.page--profile,.page--fame) table.bp-stat-personalized-table :is(thead,tbody,tfoot) tr>:not(:first-child){
    padding-left:5px!important;
    padding-right:5px!important;
  }
- #app :is(.page--stats,.page--profile) table.bp-stat-personalized-table :is(thead,tbody,tfoot) tr>:first-child{
+ #app :is(.page--stats,.page--profile,.page--fame) table.bp-stat-personalized-table :is(thead,tbody,tfoot) tr>:first-child{
    padding-left:6px!important;
    padding-right:6px!important;
  }
@@ -204,7 +204,7 @@
 /* Shared statistics controls – visual vocabulary used across all tools.
    A small disclosure triangle appears on every configurable table.
    The original native <details>/<summary> remains keyboard accessible. */
-#app :is(.page--stats,.page--profile) .bp-stat-columns-summary{
+#app :is(.page--stats,.page--profile,.page--fame) .bp-stat-columns-summary{
  display:grid!important;
  grid-template-columns:minmax(0,1fr) auto 10px;
  align-items:center;
@@ -212,13 +212,13 @@
  flex-wrap:nowrap!important;
  list-style:none!important;
 }
-#app :is(.page--stats,.page--profile) .bp-stat-columns-summary::-webkit-details-marker{
+#app :is(.page--stats,.page--profile,.page--fame) .bp-stat-columns-summary::-webkit-details-marker{
  display:none!important;
 }
-#app :is(.page--stats,.page--profile) .bp-stat-columns-summary::marker{
+#app :is(.page--stats,.page--profile,.page--fame) .bp-stat-columns-summary::marker{
  content:"";
 }
-#app :is(.page--stats,.page--profile) .bp-stat-columns-summary::after{
+#app :is(.page--stats,.page--profile,.page--fame) .bp-stat-columns-summary::after{
  content:"";
  display:block;
  width:0;
@@ -231,23 +231,23 @@
  justify-self:end;
  transition:transform .16s ease;
 }
-#app :is(.page--stats,.page--profile) .bp-stat-columns[open] > .bp-stat-columns-summary::after{
+#app :is(.page--stats,.page--profile,.page--fame) .bp-stat-columns[open] > .bp-stat-columns-summary::after{
  transform:rotate(90deg);
 }
-#app :is(.page--stats,.page--profile) .bp-stat-columns-summary:focus-visible{
+#app :is(.page--stats,.page--profile,.page--fame) .bp-stat-columns-summary:focus-visible{
  outline:2px solid #e8c37e;
  outline-offset:-3px;
  border-radius:10px;
 }
 @media(max-width:380px){
- #app :is(.page--stats,.page--profile) .bp-stat-columns-summary{column-gap:5px}
- #app :is(.page--stats,.page--profile) .bp-stat-columns-summary small{font-size:10px}
+ #app :is(.page--stats,.page--profile,.page--fame) .bp-stat-columns-summary{column-gap:5px}
+ #app :is(.page--stats,.page--profile,.page--fame) .bp-stat-columns-summary small{font-size:10px}
 }
 /* Emoji glyphs for ↕︎ can render in bright blue on iOS, irrespective of text
    color. Visually replace them with pure-CSS gold triangles on EVERY
    sortable stats table, including those in Analyse, Lab, Career, etc.
    Keep the text in the aria-hidden span for existing sorting logic/tests. */
-#app :is(.page--stats,.page--profile) table .bp-smart-sort > span{
+#app :is(.page--stats,.page--profile,.page--fame) table .bp-smart-sort > span{
  position:relative!important;
  display:inline-block!important;
  flex:0 0 10px!important;
@@ -260,8 +260,8 @@
  vertical-align:middle!important;
  white-space:nowrap!important;
 }
-#app :is(.page--stats,.page--profile) table .bp-smart-sort > span::before,
-#app :is(.page--stats,.page--profile) table .bp-smart-sort > span::after{
+#app :is(.page--stats,.page--profile,.page--fame) table .bp-smart-sort > span::before,
+#app :is(.page--stats,.page--profile,.page--fame) table .bp-smart-sort > span::after{
  content:"";
  position:absolute;
  left:1px;
@@ -272,28 +272,28 @@
  border-left:4px solid transparent;
  pointer-events:none;
 }
-#app :is(.page--stats,.page--profile) table .bp-smart-sort > span::before{
+#app :is(.page--stats,.page--profile,.page--fame) table .bp-smart-sort > span::before{
  top:1px;
  border-bottom:5px solid #e5bd78;
  border-top:0;
 }
-#app :is(.page--stats,.page--profile) table .bp-smart-sort > span::after{
+#app :is(.page--stats,.page--profile,.page--fame) table .bp-smart-sort > span::after{
  bottom:1px;
  border-top:5px solid #e5bd78;
  border-bottom:0;
 }
-#app :is(.page--stats,.page--profile) table th[aria-sort="ascending"] .bp-smart-sort > span::before{
+#app :is(.page--stats,.page--profile,.page--fame) table th[aria-sort="ascending"] .bp-smart-sort > span::before{
  border-bottom-color:#ffdf9a;
 }
-#app :is(.page--stats,.page--profile) table th[aria-sort="ascending"] .bp-smart-sort > span::after{
+#app :is(.page--stats,.page--profile,.page--fame) table th[aria-sort="ascending"] .bp-smart-sort > span::after{
  border-top-color:rgba(229,189,120,.38);
 }
-#app :is(.page--stats,.page--profile) table th[aria-sort="descending"] .bp-smart-sort > span::before{
+#app :is(.page--stats,.page--profile,.page--fame) table th[aria-sort="descending"] .bp-smart-sort > span::before{
  border-bottom-color:rgba(229,189,120,.38);
 }
-#app :is(.page--stats,.page--profile) table th[aria-sort="descending"] .bp-smart-sort > span::after{
+#app :is(.page--stats,.page--profile,.page--fame) table th[aria-sort="descending"] .bp-smart-sort > span::after{
  border-top-color:#ffdf9a;
 }
 @media(prefers-reduced-motion:reduce){
- #app :is(.page--stats,.page--profile) .bp-stat-columns-summary::after{transition:none}
+ #app :is(.page--stats,.page--profile,.page--fame) .bp-stat-columns-summary::after{transition:none}
 }

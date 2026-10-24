@@ -1,0 +1,134 @@
+/* Hall of Fame – same forest/gold material, type, cards and sortable tables as Stats.
+   Scoped to Hall of Fame; no tournament data or calculations are changed. */
+#app .page--fame{min-width:0}
+#app .page--fame :is(.card,.hof-extended,.hof-record,.record,.podium-card){
+  background:var(--bp-sunlight-surface,linear-gradient(225deg,#33543e,#113527))!important;
+  border:1px solid rgba(226,194,132,.30)!important;
+  border-radius:18px!important;
+  color:#f5eddc!important;
+  box-shadow:var(--bp-sunlight-shadow,-5px 9px 18px rgba(0,0,0,.23))!important;
+}
+#app .page--fame .card{
+  padding:clamp(16px,3.2vw,26px)!important;
+  margin-block:18px!important;
+  min-width:0;
+}
+#app .page--fame .card h3,
+#app .page--fame .hof-extended h2,
+#app .page--fame .sectiontitle h2{
+  color:#f4e9d2!important;
+  -webkit-text-fill-color:#f4e9d2!important;
+  font-size:clamp(22px,4.2vw,34px)!important;
+  font-weight:750!important;
+  letter-spacing:-.025em!important;
+  line-height:1.2!important;
+}
+#app .page--fame :is(.hint,.hof-extended>p,.hof-source,.hof-record>p){
+  color:#bed0c4!important;
+  -webkit-text-fill-color:#bed0c4!important;
+  font-size:clamp(12px,2.7vw,15px)!important;
+  line-height:1.55!important;
+}
+#app .page--fame .hof-extended{
+  margin:26px 0!important;
+  padding:clamp(16px,3.2vw,26px)!important;
+}
+#app .page--fame .hof-extended .eyebrow{
+  color:#e8c37e!important;
+  -webkit-text-fill-color:#e8c37e!important;
+  font-size:12px!important;
+  font-weight:800!important;
+  letter-spacing:.16em!important;
+}
+#app .page--fame .hof-category{grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr));gap:13px}
+#app .page--fame .hof-record{
+  padding:clamp(13px,2.6vw,20px)!important;
+  min-width:0;
+}
+#app .page--fame .hof-record-top{color:#e8c37e!important;align-items:start;line-height:1.4}
+#app .page--fame .hof-record-top span{font-size:clamp(13px,2.7vw,16px);font-weight:750}
+#app .page--fame .hof-record-top b{font-size:clamp(13px,2.7vw,17px)}
+#app .page--fame .hof-record>strong{
+  color:#fff0d8!important;
+  font-size:clamp(19px,3.3vw,26px)!important;
+}
+#app .page--fame .hof-record details>summary{
+  color:#e8c37e!important;
+  font-weight:750;
+  padding:11px 0;
+}
+#app .page--fame .hof-tabs{gap:8px;flex-wrap:wrap;white-space:normal}
+#app .page--fame .hof-tab{
+  background:var(--bp-sunlight-surface,#1b3b2d)!important;
+  color:#f1e5cf!important;
+  border:1px solid rgba(232,195,126,.45)!important;
+  border-radius:12px!important;
+  min-height:44px;
+  padding:10px 13px;
+  font-size:clamp(12px,2.5vw,15px);
+}
+#app .page--fame .hof-tab.selected{
+  background:#e8c37e!important;
+  color:#163426!important;
+  border-color:#e8c37e!important;
+  font-weight:850!important;
+}
+#app .page--fame .record-grid{gap:12px}
+#app .page--fame .record{
+  min-width:0;
+  padding:clamp(14px,3vw,22px)!important;
+}
+#app .page--fame .record :is(span,b){color:#e8c37e!important}
+#app .page--fame .record strong{color:#fff0d8!important}
+#app .page--fame .podium{margin-block:24px 18px!important}
+#app .page--fame .podium>.podium-card{
+  background:var(--bp-sunlight-surface,#1b3b2d)!important;
+  box-shadow:var(--bp-sunlight-shadow,-5px 9px 18px rgba(0,0,0,.23))!important;
+  border-bottom-width:8px!important;
+}
+#app .page--fame .podium>.podium-card.position-1{
+  background:var(--bp-sunlight-selected,var(--bp-sunlight-surface))!important;
+  border-color:#e8c37e!important;
+  border-bottom-width:11px!important;
+}
+#app .page--fame .podium>.podium-card.position-2{border-bottom-color:#c3ae7e!important}
+#app .page--fame .podium>.podium-card.position-3{border-bottom-color:#967c53!important}
+/* Tables from the record book receive the same column picker, sticky first
+   column, gold sorting triangles and horizontally scrolling rows as Stats. */
+#app .page--fame :is(.hof-scroll,.bp-stat-scroll,.bp-unified-shell){min-width:0;max-width:100%}
+#app .page--fame .hof-scroll table.bp-stat-personalized-table{
+  width:max-content!important;
+  min-width:0!important;
+  border-collapse:separate!important;
+  border-spacing:0 6px!important;
+}
+#app .page--fame .hof-scroll table.bp-stat-personalized-table thead th,
+#app .page--fame .hof-scroll table.bp-stat-personalized-table tbody td{
+  white-space:nowrap!important;
+  text-align:left!important;
+}
+#app .page--fame .hof-scroll table.bp-stat-personalized-table tbody tr{
+  background:linear-gradient(90deg,#315540,#234735 55%,#1c392d)!important;
+}
+#app .page--fame .hof-scroll table.bp-stat-personalized-table tbody td{
+  color:#f5eddc!important;
+  border:0!important;
+  font-size:clamp(12px,2.7vw,14px)!important;
+}
+#app .page--fame .bp-stat-columns{
+  border-color:rgba(232,196,126,.35)!important;
+  background:var(--bp-sunlight-surface,#18392c)!important;
+  border-radius:12px!important;
+}
+#app .page--fame .bp-stat-columns-summary{
+  font-size:clamp(13px,3vw,16px)!important;
+  color:#f6e9d5!important;
+}
+#app .page--fame .bp-stat-columns-summary small{color:#e8c37e!important}
+#app .page--fame .bp-unified-toolbar.bp-stat-hidden-sort{display:none!important}
+@media(max-width:600px){
+ #app .page--fame .hof-extended{margin-inline:0!important}
+ #app .page--fame .hof-record{padding:14px!important}
+ #app .page--fame .podium>.podium-card{border-radius:12px 12px 5px 5px!important}
+ #app .page--fame .podium>.podium-card strong{overflow-wrap:anywhere}
+}

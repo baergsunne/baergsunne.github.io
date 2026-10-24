@@ -1,4 +1,4 @@
-/* Bärgsunne Poker – shared column selection for Stats and individual Profiles.
+/* Bärgsunne Poker – shared column selection for Stats, individual Profiles and Hall of Fame.
    Presentation-only: original data, sorting logic and calculations are retained.
    Preferences use independent scopes for each player's profile tables. */
 (()=>{
@@ -49,8 +49,8 @@
  }
  function persist(){try{localStorage.setItem(STORE,JSON.stringify(preferences));}catch(_){}}
  function scopeId(table,labels){
-   const panel=table.closest('.card,.bp-sim-panel,.lab-panel,.pattern-evidence');
-   const title=clean(panel?.querySelector('h3,h4')?.textContent||table.getAttribute('aria-label')||table.className||'Tabelle');
+   const panel=table.closest('.card,.hof-record,.bp-sim-panel,.lab-panel,.pattern-evidence');
+   const title=clean(panel?.querySelector('h3,h4,.hof-record-top span')?.textContent||table.getAttribute('aria-label')||table.className||'Tabelle');
    const siblings=panel?[...panel.querySelectorAll('table')]:[table];
    const index=Math.max(0,siblings.indexOf(table));
    const profilePage=table.closest('.page--profile');
@@ -59,6 +59,7 @@
      // Separate settings by player AND table; never share these with Stats.
      return 'profile:'+player+':'+title+':'+index+(title==='Tabelle'?':'+clean(labels[0]||''):'');
    }
+   if(table.closest('.page--fame'))return 'fame:'+title+':'+index+(title==='Tabelle'?':'+clean(labels[0]||''):'');
    const currentTool=document.querySelector('#app .page--stats .tool-tile.is-active');
    const tool=currentTool?.dataset.value||'overview';
    // Column labels are intentionally not part of the ID: selection survives changes in year.
@@ -157,7 +158,7 @@
    selected.add(colKey(labels[0],0));
    const meta={table,id,labels,selected,toolbar:null};
    let wrapper=table.parentElement;
-   if(!wrapper||!wrapper.matches('.table-scroll,.bp-smart-scroll,.lab-heat-scroll,.pattern-scroll,.bp-unified-shell,.bp-stat-scroll')){
+   if(!wrapper||!wrapper.matches('.table-scroll,.bp-smart-scroll,.lab-heat-scroll,.pattern-scroll,.bp-unified-shell,.bp-stat-scroll,.hof-scroll')){
      const wrap=document.createElement('div');
      wrap.className='bp-stat-scroll';
      table.parentNode.insertBefore(wrap,table);
@@ -195,7 +196,7 @@
  let pending=false;
  function scan(){
    pending=false;
-   document.querySelectorAll('#app :is(.page--stats,.page--profile) table').forEach(enhance);
+   document.querySelectorAll('#app :is(.page--stats,.page--profile,.page--fame) table').forEach(enhance);
  }
  function schedule(){
    if(pending)return;pending=true;
@@ -204,7 +205,7 @@
  // Keep native app sorting state and pagination when a column header is clicked.
  // Other (plugin) tables continue using smart-tables.js's built-in header sorting.
  document.addEventListener('click',event=>{
-   const button=event.target.closest('#app :is(.page--stats,.page--profile) table.bp-stat-personalized-table thead .bp-smart-sort');
+   const button=event.target.closest('#app :is(.page--stats,.page--profile,.page--fame) table.bp-stat-personalized-table thead .bp-smart-sort');
    if(!button)return;
    const table=button.closest('table');
    const meta=info.get(table);
