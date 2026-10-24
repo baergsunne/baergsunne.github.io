@@ -132,3 +132,44 @@
  #app .page--fame .podium>.podium-card{border-radius:12px 12px 5px 5px!important}
  #app .page--fame .podium>.podium-card strong{overflow-wrap:anywhere}
 }
+
+/* Fixed record-book category tiles: no sideways carousel or slider. */
+#app .page--fame .hof-tabs {
+ display:grid!important;
+ grid-template-columns:repeat(4,minmax(0,1fr))!important;
+ gap:12px!important;
+ width:100%!important;
+ overflow:visible!important;
+ white-space:normal!important;
+ padding:16px 0 20px!important;
+}
+#app .page--fame .hof-tabs .hof-tab {
+ display:flex!important;
+ align-items:center!important;
+ justify-content:center!important;
+ width:100%!important;
+ min-width:0!important;
+ min-height:74px!important;
+ padding:14px 10px!important;
+ text-align:center!important;
+ font-size:clamp(14px,1.7vw,18px)!important;
+ font-weight:750!important;
+ line-height:1.25!important;
+ overflow-wrap:anywhere;
+ border-radius:15px!important;
+}
+#app .page--fame .hof-tabs .hof-tab:focus-visible {
+ outline:3px solid #f1d59d;
+ outline-offset:3px;
+}
+@media(max-width:700px){
+ #app .page--fame .hof-tabs {
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:10px!important;
+ }
+ #app .page--fame .hof-tabs .hof-tab {
+  min-height:68px!important;
+  padding:12px 8px!important;
+  font-size:clamp(14px,3.6vw,17px)!important;
+ }
+}
