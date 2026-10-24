@@ -23,6 +23,9 @@ const assert=require('node:assert/strict');
      podiumPositions:[...podium.children].map(x=>x.className.match(/position-[123]/)?.[0])
     };
    });
+   assert.equal(await page.locator('.page--fame .hof-record').count(),38,'38 historic record podiums');
+   assert.equal(await page.locator('.page--fame .record-grid').count(),0,'duplicate record tiles removed');
+   assert.equal(await page.getByText('Die Rekorde',{exact:true}).count(),0,'legacy heading removed');
    assert(layout.podiumBeforeBook,'podium precedes record book');
    assert(layout.bookBeforeTitles,'record book precedes titleholders');
    assert.equal(layout.display,'grid','record categories are fixed grid');
@@ -33,7 +36,7 @@ const assert=require('node:assert/strict');
    await page.locator('.page--fame .hof-tab').filter({hasText:'Rivalitäten'}).click();
    assert.equal(await page.locator('.page--fame .hof-category:not([hidden])').count(),1,'exactly one visible record category');
    assert.equal(await page.locator('.page--fame .hof-category:not([hidden])').getAttribute('data-hof-category'),'Rivalitäten','record category selection works');
-   // Every one of the 26 records has three ordered podium slots, and the
+   // Every one of the 38 records has three ordered podium slots, and the
    // complete (still personalized/sortable) table remains accessible below it.
    for(const category of ['Erfolge','Saisonrekorde','Hall of Shame','Rivalitäten']){
     await page.locator('.page--fame .hof-tab').filter({hasText:category,exact:true}).click();

@@ -6,7 +6,7 @@ const names={
  overview:'Übersicht',patterns:'Wenn–Dann-Finder',insights:'Analysen',
  muster:'Muster-Finder',career:'Karrieren',rivals:'Duelle',
  rounds:'Runden',heatmap:'Heatmap',race:'Race',simulator:'Simulator',
- records:'Rekorde',lab:'Diagramme',studio:'Analyse-Studio'
+ records:'Jahresvergleiche',lab:'Diagramme',studio:'Analyse-Studio'
 };
 (async()=>{
  const browser=await chromium.launch({headless:true});
