@@ -1,0 +1,81 @@
+/* Phase 3 isolated branch browser smoke test.
+   Uses only localhost, never publishes or writes to production endpoints. */
+const { chromium } = require("playwright");
+const fs=require("node:fs");
+const path=require("node:path");
+const base="http://127.0.0.1:8765";
+const routes=["home","history","stats","players","fame","live"];
+const sizes=[320,375,390,430,768,1440];
+const report={branch:"design/alpine-data-heritage-phase3-20261024",status:"running",runs:[],errors:[]};
+const assert=(condition,message)=>{if(!condition)throw new Error(message)};
+(async()=>{
+ const browser=await chromium.launch({headless:true,args:["--no-sandbox"]});
+ const out=path.join(__dirname,"qa-screenshots");
+ fs.mkdirSync(out,{recursive:true});
+ try{
+  for(const width of sizes){
+   const page=await browser.newPage({viewport:{width,height:844},deviceScaleFactor:1,reducedMotion:"reduce"});
+   const jsErrors=[];
+   page.on("pageerror",err=>jsErrors.push(String(err)));
+   await page.route("**/*",route=>{
+    const u=new URL(route.request().url());
+    if(!["127.0.0.1","localhost"].includes(u.hostname)){route.abort();return;}
+    if(u.pathname==="/backend-config.js"){
+     route.fulfill({status:200,contentType:"text/javascript",body:'window.BAERGSUNNE_API_URL="";'});
+     return;
+    }
+    route.continue();
+   });
+   for(const name of routes){
+    const item={width,route:name,ok:false};
+    try{
+     await page.goto(base+"/#"+name,{waitUntil:"domcontentloaded",timeout:20000});
+     await page.locator(".page--"+name).first().waitFor({state:"attached",timeout:12000});
+     await page.waitForTimeout(170);
+     const state=await page.evaluate(()=>({
+      pageWidth:document.documentElement.scrollWidth,
+      viewport:window.innerWidth,
+      rootClass:document.documentElement.classList.contains("bp-adh"),
+      stylesheetLoaded:!![...document.styleSheets].find(s=>s.href?.includes("alpine-data-heritage.css"))
+     }));
+     item.metrics=state;
+     assert(state.rootClass,"Relaunch root marker missing");
+     assert(state.stylesheetLoaded,"Design stylesheet missing");
+     assert(state.pageWidth<=state.viewport+3,"Page horizontally overflows: "+state.pageWidth+" > "+state.viewport);
+     if(name==="home"){
+      assert(await page.locator(".adh-scoreboard").count()===1,"Real-data scoreboard missing");
+      const text=await page.locator(".adh-scoreboard").innerText();
+      assert(text.includes("Frauchi")&&text.includes("König")&&text.includes("+11"),"Real-data endstand/lead not correct");
+      assert(await page.locator(".discovery-hero-logo").count()===1,"Premium logo hero missing");
+     }
+     if(name==="history")assert(await page.locator(".history-chronicle").count()===1,"History carousel missing");
+     if(name==="stats")assert(await page.locator("#bp-tool-select").count()===1,"Statistics tool selector missing");
+     if(name==="players")assert((await page.locator(".page--players").innerText()).includes("Frauchi"),"Players missing");
+     if(name==="fame")assert((await page.locator(".page--fame .podium").innerText()).includes("Mike"),"Record champion missing");
+     if(name==="live")assert(await page.locator(".discovery-livepage").count()===1,"Live page missing");
+     if((width===390||width===1440)&&["home","stats","fame"].includes(name))
+      await page.screenshot({path:path.join(out,name+"-"+width+".png"),fullPage:true});
+     item.ok=true;
+    }catch(e){item.error=String(e);report.errors.push({width,route:name,error:String(e)})}
+    report.runs.push(item);
+   }
+   if(width===390){
+    try{
+     await page.goto(base+"/#home",{waitUntil:"domcontentloaded"});
+     await page.locator('.adh-place[data-value="Frauchi"]').first().click({timeout:5000});
+     await page.locator(".page--profile").first().waitFor({timeout:6000});
+     report.playerNavigation=true;
+    }catch(e){report.playerNavigation=false;report.errors.push({route:"home→Frauchi profile",error:String(e)})}
+   }
+   if(jsErrors.length)report.errors.push({width,route:"pageerror",errors:jsErrors});
+   await page.close();
+  }
+ }finally{
+  await browser.close();
+  report.status=report.errors.length?"failed":"passed";
+  fs.writeFileSync(path.join(__dirname,"qa-phase3-results.json"),JSON.stringify(report,null,2));
+  console.log("PHASE3 QA",report.status,report.runs.filter(x=>x.ok).length+"/"+report.runs.length,"routes","profile",report.playerNavigation);
+  if(report.errors.length)console.error("QA ERRORS",JSON.stringify(report.errors,null,2));
+ }
+ if(report.errors.length)process.exitCode=1;
+})().catch(e=>{console.error(e);process.exitCode=1});
