@@ -69,6 +69,7 @@ const assert=require('node:assert/strict');
    const titles=page.locator('.page--fame .hof-category:not([hidden]) .hof-record').filter({has:page.locator('.hof-record-top span',{hasText:'Meistertitel'})});
    assert.equal((await titles.locator('.hof-mini-step--1 .hof-mini-name').textContent()).trim(),'Mike');
    assert.deepEqual(await titles.locator('.hof-mini-podium>.hof-mini-step .hof-mini-label').allTextContents(),['Rang 2','Rang 1','Rang 2'],'ties share the actual rank instead of an invented third place');
+   assert.deepEqual(await titles.locator('.hof-mini-podium>.hof-mini-step .hof-mini-medal').allTextContents(),['🥈','🥇','🥈'],'medals represent true ranks even if display slots differ');
    await page.locator('.page--fame .hof-tab').filter({hasText:'Erfolge'}).click();
    assert.equal(await page.locator('.page--fame .hof-category:not([hidden])').getAttribute('data-hof-category'),'Erfolge');
    console.log('HALL_RECORD_TILES_SUCCESS',width);
