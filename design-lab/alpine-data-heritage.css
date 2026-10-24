@@ -1,0 +1,198 @@
+/* BÄRGSUNNE POKER – ALPINE DATA HERITAGE / isolated design branch only.
+   Design-DNA 2b → functional integration pass 3. No data or backend changes.
+   This layer is TEMPORARY for isolated review; consolidate before release. */
+:root{
+ --adh-pine:#0b251c;--adh-panel:#14392c;--adh-soft:#234838;
+ --adh-cream:#f4f0e6;--adh-paper:#f0ece0;
+ --adh-gold:#c9a469;--adh-gold-light:#e9ca95;
+ --adh-rule:rgba(239,219,183,.24);
+ --adh-shadow:-6px 10px 22px rgba(6,21,16,.18);
+ --adh-serif:Georgia,"Iowan Old Style",Baskerville,serif;
+ --adh-ui:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;
+}
+html.bp-adh{background:var(--adh-pine);color-scheme:dark}
+html.bp-adh body,html.bp-adh #app .page,
+html.bp-adh #app .page.page--home{background:var(--adh-pine)!important}
+html.bp-adh body{font-family:var(--adh-ui)}
+html.bp-adh #app main{max-width:1220px}
+html.bp-adh #app .page{font-family:var(--adh-ui);font-variant-numeric:tabular-nums}
+html.bp-adh #app .page :is(.overline,.eyebrow,.cl-kicker){
+ font-size:clamp(10px,1.65vw,12px);letter-spacing:.105em;line-height:1.35}
+html.bp-adh #app .page .sectiontitle{margin-top:clamp(28px,5vw,49px)}
+html.bp-adh #app .page .sectiontitle h2{font-family:var(--adh-serif);font-weight:500;letter-spacing:-.038em;line-height:1.12}
+html.bp-adh #app .page :is(.card,.kpi,.playercard,.record,.hof-record,.cl-block,
+ .cl-kpis>div,.cl-leader,.history-yearbook-card,.history-replay-card,
+ .history-insight-card,.bp-selection-panel,.bp-stat-columns){
+ border-radius:8px!important;box-shadow:none!important;border-color:var(--adh-rule)!important}
+html.bp-adh #app .page :is(.card,.kpi,.playercard,.record,.hof-record,.cl-block,
+ .cl-kpis>div,.cl-leader,.history-yearbook-card,.history-replay-card,
+ .history-insight-card,.bp-selection-panel,.bp-stat-columns){
+ background:#173a2c!important}
+/* Preserve existing selected states and chart-specific colors. */
+html.bp-adh #app .page :is(.kpi,.record,.playercard,.hof-record) :is(b,strong){
+ font-variant-numeric:tabular-nums}
+html.bp-adh #app .page .kpi{padding:clamp(13px,2.5vw,22px)!important}
+html.bp-adh #app .page .kpi>strong,
+html.bp-adh #app .page .kpi strong{font-family:var(--adh-serif);font-size:clamp(28px,6vw,44px);font-weight:500;letter-spacing:-.05em;color:var(--adh-cream)!important}
+html.bp-adh #app .page .metrics{gap:1px;background:var(--adh-rule);overflow:hidden;border-radius:5px}
+html.bp-adh #app .page .metrics>.kpi{border:0!important;border-radius:0!important;box-shadow:none!important}
+/* Home: real logo remains the only opening hero. */
+html.bp-adh #app .page--home .discovery-hero{border-radius:6px!important;border-color:var(--adh-rule)!important;box-shadow:none!important}
+html.bp-adh #app .page--home .discovery-counts{gap:0!important;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin:18px 0 27px!important;
+ background:var(--adh-paper)!important;border-radius:5px!important;overflow:hidden}
+html.bp-adh #app .page--home .discovery-counts>div{
+ background:var(--adh-paper)!important;border:0!important;border-right:1px solid #bac7b7!important;
+ border-radius:0!important;box-shadow:none!important;padding:21px 5px 20px!important;gap:7px}
+html.bp-adh #app .page--home .discovery-counts>div:last-child{border-right:0!important}
+html.bp-adh #app .page--home .discovery-counts strong{
+ font-family:var(--adh-serif);font-size:clamp(32px,7.8vw,63px)!important;letter-spacing:-.07em;
+ font-weight:500!important;line-height:1;color:var(--adh-pine)!important}
+html.bp-adh #app .page--home .discovery-counts span{
+ color:#365545!important;font-size:clamp(10px,1.5vw,12px)!important;font-weight:720;letter-spacing:.04em;text-transform:uppercase}
+html.bp-adh #app .page--home .discovery-champion{
+ border:1px solid rgba(216,182,119,.56)!important;border-radius:7px!important;
+ background:radial-gradient(ellipse at 82% 3%,rgba(217,174,95,.11),transparent 58%),#123427!important;
+ box-shadow:var(--adh-shadow)!important}
+html.bp-adh #app .page--home .discovery-champion-copy .discovery-champion-year{
+ font:500 clamp(51px,11vw,110px)/.97 var(--adh-serif)!important;
+ letter-spacing:-.085em;color:var(--adh-gold-light)!important;margin-top:8px}
+html.bp-adh #app .page--home .discovery-champion h2{
+ font-family:var(--adh-serif)!important;font-size:clamp(34px,7vw,73px)!important;
+ font-weight:500;letter-spacing:-.055em;line-height:1}
+html.bp-adh #app .page--home .discovery-champion p{font-size:clamp(13px,2.4vw,17px)}
+html.bp-adh #app .page--home .discovery-champion :is(.overline,.discovery-champion-year){position:relative;z-index:1}
+html.bp-adh #app .page--home .discovery-head h2{
+ color:var(--adh-cream)!important;font-family:var(--adh-serif);font-weight:500!important;
+ font-size:clamp(26px,4vw,38px)!important}
+/* Home full standing: points and differences instead of prose. */
+html.bp-adh #app .page--home .adh-scoreboard{
+ margin:16px 0 23px;display:grid;grid-template-columns:minmax(0,1fr) minmax(115px,.31fr);
+ gap:0;border:1px solid rgba(218,185,123,.4);border-radius:7px;overflow:hidden;
+ background:#173b2d}
+html.bp-adh #app .page--home .adh-scoreboard-main{padding:clamp(15px,3.8vw,28px)}
+html.bp-adh #app .page--home .adh-scoreboard-title{
+ display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-bottom:15px;
+ padding-bottom:12px;border-bottom:1px solid var(--adh-rule)}
+html.bp-adh #app .page--home .adh-scoreboard-title strong{
+ font:500 clamp(22px,4.5vw,34px)/1 var(--adh-serif);color:var(--adh-cream)}
+html.bp-adh #app .page--home .adh-scoreboard-title small{
+ font-size:11px;letter-spacing:.07em;color:var(--adh-gold-light)}
+html.bp-adh #app .page--home .adh-place{
+ width:100%;display:grid;grid-template-columns:23px minmax(0,1fr) 38px;
+ align-items:center;gap:9px;border:0;border-bottom:1px solid rgba(231,224,199,.12);
+ border-radius:0!important;padding:9px 0;min-height:44px;
+ background:transparent!important;box-shadow:none!important;color:var(--adh-cream)!important;text-align:left}
+html.bp-adh #app .page--home .adh-place:last-child{border-bottom:0}
+html.bp-adh #app .page--home .adh-place .adh-rank{color:var(--adh-gold-light);font-size:12px}
+html.bp-adh #app .page--home .adh-place .adh-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:650}
+html.bp-adh #app .page--home .adh-place .adh-points{text-align:right;font-size:17px;color:var(--adh-cream);font-weight:780}
+html.bp-adh #app .page--home .adh-place:hover .adh-name{text-decoration:underline;text-decoration-color:var(--adh-gold)}
+html.bp-adh #app .page--home .adh-scoreboard-aside{
+ display:flex;flex-direction:column;justify-content:center;align-items:center;gap:5px;
+ background:#eae5d8;color:#18372a;padding:17px 6px;border-left:1px solid rgba(27,58,43,.16)}
+html.bp-adh #app .page--home .adh-scoreboard-aside b{
+ font:500 clamp(37px,7vw,75px)/1 var(--adh-serif);letter-spacing:-.08em}
+html.bp-adh #app .page--home .adh-scoreboard-aside span{text-transform:uppercase;font-size:10px;letter-spacing:.08em;text-align:center}
+html.bp-adh #app .page--home .adh-scoreboard-aside small{font-size:12px;color:#496050;text-align:center;line-height:1.4}
+html.bp-adh #app .page--home :is(.discovery-feature,.discovery-mini-grid .discovery-feature){
+ min-height:82px!important;max-height:none!important;box-shadow:none!important;
+ border-radius:5px!important;border-color:rgba(228,205,163,.26)!important;
+ background:#19402f!important;padding:14px!important}
+html.bp-adh #app .page--home .discovery-feature-icon{
+ font-size:25px!important;filter:none!important;text-shadow:none!important}
+html.bp-adh #app .page--home .discovery-feature strong{
+ font-family:var(--adh-ui);font-size:clamp(14px,2.5vw,17px);letter-spacing:-.015em}
+html.bp-adh #app .page--home .discovery-feature small{font-size:11px;opacity:.87}
+html.bp-adh #app .page--home .discovery-feature:hover{border-color:var(--adh-gold)!important;background:#214c38!important}
+/* Historie: keep swipe/sticky behavior, reduce upholstery around its six chapters. */
+html.bp-adh #app .page--history .history-chronicle{
+ border-radius:7px!important;background:#123327!important;border:1px solid var(--adh-rule)!important;
+ box-shadow:none!important}
+html.bp-adh #app .page--history :is(.history-yearbook-card,.history-replay-card,.history-insight-card){
+ box-shadow:none!important;border-radius:6px!important}
+html.bp-adh #app .page--history :is(.history-yearbook-card,.history-replay-card) :is(h2,h3){
+ font-family:var(--adh-serif);font-weight:500;letter-spacing:-.035em}
+html.bp-adh #app .page--history .history-entry-tile{
+ box-shadow:none!important;border-radius:5px!important}
+/* Stats: compact, functional tool index and flat ranking sheets. */
+html.bp-adh #app .page--stats :is(.tool-tile,.tool-grid--featured .tool-tile){
+ background:#184232!important;box-shadow:none!important;border:1px solid var(--adh-rule)!important;
+ border-radius:5px!important}
+html.bp-adh #app .page--stats .tool-tile:is(.is-active,:focus-visible){
+ border-color:var(--adh-gold-light)!important;background:#28503c!important}
+html.bp-adh #app .page--stats :is(.tool-tile .tool-tile-copy strong,.tool-tile-copy strong){
+ font-size:clamp(14px,2.25vw,17px)!important;font-weight:690!important}
+html.bp-adh #app .page--stats .tool-group h2{
+ font-family:var(--adh-serif);font-size:clamp(22px,4vw,32px)!important;
+ font-weight:500;letter-spacing:-.03em}
+html.bp-adh #app .page--stats .stat-content{
+ border-radius:5px!important;border-color:var(--adh-rule)!important;box-shadow:none!important}
+html.bp-adh #app .page--stats :is(.datatable,.bp-stat-personalized-table,.bp-unified-table){
+ font-variant-numeric:tabular-nums}
+html.bp-adh #app .page--stats table :is(th,td){
+ border-bottom-color:rgba(227,218,185,.15)!important}
+html.bp-adh #app .page--stats .bp-stat-columns{
+ border-radius:5px!important;box-shadow:none!important}
+/* Players: name first, career numbers as ledger. */
+html.bp-adh #app .page--players .playergrid{gap:10px!important}
+html.bp-adh #app .page--players .playercard{
+ background:#184131!important;border-radius:5px!important;border:1px solid var(--adh-rule)!important;
+ text-align:left!important;box-shadow:none!important}
+html.bp-adh #app .page--players .playercard-summary-name{
+ font:500 clamp(21px,3.8vw,32px)/1.2 var(--adh-serif)!important;letter-spacing:-.03em}
+html.bp-adh #app .page--players .playercard-summary-stats b{
+ font:500 clamp(15px,3vw,21px)/1.05 var(--adh-serif);color:var(--adh-cream)!important}
+html.bp-adh #app .page--profile .profile-stagebar{
+ border-radius:5px!important}
+html.bp-adh #app .page--profile :is(h1,h2){letter-spacing:-.03em}
+/* Hall of Fame: actual existing podium markup and record calculations retained. */
+html.bp-adh #app .page--fame .podium{
+ align-items:end!important;gap:clamp(5px,1.7vw,13px)!important;margin-top:32px!important}
+html.bp-adh #app .page--fame .podium>.podium-card{
+ border-radius:5px 5px 0 0!important;background:#194231!important;
+ box-shadow:none!important;border:1px solid rgba(210,180,118,.45)!important;
+ border-bottom-width:5px!important}
+html.bp-adh #app .page--fame .podium>.podium-card.position-1{
+ background:#2c513b!important;border-color:var(--adh-gold-light)!important;
+ border-bottom-width:8px!important}
+html.bp-adh #app .page--fame .podium>.podium-card b{
+ font:500 clamp(24px,5.5vw,57px)/1 var(--adh-serif)!important;
+ letter-spacing:-.06em;color:var(--adh-gold-light)!important}
+html.bp-adh #app .page--fame :is(.hof-record,.record,.hof-extended){
+ border-radius:5px!important;box-shadow:none!important}
+html.bp-adh #app .page--fame .hof-record>strong{
+ font-family:var(--adh-serif);font-weight:500;letter-spacing:-.03em}
+html.bp-adh #app .page--fame .hof-tabs .hof-tab{
+ border-radius:4px!important;box-shadow:none!important}
+html.bp-adh #app .page--fame .hof-scroll table tbody tr{
+ box-shadow:none!important}
+/* Live: scoreboard rhythm, color reserved for leader and changed position. */
+html.bp-adh #app .page--live .cl-leader{
+ background:#224637!important;border:1px solid var(--adh-gold)!important;box-shadow:var(--adh-shadow)!important}
+html.bp-adh #app .page--live .cl-leader-score strong{
+ font-family:var(--adh-serif)!important;font-weight:500!important;letter-spacing:-.04em}
+html.bp-adh #app .page--live :is(.cl-kpis>div,.cl-block,.discovery-live){
+ background:#173b2d!important;box-shadow:none!important;border-radius:5px!important}
+html.bp-adh #app .page--live .cl-kpis b{
+ font-family:var(--adh-serif);font-size:clamp(23px,5vw,37px)!important;font-weight:500}
+html.bp-adh #app .page--live .cl-table tbody tr{
+ box-shadow:none!important}
+/* Keep tactile semantics, never remove focus visibility. */
+html.bp-adh #app button:focus-visible,html.bp-adh #app a:focus-visible,
+html.bp-adh #app select:focus-visible{outline:2px solid var(--adh-gold-light)!important;outline-offset:3px}
+@media(max-width:650px){
+ html.bp-adh #app .page--home .adh-scoreboard{grid-template-columns:minmax(0,1fr) 88px}
+ html.bp-adh #app .page--home .adh-scoreboard-aside{padding:12px 4px}
+ html.bp-adh #app .page--home .adh-scoreboard-aside b{font-size:39px}
+ html.bp-adh #app .page--home .adh-scoreboard-aside span{font-size:9px}
+ html.bp-adh #app .page--home .adh-scoreboard-main{padding:14px 11px}
+ html.bp-adh #app .page--home .discovery-counts>div{padding:16px 3px!important}
+}
+@media(max-width:350px){
+ html.bp-adh #app .page--home .adh-scoreboard{grid-template-columns:minmax(0,1fr) 77px}
+ html.bp-adh #app .page--home .adh-place{grid-template-columns:18px minmax(0,1fr) 30px;gap:5px}
+ html.bp-adh #app .page--home .adh-scoreboard-aside b{font-size:32px}
+}
+@media(prefers-reduced-motion:reduce){
+ html.bp-adh #app *{transition:none!important;animation:none!important;scroll-behavior:auto!important}
+}
