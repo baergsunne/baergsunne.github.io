@@ -32,6 +32,33 @@ const names={
    assert.equal(featured.first,'studio',width+' Analyse-Studio appears first');
    assert.equal(featured.studioTiles,1,width+' exactly one studio tile');
    assert(featured.featured&&featured.overflow<=2,width+' prominent studio tile fits screen');
+   const pressure=await page.evaluate(()=>{
+     state.page='profile';state.profile='Schnarre';draw();
+     const data=aPressure('Schnarre');
+     const card=[...document.querySelectorAll('#page .card')].find(el=>el.querySelector('h3')?.textContent==='Leistung nach Meisterschaftslage');
+     const labels=[...card?.querySelectorAll('tbody tr')||[]].map(tr=>tr.querySelector('td')?.textContent?.trim());
+     const expected=Array(10).fill(0);
+     for(const e of db.editions.filter(e=>e.players.includes('Schnarre'))){
+       const rounds=[...e.rounds].sort((x,y)=>x.number-y.number);
+       for(let i=1;i<rounds.length;i++){
+         if(!rounds[i].results.some(x=>x.player_id==='Schnarre'))continue;
+         const prior=rounds.slice(0,i);
+         const standings=e.players.map(player=>{
+           const rs=prior.flatMap(r=>r.results.filter(x=>x.player_id===player));
+           return {player,points:rs.reduce((sum,x)=>sum+x.points,0),wins:rs.filter(x=>x.place===1).length};
+         }).sort((x,y)=>y.points-x.points||y.wins-x.wins||x.player.localeCompare(y.player,'de'));
+         const rank=standings.findIndex(x=>x.player==='Schnarre')+1;
+         if(rank>=1&&rank<=10)expected[rank-1]++;
+       }
+     }
+     return {data,labels,expected,explainer:card?.textContent||''};
+   });
+   assert.deepEqual(pressure.data.map(x=>x.place),[1,2,3,4,5,6,7,8,9,10],width+' all 10 championship positions');
+   assert.deepEqual(pressure.labels,Array.from({length:10},(_,i)=>'Als '+(i+1)+'.'),width+' rows shown in numeric order');
+   assert.deepEqual(pressure.data.map(x=>x.n),pressure.expected,width+' counts match independent standings calculation');
+   assert(pressure.data.every(x=>x.n?Number.isFinite(x.mean):x.mean===null),width+' missing positions have no fabricated percentage');
+   assert(!pressure.explainer.includes('Ab Platz 3'),width+' no grouped third-place category');
+   await page.evaluate(()=>{state.page='stats';state.tab='overview';draw()});
    const results=await page.evaluate(names=>{
     const out=[];
     for(const [tab,label] of Object.entries(names)){
