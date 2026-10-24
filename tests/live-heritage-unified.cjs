@@ -105,7 +105,7 @@ const sample=e=>{
    assert(metrics.rankFirst.color===metrics.bigHeader.color,'Live ranking gold accents match');
    assert.equal(metrics.heading.font,metrics.headerFont,'Live section heading inherits the site typography');
    assert(metrics.link.height>=32,'Player links retain comfortable touch height');
-   await page.locator('.page--live .cl-block').filter({has:page.locator('> summary',{hasText:'Rundenchronik'})}).locator('> summary').click();
+   await page.locator('.page--live .cl-block > summary').filter({hasText:'Rundenchronik'}).click();
    assert(await page.locator('.page--live .cl-round').count()===edition.round_count,'Chronology preserves published rounds');
    await page.locator('.page--live .cl-round > summary').first().click();
    assert(await page.locator('.page--live .cl-round[open] ol li').count()===edition.players.length,'Round results stay expandable');
