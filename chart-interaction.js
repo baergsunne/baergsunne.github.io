@@ -45,11 +45,23 @@ function show(svg,clientX,clientY,target){
  guide.setAttribute('pointer-events','none');guide.classList.add('bp-chart-guide');svg.append(guide);}
  active={svg,key};
 }
-document.addEventListener('pointerdown',e=>{const svg=e.target.closest?.(selector);if(svg)show(svg,e.clientX,e.clientY,e.target);else if(active)hide();});
-document.addEventListener('pointermove',e=>{const svg=e.target.closest?.(selector);if(svg&&(e.pointerType!=='touch'||e.buttons>0||e.pressure>0))show(svg,e.clientX,e.clientY,e.target);});
-document.addEventListener('pointerover',e=>{if(e.pointerType!=='mouse')return;const svg=e.target.closest?.(selector);if(svg)show(svg,e.clientX,e.clientY,e.target);});
-document.addEventListener('pointerout',e=>{if(e.pointerType==='mouse'&&active&&!e.relatedTarget?.closest?.(selector))hide();});
+function showItem(el){
+ if(guide)guide.remove();guide=null;
+ const box=ensureTooltip();box.replaceChildren();
+ const title=document.createElement('strong');title.textContent=el.dataset.bpLabel||'Wert';box.append(title);
+ const row=document.createElement('div');row.className='bp-chart-tooltip-row';
+ const val=document.createElement('b');val.textContent=el.dataset.bpValue||'–';row.append(val);box.append(row);
+ box.hidden=false;const rect=el.getBoundingClientRect(),size=box.getBoundingClientRect();
+ box.style.left=Math.max(8,Math.min(window.innerWidth-size.width-8,rect.left+rect.width/2-size.width/2))+'px';
+ box.style.top=Math.max(8,rect.top-size.height-10>8?rect.top-size.height-10:Math.min(window.innerHeight-size.height-8,rect.bottom+10))+'px';
+ active={item:el};
+}
+document.addEventListener('pointerdown',e=>{const item=e.target.closest?.('[data-bp-chart-item]');if(item){showItem(item);return;}const svg=e.target.closest?.(selector);if(svg)show(svg,e.clientX,e.clientY,e.target);else if(active)hide();});
+document.addEventListener('pointermove',e=>{const item=e.target.closest?.('[data-bp-chart-item]');if(item){showItem(item);return;}const svg=e.target.closest?.(selector);if(svg&&(e.pointerType!=='touch'||e.buttons>0||e.pressure>0))show(svg,e.clientX,e.clientY,e.target);});
+document.addEventListener('pointerover',e=>{if(e.pointerType!=='mouse')return;const item=e.target.closest?.('[data-bp-chart-item]');if(item){showItem(item);return;}const svg=e.target.closest?.(selector);if(svg)show(svg,e.clientX,e.clientY,e.target);});
+document.addEventListener('pointerout',e=>{if(e.pointerType==='mouse'&&active&&!e.relatedTarget?.closest?.(selector)&&!e.relatedTarget?.closest?.('[data-bp-chart-item]'))hide();});
 document.addEventListener('keydown',e=>{
+ const item=e.target.closest?.('[data-bp-chart-item]');if(item){if(e.key==='Escape')hide();else if(e.key==='Enter'||e.key===' '){e.preventDefault();showItem(item);}return;}
  const svg=e.target.closest?.(selector);if(!svg)return;
  if(e.key==='Escape'){hide();return;}
  if(e.key!=='ArrowLeft'&&e.key!=='ArrowRight'&&e.key!=='Home'&&e.key!=='End')return;
@@ -60,5 +72,6 @@ document.addEventListener('keydown',e=>{
  const el=els.find(el=>Number(el.getAttribute('data-bp-x'))===xs[at]);
  if(el)show(svg,screenX(svg,xs[at]),svg.getBoundingClientRect().top,el);
 });
-document.addEventListener('focusout',e=>{if(active&&e.target===active.svg)hide();});
+document.addEventListener('focusin',e=>{const item=e.target.closest?.('[data-bp-chart-item]');if(item)showItem(item);});
+document.addEventListener('focusout',e=>{if(active&&(e.target===active.svg||e.target===active.item))hide();});
 })();
