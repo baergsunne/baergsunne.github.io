@@ -225,26 +225,20 @@ function calculate(seed){
 
  add('Erfolge','Längste Meistertitel-Serie',stories.titleRun,'Titel','Meiste Meistertitel in unmittelbar aufeinanderfolgenden ausgetragenen Turnieren. Turnierfreie Jahre unterbrechen die Serie nicht.');
  add('Erfolge','Meiste Siege in der letzten Turnierrunde',stories.finalRoundWins,'Siege','Rundensiege in der jeweils letzten Runde einer ausgetragenen Meisterschaft.');
- add('Erfolge','Schnellster erster Meistertitel',stories.fastestChampion,'Teilnahmen','Wenigste eigene Turnierteilnahmen bis zum ersten Meistertitel; nur Spieler mit mindestens einem Titel.',{low:true});
  add('Erfolge','Längste Jahrespodiums-Serie',stories.podiumYearRun,'Turniere','Aufeinanderfolgende ausgetragene Meisterschaften mit offiziellem Schlussrang 1 bis 3. Nichtteilnahmen unterbrechen die Serie.');
  add('Erfolge','Längste Pause zwischen Meistertiteln',stories.titleGap,'Jahre','Grösster Abstand in Kalenderjahren zwischen zwei eigenen Meistertiteln; nur Spieler mit mindestens zwei Titeln.');
- add('Erfolge','Start-Ziel-Champion',stories.startFinish,'Titel','Nach Runde 1 allein an der Spitze der kumulierten Punkte und am Turnierende offizieller Champion. Gemeinsame Führung zählt nicht.');
- add('Erfolge','Vom letzten Zwischenrang zum Meister',stories.lastChampion,'Titel','Späterer Champion lag nach einer Runde vor der Schlussrunde bei den niedrigsten kumulierten Punkten; geteilte rote Laterne zählt.');
- add('Erfolge','Grösster Finalspurt (letzte 2 Runden)',stories.finalSprint,'Plätze','Verbesserung vom kumulierten Zwischenrang nach der drittletzten Runde bis zum offiziellen Schlussrang. Rangverschiebung bleibt unnormiert.');
 
  add('Saisonrekorde','Höchste Saisonpunkte',seasons.map(s=>seasonValue(s.name,s.year,s.points,'Punkte',s.roundCount)),'Punkte','Saisonpunkte auf 7 Runden umgerechnet; historische Punktesysteme bleiben unverändert.');
  add('Saisonrekorde','Meiste Rundensiege in einem Jahr',seasons.map(s=>seasonValue(s.name,s.year,s.wins,'Rundensiege',s.roundCount)),'Siege','Rundensiege einer Saison auf 7 Runden umgerechnet.');
  add('Saisonrekorde','Meiste Rundenpodien in einem Jahr',seasons.map(s=>seasonValue(s.name,s.year,s.podium,'Rundenpodien',s.roundCount)),'Podien','Rundenpodien einer Saison auf 7 Runden umgerechnet.');
  add('Saisonrekorde','Grösster Meistervorsprung',yearRows.map(s=>seasonValue(s.champion,s.year,s.gap,'Punkte Vorsprung',s.roundCount)),'Punkte','Grösster Punkteabstand zwischen Meister und Vizemeister, auf 7 Runden umgerechnet.');
  add('Saisonrekorde','Knappster Meistertitel',yearRows.map(s=>seasonValue(s.champion,s.year,s.gap,'Punkte Vorsprung',s.roundCount)),'Punkte','Kleinster Punkteabstand zwischen Meister und Vizemeister, auf 7 Runden umgerechnet.',{low:true});
- add('Saisonrekorde','Beste relative Einzelsaison',seasons.map(s=>({name:`${s.name} (${s.year})`,value:round(s.relative*100),year:s.year})),'%','Relative Schlussposition bei unterschiedlicher Feldgrösse.');
  add('Hall of Shame','Letzte Schlussplätze',pvals('last'),'letzte Plätze','Letzter offizieller Rang des jeweiligen Jahrgangs.');
  add('Hall of Shame','Letzte Rundenplätze',pvals('roundLast'),'letzte Rundenplätze','Alle Spieler mit den niedrigsten Punkten ihrer Runde zählen gemeinsam als Letztplatzierte – auch wenn der letzte Platz damals 1 oder 2 Punkte erhielt.');
  add('Hall of Shame','Nullrunden',pvals('zeroRounds'),'Nullrunden','Nur Runden mit genau 0 Punkten. Das ist eine andere Kennzahl als letzte Plätze; manche Letztplatzierte erhielten früher 1 oder 2 Punkte.');
  add('Hall of Shame','Teilnahmen ohne Meistertitel',ps.filter(p=>!p.titles).map(p=>({name:p.name,value:p.appearances})),'Turniere','Nur Spieler ohne Meistertitel; Teilnahmen, nicht Anzahl Jahre seit Debüt.');
  add('Hall of Shame','Teilnahmen ohne Jahrespodium',ps.filter(p=>!p.podium).map(p=>({name:p.name,value:p.appearances})),'Turniere','Nur Spieler ohne offizielles Jahrespodium.');
  add('Hall of Shame','Vizemeisterschaften ohne Titel',ps.filter(p=>!p.titles).map(p=>({name:p.name,value:p.runner})),'zweite Plätze','Nur Spieler ohne Meistertitel.');
- add('Hall of Shame','Schlechteste relative Saison',seasons.map(s=>({name:`${s.name} (${s.year})`,value:round(s.relative*100),year:s.year})),'%','Niedrigster relativer offizieller Schlussrang.',{low:true});
 
  add('Hall of Shame','Längste Serie ohne Rundensieg',stories.winlessRun,'Runden','Meiste aufeinanderfolgende selbst gespielte Runden ohne offiziellen Rang 1; Turnierpausen ohne Teilnahme zählen nicht als Runden.');
  add('Hall of Shame','Grösster verspielter Meisterschaftsvorsprung',stories.lostLead,'Punkte','Grösster alleiniger Punktevorsprung nach einer Runde vor der Schlussrunde, ohne am Ende Meister zu werden. Auf 7 Runden umgerechnet; Originalvorsprung in der Rangliste.');

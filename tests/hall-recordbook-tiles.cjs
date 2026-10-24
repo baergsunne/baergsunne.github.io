@@ -23,7 +23,10 @@ const assert=require('node:assert/strict');
      podiumPositions:[...podium.children].map(x=>x.className.match(/position-[123]/)?.[0])
     };
    });
-   assert.equal(await page.locator('.page--fame .hof-record').count(),56,'56 historic record podiums');
+   assert.equal(await page.locator('.page--fame .hof-record').count(),50,'50 curated record podiums');
+   for(const removed of ['Beste relative Einzelsaison','Start-Ziel-Champion','Vom letzten Zwischenrang zum Meister','Grösster Finalspurt (letzte 2 Runden)','Schnellster erster Meistertitel','Schlechteste relative Saison']){
+    assert.equal(await page.locator('.page--fame .hof-record-top span').filter({hasText:removed,exact:true}).count(),0,'removed record not shown: '+removed);
+   }
 
    // Screenshot regression: all record surfaces share the dark 225-degree
    // forest material, including the mini podium and the expanded rankings.
@@ -40,8 +43,8 @@ const assert=require('node:assert/strict');
      noUnwantedMainPodiumChanges:!!document.querySelector('.page--fame > .podium, .page--fame .podium')
     };
    });
-   assert(materials.allCardsDark,'all 56 record cards use the darker approved gradient');
-   assert(materials.allPodiumsDark,'all 56 three-step record podiums use darker gradients');
+   assert(materials.allCardsDark,'all 50 record cards use the darker approved gradient');
+   assert(materials.allPodiumsDark,'all 50 three-step record podiums use darker gradients');
    assert(materials.categoryTilesDark,'all four recordbook category tiles use dark gradients');
    assert(materials.noUnwantedMainPodiumChanges,'championship podium remains separate');
 
@@ -57,7 +60,7 @@ const assert=require('node:assert/strict');
    await page.locator('.page--fame .hof-tab').filter({hasText:'Rivalitäten'}).click();
    assert.equal(await page.locator('.page--fame .hof-category:not([hidden])').count(),1,'exactly one visible record category');
    assert.equal(await page.locator('.page--fame .hof-category:not([hidden])').getAttribute('data-hof-category'),'Rivalitäten','record category selection works');
-   // Every one of the 56 records has three ordered podium slots, and the
+   // Every one of the 50 records has three ordered podium slots, and the
    // complete (still personalized/sortable) table remains accessible below it.
    for(const category of ['Erfolge','Saisonrekorde','Hall of Shame','Rivalitäten']){
     await page.locator('.page--fame .hof-tab').filter({hasText:category,exact:true}).click();
