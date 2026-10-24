@@ -381,3 +381,68 @@ html.bp-adh #app .page--fame:has(.x-fame)>.premium-masthead{display:none!importa
  #app .x-stats .x-ledger-metric>strong{font-size:clamp(38px,10vw,60px)}
  #app .x-stats .x-ledger-metric>small{font-size:11px}
 }
+
+
+/* PLAYERS: an actual career ledger, no repeated player profile cards. */
+html.bp-adh #app .page--players:has(.x-players){background:#0d3023!important;color:#f2e9d8!important;
+ --x-paper:#f3eee2;--x-ink:#173b2c;padding:0!important;border:0!important}
+html.bp-adh #app .page--players:has(.x-players)>.premium-masthead{display:none!important}
+#app .x-players{width:100%;max-width:1300px;margin:0 auto;overflow:hidden;color:#f4ecdc}
+#app .x-players .x-players-cover{display:flex;justify-content:space-between;align-items:center;gap:25px;
+ padding:clamp(24px,5vw,65px) clamp(17px,5vw,67px);background:#103a2b;
+ border-bottom:5px solid #c0a070}
+#app .x-players .x-eyebrow{font-size:11px;font-weight:800;letter-spacing:.12em;color:#deb77c}
+#app .x-players .x-players-cover h1{font:500 clamp(52px,10vw,120px)/1 Georgia,serif!important;
+ letter-spacing:-.076em;color:#f5ebd6!important;margin:13px 0 10px!important}
+#app .x-players .x-players-cover h1 span{color:#cbaa76}
+#app .x-players .x-players-cover small{font-size:10px;color:#c9d4bd;letter-spacing:.12em;font-weight:700}
+#app .x-players .x-players-total{display:flex;flex-direction:column;align-items:center;justify-content:center;
+ padding:9px clamp(8px,3vw,32px);min-width:110px;border-left:1px solid rgba(215,193,150,.35)}
+#app .x-players .x-players-total strong{font:500 clamp(76px,14vw,170px)/.89 Georgia,serif;letter-spacing:-.07em;color:#eddbb8!important}
+#app .x-players .x-players-total span{font-weight:800;font-size:10px;letter-spacing:.17em;color:#e6d6ae}
+#app .x-players .x-roster-note{display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;
+ padding:16px clamp(17px,5vw,67px);background:#d3bf98;color:#224c36;font-size:11px;font-weight:750;letter-spacing:.06em}
+#app .x-players .x-roster-note strong{font:500 24px Georgia,serif}
+#app .x-players .x-roster-note>span{font-weight:550;letter-spacing:0}
+#app .x-players .x-roster-section{padding:clamp(24px,4.5vw,59px) clamp(13px,5vw,67px);background:#153e2e}
+#app .x-players .x-roster-section.x-roster-light{background:#f0ebdd;color:#193d2d}
+#app .x-players .x-roster-title{display:flex;justify-content:space-between;align-items:baseline;gap:12px;
+ border-bottom:1px solid currentColor;padding-bottom:16px;margin-bottom:14px}
+#app .x-players .x-roster-title h2{font:500 clamp(25px,4.4vw,44px)/1.1 Georgia,serif;color:inherit!important;
+ letter-spacing:-.035em;margin:0!important}
+#app .x-players .x-roster-title strong{font:500 clamp(35px,5.4vw,66px)/1 Georgia,serif;color:inherit!important}
+#app .x-players .x-roster-ledger{width:100%;min-width:0;border-top:2px solid currentColor}
+#app .x-players :is(.x-roster-head,.x-player-row){display:grid;
+ grid-template-columns:minmax(95px,1.8fr) repeat(5,minmax(35px,.6fr));
+ align-items:center;gap:clamp(2px,.8vw,10px);min-width:0}
+#app .x-players .x-roster-head{padding:11px 7px;font-size:10px;letter-spacing:.04em;font-weight:800;
+ background:#2c5340;color:#f0e6d2;border-bottom:1px solid #8b9e85}
+#app .x-players .x-roster-head>span:not(:first-child){text-align:center}
+#app .x-players .x-player-row{border:0!important;border-bottom:1px solid rgba(180,192,177,.36)!important;
+ background:transparent!important;color:inherit!important;border-radius:0!important;
+ box-shadow:none!important;text-align:left;width:100%;min-height:55px;padding:11px 7px!important}
+#app .x-players .x-player-row:hover{background:rgba(88,145,105,.12)!important}
+#app .x-players .x-player-row>span{font:500 clamp(15px,2.6vw,23px)/1 Georgia,serif;
+ text-align:center;color:inherit!important;min-width:0}
+#app .x-players .x-player-row .x-has-title{color:#cda663!important;-webkit-text-fill-color:#cda663!important}
+#app .x-players .x-roster-light .x-player-row .x-has-title{color:#846128!important;-webkit-text-fill-color:#846128!important}
+#app .x-players .x-player-row .x-player-name{font-size:clamp(13px,2.5vw,19px);
+ font-weight:740;letter-spacing:-.01em;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+ color:inherit!important}
+#app .x-players .x-roster-light .x-roster-head{background:#2a4a38;color:#f3e8d5}
+#app .x-players .x-roster-light .x-player-row{color:#1b3b2a!important;border-bottom-color:#b8c4b6!important}
+#app .x-players .x-roster-new{display:flex;gap:10px;flex-direction:column}
+@media(max-width:450px){
+ #app .x-players .x-players-cover{padding:23px 17px;gap:10px}
+ #app .x-players .x-players-cover h1{font-size:clamp(48px,13vw,72px)}
+ #app .x-players .x-players-total{min-width:83px;padding:6px 5px}
+ #app .x-players .x-players-total strong{font-size:83px}
+ #app .x-players .x-roster-section{padding:26px 12px}
+ #app .x-players :is(.x-roster-head,.x-player-row){
+  grid-template-columns:minmax(88px,1.7fr) repeat(5,minmax(31px,.6fr));gap:2px}
+ #app .x-players .x-roster-head{font-size:9px;padding:10px 3px}
+ #app .x-players .x-player-row{min-height:48px;padding:8px 3px!important}
+ #app .x-players .x-player-row>span{font-size:15px}
+ #app .x-players .x-player-row .x-player-name{font-size:13px}
+ #app .x-players .x-roster-note{padding:14px 12px}
+}
