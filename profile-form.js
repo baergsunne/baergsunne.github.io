@@ -39,15 +39,15 @@
  function chart(tail){
    const valid=tail.map((r,i)=>({r,i,value:rel(r)})).filter(x=>Number.isFinite(x.value));
    if(!valid.length)return '<p class="hint">Keine auswertbaren Platzierungen vorhanden.</p>';
-   const x=i=>55+(tail.length===1?282:i*562/(tail.length-1));
+   const x=i=>38+(tail.length===1?194:i*389/(tail.length-1));
    const y=v=>200-v*1.7;
-   const grid=[0,25,50,75,100].map(v=>'<line x1="55" y1="'+y(v)+'" x2="617" y2="'+y(v)+'" stroke="#5a715e" opacity=".55" stroke-dasharray="4 6"/><text x="44" y="'+(y(v)+4)+'" fill="#b8cbbd" text-anchor="end" font-size="13">'+v+' %</text>').join('');
-   const axis='<path d="M55 30V200H617" stroke="#829989" fill="none" opacity=".65"/>';
+   const grid=[0,25,50,75,100].map(v=>'<line x1="38" y1="'+y(v)+'" x2="427" y2="'+y(v)+'" stroke="#5a715e" opacity=".55" stroke-dasharray="4 6"/><text x="30" y="'+(y(v)+4)+'" fill="#b8cbbd" text-anchor="end" font-size="13">'+v+' %</text>').join('');
+   const axis='<path d="M38 30V200H427" stroke="#829989" fill="none" opacity=".65"/>';
    const ticks=tail.map((r,i)=>'<text x="'+x(i).toFixed(1)+'" y="219" fill="#cbd8c8" font-size="12" text-anchor="middle">R'+html(r.round)+'</text>').join('');
    const years=tail.map((r,i)=>i===0||r.year!==tail[i-1].year?'<text x="'+x(i).toFixed(1)+'" y="239" fill="#e8c37e" font-size="13" text-anchor="'+(i===0?'start':'middle')+'">'+html(r.year)+'</text>':'').join('');
    const points=valid.map(v=>x(v.i).toFixed(1)+','+y(v.value).toFixed(1)).join(' ');
    const circles=valid.map(v=>'<circle data-bp-point data-bp-x="'+x(v.i).toFixed(1)+'" data-bp-label="'+html(v.r.year+' · R'+v.r.round)+'" data-bp-series="Platzierung" data-bp-value="'+html('Platz '+v.r.place+' von '+v.r.field+' · '+Math.round(v.value)+' % · '+v.r.points+' Pkt.')+'" cx="'+x(v.i).toFixed(1)+'" cy="'+y(v.value).toFixed(1)+'" r="6" fill="#e8c37e" stroke="#0e3023" stroke-width="2"><title>'+html(v.r.year+' · Runde '+v.r.round+': Platz '+v.r.place+' von '+v.r.field+' · '+v.r.points+' Punkte')+'</title></circle>').join('');
-   return '<div class="bp-form-chart"><svg data-bp-chart="rounds" tabindex="0" viewBox="0 0 640 250" role="img" aria-label="Formkurve mit Runden auf der X-Achse und relativer Platzierung in Prozent auf der Y-Achse. Höher bedeutet besser. Mit dem Finger oder den Pfeiltasten Werte anzeigen.">'+grid+axis+ticks+years+(valid.length>1?'<polyline points="'+points+'" fill="none" stroke="#e8c37e" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>':'')+circles+'</svg><div class="bp-form-chart-labels"><span>Runden / Turnierjahr</span><span>Platzierung · höher = besser</span></div></div>';
+   return '<div class="bp-form-chart"><svg data-bp-chart="rounds" tabindex="0" viewBox="0 0 440 250" role="img" aria-label="Formkurve mit Runden auf der X-Achse und relativer Platzierung in Prozent auf der Y-Achse. Höher bedeutet besser. Mit dem Finger oder den Pfeiltasten Werte anzeigen.">'+grid+axis+ticks+years+(valid.length>1?'<polyline points="'+points+'" fill="none" stroke="#e8c37e" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>':'')+circles+'</svg><div class="bp-form-chart-labels"><span>Runden / Turnierjahr</span><span>Platzierung · höher = besser</span></div></div>';
  }
  function render(player,rounds){
    const all=Array.isArray(rounds)?rounds:[],max=all.length;
