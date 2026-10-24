@@ -23,7 +23,7 @@ const assert=require('node:assert/strict');
      podiumPositions:[...podium.children].map(x=>x.className.match(/position-[123]/)?.[0])
     };
    });
-   assert.equal(await page.locator('.page--fame .hof-record').count(),38,'38 historic record podiums');
+   assert.equal(await page.locator('.page--fame .hof-record').count(),56,'56 historic record podiums');
    assert.equal(await page.locator('.page--fame .record-grid').count(),0,'duplicate record tiles removed');
    assert.equal(await page.getByText('Die Rekorde',{exact:true}).count(),0,'legacy heading removed');
    assert(layout.podiumBeforeBook,'podium precedes record book');
@@ -36,7 +36,7 @@ const assert=require('node:assert/strict');
    await page.locator('.page--fame .hof-tab').filter({hasText:'Rivalitäten'}).click();
    assert.equal(await page.locator('.page--fame .hof-category:not([hidden])').count(),1,'exactly one visible record category');
    assert.equal(await page.locator('.page--fame .hof-category:not([hidden])').getAttribute('data-hof-category'),'Rivalitäten','record category selection works');
-   // Every one of the 38 records has three ordered podium slots, and the
+   // Every one of the 56 records has three ordered podium slots, and the
    // complete (still personalized/sortable) table remains accessible below it.
    for(const category of ['Erfolge','Saisonrekorde','Hall of Shame','Rivalitäten']){
     await page.locator('.page--fame .hof-tab').filter({hasText:category,exact:true}).click();
@@ -68,6 +68,11 @@ const assert=require('node:assert/strict');
    const podiumThree=await seasonPoints.locator('.hof-mini-step:not(.hof-mini-step--empty) .hof-mini-name').allTextContents();
    assert.equal(podiumThree.length,3);
    assert(firstThree[0].startsWith(podiumThree[1]),'center winner equals first record row');
+   await page.locator('.page--fame .hof-tab').filter({hasText:'Hall of Shame',exact:true}).click();
+   const drought=page.locator('.page--fame .hof-category:not([hidden]) .hof-record').filter({has:page.locator('.hof-record-top span',{hasText:'Längste Serie ohne Rundensieg'})});
+   assert.equal((await drought.locator('.hof-mini-step--1 .hof-mini-name').textContent()).trim(),'Chopfi','historic win drought leader');
+   await drought.locator('details summary').click();
+   assert((await drought.locator('details tbody').innerText()).includes('Bröne'),'full ranking retains competitors');
    await page.locator('.page--fame .hof-tab').filter({hasText:'Erfolge',exact:true}).click();
    const titles=page.locator('.page--fame .hof-category:not([hidden]) .hof-record').filter({has:page.locator('.hof-record-top span',{hasText:'Meistertitel'})});
    assert.equal((await titles.locator('.hof-mini-step--1 .hof-mini-name').textContent()).trim(),'Mike');
