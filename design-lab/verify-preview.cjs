@@ -62,6 +62,8 @@ const assert=(condition,message)=>{if(!condition)throw new Error(message)};
       await page.waitForTimeout(200);
      }
      if(name==="live")assert(await page.locator(".discovery-livepage").count()===1,"Live page missing");
+     await page.evaluate(()=>window.scrollTo({top:0,left:0,behavior:"instant"}));
+     await page.waitForTimeout(120);
      if((width===390||width===1440)&&["home","stats","fame"].includes(name))
       await page.screenshot({path:path.join(out,name+"-"+width+".png"),fullPage:true});
      item.ok=true;
