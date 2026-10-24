@@ -74,7 +74,7 @@ const assert=require('node:assert/strict');
    await drought.locator('details').first().locator('summary').first().click();
    assert((await drought.locator('details tbody').innerText()).includes('Bröne'),'full ranking retains competitors');
    await page.locator('.page--fame .hof-tab').filter({hasText:'Erfolge',exact:true}).click();
-   const titles=page.locator('.page--fame .hof-category:not([hidden]) .hof-record').filter({has:page.locator('.hof-record-top span',{hasText:'Meistertitel'})});
+   const titles=page.locator('.page--fame .hof-category:not([hidden]) .hof-record').filter({has:page.locator('.hof-record-top span',{hasText:'Meistertitel'})}).first();
    assert.equal((await titles.locator('.hof-mini-step--1 .hof-mini-name').textContent()).trim(),'Mike');
    assert.deepEqual(await titles.locator('.hof-mini-podium>.hof-mini-step .hof-mini-label').allTextContents(),['Rang 2','Rang 1','Rang 2'],'ties share the actual rank instead of an invented third place');
    assert.deepEqual(await titles.locator('.hof-mini-podium>.hof-mini-step .hof-mini-medal').allTextContents(),['🥈','🥇','🥈'],'medals represent true ranks even if display slots differ');
