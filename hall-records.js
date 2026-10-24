@@ -78,7 +78,7 @@ function render(){
  // A missing podium slot stays empty rather than inventing a player or rank.
  const step=(x,slot)=>{
   if(!x)return `<div class="hof-mini-step hof-mini-step--${slot} hof-mini-step--empty" aria-label="Podiumplatz nicht besetzt"><span class="hof-mini-medal" aria-hidden="true">–</span><span class="hof-mini-label">Nicht besetzt</span></div>`;
-  const medal=slot===1?'🥇':slot===2?'🥈':'🥉';
+  const medal=x.rank===1?'🥇':x.rank===2?'🥈':x.rank===3?'🥉':'🏅';
   const parts=/^(.*?)\s*\((\d{4})\)$/.exec(x.name);
   const displayName=parts?parts[1]:x.name;
   const year=parts?parts[2]:'';
