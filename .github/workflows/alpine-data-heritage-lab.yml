@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - design/alpine-data-heritage-phase3-20261024
+      - design/data-first-recomposition-20261025
   workflow_dispatch:
 permissions:
   contents: read
