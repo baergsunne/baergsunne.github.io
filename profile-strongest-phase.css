@@ -8,3 +8,33 @@
 .page--profile .bp-phase-dynamic .hint{color:#bdcbbd;line-height:1.55;margin:0}
 @media(max-width:680px){.page--profile .bp-phase-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}.page--profile .bp-phase-tile{padding:10px 7px;gap:7px;min-height:96px}.page--profile .bp-phase-tile small{font-size:.73rem;line-height:1.2;overflow-wrap:anywhere}.page--profile .bp-phase-tile strong{font-size:clamp(1.02rem,3.8vw,1.32rem);line-height:1.12}}
 @media(max-width:350px){.page--profile .bp-phase-grid{gap:5px}.page--profile .bp-phase-tile{padding:9px 5px;min-height:92px}.page--profile .bp-phase-tile small{font-size:.68rem}.page--profile .bp-phase-tile strong{font-size:.92rem}}
+
+/* Final iPhone metric balance: compact, centered, legible 3-by-3 cards. */
+.page--profile .bp-phase-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+.page--profile .bp-phase-tile{
+ box-sizing:border-box;display:flex;flex-direction:column;align-items:center;justify-content:center;
+ text-align:center;gap:5px;min-width:0;min-height:86px;padding:9px 7px;
+}
+.page--profile .bp-phase-tile small{
+ display:block;width:100%;font-size:clamp(.83rem,1.5vw,.94rem);line-height:1.2;
+ text-align:center;overflow-wrap:break-word;hyphens:auto;
+}
+.page--profile .bp-phase-tile strong{
+ display:block;width:100%;font-size:clamp(1.38rem,2.7vw,1.78rem);line-height:1.12;
+ text-align:center;overflow-wrap:break-word;
+}
+
+@media(max-width:680px){
+ .page--profile .bp-phase-grid{gap:7px}
+ .page--profile .bp-phase-tile{min-height:86px;padding:8px 6px;gap:5px}
+ .page--profile .bp-phase-tile small{font-size:clamp(.78rem,3.15vw,.89rem);line-height:1.18}
+ .page--profile .bp-phase-tile strong{font-size:clamp(1.28rem,5.1vw,1.55rem);line-height:1.1}
+ 
+}
+@media(max-width:350px){
+ .page--profile .bp-phase-grid{gap:5px}
+ .page--profile .bp-phase-tile{min-height:86px;padding:7px 4px;gap:4px}
+ .page--profile .bp-phase-tile small{font-size:.74rem;line-height:1.16}
+ .page--profile .bp-phase-tile strong{font-size:1.22rem}
+ 
+}
