@@ -7,6 +7,9 @@ on:
     paths:
       - 'app.js'
       - 'data.js'
+      - 'round-placement.js'
+      - 'hall-records.js'
+      - 'test-hall.cjs'
       - 'analyse-studio.js'
       - 'tests/**'
       - '.github/workflows/statistics-audit.yml'
@@ -21,3 +24,4 @@ jobs:
         with:
           node-version: '22'
       - run: node tests/statistics-regression.cjs
+      - run: node test-hall.cjs

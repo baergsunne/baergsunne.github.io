@@ -13,7 +13,7 @@
   const rr=results(ed).map(round=>round.results.find(x=>x.player_id===player)).filter(Boolean);
   return {player,wins:rr.filter(x=>x.place===1).length,top3:rr.filter(x=>x.place<=3).length,
    top5:rr.filter(x=>x.place<=5).length,zeros:rr.filter(x=>x.points===0).length,
-   last:rr.filter((x,i)=>x.place===Math.max(...results(ed)[i].results.map(z=>z.place))).length,
+   last:results(ed).filter(round=>window.BaergsunneRoundPlacement.isLast(round.results.find(x=>x.player_id===player),round)).length,
    points:rr.reduce((sum,x)=>sum+x.points,0),count:rr.length};
  });
  function timeline(ed){
@@ -142,8 +142,8 @@
    roundRecord(ed,stats,'zeros','Meiste Nullerrunden','Runden',x=>x.points===0,
     (name,ns)=>name+' blieb '+inRounds(ns)+' ohne Punkte.','negative'),
    roundRecord(ed,stats,'last','Meiste letzte Rundenplätze','Runden',
-    (x,r)=>x.place===Math.max(...r.results.map(z=>z.place)),
-    (name,ns)=>name+' belegte '+inRounds(ns)+' den letzten Platz.','negative'),
+    (x,r)=>window.BaergsunneRoundPlacement.isLast(x,r),
+    (name,ns)=>name+' gehörte '+inRounds(ns)+' zur Gruppe mit den wenigsten Rundenpunkten und zählt damit als Letztplatzierter.','negative'),
    chooseRecord(rank.fall,'value','Grösster Absturz','Plätze',
     names=>rankStory(ed,names,'down'),'negative'),
    chooseRecord(rank.red,'value','Meiste Runden mit roter Laterne','Runden',

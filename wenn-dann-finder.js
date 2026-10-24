@@ -27,17 +27,16 @@ const label=(id,list)=>list.find(x=>x[0]===id)?.[1]||id;
 const selectOptions=(entries,chosen)=>entries.map(x=>'<option value="'+esc(x[0])+'"'+(x[0]===chosen?' selected':'')+'>'+esc(x[1])+'</option>').join('');
 function passes(row,event,amount,round) {
  if(!row||!round)return false;
- const place=Number(row.place),points=Number(row.points),n=round.results.length;
- const last=Math.max(...round.results.map(x=>Number(x.place)));
+ const place=window.BaergsunneRoundPlacement.effectivePlace(row,round),points=Number(row.points),n=round.results.length;
  switch(event){
  case 'win':return place===1;
  case 'top2':return place<=Math.min(2,n);
  case 'top3':return place<=Math.min(3,n);
  case 'upper':return place<=Math.ceil(n/2);
  case 'bottom':return place>Math.ceil(n/2);
- case 'last':return place===last;
- case 'last2':return place>=Math.max(1,n-1);
- case 'last3':return place>=Math.max(1,n-2);
+ case 'last':return window.BaergsunneRoundPlacement.isLast(row,round);
+ case 'last2':return window.BaergsunneRoundPlacement.isBottomN(row,round,2);
+ case 'last3':return window.BaergsunneRoundPlacement.isBottomN(row,round,3);
  case 'pointsGe':return points>=amount;
  case 'pointsLe':return points<=amount;
  case 'placeLe':return place<=amount;
@@ -47,8 +46,8 @@ function passes(row,event,amount,round) {
 }
 function followPass(before,after,beforeRound,afterRound,cfg){
  if(['improve','decline','gainPoints','losePoints'].includes(cfg.b)){
-  if(cfg.b==='improve')return before.place-after.place>=cfg.delta;
-  if(cfg.b==='decline')return after.place-before.place>=cfg.delta;
+  if(cfg.b==='improve')return window.BaergsunneRoundPlacement.effectivePlace(before,beforeRound)-window.BaergsunneRoundPlacement.effectivePlace(after,afterRound)>=cfg.delta;
+  if(cfg.b==='decline')return window.BaergsunneRoundPlacement.effectivePlace(after,afterRound)-window.BaergsunneRoundPlacement.effectivePlace(before,beforeRound)>=cfg.delta;
   if(cfg.b==='gainPoints')return after.points-before.points>=cfg.delta;
   return before.points-after.points>=cfg.delta;
  }
