@@ -550,35 +550,33 @@ function labTab(){
  return sectionTitle('DATEN SICHTBAR MACHEN','Diagramme','Jahre, Spieler, Runden und Kennzahlen selbst auswählen.')+card('Diagramm einstellen',controls)+card('Dein Diagramm',chart)+card('Werte zum Diagramm',table('diagram-values',[{key:'name',title:'Spieler'},{key:'rounds',title:'Runden'},{key:'wins',title:'Siege'},{key:'points',title:'Punkte'},{key:'avg',title:'Ø Rang',render:x=>x.avg===null?'–':pointsFmt(x.avg)}],byPlayer));
 }
 function playersPage(){
- // Show players individually in the order of the last archived tournament.
- // No ranking numbers, ranking table, or position labels are displayed.
  const latest=[...db.editions].sort((a,b)=>b.year-a.year)[0];
  const current=latest?[...latest.official_standings].sort((a,b)=>Number(a.place)-Number(b.place)||a.player_id.localeCompare(b.player_id,'de')).map(x=>x.player_id):[];
- const all=availableNames();
- const currentSet=new Set(current);
+ const all=availableNames(),currentSet=new Set(current);
  const former=all.filter(p=>!currentSet.has(p)).sort((a,b)=>a.localeCompare(b,'de'));
  const career=new Map(all.map(p=>[p,{tournaments:0,rounds:0,titles:0,wins:0,top3:0}]));
- // Player cards always reflect complete confirmed careers, independently of
- // filters left over from another statistics tool.
  for(const edition of db.editions){
   for(const p of edition.players){const s=career.get(p);if(s)s.tournaments++;}
   for(const rank of edition.official_standings){const s=career.get(rank.player_id);if(s&&rank.place===1)s.titles++;}
   for(const round of edition.rounds)for(const result of round.results){
    const s=career.get(result.player_id);if(!s)continue;
-   s.rounds++;
-   if(result.place===1)s.wins++;
-   if(result.place<=3)s.top3++;
+   s.rounds++;if(result.place===1)s.wins++;if(result.place<=3)s.top3++;
   }
  }
- const tile=p=>{
+ const row=p=>{
   const s=career.get(p)||{tournaments:0,rounds:0,titles:0,wins:0,top3:0};
-  return `<button type="button" class="playercard playercard--summary" data-action="profile" data-value="${esc(p)}" aria-label="Spielerprofil ${esc(p)} öffnen"><strong class="playercard-summary-name">${esc(p)}</strong><span class="playercard-summary-stats"><span><b>${s.tournaments}</b><small>Turniere</small></span><span><b>${s.rounds}</b><small>Runden</small></span><span><b>${s.titles}</b><small>Titel</small></span><span><b>${s.wins}</b><small>Siege</small></span><span><b>${s.top3}</b><small>Top 3</small></span></span></button>`;
+  return `<button type="button" class="x-player-row" data-action="profile" data-value="${esc(p)}" aria-label="Spielerprofil ${esc(p)} öffnen"><strong class="x-player-name">${esc(p)}</strong><span>${s.tournaments}</span><span>${s.rounds}</span><span class="${s.titles?'x-has-title':''}">${s.titles}</span><span>${s.wins}</span><span>${s.top3}</span></button>`;
  };
+ const headers='<div class="x-roster-head"><span>SPIELER</span><span title="Turniere">T</span><span title="Runden">R</span><span title="Titel">TIT</span><span title="Rundensiege">S</span><span title="Top-3-Runden">TOP3</span></div>';
+ const section=(title,number,people,light)=>`<section class="x-roster-section ${light?'x-roster-light':''}"><div class="x-roster-title"><h2>${title}</h2><strong>${number}</strong></div><div class="x-roster-ledger">${headers}${people.map(row).join('')}</div></section>`;
  const debuts=provisionalPlayers();
- return hero('Spieler<span class="gold">.</span>',`${all.length} Spieler · Karrierewerte · Runden · Titel`,'SPIELERSTATISTIKEN')+
- `<section class="player-roster-group player-roster-group--current" aria-labelledby="current-roster-title"><div class="player-roster-heading"><h2 id="current-roster-title">Aktuelles Teilnehmerfeld</h2></div><div class="playergrid">${current.map(tile).join('')}</div></section>`+
- `<section class="player-roster-group player-roster-group--former" aria-labelledby="former-roster-title"><div class="player-roster-heading"><h2 id="former-roster-title">Ehemalige Teilnehmer</h2></div><div class="playergrid">${former.map(tile).join('')}</div></section>`+
- (debuts.length?`<section class="provisional-list"><h2>Neue Spieler · ${esc(window.BAERGSUNNE_PUBLIC_LIVE.year)}</h2><p>Vorläufige Profile. Historische Karrieredaten folgen nach dem bestätigten Turnierabschluss.</p><div class="playergrid">${debuts.map(p=>`<button type="button" class="playercard playercard--summary playercard--provisional" data-action="profile" data-value="${esc(p)}" aria-label="Vorläufiges Spielerprofil ${esc(p)} öffnen"><strong class="playercard-summary-name">${esc(p)}</strong><span class="provisional-badge">Debüt ${esc(window.BAERGSUNNE_PUBLIC_LIVE.year)} · vorläufig</span></button>`).join('')}</div></section>`:'');
+ return `<div class="x-players">
+ <section class="x-players-cover"><div><span class="x-eyebrow">BÄRGSUNNE POKER · SPIELERVERZEICHNIS</span><h1>Spieler<span>.</span></h1><small>KARRIEREWERTE AUS DEM ORIGINALARCHIV</small></div><div class="x-players-total"><strong>${all.length}</strong><span>SPIELER</span></div></section>
+ <div class="x-roster-note"><strong>${latest?latest.year:'–'}</strong> LETZTES TURNIER <span>T = Turniere · R = Runden · TIT = Titel · S = Rundensiege · TOP3 = Top-3-Runden</span></div>
+ ${section('Aktuelles Teilnehmerfeld',current.length,current,true)}
+ ${section('Ehemalige Teilnehmer',former.length,former,false)}
+ ${debuts.length?`<section class="x-roster-section"><div class="x-roster-title"><h2>Vorläufige Profile ${esc(window.BAERGSUNNE_PUBLIC_LIVE.year)}</h2></div><div class="x-roster-new">${debuts.map(p=>`<button type="button" class="x-player-row" data-action="profile" data-value="${esc(p)}" aria-label="Vorläufiges Spielerprofil ${esc(p)} öffnen"><strong>${esc(p)}</strong>Debüt ${esc(window.BAERGSUNNE_PUBLIC_LIVE.year)}</button>`).join('')}</div></section>`:''}
+ </div>`;
 }
 function profilePageBase(){let p=state.profile,all=yearly(p),s=stats().find(x=>x.name===p);let yearsAll=db.editions.filter(e=>e.players.includes(p));return `<div class="backrow"><button class="backbtn" data-action="back">← Zurück</button></div>`+hero(`${esc(p)}<span class="gold">.</span>`,'Die gesamte Laufbahn. Alle Auftritte, Zahlen und Leistungen.','PLAYER IDENTITY')+`<div class="profile-stagebar"><span>Spielerprofil</span><strong>${esc(p)}</strong></div><div class="metrics">${kpi('Meistertitel',s?.titles??0)}${kpi('Jahre im Filter',all.length)}${kpi('Runden im Filter',s?.rounds??0)}${kpi('Ø Rundenrang',s?pointsFmt(s.placeAvg):'–')}</div>${card('Karriere-Entwicklung · offizieller Jahresrang',lineChart([{name:p,values:eds().map(e=>({x:e.year,v:all.find(x=>x.year===e.year)?.place??null}))}],{rank:true})+'<p class="hint">Jeder Punkt zeigt den offiziellen Schlussrang im betreffenden Turnierjahr. Platz 1 ist der beste Rang; die Linie zeigt keine Rundenplatzierungen.</p>')}${card('Jahr für Jahr',table('profile-years',[{key:'year',title:'Jahr',render:x=>yearLink(x.year)},{key:'place',title:'Platz'},{key:'points',title:'Punkte'},{key:'rounds',title:'Runden'},{key:'wins',title:'Siege'},{key:'place',title:'Jahresrang'}],all))}<div class="buttonrow"><button class="btn" data-action="challenge" data-value="${esc(p)}">Im Duell vergleichen ↗</button></div>`}
 function famePageBase(){
