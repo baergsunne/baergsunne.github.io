@@ -37,7 +37,7 @@ const fixture=require('./fixture-2026.json');
    assert(initial.newer.logo<initial.previous.logo,'Logo becomes smaller');
    assert(initial.newer.menu>=44,'Menu remains a minimum 44px tap target');
    assert(initial.newer.nav<initial.previous.nav,width+'px: bottom nav becomes shorter');
-   assert.equal(initial.newer.buttons.length,5,'all nav pages remain');
+   assert.equal(initial.newer.buttons.length,6,'all six main navigation pages remain');
    assert(initial.newer.buttons.every(x=>x.h>=44&&x.icon>=19&&x.icon<=22),'touch targets and icons remain usable');
    assert(initial.newer.buttons.every(x=>x.color===initial.newer.buttons[0].color),'all icons have the same gold filter');
    assert(parseFloat(initial.newer.mainPadding)<parseFloat(initial.previous.mainPadding),'reduce redundant main bottom whitespace');
