@@ -53,7 +53,17 @@ const assert=(condition,message)=>{if(!condition)throw new Error(message)};
      if(name==="history")assert(await page.locator(".history-chronicle").count()===1,"History carousel missing");
      if(name==="stats"){assert(await page.locator(".x-stats-workspace .stat-content").count()===1,"Active statistics first missing");assert(await page.locator(".premium-masthead").count()===0,"Legacy statistics masthead still mounted");assert(await page.locator(".tool-directory .tool-tile").count()>=10,"Statistics tools missing");}
      if(name==="players")assert((await page.locator(".page--players").innerText()).includes("Frauchi"),"Players missing");
-     if(name==="fame"){assert((await page.locator(".page--fame .podium").innerText()).includes("Mike"),"Record champion missing");assert(await page.locator(".x-fame-dominant").count()===1,"New recordmaster stage missing");assert(await page.locator(".premium-masthead").count()===0,"Legacy hall masthead still mounted");}
+     if(name==="fame"){
+      assert((await page.locator(".page--fame .podium").innerText()).includes("Mike"),"Record champion missing");
+      assert(await page.locator(".x-fame-dominant").count()===1,"New recordmaster stage missing");
+      assert(await page.locator(".premium-masthead").count()===0,"Legacy hall masthead still mounted");
+      assert(await page.locator(".x-fame-filter details").count()===1,"Archive controls must be retained after records");
+      assert(await page.locator(".x-fame-recordbook .hof-extended").count()===1,"Full historical recordbook is missing");
+      const title=page.locator(".x-fame-recordbook .hof-extended>h2").first();
+      assert((await title.innerText()).includes("Rekorde im Vergleich"),"Hall must use a factual recordbook heading");
+      const color=await title.evaluate(el=>({fg:getComputedStyle(el).color,bg:getComputedStyle(el.parentElement).backgroundColor}));
+      assert(color.fg!=="rgb(19, 47, 38)","Recordbook heading cannot be dark on dark");
+     }
      if(name==="stats"&&width===390){
       await page.locator("#bp-tool-select").selectOption("career");
       await page.waitForTimeout(250);
