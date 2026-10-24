@@ -277,27 +277,19 @@ function render(){
    </div>`;
  };
  const card=r=>{
-  const podium=`<div class="hof-mini-podium" aria-label="Podium: ${escape(r.title)}">
-   ${step(r.table[1],2)}
-   ${step(r.table[0],1)}
-   ${step(r.table[2],3)}
-  </div>`;
-  const hiddenTies=r.table.slice(3).filter(x=>x.rank<=3);
-  return `<article class="hof-record">
-   <div class="hof-record-top"><span>${escape(r.title)}</span><b>${escape(r.value)} ${escape(r.unit)}</b></div>
-   <p>${escape(r.description)}</p>
-   ${podium}
-   ${hiddenTies.length?`<p class="hof-mini-more">${hiddenTies.length} weitere gleichplatzierte ${hiddenTies.length===1?'Person':'Personen'} in der Rangliste</p>`:''}
-   <details><summary>Vollständige Rangliste ansehen</summary><div class="hof-scroll">
-    <table><thead><tr><th>Rang</th><th>Spieler / Saison</th><th>${escape(r.unit)}</th></tr></thead>
-    <tbody>${r.table.map(x=>`<tr><td>${x.rank}</td><td>${escape(x.name)}${x.original?`<small class="hof-original-note">${escape(x.original)}</small>`:''}</td><td>${escape(x.value)}</td></tr>`).join('')}</tbody></table>
-   </div></details>
-  </article>`;
- };
+ const leaders=r.table.slice(0,3).map(x=>`<div class="x-record-leader"><span>${x.rank}.</span><strong>${escape(x.name)}</strong><b>${escape(x.value)}</b></div>`).join('');
+ const hiddenTies=r.table.slice(3).filter(x=>x.rank<=3);
+ return `<article class="hof-record x-record-row"><div class="hof-record-top"><span>${escape(r.title)}</span><b>${escape(r.value)} ${escape(r.unit)}</b></div>
+ <div class="x-record-leaders" aria-label="Die ersten drei Plätze">${leaders}</div>
+ ${hiddenTies.length?`<span class="x-record-ties">+${hiddenTies.length} weitere Personen auf den ersten drei Rängen</span>`:''}
+ <div class="x-record-details"><details class="x-record-explain"><summary>Erklärung</summary><p>${escape(r.description)}</p></details>
+ <details class="x-record-complete"><summary>Ganze Rangliste</summary><div class="hof-scroll"><table><thead><tr><th>Rang</th><th>Spieler / Saison</th><th>${escape(r.unit)}</th></tr></thead>
+ <tbody>${r.table.map(x=>`<tr><td>${x.rank}</td><td>${escape(x.name)}${x.original?`<small class="hof-original-note">${escape(x.original)}</small>`:''}</td><td>${escape(x.value)}</td></tr>`).join('')}</tbody></table></div></details></div></article>`;
+};
  return `<section class="hof-extended" aria-label="Historisches Rekordbuch">
   <div class="eyebrow">DAS REKORDBUCH</div>
   <h2>Legenden, Dramen und Negativrekorde</h2>
-  <p>${data.records.length} automatisch berechnete Rekordlisten aus ${data.years} historischen Turnieren. Wähle eine Kategorie und entdecke zu jedem Rekord das Podium mit den drei Bestplatzierten. Die vollständige Rangliste lässt sich darunter aufklappen. Gleichstände teilen sich denselben Rang. Zählbare Saisonleistungen und Punkteabstände werden auf 7 Runden umgerechnet; Rangbewegungen und relative Werte bleiben auf ihrer eigenen Skala. Letzte Rundenplätze folgen der niedrigsten Punktzahl jeder Runde, Nullrunden werden separat gezählt.</p>
+  <div class="x-record-summary"><strong>${data.records.length}</strong><span>REKORDLISTEN</span><details><summary>Quellen und Berechnung</summary><p>${data.records.length} automatisch berechnete Rekordlisten aus ${data.years} historischen Turnieren. Wähle eine Kategorie und entdecke zu jedem Rekord das Podium mit den drei Bestplatzierten. Die vollständige Rangliste lässt sich darunter aufklappen. Gleichstände teilen sich denselben Rang. Zählbare Saisonleistungen und Punkteabstände werden auf 7 Runden umgerechnet; Rangbewegungen und relative Werte bleiben auf ihrer eigenen Skala. Letzte Rundenplätze folgen der niedrigsten Punktzahl jeder Runde, Nullrunden werden separat gezählt.</p></details></div>
   <nav class="hof-tabs" aria-label="Rekordkategorien">${groups.map((g,i)=>`<button type="button" class="hof-tab ${i===0?'selected':''}" data-hof-tab="${escape(g)}">${escape(g)}</button>`).join('')}</nav>
   ${groups.map((g,i)=>`<div class="hof-category" data-hof-category="${escape(g)}" ${i?'hidden':''}>${data.records.filter(r=>r.category===g).map(card).join('')}</div>`).join('')}
   <p class="hof-source">Quelle: originale Schlussranglisten und chronologische Rundenresultate. Saisonwerte für Punkte, Führungen und Rundenanzahlen werden auf 7 Runden umgerechnet. Rangbewegungen bleiben absolute Rangverschiebungen und relative Platzierungen unverändert. Originalergebnisse, Punktesysteme und Feldgrössen werden nie geändert.</p>
