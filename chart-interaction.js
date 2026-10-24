@@ -58,6 +58,14 @@ function showItem(el){
 }
 document.addEventListener('pointerdown',e=>{const item=e.target.closest?.('[data-bp-chart-item]');if(item){showItem(item);return;}const svg=e.target.closest?.(selector);if(svg)show(svg,e.clientX,e.clientY,e.target);else if(active)hide();});
 document.addEventListener('pointermove',e=>{const item=e.target.closest?.('[data-bp-chart-item]');if(item){showItem(item);return;}const svg=e.target.closest?.(selector);if(svg&&(e.pointerType!=='touch'||e.buttons>0||e.pressure>0))show(svg,e.clientX,e.clientY,e.target);});
+// Touch values are transient: release, interruption or scrolling removes both tooltip and guide.
+document.addEventListener('pointerup',e=>{if(e.pointerType==='touch'||e.pointerType==='pen')hide();},true);
+document.addEventListener('pointercancel',e=>{if(e.pointerType==='touch'||e.pointerType==='pen')hide();},true);
+// Safari fallback for browsers that deliver touch events without matching pointer events.
+document.addEventListener('touchend',hide,{passive:true,capture:true});
+document.addEventListener('touchcancel',hide,{passive:true,capture:true});
+window.addEventListener('blur',hide);
+document.addEventListener('visibilitychange',()=>{if(document.hidden)hide();});
 document.addEventListener('pointerover',e=>{if(e.pointerType!=='mouse')return;const item=e.target.closest?.('[data-bp-chart-item]');if(item){showItem(item);return;}const svg=e.target.closest?.(selector);if(svg)show(svg,e.clientX,e.clientY,e.target);});
 document.addEventListener('pointerout',e=>{if(e.pointerType==='mouse'&&active&&!e.relatedTarget?.closest?.(selector)&&!e.relatedTarget?.closest?.('[data-bp-chart-item]'))hide();});
 document.addEventListener('keydown',e=>{
