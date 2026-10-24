@@ -63,6 +63,9 @@ function storyMetrics(editions){
  const seasons=new Map(people.map(p=>[p,[]]));
  const yearly=new Map();
  const data={};
+ const maxLantern=new Map(people.map(p=>[p,0]));
+ const startFinish=new Map(people.map(p=>[p,0]));
+ const lastChampion=new Map(people.map(p=>[p,0]));
  const put=(key,name,value,extra={})=>{
   if(!Number.isFinite(value))return;
   (data[key]||(data[key]=[])).push({name,value,...extra});
@@ -105,7 +108,7 @@ function storyMetrics(editions){
     put('finalSprint',p+' ('+e.year+')',before-finish.place,{year:e.year});
    }
    const redLantern=streak(snapshots,s=>s.lantern.has(p));
-   put('lanternRun',p,redLantern);
+   maxLantern.set(p,Math.max(maxLantern.get(p),redLantern));
    if(finish.place!==1){
     let lostLead=0;
     for(const snap of snapshots.slice(0,-1)){
@@ -116,14 +119,17 @@ function storyMetrics(editions){
     if(lostLead>0)put('lostLead',p+' ('+e.year+')',sevenRoundValue(lostLead,rounds.length),
       {year:e.year,rawValue:lostLead,rawUnit:'Punkte Vorsprung',roundCount:rounds.length});
    }
-   if(champion===p&&snapshots[0]?.sole===p)put('startFinish',p,1,{year:e.year});
-   if(champion===p&&snapshots.slice(0,-1).some(s=>s.lantern.has(p)))put('lastChampion',p,1,{year:e.year});
+   if(champion===p&&snapshots[0]?.sole===p)startFinish.set(p,startFinish.get(p)+1);
+   if(champion===p&&snapshots.slice(0,-1).some(s=>s.lantern.has(p)))lastChampion.set(p,lastChampion.get(p)+1);
   }
  }
  const winnerYears=years.map(e=>e.official_standings.find(x=>x.place===1)?.player_id);
  for(const p of people){
   const rs=all.get(p),ss=seasons.get(p);
   put('titleRun',p,streak(winnerYears,x=>x===p));
+  put('lanternRun',p,maxLantern.get(p));
+  if(startFinish.get(p)>0)put('startFinish',p,startFinish.get(p));
+  if(lastChampion.get(p)>0)put('lastChampion',p,lastChampion.get(p));
   put('finalRoundWins',p,rs.filter(x=>x.final&&x.place===1).length);
   const firstTitle=ss.findIndex(x=>x.champion);
   if(firstTitle>=0)put('fastestChampion',p,firstTitle+1,{year:ss[firstTitle].year});
