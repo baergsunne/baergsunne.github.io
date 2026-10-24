@@ -1,0 +1,29 @@
+name: Chart finger inspection regression
+on:
+  pull_request:
+    paths:
+      - 'app.js'
+      - 'profile-form.js'
+      - 'lab-premium.js'
+      - 'championship-live.js'
+      - 'chart-interaction.js'
+      - 'chart-interaction.css'
+      - 'index.html'
+      - 'tests/chart-touch-axes.cjs'
+      - '.github/workflows/chart-touch-regression.yml'
+jobs:
+  charts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-save playwright
+      - run: npx playwright install chromium
+      - run: python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/poker-charts-server.log 2>&1 &
+      - run: node --check chart-interaction.js && node --check profile-form.js && node --check lab-premium.js && node --check championship-live.js
+      - run: node tests/chart-touch-axes.cjs
