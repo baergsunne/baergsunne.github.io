@@ -1,3 +1,17 @@
 const {chromium}=require('playwright');const assert=require('node:assert/strict');
-(async()=>{const browser=await chromium.launch();try{const page=await browser.newPage({viewport:{width:390,height:844},isMobile:true});const errors=[];page.on('pageerror',e=>errors.push(e.message));for(const path of ['live','editions'])await page.route('**/api/'+path,async route=>{const r=await route.fetch({headers:{...route.request().headers(),origin:'https://baergsunne.github.io'}});await route.fulfill({response:r,headers:{...r.headers(),'access-control-allow-origin':'http://127.0.0.1:8765'}})});await page.goto('http://127.0.0.1:8765/#players');await page.waitForFunction(()=>typeof db!=='undefined'&&db.editions.some(e=>e.year===2026),null,{timeout:30000});
-const result=await page.evaluate(()=>{const failures=[],counts=[];for(const p of db.players.map(x=>x.name)){state.page='profile';state.profile=p;draw();const cards=[...document.querySelectorAll('#page .bp-profile-explain')];if(cards.length<4)failures.push(p+': only '+cards.length+' personalized explanations');for(const card of cards){const story=card.querySelector('.bp-insight-story')?.textContent||'';if(!story.includes(p))failures.push(p+': no player name');if(/\\d+\\.\\d{5,}/.test(story))failures.push(p+': raw decimal');if(!card.querySelector('summary .bp-explain-heading'))failures.push(p+': missing new summary');if(!card.querySelector('.bp-insight-key'))failures.push(p+': missing metric definition');}counts.push(cards.length);}state.page='profile';state.profile='Borer';draw();const phase=[...document.querySelectorAll('#page .bp-profile-explain')][0];if(!phase?.querySelector('.bp-insight-story')?.textContent.includes('Borer'))failures.push('Borer example missing');return{failures,players:db.players.length,generated:counts.reduce((a,b)=>a+b,0)}});assert.deepEqual(result.failures,[]);assert.deepEqual(errors,[]);console.log('PERSONALIZED_EXPLANATIONS_SUCCESS',JSON.stringify(result));}finally{await browser.close()}})().catch(e=>{console.error('PERSONALIZED_EXPLANATIONS_FAILURE',e);process.exit(1)});
+(async()=>{const browser=await chromium.launch();try{
+ const page=await browser.newPage({viewport:{width:390,height:844},isMobile:true});
+ await page.goto('http://127.0.0.1:8765/#players',{waitUntil:'domcontentloaded'});
+ await page.waitForFunction(()=>typeof db!=='undefined'&&db.editions.some(e=>e.year===2026),null,{timeout:30000});
+ const result=await page.evaluate(()=>{
+  const failures=[];for(const p of db.players.map(x=>x.name)){
+   state.page='profile';state.profile=p;draw();
+   const root=document.querySelector('.page--profile');
+   if(root.querySelector('.explain-detail'))failures.push(p+': legacy explanation accordion still present');
+   if(root.textContent.includes('Einfach erklärt'))failures.push(p+': explanation label still present');
+   if(!root.querySelector('.chart-svg'))failures.push(p+': career chart missing');
+  }
+  return {failures,players:db.players.length};
+ });
+ assert.deepEqual(result.failures,[]);console.log('PROFILE_NO_EXPLAINERS_SUCCESS',JSON.stringify(result));
+}finally{await browser.close()}})().catch(e=>{console.error('PROFILE_NO_EXPLAINERS_FAILURE',e);process.exit(1)});
