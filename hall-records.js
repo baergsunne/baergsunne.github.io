@@ -288,7 +288,7 @@ function render(){
 };
  return `<section class="hof-extended" aria-label="Historisches Rekordbuch">
   <div class="eyebrow">DAS REKORDBUCH</div>
-  <h2>Legenden, Dramen und Negativrekorde</h2>
+  <h2>Rekorde im Vergleich</h2>
   <div class="x-record-summary"><strong>${data.records.length}</strong><span>REKORDLISTEN</span><details><summary>Quellen und Berechnung</summary><p>${data.records.length} automatisch berechnete Rekordlisten aus ${data.years} historischen Turnieren. Wähle eine Kategorie und entdecke zu jedem Rekord das Podium mit den drei Bestplatzierten. Die vollständige Rangliste lässt sich darunter aufklappen. Gleichstände teilen sich denselben Rang. Zählbare Saisonleistungen und Punkteabstände werden auf 7 Runden umgerechnet; Rangbewegungen und relative Werte bleiben auf ihrer eigenen Skala. Letzte Rundenplätze folgen der niedrigsten Punktzahl jeder Runde, Nullrunden werden separat gezählt.</p></details></div>
   <nav class="hof-tabs" aria-label="Rekordkategorien">${groups.map((g,i)=>`<button type="button" class="hof-tab ${i===0?'selected':''}" data-hof-tab="${escape(g)}">${escape(g)}</button>`).join('')}</nav>
   ${groups.map((g,i)=>`<div class="hof-category" data-hof-category="${escape(g)}" ${i?'hidden':''}>${data.records.filter(r=>r.category===g).map(card).join('')}</div>`).join('')}
