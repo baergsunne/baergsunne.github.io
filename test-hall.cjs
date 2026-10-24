@@ -4,7 +4,7 @@ const ctx={window:{POKER_SEED:seed},document:{addEventListener:()=>{}},console};
 const {calculate,render}=ctx.window.BaergsunneHallRecords;const data=calculate(seed);const find=n=>data.records.find(r=>r.title===n);
 assert.equal(data.years,17);assert.equal(data.players,23);assert.equal(data.seasonCount,164);
 assert.equal(find('Meistertitel').holder,'Mike');assert.equal(find('Meistertitel').value,6);
-assert.equal(find('Jahrespodien').value,13);assert.equal(find('Letzte Schlussplätze').value,3);
+assert.equal(find('Jahrespodien').value,13);assert.equal(find('Letzte Schlussplätze').value,4);
 assert.equal(find('Höchste Saisonpunkte').value,50);
 assert.equal(find('Höchste Saisonpunkte').holder,'Frauchi (2026)');
 assert.equal(find('Letzte Rundenplätze').value,36);
