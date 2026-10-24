@@ -50,7 +50,7 @@ const assert=(condition,message)=>{if(!condition)throw new Error(message)};
       assert(text.includes("Frauchi")&&text.includes("König")&&text.includes("+11"),"Real-data endstand/lead not correct");
       assert(await page.locator(".x-cover .discovery-hero-logo").count()===1,"Premium logo hero missing");
      }
-     if(name==="history")assert(await page.locator(".history-chronicle").count()===1,"History carousel missing");
+     if(name==="history"){assert(await page.locator(".x-history-mast").count()===1,"Data-first historical timeline missing");assert(await page.locator(".history-chronicle").count()===1,"All six original history views must remain");assert((await page.locator(".x-history-mast").innerText()).includes("147"),"Verified rounds must be present");}
      if(name==="stats"){assert(await page.locator(".x-stats-workspace .stat-content").count()===1,"Active statistics first missing");assert(await page.locator(".premium-masthead").count()===0,"Legacy statistics masthead still mounted");assert(await page.locator(".tool-directory .tool-tile").count()>=10,"Statistics tools missing");}
      if(name==="players"){assert(await page.locator(".x-players .x-player-row").count()===23,"All 23 career rows should remain navigable");assert((await page.locator(".x-players").innerText()).includes("Frauchi"),"Current roster missing");assert((await page.locator(".x-players").innerText()).includes("Mike"),"Record master missing");}
      if(name==="fame"){
@@ -71,10 +71,10 @@ const assert=(condition,message)=>{if(!condition)throw new Error(message)};
       await page.locator("#bp-tool-select").selectOption("overview");
       await page.waitForTimeout(200);
      }
-     if(name==="live")assert(await page.locator(".discovery-livepage").count()===1,"Live page missing");
+     if(name==="live"){assert(await page.locator(".x-live-mast").count()===1,"Live stage missing");assert(await page.locator(".discovery-livepage .discovery-live").count()===1,"Actual server-controlled live monitor missing");assert((await page.locator(".x-live-mast").innerText()).includes("Frauchi"),"Historical 2026 champion reference missing");}
      await page.evaluate(()=>window.scrollTo({top:0,left:0,behavior:"instant"}));
      await page.waitForTimeout(120);
-     if((width===390||width===1440)&&["home","stats","fame","players"].includes(name))
+     if((width===390||width===1440)&&["home","stats","fame","players","history","live"].includes(name))
       await page.screenshot({path:path.join(out,name+"-"+width+".png"),fullPage:true});
      item.ok=true;
     }catch(e){item.error=String(e);report.errors.push({width,route:name,error:String(e)})}
