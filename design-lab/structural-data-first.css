@@ -1,0 +1,242 @@
+/* BÄRGSUNNE DATA-FIRST / genuine DOM recomposition, not a reskin.
+   Sandbox branch only. All numbers come from original archive.
+   No real tournament writes; legacy view handlers retained. */
+html.bp-adh #app .page--home{background:#ece8da!important;color:#102a21!important;padding:0!important;border:0!important;overflow:clip}
+html.bp-adh #app .page--home :is(.x-home,.x-home button){font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif}
+html.bp-adh #app .page--home .x-home{background:#ede9dc;color:#10291e;max-width:1160px;margin:0 auto;padding-bottom:60px}
+html.bp-adh #app .page--home .x-home *{box-sizing:border-box}
+html.bp-adh #app .page--home .x-eyebrow,
+html.bp-adh #app .page--fame .x-eyebrow,
+html.bp-adh #app .page--stats .x-eyebrow{font:760 clamp(10px,1.4vw,12px)/1.3 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;letter-spacing:.16em;text-transform:uppercase}
+html.bp-adh #app .page--home .x-cover{background:#0b281e;color:#f8f2e6;position:relative;isolation:isolate;overflow:hidden}
+html.bp-adh #app .page--home .x-cover::before{content:"";position:absolute;inset:0;z-index:-1;
+ background:radial-gradient(circle at 88% 15%,rgba(190,158,93,.13),transparent 46%),linear-gradient(130deg,#0c291f 5%,#173a2c 77%,#224c38 100%)}
+html.bp-adh #app .page--home .x-cover-brand{min-height:158px;display:flex;align-items:center;justify-content:space-between;padding:22px clamp(17px,4vw,48px);
+ border-bottom:1px solid rgba(239,208,150,.28);gap:20px}
+html.bp-adh #app .page--home .x-logo{width:clamp(132px,25vw,232px)!important;height:auto!important;max-height:130px!important;object-fit:contain!important;display:block!important}
+html.bp-adh #app .page--home .x-cover-stamp{font-size:11px;color:#d6c5a0;letter-spacing:.14em;text-align:right;line-height:2.2}
+html.bp-adh #app .page--home .x-cover-stamp span{display:block;color:#f5eddc}
+html.bp-adh #app .page--home .x-cover-main{padding:clamp(16px,3.5vw,39px) clamp(17px,4vw,48px) 20px}
+html.bp-adh #app .page--home .x-champion-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(120px,41%);align-items:center;min-height:clamp(290px,46vw,495px)}
+html.bp-adh #app .page--home .x-champion-stat{min-width:0;position:relative;z-index:1}
+html.bp-adh #app .page--home .x-champion-stat .x-eyebrow{color:#d8b878}
+html.bp-adh #app .page--home .x-champion-points{display:block;font:500 clamp(140px,26vw,320px)/.76 Georgia,"Iowan Old Style",serif;letter-spacing:-.105em;color:#f2e6ce}
+html.bp-adh #app .page--home .x-champion-label{font-size:clamp(12px,1.7vw,15px);letter-spacing:.24em;margin:12px 0 26px;color:#e5be7c;font-weight:760}
+html.bp-adh #app .page--home .x-champion-stat h1{font:500 clamp(44px,8vw,106px)/.93 Georgia,"Iowan Old Style",serif;letter-spacing:-.055em;color:#fff5e5;margin:0 0 19px}
+html.bp-adh #app .page--home button.x-text-action{display:inline-flex;align-items:center;gap:20px;background:none!important;border:0!important;
+ padding:6px 0 12px!important;color:#edc988!important;font-size:11px;letter-spacing:.09em;font-weight:760;box-shadow:none!important;border-radius:0!important;text-align:left;border-bottom:1px solid rgba(232,189,119,.55)!important}
+html.bp-adh #app .page--home button.x-text-action span{font-size:19px}
+html.bp-adh #app .page--home .x-cover-trophy{position:relative;display:flex;align-items:center;flex-direction:column;justify-content:center;min-height:300px;padding:12px 0}
+html.bp-adh #app .page--home .x-cover-trophy::before{content:"";position:absolute;width:90%;height:75%;background:radial-gradient(ellipse,rgba(181,139,69,.22),transparent 68%)}
+html.bp-adh #app .page--home .x-cover-trophy img{position:relative;width:100%;max-width:320px;max-height:410px;object-fit:contain;filter:drop-shadow(-15px 22px 18px rgba(0,12,9,.35))}
+html.bp-adh #app .page--home .x-cover-trophy span{font-size:9px;letter-spacing:.14em;color:#bda880}
+html.bp-adh #app .page--home .x-cover-footer{border-top:1px solid rgba(239,218,176,.28);padding-top:13px;display:flex;justify-content:space-between;gap:10px;color:#c9c5aa;font-size:11px;letter-spacing:.12em}
+html.bp-adh #app .page--home .x-result-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(180px,27%);background:#f3efe5;color:#143328;border-bottom:1px solid #b9bdac}
+html.bp-adh #app .page--home .x-results{padding:clamp(22px,4vw,45px) clamp(17px,4vw,48px)}
+html.bp-adh #app .page--home .x-section-top,
+html.bp-adh #app .page--fame .x-section-top{display:flex;align-items:end;justify-content:space-between;gap:12px;margin:0 0 23px}
+html.bp-adh #app .page--home .x-section-top .x-eyebrow,
+html.bp-adh #app .page--fame .x-section-top .x-eyebrow{color:#807359}
+html.bp-adh #app .page--home .x-section-top h2,
+html.bp-adh #app .page--fame .x-section-top h2{font:500 clamp(32px,5vw,56px)/1 Georgia,"Iowan Old Style",serif;letter-spacing:-.05em;color:#112f23!important;margin:7px 0 0}
+html.bp-adh #app .page--home .x-section-top h2 em{font-style:normal;color:#b28c54}
+html.bp-adh #app .page--home button.x-inline-link{background:none!important;box-shadow:none!important;border:0!important;border-bottom:1px solid #a7926b!important;border-radius:0!important;
+ color:#224839!important;font-size:12px;font-weight:700;padding:9px 0;white-space:nowrap}
+html.bp-adh #app .page--home .x-table-heading{display:grid;grid-template-columns:46px 1fr 75px;color:#7a766a;font-size:10px;letter-spacing:.14em;padding:0 0 9px;border-bottom:2px solid #204c39}
+html.bp-adh #app .page--home .x-table-heading :last-child{text-align:right}
+html.bp-adh #app .page--home button.x-table-row{width:100%;min-height:46px;display:grid;grid-template-columns:46px 1fr 75px;gap:0;align-items:center;text-align:left;
+ border:0!important;border-bottom:1px solid #c5c9ba!important;border-radius:0!important;background:transparent!important;
+ color:#16392a!important;box-shadow:none!important;padding:7px 0!important;transition:background .16s}
+html.bp-adh #app .page--home button.x-table-row:hover{background:#e7e3d6!important}
+html.bp-adh #app .page--home button.x-table-row.x-table-winner{background:#dde6d7!important}
+html.bp-adh #app .page--home .x-rank{font-size:11px;letter-spacing:.06em;color:#7b735e}
+html.bp-adh #app .page--home .x-player{font-size:clamp(15px,2.3vw,18px);font-weight:600}
+html.bp-adh #app .page--home .x-table-winner .x-player{font-weight:840}
+html.bp-adh #app .page--home .x-points{text-align:right;font:500 clamp(21px,3vw,29px)/1 Georgia,"Iowan Old Style",serif}
+html.bp-adh #app .page--home .x-result-aside{display:grid;grid-template-rows:1fr 1fr;background:#dfe5d7;border-left:1px solid #bac2ae}
+html.bp-adh #app .page--home :is(.x-result-gain,.x-master){padding:clamp(20px,3.5vw,37px) clamp(14px,2vw,25px);display:flex;flex-direction:column;justify-content:space-between}
+html.bp-adh #app .page--home .x-result-gain{border-bottom:1px solid #afbaa7}
+html.bp-adh #app .page--home :is(.x-result-gain,.x-master) .x-eyebrow{color:#4e6351}
+html.bp-adh #app .page--home :is(.x-result-gain,.x-master)>strong{font:500 clamp(64px,10vw,131px)/.95 Georgia,"Iowan Old Style",serif;letter-spacing:-.09em;color:#133629}
+html.bp-adh #app .page--home :is(.x-result-gain,.x-master)>span:not(.x-eyebrow){font-size:12px;letter-spacing:.14em;font-weight:700}
+html.bp-adh #app .page--home .x-result-gain small{color:#526f5e}
+html.bp-adh #app .page--home .x-master button{align-self:flex-start;background:none!important;border:0!important;border-bottom:1px solid #527b62!important;border-radius:0!important;
+ color:#173a2b!important;font-size:14px;font-weight:750;box-shadow:none!important;padding:7px 0!important}
+html.bp-adh #app .page--home .x-archive-strip{padding:28px clamp(17px,4vw,48px) 30px;background:#16372a;color:#f5ecd9}
+html.bp-adh #app .page--home .x-strip-title{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:750;letter-spacing:.16em;font-size:10px;padding-bottom:19px;border-bottom:1px solid #687b67}
+html.bp-adh #app .page--home .x-strip-title span{color:#d9c89e}
+html.bp-adh #app .page--home .x-figures{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin-top:20px}
+html.bp-adh #app .page--home .x-figure{display:flex;flex-direction:column;gap:7px;padding:8px 17px;border-right:1px solid rgba(239,213,165,.25)}
+html.bp-adh #app .page--home .x-figure:first-child{padding-left:0}
+html.bp-adh #app .page--home .x-figure:last-child{border:0}
+html.bp-adh #app .page--home .x-figure strong{font:500 clamp(41px,9vw,100px)/.98 Georgia,"Iowan Old Style",serif;letter-spacing:-.07em;color:#f4eee0}
+html.bp-adh #app .page--home .x-figure small{color:#d5ba89;font-size:10px;letter-spacing:.13em;font-weight:740}
+html.bp-adh #app .page--home .x-pathways{padding:clamp(30px,5vw,55px) clamp(17px,4vw,48px);background:#f3efe5}
+html.bp-adh #app .page--home .x-pathways .x-section-top{margin-bottom:30px}
+html.bp-adh #app .page--home .x-entry-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 30px}
+html.bp-adh #app .page--home button.x-entry{width:100%;min-height:88px;display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto auto;
+ align-content:center;gap:5px 8px;text-align:left;padding:15px 0!important;box-shadow:none!important;border:0!important;
+ border-top:1px solid #c1bdad!important;border-radius:0!important;background:transparent!important;color:#163629!important}
+html.bp-adh #app .page--home button.x-entry:hover{background:#e8e4d9!important}
+html.bp-adh #app .page--home .x-entry-title{grid-column:1;grid-row:1;font:500 clamp(22px,3vw,33px)/1.06 Georgia,"Iowan Old Style",serif;letter-spacing:-.03em}
+html.bp-adh #app .page--home .x-entry-description{grid-column:1;grid-row:2;color:#63736a;font-size:11px;line-height:1.45}
+html.bp-adh #app .page--home .x-entry-arrow{grid-column:2;grid-row:1/3;color:#a2804c;font-size:24px}
+html.bp-adh #app .page--home .x-datasets{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:30px;padding:35px clamp(17px,4vw,48px) 45px;background:#e4e5d8}
+html.bp-adh #app .page--home .x-dataset-head{min-height:105px}
+html.bp-adh #app .page--home .x-dataset-head .x-eyebrow{color:#766d57}
+html.bp-adh #app .page--home .x-dataset-head h2{font:500 clamp(24px,3.5vw,38px)/1 Georgia,"Iowan Old Style",serif;letter-spacing:-.04em;color:#143729!important;margin:10px 0}
+html.bp-adh #app .page--home .x-datasets button.x-entry{min-height:62px;padding:10px 0!important}
+html.bp-adh #app .page--home .x-datasets .x-entry-title{font-size:clamp(17px,2vw,23px)}
+html.bp-adh #app .page--home .x-live-archive{padding:35px clamp(17px,4vw,48px);background:#143529}
+html.bp-adh #app .page--home .x-live-archive .x-section-top h2{color:#f3ecdc!important}
+html.bp-adh #app .page--home .x-live-archive .x-eyebrow{color:#d7ba82}
+html.bp-adh #app .page--home .x-live-archive .discovery-live{border-radius:0!important;border:1px solid rgba(235,208,155,.3)!important;box-shadow:none!important}
+
+/* STATISTICS – Analysis first; navigation gets a contained instrument selector */
+html.bp-adh #app .page--stats{background:#eae7dc!important;color:#143528!important;padding:0!important;border:0!important}
+html.bp-adh #app .page--stats .x-stats{max-width:1160px;margin:auto;background:#eae7dc;color:#173b2b}
+html.bp-adh #app .page--stats .x-stats-mast{background:#102b21;color:#f4eddb;padding:clamp(23px,4vw,47px) clamp(18px,4vw,45px)}
+html.bp-adh #app .page--stats .x-stats-mast .x-eyebrow{color:#cdb783}
+html.bp-adh #app .page--stats .x-stats-mast-row{display:flex;align-items:end;justify-content:space-between;gap:13px}
+html.bp-adh #app .page--stats .x-stats-mast h1{font:500 clamp(53px,10vw,120px)/.9 Georgia,"Iowan Old Style",serif;letter-spacing:-.075em;color:#f6eee0;margin:10px 0}
+html.bp-adh #app .page--stats .x-stats-mast h1 span{color:#d1ad73}
+html.bp-adh #app .page--stats .x-stats-mega{text-align:right;display:flex;flex-direction:column;gap:5px}
+html.bp-adh #app .page--stats .x-stats-mega strong{font:500 clamp(42px,8vw,105px)/1 Georgia,"Iowan Old Style",serif;color:#e9cd9b;letter-spacing:-.06em}
+html.bp-adh #app .page--stats .x-stats-mega small{font-size:10px;letter-spacing:.08em;color:#dfd6b8}
+html.bp-adh #app .page--stats .x-stats-picker{display:flex;gap:16px;align-items:center;background:#d9dfd2;border-bottom:1px solid #b5bfae;
+ padding:9px clamp(18px,4vw,45px)}
+html.bp-adh #app .page--stats .x-stats-picker>span{font-size:11px;color:#335442;letter-spacing:.11em;font-weight:800}
+html.bp-adh #app .page--stats .x-stats-picker .bp-selection-panel{background:transparent!important;padding:0!important;margin:0!important;
+ border:0!important;box-shadow:none!important;flex:1}
+html.bp-adh #app .page--stats .x-stats-picker .bp-selection-panel label{display:block;font-size:0!important}
+html.bp-adh #app .page--stats .x-stats-picker select{max-width:100%;width:100%;min-height:43px;border:1px solid #9daf9d!important;border-radius:2px!important;
+ padding:8px 35px 8px 13px!important;color:#f5eee1!important;background:#173c2d!important;box-shadow:none!important;
+ font-size:14px!important;font-weight:750}
+html.bp-adh #app .page--stats .x-stats-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(160px,21%);
+ gap:0;align-items:start}
+html.bp-adh #app .page--stats .x-stats-workspace{min-width:0;padding:clamp(17px,3vw,32px);background:#ece9de;color:#1c392e}
+html.bp-adh #app .page--stats .x-stats-workspace>.stat-content{background:transparent!important;border:0!important;box-shadow:none!important;margin:0!important;padding:0!important;min-width:0}
+html.bp-adh #app .page--stats .x-stats-workspace .bp-stat-tool-heading{margin:0 0 21px!important;padding-bottom:17px;border-bottom:1px solid #aebdab}
+html.bp-adh #app .page--stats .x-stats-workspace .bp-stat-tool-heading h2{font:500 clamp(27px,4.5vw,49px)/1 Georgia,"Iowan Old Style",serif!important;
+ color:#153b2b!important;-webkit-text-fill-color:#153b2b!important;letter-spacing:-.05em}
+html.bp-adh #app .page--stats .x-stats-workspace .bp-stat-tool-heading p{color:#587060!important;font-size:12px;max-width:55ch}
+html.bp-adh #app .page--stats .x-stats-aside{min-width:0;border-left:1px solid #bcc5b4;min-height:650px;background:#dce1d5;padding:20px 12px}
+html.bp-adh #app .page--stats .x-stats-details>summary{color:#1e4432;font-weight:800;font-size:13px;cursor:pointer;padding:11px 8px;list-style:none}
+html.bp-adh #app .page--stats .x-stats-details>summary::before{content:'☷';color:#786344;margin-right:7px}
+html.bp-adh #app .page--stats .x-stats-details>summary span{display:block;font-size:10px;font-weight:500;color:#55715e;margin-top:7px}
+html.bp-adh #app .page--stats .x-stats-details[open] .tool-directory{display:block}
+html.bp-adh #app .page--stats .x-stats-details .tool-directory{padding-top:8px}
+html.bp-adh #app .page--stats .x-stats-details .tool-group{margin:12px 0}
+html.bp-adh #app .page--stats .x-stats-details .tool-group h2{font:760 10px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important;letter-spacing:.12em;color:#566958!important;padding:0 7px}
+html.bp-adh #app .page--stats .x-stats-details :is(.tool-grid,.tool-grid--featured){display:flex!important;flex-direction:column!important;gap:0!important}
+html.bp-adh #app .page--stats .x-stats-details .tool-tile{display:flex!important;min-height:42px!important;height:auto!important;align-items:center;gap:6px;
+ background:transparent!important;border:0!important;border-bottom:1px solid #b4bdac!important;border-radius:0!important;
+ box-shadow:none!important;padding:7px 6px!important;color:#1d4430!important}
+html.bp-adh #app .page--stats .x-stats-details .tool-tile.is-active{background:#c3d2bf!important}
+html.bp-adh #app .page--stats .x-stats-details .tool-tile .tool-tile-symbol{font-size:14px!important;flex:0 0 19px!important}
+html.bp-adh #app .page--stats .x-stats-details .tool-tile .tool-tile-copy strong{font-size:12px!important;color:#193b2b!important}
+html.bp-adh #app .page--stats .x-stats-details .tool-tile .tool-tile-copy small{display:none!important}
+html.bp-adh #app .page--stats .x-stats-details .tool-tile .tool-tile-arrow{display:none}
+html.bp-adh #app .page--stats .x-stats-workspace :is(.card,.kpi,.bp-selection-panel){
+ border-radius:3px!important;box-shadow:none!important}
+
+/* HALL – a full-height typographic monument and real physical stepped podium. */
+html.bp-adh #app .page--fame{background:#e8e5da!important;color:#173a2a!important;padding:0!important;border:0!important}
+html.bp-adh #app .page--fame .x-fame{background:#e8e5da;max-width:1160px;margin:auto}
+html.bp-adh #app .page--fame .x-fame-cover{background:#102d22;padding:clamp(22px,4vw,48px);color:#f5ecda;overflow:hidden;position:relative}
+html.bp-adh #app .page--fame .x-fame-top{display:flex;justify-content:space-between;gap:16px;align-items:center;color:#ccba8f;font-size:10px;letter-spacing:.12em;border-bottom:1px solid rgba(233,210,167,.35);padding-bottom:20px}
+html.bp-adh #app .page--fame .x-fame-cover h1{font:500 clamp(52px,10vw,124px)/.89 Georgia,"Iowan Old Style",serif;letter-spacing:-.075em;color:#f8f2e8!important;margin:28px 0}
+html.bp-adh #app .page--fame .x-fame-cover h1 em{font-style:italic;font-size:.72em;color:#dbc295}
+html.bp-adh #app .page--fame .x-fame-cover h1 span{color:#dcb977}
+html.bp-adh #app .page--fame .x-fame-dominant{display:grid;grid-template-columns:minmax(0,1fr) minmax(110px,42%);align-items:stretch;border-top:1px solid rgba(233,210,167,.35)}
+html.bp-adh #app .page--fame .x-fame-king{padding:19px 0}
+html.bp-adh #app .page--fame .x-fame-titles{display:flex;align-items:baseline;gap:15px;margin-top:18px}
+html.bp-adh #app .page--fame .x-fame-titles strong{font:500 clamp(125px,25vw,290px)/.82 Georgia,"Iowan Old Style",serif;letter-spacing:-.1em;color:#f1e6d0}
+html.bp-adh #app .page--fame .x-fame-titles span{font-size:13px;font-weight:790;letter-spacing:.14em;color:#e9cc92}
+html.bp-adh #app .page--fame .x-fame-king button{background:none!important;box-shadow:none!important;border:0!important;
+ border-bottom:1px solid #d6bb87!important;border-radius:0!important;padding:10px 0!important;
+ font:500 clamp(27px,5vw,50px)/1 Georgia,"Iowan Old Style",serif!important;color:#e9d0a0!important}
+html.bp-adh #app .page--fame .x-fame-trophy{display:flex;align-items:center;justify-content:center;position:relative}
+html.bp-adh #app .page--fame .x-fame-trophy:before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse,rgba(197,153,71,.24),transparent 70%)}
+html.bp-adh #app .page--fame .x-fame-trophy img{position:relative;max-height:325px;max-width:100%;width:100%;object-fit:contain;filter:drop-shadow(-16px 16px 19px #06170c)}
+html.bp-adh #app .page--fame .x-fame-podium-section{padding:clamp(28px,5vw,58px) clamp(14px,4vw,42px);background:#e8e5da}
+html.bp-adh #app .page--fame .x-fame-year{font-size:11px;letter-spacing:.1em;color:#52705e}
+html.bp-adh #app .page--fame .x-fame-podium-section .podium{margin:30px 0 0!important;min-height:250px;gap:clamp(5px,2vw,20px)!important}
+html.bp-adh #app .page--fame .x-fame-podium-section .podium>.podium-card{
+ background:#1b4131!important;color:#f9efdd!important;box-shadow:none!important;
+ border:1px solid #9d936e!important;border-bottom:12px solid #806d4b!important;border-radius:0!important;
+ padding:clamp(9px,3vw,30px) 7px!important;min-width:0;transition:transform .18s ease}
+html.bp-adh #app .page--fame .x-fame-podium-section .podium>.podium-card.position-1{background:#294c38!important;border-color:#c39c5c!important;border-bottom:20px solid #c6a064!important}
+html.bp-adh #app .page--fame .x-fame-podium-section .podium>.podium-card.position-2{border-bottom-color:#b7bcb2!important}
+html.bp-adh #app .page--fame .x-fame-podium-section .podium>.podium-card.position-3{border-bottom-color:#a17b57!important}
+html.bp-adh #app .page--fame .x-fame-podium-section .podium .podium-card strong{font:500 clamp(16px,3.5vw,31px)/1 Georgia,"Iowan Old Style",serif;color:#f5edda!important}
+html.bp-adh #app .page--fame .x-fame-podium-section .podium .podium-card b{font:500 clamp(17px,5.5vw,44px)/1 Georgia,"Iowan Old Style",serif!important;color:#e4c289!important}
+html.bp-adh #app .page--fame .x-fame-podium-section .podium .medal{font-size:clamp(15px,3.5vw,33px);color:#e0bb78}
+html.bp-adh #app .page--fame .x-fame-recordbook{padding:clamp(26px,5vw,58px) clamp(14px,4vw,42px);background:#e3e6d9}
+html.bp-adh #app .page--fame .x-fame-recordbook :is(.hof-extended,.hof-record,.record){
+ background:#f2f0e5!important;color:#123729!important;border-radius:1px!important;
+ box-shadow:none!important;border:1px solid #bac4b7!important}
+html.bp-adh #app .page--fame .x-fame-recordbook :is(.hof-record,.record) :is(h2,h3,strong,b){color:#183a2b!important;-webkit-text-fill-color:#183a2b!important}
+html.bp-adh #app .page--fame .x-fame-recordbook :is(.hof-record,.record) :is(span,p,small){color:#3c604d!important;-webkit-text-fill-color:#3c604d!important}
+html.bp-adh #app .page--fame .x-fame-recordbook .hof-tabs .hof-tab{
+ min-height:56px!important;border-radius:0!important;background:#e0e6d9!important;color:#153b2b!important;-webkit-text-fill-color:#153b2b!important;box-shadow:none!important}
+html.bp-adh #app .page--fame .x-fame-recordbook .hof-tabs .hof-tab.selected{
+ background:#1e4733!important;color:#f9eed9!important;-webkit-text-fill-color:#f9eed9!important}
+html.bp-adh #app .page--fame .x-fame-archive{padding:clamp(25px,4vw,42px);background:#183c2d}
+html.bp-adh #app .page--fame .x-fame-archive .x-section-top h2{color:#f3ead5!important}
+html.bp-adh #app .page--fame .x-fame-archive .x-eyebrow{color:#d1ae75}
+html.bp-adh #app .page--fame .x-fame-archive>.card{box-shadow:none!important;border:0!important;border-top:1px solid #a7ad88!important;background:transparent!important;border-radius:0!important}
+html.bp-adh #app .page--fame .x-fame-archive>.card h3{font-family:Georgia,"Iowan Old Style",serif!important;font-weight:500!important}
+
+/* keep extra chapters less upholstered until next structural pass */
+html.bp-adh #app .page--players :is(.playercard,.player-roster-group){box-shadow:none!important}
+html.bp-adh #app .page--history :is(.history-chronicle,.history-feature){border-radius:3px!important;box-shadow:none!important}
+
+@media(max-width:700px){
+ html.bp-adh #app .page--home .x-cover-brand{min-height:112px}
+ html.bp-adh #app .page--home .x-logo{width:150px!important;max-height:96px!important}
+ html.bp-adh #app .page--home .x-cover-stamp{font-size:9px}
+ html.bp-adh #app .page--home .x-champion-layout{min-height:265px;grid-template-columns:minmax(0,1fr) 37%}
+ html.bp-adh #app .page--home .x-champion-points{font-size:clamp(114px,34vw,195px)}
+ html.bp-adh #app .page--home .x-champion-label{margin:10px 0 19px}
+ html.bp-adh #app .page--home .x-champion-stat h1{font-size:clamp(41px,11vw,78px)}
+ html.bp-adh #app .page--home .x-cover-trophy{min-height:230px}
+ html.bp-adh #app .page--home .x-cover-trophy img{max-height:270px}
+ html.bp-adh #app .page--home .x-result-layout{grid-template-columns:minmax(0,1fr);display:block}
+ html.bp-adh #app .page--home .x-result-aside{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:auto;border-left:0;border-top:1px solid #b3bfae}
+ html.bp-adh #app .page--home .x-result-gain{border-right:1px solid #b3bfae;border-bottom:0!important}
+ html.bp-adh #app .page--home :is(.x-result-gain,.x-master){min-height:172px}
+ html.bp-adh #app .page--home :is(.x-result-gain,.x-master)>strong{font-size:clamp(52px,12vw,87px)}
+ html.bp-adh #app .page--home .x-entry-list{gap:0 17px}
+ html.bp-adh #app .page--stats .x-stats-layout{display:block}
+ html.bp-adh #app .page--stats .x-stats-aside{min-height:0;border-left:0;border-top:1px solid #bdc7b6;padding:10px 18px 20px}
+ html.bp-adh #app .page--stats .x-stats-picker{padding:10px 18px}
+ html.bp-adh #app .page--stats .x-stats-mega strong{font-size:53px}
+ html.bp-adh #app .page--stats .x-stats-mast h1{font-size:clamp(42px,10vw,65px)}
+ html.bp-adh #app .page--fame .x-fame-dominant{grid-template-columns:minmax(0,1fr) 35%}
+ html.bp-adh #app .page--fame .x-fame-titles strong{font-size:clamp(105px,33vw,190px)}
+ html.bp-adh #app .page--fame .x-fame-cover h1{font-size:clamp(48px,12vw,82px)}
+}
+@media(max-width:440px){
+ html.bp-adh #app .page--home .x-cover-stamp{font-size:8px}
+ html.bp-adh #app .page--home .x-logo{width:130px!important}
+ html.bp-adh #app .page--home .x-champion-layout{grid-template-columns:minmax(0,1fr) 33%}
+ html.bp-adh #app .page--home .x-cover-trophy span{display:none}
+ html.bp-adh #app .page--home .x-champion-points{font-size:clamp(108px,32vw,145px)}
+ html.bp-adh #app .page--home .x-champion-stat h1{font-size:clamp(36px,10vw,50px)}
+ html.bp-adh #app .page--home .x-champion-stat .x-eyebrow{font-size:9px}
+ html.bp-adh #app .page--home .x-cover-footer{font-size:8px}
+ html.bp-adh #app .page--home .x-entry-list{display:block}
+ html.bp-adh #app .page--home .x-datasets{display:block}
+ html.bp-adh #app .page--home .x-dataset-column+.x-dataset-column{margin-top:36px}
+ html.bp-adh #app .page--home .x-dataset-head{min-height:70px}
+ html.bp-adh #app .page--home .x-figure{padding:7px 11px}
+ html.bp-adh #app .page--home .x-figure small{font-size:9px}
+ html.bp-adh #app .page--fame .x-fame-top{font-size:8px;letter-spacing:.04em}
+ html.bp-adh #app .page--fame .x-fame-titles span{font-size:10px}
+ html.bp-adh #app .page--fame .x-fame-king button{font-size:29px!important}
+ html.bp-adh #app .page--fame .x-fame-year{font-size:9px}
+}
+@media(prefers-reduced-motion:reduce){
+ html.bp-adh #app .page--home .x-home button{transition:none!important}
+}
