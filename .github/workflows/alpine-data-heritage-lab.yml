@@ -1,8 +1,8 @@
-name: Alpine Data Heritage Lab QA (no deploy)
+name: Bärgsunne Data-first Recomposition QA (no deploy)
 on:
   push:
     branches:
-      - design/alpine-data-heritage-phase3-20261024
+      - design/data-first-recomposition-20261025
       - design/data-first-recomposition-20261025
   workflow_dispatch:
 permissions:
