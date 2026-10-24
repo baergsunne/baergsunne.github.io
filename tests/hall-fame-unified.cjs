@@ -31,7 +31,7 @@ const assert=require('node:assert/strict');
    await options.nth(1).click();
    assert(await cells.nth(1).getAttribute('data-bp-column-hidden')===null,'second column restored');
    const record=hall.locator('.hof-record').first();
-   await record.locator('details summary').click();
+   await record.locator('details').first().locator('summary').first().click();
    await page.waitForFunction(()=>document.querySelector('.page--fame .hof-record table.bp-stat-personalized-table'));
    assert.equal(await record.locator('.bp-stat-columns').count(),1,'record rankings also get picker');
    const rootBg=await hall.locator('.hof-extended').evaluate(el=>getComputedStyle(el).backgroundImage);
