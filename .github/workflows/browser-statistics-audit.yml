@@ -7,6 +7,9 @@ on:
   pull_request:
     paths:
       - 'app.js'
+      - 'round-placement.js'
+      - 'tests/last-place-browser.cjs'
+      - 'hall-records.js'
       - 'analyse-studio.js'
       - 'pattern-finder.js'
       - 'tests/stats-single-tool-heading.cjs'
@@ -85,6 +88,7 @@ jobs:
       - run: python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/poker-server.log 2>&1 & 
       - run: node --check tests/public-site-chart-check.cjs
       - run: node tests/no-ghost-startup.cjs
+      - run: node tests/last-place-browser.cjs
       - run: node tests/dark-second-level-forest.cjs
       - run: node tests/stats-single-tool-heading.cjs
       # Check the deliberately narrowed Jahrbuch padding before the longer carousels.
