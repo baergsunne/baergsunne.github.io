@@ -1,0 +1,21 @@
+/* Shared chart inspection on iPhone, iPad and desktop. */
+#app svg[data-bp-chart]{touch-action:pan-y;cursor:crosshair;outline-offset:4px}
+#app svg[data-bp-chart]:focus-visible{outline:2px solid #e8c37e;border-radius:5px}
+#app svg[data-bp-chart] [data-bp-point]{cursor:crosshair}
+.bp-chart-tooltip{
+ position:fixed;z-index:1200;box-sizing:border-box;width:max-content;
+ min-width:142px;max-width:min(300px,calc(100vw - 16px));max-height:min(310px,65vh);
+ overflow:hidden;padding:11px 13px;border:1px solid #e8c37e;border-radius:12px;
+ background:linear-gradient(145deg,#173b2d,#0b241b);color:#f4e8cf;
+ box-shadow:-4px 8px 24px rgba(0,0,0,.5);font:500 13px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+ pointer-events:none;white-space:normal;
+}
+.bp-chart-tooltip[hidden]{display:none!important}
+.bp-chart-tooltip>strong{display:block;color:#edc57e;font-size:14px;margin-bottom:6px}
+.bp-chart-tooltip-row{display:flex;align-items:center;gap:7px;padding:3px 0;min-width:0}
+.bp-chart-tooltip-row i{width:9px;height:9px;flex:none;border-radius:50%}
+.bp-chart-tooltip-row span{min-width:0;flex:1;overflow:hidden;text-overflow:ellipsis}
+.bp-chart-tooltip-row b{flex:none;font-variant-numeric:tabular-nums;color:#fff3d9;font-weight:750;text-align:right}
+.page--profile .bp-form-chart svg{width:100%!important;height:auto!important;max-height:none!important;aspect-ratio:440/250}
+.page--profile .bp-form-chart-labels{margin-top:5px;align-items:center;font-size:clamp(10px,2.6vw,12px)}
+@media(prefers-reduced-motion:reduce){.bp-chart-tooltip{transition:none}}
