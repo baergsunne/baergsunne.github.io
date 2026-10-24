@@ -71,7 +71,7 @@ const assert=require('node:assert/strict');
    await page.locator('.page--fame .hof-tab').filter({hasText:'Hall of Shame',exact:true}).click();
    const drought=page.locator('.page--fame .hof-category:not([hidden]) .hof-record').filter({has:page.locator('.hof-record-top span',{hasText:'Längste Serie ohne Rundensieg'})});
    assert.equal((await drought.locator('.hof-mini-step--1 .hof-mini-name').textContent()).trim(),'Chopfi','historic win drought leader');
-   await drought.locator('details summary').click();
+   await drought.locator('details').first().locator('summary').first().click();
    assert((await drought.locator('details tbody').innerText()).includes('Bröne'),'full ranking retains competitors');
    await page.locator('.page--fame .hof-tab').filter({hasText:'Erfolge',exact:true}).click();
    const titles=page.locator('.page--fame .hof-category:not([hidden]) .hof-record').filter({has:page.locator('.hof-record-top span',{hasText:'Meistertitel'})});
