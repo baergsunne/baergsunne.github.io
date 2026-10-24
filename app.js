@@ -583,6 +583,7 @@ function famePageBase(){
  </section>
  <section class="x-fame-podium-section"><div class="x-section-top"><div><span class="x-eyebrow">DIE EWIGE TITELRANGLISTE</span><h2>Das Podium</h2></div><span class="x-fame-year">2007 — ${esc(db.editions.at(-1)?.year||'2026')}</span></div>${podium}</section>
  <section class="x-fame-recordbook"><div class="x-section-top"><div><span class="x-eyebrow">VERIFIZIERTE ORIGINALERGEBNISSE</span><h2>Rekordbuch</h2></div></div>${window.BaergsunneHallRecords?window.BaergsunneHallRecords.render():''}</section>
+ <section class="x-fame-filter"><details><summary>Spieler und Jahre filtern <span aria-hidden="true">⌄</span></summary>${filter()}</details></section>
  <section class="x-fame-archive"><div class="x-section-top"><div><span class="x-eyebrow">DIE GANZE HISTORIE</span><h2>Jahresmeister</h2></div></div>${card('Ewige Titelträger',table('fame-titles',[{key:'name',title:'Spieler',render:x=>playerLink(x.name)},{key:'titles',title:'Titel'},{key:'podiumYears',title:'Jahrespodien'},{key:'seasons',title:'Teilnahmen'},{key:'wins',title:'Rundensiege'},{key:'placeAvg',title:'Ø Rang',render:x=>pointsFmt(x.placeAvg)}],ss))}${card('Sämtliche Jahreschampions',table('fame-champ',[{key:'year',title:'Jahr',render:x=>yearLink(x.year)},{key:'player_id',title:'Champion',render:x=>playerLink(x.player_id)},{key:'points',title:'Punkte'}],champ))}</section>
  </div>`;
 }
@@ -888,7 +889,7 @@ function draw(){
    catch(retryError){console.error('Statistik-Wiederherstellung fehlgeschlagen',retryError);content='<section class="card"><h2>Statistik derzeit nicht verfügbar</h2><p>Bitte versuche die Seite neu zu laden. Deine historischen Ergebnisse bleiben erhalten.</p><button class="btn" data-action="go" data-value="home">Zur Startseite</button></section>';}
   }else{content='<section class="card"><h2>Ansicht nicht verfügbar</h2><button class="btn" data-action="go" data-value="home">Zur Startseite</button></section>';}
  }
- div.innerHTML=header()+navigation()+`<main>${!['home','live','stats','history','players','profile'].includes(state.page)?filter():''}<div class="page page--${state.page}" id="page">${(['stats','fame'].includes(state.page)?'':premiumMasthead(state.page))}${content}</div></main><footer class="premium-footer"><b>BÄRGSUNNE POKER</b><span>Lenk · Seit 2007</span></footer>`+(modal?pickerModal():'');
+ div.innerHTML=header()+navigation()+`<main>${!['home','live','stats','history','players','profile','fame'].includes(state.page)?filter():''}<div class="page page--${state.page}" id="page">${(['stats','fame'].includes(state.page)?'':premiumMasthead(state.page))}${content}</div></main><footer class="premium-footer"><b>BÄRGSUNNE POKER</b><span>Lenk · Seit 2007</span></footer>`+(modal?pickerModal():'');
  const rail=document.getElementById('yearrail');if(rail){const item=rail.querySelector('.current');if(item)item.scrollIntoView({block:'nearest',inline:'center'});}
  if(state.page==='stats'&&state.tab==='race')syncRaceStickyTop();
  document.title='Bärgsunne Poker — '+state.page.toUpperCase();
