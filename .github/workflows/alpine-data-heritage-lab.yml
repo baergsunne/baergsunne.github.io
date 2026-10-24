@@ -1,0 +1,45 @@
+name: Alpine Data Heritage Lab QA (no deploy)
+on:
+  push:
+    branches:
+      - design/alpine-data-heritage-phase3-20261024
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  preview-regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout isolated branch
+        uses: actions/checkout@v4
+      - name: Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Syntax
+        run: |
+          node --check app.js
+          node --check design-lab/verify-preview.cjs
+      - name: Baseline functional suite
+        run: npm test
+      - name: Local-only browser tool
+        run: |
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium
+      - name: Start local preview without Cloudflare API
+        run: |
+          python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/adh-lab-server.log 2>&1 &
+          sleep 2
+      - name: Verify all six sections and viewports
+        run: node design-lab/verify-preview.cjs
+      - name: Save isolated QA evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: alpine-data-heritage-phase3-qa
+          path: |
+            design-lab/qa-screenshots/
+            design-lab/qa-phase3-results.json
+          if-no-files-found: ignore
+          retention-days: 14
