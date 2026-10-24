@@ -1,0 +1,25 @@
+name: Hall of Fame podium regression
+on:
+  pull_request:
+    paths:
+      - 'hall-podium.css'
+      - 'index.html'
+      - 'app.js'
+      - 'layout-fix.css'
+      - 'tests/hall-podium-layout.cjs'
+      - '.github/workflows/hall-podium-regression.yml'
+jobs:
+  podium:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-save playwright
+      - run: npx playwright install chromium
+      - run: python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/poker-podium-server.log 2>&1 &
+      - run: node tests/hall-podium-layout.cjs
