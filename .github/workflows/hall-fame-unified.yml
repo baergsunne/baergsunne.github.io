@@ -1,0 +1,29 @@
+name: Hall of Fame unified design regression
+on:
+  pull_request:
+    paths:
+      - 'stats-table-personalization.js'
+      - 'stats-table-personalization.css'
+      - 'hall-unified-design.css'
+      - 'hall-podium.css'
+      - 'hall-records.js'
+      - 'app.js'
+      - 'index.html'
+      - 'tests/hall-fame-unified.cjs'
+      - '.github/workflows/hall-fame-unified.yml'
+jobs:
+  hall-of-fame:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-save playwright
+      - run: npx playwright install chromium
+      - run: node --check stats-table-personalization.js && node --check app.js && node --check hall-records.js
+      - run: python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/hall-server.log 2>&1 &
+      - run: node tests/hall-fame-unified.cjs
