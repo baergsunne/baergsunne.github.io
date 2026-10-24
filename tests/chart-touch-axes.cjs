@@ -23,6 +23,8 @@ const assert=require('node:assert/strict');
    const tooltip=page.locator('.bp-chart-tooltip:not([hidden])');
    assert(await tooltip.count()===1,'mouse chart tooltip visible');
    assert((await tooltip.innerText()).includes('Platz'),'tooltip includes actual placing');
+   if(width<500){await page.touchscreen.tap(first.x+first.width/2,first.y+first.height/2);assert(await tooltip.count()===1,'finger tap reveals values');}
+
    const career=page.locator('.chart-svg[data-bp-chart="line"]');
    assert.equal(await career.count(),1,'career chart inspectable');
    await career.locator('[data-bp-point]').first().scrollIntoViewIfNeeded();
