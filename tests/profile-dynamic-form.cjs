@@ -48,7 +48,7 @@ const assert=require('node:assert/strict');
    r=await inspect();assert.equal(r.n,1);assert.equal(r.tiles[7].value,'–');
    await page.evaluate(()=>{state.page='profile';state.profile='Frauchi';draw()});
    assert.equal(await page.locator('.bp-form-tile').count(),8,'other profile has 8 tiles');
-   assert.equal(await page.locator('[data-form-custom]').inputValue(),'10','profile defaults independently');
+   assert.equal(Number(await page.locator('[data-form-custom]').inputValue()),await page.evaluate(()=>Math.min(10,legacyPerson('Frauchi').length)),'profile defaults independently and respects available rounds');
    await page.evaluate(()=>{state.page='profile';state.profile='Schnarre';draw()});
    assert.equal(await page.locator('[data-form-custom]').inputValue(),'1','prior selection preserved');
    assert.deepEqual(errors,[],'browser errors '+width);
