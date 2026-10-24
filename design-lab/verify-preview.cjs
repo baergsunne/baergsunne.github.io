@@ -43,15 +43,15 @@ const assert=(condition,message)=>{if(!condition)throw new Error(message)};
      assert(state.stylesheetLoaded,"Design stylesheet missing");
      assert(state.pageWidth<=state.viewport+3,"Page horizontally overflows: "+state.pageWidth+" > "+state.viewport);
      if(name==="home"){
-      assert(await page.locator(".adh-scoreboard").count()===1,"Real-data scoreboard missing");
-      const text=await page.locator(".adh-scoreboard").innerText();
+      assert(await page.locator(".x-result-layout").count()===1,"Data-first result sheet missing");
+      const text=await page.locator(".x-result-layout").innerText();
       assert(text.includes("Frauchi")&&text.includes("König")&&text.includes("+11"),"Real-data endstand/lead not correct");
-      assert(await page.locator(".discovery-hero-logo").count()===1,"Premium logo hero missing");
+      assert(await page.locator(".x-cover .discovery-hero-logo").count()===1,"Premium logo hero missing");
      }
      if(name==="history")assert(await page.locator(".history-chronicle").count()===1,"History carousel missing");
-     if(name==="stats")assert(await page.locator(".tool-directory .tool-tile").count()>=10,"Statistics tool directory missing");
+     if(name==="stats"){assert(await page.locator(".x-stats-workspace .stat-content").count()===1,"Active statistics first missing");assert(await page.locator(".tool-directory .tool-tile").count()>=10,"Statistics tools missing");}
      if(name==="players")assert((await page.locator(".page--players").innerText()).includes("Frauchi"),"Players missing");
-     if(name==="fame")assert((await page.locator(".page--fame .podium").innerText()).includes("Mike"),"Record champion missing");
+     if(name==="fame"){assert((await page.locator(".page--fame .podium").innerText()).includes("Mike"),"Record champion missing");assert(await page.locator(".x-fame-dominant").count()===1,"New recordmaster stage missing");}
      if(name==="live")assert(await page.locator(".discovery-livepage").count()===1,"Live page missing");
      if((width===390||width===1440)&&["home","stats","fame"].includes(name))
       await page.screenshot({path:path.join(out,name+"-"+width+".png"),fullPage:true});
@@ -62,7 +62,7 @@ const assert=(condition,message)=>{if(!condition)throw new Error(message)};
    if(width===390){
     try{
      await page.goto(base+"/#home",{waitUntil:"domcontentloaded"});
-     await page.locator('.adh-place[data-value="Frauchi"]').first().click({timeout:5000});
+     await page.locator('.x-table-row[data-value="Frauchi"]').first().click({timeout:5000});
      await page.locator(".page--profile").first().waitFor({timeout:6000});
      report.playerNavigation=true;
     }catch(e){report.playerNavigation=false;report.errors.push({route:"home→Frauchi profile",error:String(e)})}
