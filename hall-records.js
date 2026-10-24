@@ -52,6 +52,106 @@ function annualMetrics(e){
  });
  return {year:e.year,roundCount:rs.length,champion,changes,comeback,people};
 }
+
+/* Story records: every value comes from documented round results and official
+   final standings. A shared points minimum is a shared red lantern; an
+   alphabetically ordered tiebreak never pretends to be an elimination order. */
+function storyMetrics(editions){
+ const years=[...editions].sort((a,b)=>a.year-b.year);
+ const people=[...new Set(years.flatMap(e=>e.players))];
+ const all=new Map(people.map(p=>[p,[]]));
+ const seasons=new Map(people.map(p=>[p,[]]));
+ const yearly=new Map();
+ const data={};
+ const put=(key,name,value,extra={})=>{
+  if(!Number.isFinite(value))return;
+  (data[key]||(data[key]=[])).push({name,value,...extra});
+ };
+ const streak=(items,qualifies)=>{
+  let best=0,run=0;
+  for(const x of items){run=qualifies(x)?run+1:0;best=Math.max(best,run);}
+  return best;
+ };
+ for(const e of years){
+  const rounds=[...e.rounds].sort((a,b)=>a.number-b.number);
+  const standing=new Map(e.official_standings.map(x=>[x.player_id,x]));
+  const points=new Map(e.players.map(p=>[p,0]));
+  const wins=new Map(e.players.map(p=>[p,0]));
+  const snapshots=[];
+  for(const r of rounds){
+   const minPoints=Math.min(...r.results.map(x=>x.points));
+   for(const x of r.results){
+    points.set(x.player_id,(points.get(x.player_id)||0)+x.points);
+    if(x.place===1)wins.set(x.player_id,(wins.get(x.player_id)||0)+1);
+    all.get(x.player_id).push({year:e.year,round:r.number,place:x.place,points:x.points,
+      last:x.points===minPoints,final:r===rounds.at(-1)});
+   }
+   const order=[...e.players].sort((a,b)=>points.get(b)-points.get(a)||wins.get(b)-wins.get(a)||a.localeCompare(b,'de'));
+   const high=points.get(order[0]),low=points.get(order.at(-1));
+   const leaders=order.filter(p=>points.get(p)===high);
+   snapshots.push({
+    ranks:new Map(order.map((p,i)=>[p,i+1])),points:new Map(points),
+    sole:leaders.length===1?leaders[0]:null,
+    lantern:new Set(order.filter(p=>points.get(p)===low))
+   });
+  }
+  yearly.set(e.year,{e,rounds,standing,snapshots});
+  const champion=e.official_standings.find(x=>x.place===1)?.player_id;
+  for(const p of e.players){
+   const finish=standing.get(p);
+   seasons.get(p).push({year:e.year,place:finish.place,podium:finish.place<=3,champion:finish.place===1});
+   if(rounds.length>=3){
+    const before=snapshots.at(-3).ranks.get(p);
+    put('finalSprint',p+' ('+e.year+')',before-finish.place,{year:e.year});
+   }
+   const redLantern=streak(snapshots,s=>s.lantern.has(p));
+   put('lanternRun',p,redLantern);
+   if(finish.place!==1){
+    let lostLead=0;
+    for(const snap of snapshots.slice(0,-1)){
+     if(snap.sole!==p)continue;
+     const rival=Math.max(...e.players.filter(x=>x!==p).map(x=>snap.points.get(x)));
+     lostLead=Math.max(lostLead,snap.points.get(p)-rival);
+    }
+    if(lostLead>0)put('lostLead',p+' ('+e.year+')',sevenRoundValue(lostLead,rounds.length),
+      {year:e.year,rawValue:lostLead,rawUnit:'Punkte Vorsprung',roundCount:rounds.length});
+   }
+   if(champion===p&&snapshots[0]?.sole===p)put('startFinish',p,1,{year:e.year});
+   if(champion===p&&snapshots.slice(0,-1).some(s=>s.lantern.has(p)))put('lastChampion',p,1,{year:e.year});
+  }
+ }
+ const winnerYears=years.map(e=>e.official_standings.find(x=>x.place===1)?.player_id);
+ for(const p of people){
+  const rs=all.get(p),ss=seasons.get(p);
+  put('titleRun',p,streak(winnerYears,x=>x===p));
+  put('finalRoundWins',p,rs.filter(x=>x.final&&x.place===1).length);
+  const firstTitle=ss.findIndex(x=>x.champion);
+  if(firstTitle>=0)put('fastestChampion',p,firstTitle+1,{year:ss[firstTitle].year});
+  put('podiumYearRun',p,streak(years,e=>e.official_standings.some(x=>x.player_id===p&&x.place<=3)));
+  const titleYears=ss.filter(x=>x.champion).map(x=>x.year);
+  if(titleYears.length>1)put('titleGap',p,Math.max(...titleYears.slice(1).map((year,i)=>year-titleYears[i])));
+  put('winlessRun',p,streak(rs,x=>x.place!==1));
+  put('zeroRun',p,streak(rs,x=>x.points===0));
+  put('podiumYearDrought',p,streak(ss,x=>!x.podium));
+  put('roundPodiumDrought',p,streak(rs,x=>x.place>3));
+  put('lastFinal',p,rs.filter(x=>x.final&&x.last).length);
+  const missed=ss.filter(x=>{
+   if(x.champion)return false;
+   return yearly.get(x.year).snapshots.slice(0,-1).some(s=>s.sole===p);
+  }).length;
+  put('missedTitles',p,missed);
+  for(let i=1;i<ss.length;i++)put('seasonCrash',p+' ('+ss[i].year+')',ss[i].place-ss[i-1].place,
+    {year:ss[i].year,sourceNote:'Vorherige Teilnahme: '+ss[i-1].year+', Rang '+ss[i-1].place+'; danach Rang '+ss[i].place+'.'});
+ }
+ for(let i=1;i<years.length;i++){
+  const prior=winnerYears[i-1],now=yearly.get(years[i].year);
+  const position=now.standing.get(prior);
+  if(position)put('defenderCrash',prior+' ('+years[i].year+')',position.place,{year:years[i].year,
+    sourceNote:'Titel im vorherigen ausgetragenen Turnier '+years[i-1].year+'; Schlussrang '+position.place+' in '+years[i].year+'.'});
+ }
+ return data;
+}
+
 function calculate(seed){
  const editions=seed.editions||[];
  const players=new Map();const seasons=[];const yearRows=[];const pair=new Map();const annual=[];
