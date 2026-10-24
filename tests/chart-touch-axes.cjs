@@ -23,7 +23,18 @@ const assert=require('node:assert/strict');
    const tooltip=page.locator('.bp-chart-tooltip:not([hidden])');
    assert(await tooltip.count()===1,'mouse chart tooltip visible');
    assert((await tooltip.innerText()).includes('Platz'),'tooltip includes actual placing');
-   if(width<500){await page.touchscreen.tap(first.x+first.width/2,first.y+first.height/2);assert(await tooltip.count()===1,'finger tap reveals values');}
+   if(width<500){
+     await page.touchscreen.tap(first.x+first.width/2,first.y+first.height/2);
+     assert(await tooltip.count()===0,'tooltip must disappear immediately after lifting finger');
+     assert.equal(await page.locator('.bp-chart-guide').count(),0,'crosshair must disappear after touch release');
+     await page.evaluate(({x,y})=>{
+       const svg=document.querySelector('.bp-form-chart svg');
+       svg.dispatchEvent(new PointerEvent('pointerdown',{bubbles:true,pointerType:'touch',pointerId:9,clientX:x,clientY:y}));
+     },{x:first.x+first.width/2,y:first.y+first.height/2});
+     assert(await tooltip.count()===1,'tooltip visible while finger is down');
+     await page.evaluate(()=>document.dispatchEvent(new PointerEvent('pointercancel',{bubbles:true,pointerType:'touch',pointerId:9})));
+     assert(await tooltip.count()===0,'tooltip disappears on interrupted touch');
+   }
 
    const career=page.locator('.chart-svg[data-bp-chart="line"]');
    assert.equal(await career.count(),1,'career chart inspectable');
