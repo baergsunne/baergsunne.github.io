@@ -49,7 +49,7 @@ const assert=(condition,message)=>{if(!condition)throw new Error(message)};
       assert(await page.locator(".discovery-hero-logo").count()===1,"Premium logo hero missing");
      }
      if(name==="history")assert(await page.locator(".history-chronicle").count()===1,"History carousel missing");
-     if(name==="stats")assert(await page.locator("#bp-tool-select").count()===1,"Statistics tool selector missing");
+     if(name==="stats")assert(await page.locator(".tool-directory .tool-tile").count()>=10,"Statistics tool directory missing");
      if(name==="players")assert((await page.locator(".page--players").innerText()).includes("Frauchi"),"Players missing");
      if(name==="fame")assert((await page.locator(".page--fame .podium").innerText()).includes("Mike"),"Record champion missing");
      if(name==="live")assert(await page.locator(".discovery-livepage").count()===1,"Live page missing");
