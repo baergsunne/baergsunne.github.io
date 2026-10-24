@@ -202,7 +202,7 @@ function profileResultExplanation(id,data){
  return message;
 }
 function table(id,columns,data,opts={}){
- const st=state.sort[id]||{key:columns[0]?.key||'',dir:'asc'};
+ const st=state.sort[id]||(id==='fame-titles'?{key:'titles',dir:'desc'}:id==='fame-champ'?{key:'year',dir:'desc'}:{key:columns[0]?.key||'',dir:'asc'});
  const sorted=[...data].sort((a,b)=>{let av=a[st.key],bv=b[st.key];if(av==null&&bv!=null)return 1;if(bv==null&&av!=null)return -1;if(av==null&&bv==null)return 0;const cmp=typeof av==='number'&&typeof bv==='number'?av-bv:String(av).localeCompare(String(bv),'de-CH',{numeric:true});return cmp*(st.dir==='asc'?1:-1)});
  const ranking=/^(hist-|round-)/.test(id),compact=columns.length<=5;
  const unique=columns.filter((c,i)=>columns.findIndex(x=>x.key===c.key)===i);
