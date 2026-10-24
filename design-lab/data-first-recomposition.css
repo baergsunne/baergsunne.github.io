@@ -529,3 +529,12 @@ html.bp-adh #app .page--live:has(.x-live){padding:0!important;border:0!important
  #app .x-live .discovery-livepage{padding:12px 10px 33px}
  #app .x-live .x-live-stage{padding:12px}
 }
+
+
+/* Readability after removing the obsolete overlapping design layer. */
+html.bp-adh #app .page--stats .x-stats .bp-stat-tool-heading h2,
+html.bp-adh #app .page--stats .x-stats .bp-stat-tool-heading p{
+ color:#183c2c!important;-webkit-text-fill-color:#183c2c!important;opacity:1!important;
+ text-shadow:none!important}
+html.bp-adh #app .page--stats .x-stats .bp-stat-tool-heading p{
+ color:#385d47!important;-webkit-text-fill-color:#385d47!important}
