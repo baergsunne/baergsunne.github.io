@@ -244,13 +244,19 @@ function home(){
  const numRounds=db.editions.reduce((n,e)=>n+e.rounds.length,0);
  const hall=db.editions.flatMap(e=>e.official_standings.filter(x=>x.place===1).map(x=>({year:e.year,player:x.player_id})));const counts={};hall.forEach(x=>counts[x.player]=(counts[x.player]||0)+1);
  const top=Object.entries(counts).sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0],'de'))[0];
+ // Functional design-lab: summary derived from the verified archive, not fixtures.
+ const adhStandings=[...latest.official_standings].sort((a,b)=>Number(a.place)-Number(b.place)||a.player_id.localeCompare(b.player_id,'de'));
+ const adhRunner=adhStandings.find(x=>Number(x.place)===2);
+ const adhLead=winner&&adhRunner?Number(winner.points)-Number(adhRunner.points):null;
+ const adhRanking=`<section class="adh-scoreboard" aria-label="Offizieller Turnierendstand ${esc(latest.year)} – Top 5"><div class="adh-scoreboard-main"><div class="adh-scoreboard-title"><strong>Endstand ${esc(latest.year)}</strong><small>TOP 5 / ${adhStandings.length}</small></div>${adhStandings.slice(0,5).map(r=>`<button type="button" class="adh-place" data-action="profile" data-value="${esc(r.player_id)}" aria-label="Spielerprofil ${esc(r.player_id)} öffnen"><span class="adh-rank">${String(r.place).padStart(2,'0')}</span><span class="adh-name">${esc(r.player_id)}</span><span class="adh-points">${esc(pointsFmt(Number(r.points)))}</span></button>`).join('')}</div><aside class="adh-scoreboard-aside" aria-label="Meisterschaftsabstand"><span>Vorsprung</span><b>${adhLead===null?'–':'+'+esc(pointsFmt(adhLead))}</b><span>Punkte</span><small>${adhRunner?'auf Rang 2 · '+esc(adhRunner.player_id):''}</small></aside></section>`;
  const live=liveWidget(true);
  const feature=(title,desc,action,value,icon,content)=>`<button class="discovery-feature" data-action="${action}" data-value="${esc(value)}"><span class="discovery-feature-icon">${icon}</span><span class="discovery-feature-copy"><strong>${title}</strong><small>${desc}</small>${content?`<em>${content}</em>`:''}</span><span class="discovery-feature-arrow">↗</span></button>`;
  return `<div class="discovery-home"><section class="discovery-hero" aria-label="Bärgsunne Poker"><div class="discovery-hero-inner"><img class="discovery-hero-logo" src="assets/logo-premium.webp" alt="Bärgsunne Poker – Lenk" decoding="async"/></div></section>
  <section class="discovery-counts" aria-label="Archiv in Zahlen"><div><strong>${db.editions.length}</strong><span>Turniere</span></div><div><strong>${players.size}</strong><span>Spieler</span></div><div><strong>${numRounds}</strong><span>Runden</span></div></section>
  <section class="discovery-champion" aria-label="Amtierender Champion ${latest.year}"><div class="discovery-champion-copy"><span class="overline">AMTIERENDER CHAMPION</span><strong class="discovery-champion-year">${latest.year}</strong><h2>${winner?esc(winner.player_id):'Kein offizieller Sieger'}</h2><p>${winner?'<strong>'+pointsFmt(winner.points)+' Punkte</strong>':'Noch kein bestätigter Sieger'}</p><button type="button" data-action="openyear" data-value="${latest.year}">Titelweg im Jahrbuch ${latest.year} ansehen</button></div><div class="discovery-champion-trophy"><img src="assets/trophy-premium.webp" loading="eager" fetchpriority="high" decoding="async" alt="Originaler Bärgsunne-Turnierpokal"/></div></section>
+ ${adhRanking}
  ${live}
- <section class="discovery-section"><div class="discovery-head discovery-head--single"><h2>Der Einstieg</h2></div><div class="discovery-features">
+ <section class="discovery-section"<div class="discovery-head discovery-head--single"><h2>Der Einstieg</h2></div><div class="discovery-features">
  ${feature('Historie','Turniere erleben','go','history',icon('archive'),`${ordered.length} Jahrbücher`)}
  ${feature('Statistiken','Analysen & Rekorde','go','stats',icon('chart-trend'),'Studio & mehr')}
  ${feature('Hall of Fame','Meister & Rekorde','go','fame',icon('crown'),top?`${esc(top[0])}: ${top[1]} Titel`:null)}
