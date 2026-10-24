@@ -47,11 +47,11 @@ const assert=require('node:assert/strict');
      assert.deepEqual(await nodes.evaluateAll(e=>e.map(x=>x.className.match(/hof-mini-step--[123]/)[0])),['hof-mini-step--2','hof-mini-step--1','hof-mini-step--3']);
      const y=await nodes.evaluateAll(e=>e.map(x=>x.getBoundingClientRect().height));
      assert(y[1]>y[0]&&y[0]>y[2],'winner podium is tallest');
-     const details=record.locator(':scope > details');
-     await details.locator('summary').click();
+     const details=record.locator('details').first();
+     await details.locator('summary').first().click();
      assert(await details.evaluate(x=>x.open),'complete ranking opens below podium');
      assert(await details.locator('table tbody tr').count()>0,'ranking contains entries');
-     await details.locator('summary').click();
+     await details.locator('summary').first().click();
      assert(!(await details.evaluate(x=>x.open)),'ranking closes again');
     }
    }
@@ -59,7 +59,7 @@ const assert=require('node:assert/strict');
    const seasonPoints=page.locator('.page--fame .hof-category:not([hidden]) .hof-record').filter({has:page.locator('.hof-record-top span', {hasText:'Höchste Saisonpunkte'})});
    assert.equal(await seasonPoints.locator('.hof-mini-step--1 .hof-mini-name').textContent(),'Frauchi','normalized points leader 2026');
    assert.equal((await seasonPoints.locator('.hof-mini-step--1 .hof-mini-value').textContent()).trim(),'50','2026 score normalized to 7');
-   await seasonPoints.locator(':scope > details > summary').click();
+   await seasonPoints.getByText('Vollständige Rangliste ansehen').click();
    assert((await seasonPoints.locator('details tbody').innerText()).includes('Original: 76 Punkte in 15 Runden.'),'historic original in ranking');
    const firstThree=await seasonPoints.locator('details tbody tr').evaluateAll(rows=>rows.slice(0,3).map(x=>x.querySelectorAll('td')[1].textContent.trim()));
    const podiumThree=await seasonPoints.locator('.hof-mini-step:not(.hof-mini-step--empty) .hof-mini-name').allTextContents();
