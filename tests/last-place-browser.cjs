@@ -34,7 +34,7 @@ const assert=require('node:assert/strict');
      sourceUnchanged:r2026.results.find(x=>x.player_id==='Chopfi').place===9
     };
    });
-   assert.equal(check.records,56,'Central historical recordbook now has 56 record types');
+   assert.equal(check.records,50,'Central historical recordbook now has 50 curated record types');
    assert.equal(check["positive2025"],2);
    assert.equal(check["last2025"].length,1);
    assert.deepEqual(check["joint2026"],['Chopfi','Keel']);
