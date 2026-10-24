@@ -52,6 +52,112 @@ function annualMetrics(e){
  });
  return {year:e.year,roundCount:rs.length,champion,changes,comeback,people};
 }
+
+/* Story records: every value comes from documented round results and official
+   final standings. A shared points minimum is a shared red lantern; an
+   alphabetically ordered tiebreak never pretends to be an elimination order. */
+function storyMetrics(editions){
+ const years=[...editions].sort((a,b)=>a.year-b.year);
+ const people=[...new Set(years.flatMap(e=>e.players))];
+ const all=new Map(people.map(p=>[p,[]]));
+ const seasons=new Map(people.map(p=>[p,[]]));
+ const yearly=new Map();
+ const data={};
+ const maxLantern=new Map(people.map(p=>[p,0]));
+ const startFinish=new Map(people.map(p=>[p,0]));
+ const lastChampion=new Map(people.map(p=>[p,0]));
+ const put=(key,name,value,extra={})=>{
+  if(!Number.isFinite(value))return;
+  (data[key]||(data[key]=[])).push({name,value,...extra});
+ };
+ const streak=(items,qualifies)=>{
+  let best=0,run=0;
+  for(const x of items){run=qualifies(x)?run+1:0;best=Math.max(best,run);}
+  return best;
+ };
+ for(const e of years){
+  const rounds=[...e.rounds].sort((a,b)=>a.number-b.number);
+  const standing=new Map(e.official_standings.map(x=>[x.player_id,x]));
+  const points=new Map(e.players.map(p=>[p,0]));
+  const wins=new Map(e.players.map(p=>[p,0]));
+  const snapshots=[];
+  for(const r of rounds){
+   const minPoints=Math.min(...r.results.map(x=>x.points));
+   for(const x of r.results){
+    points.set(x.player_id,(points.get(x.player_id)||0)+x.points);
+    if(x.place===1)wins.set(x.player_id,(wins.get(x.player_id)||0)+1);
+    all.get(x.player_id).push({year:e.year,round:r.number,place:x.place,points:x.points,
+      last:x.points===minPoints,final:r===rounds.at(-1)});
+   }
+   const order=[...e.players].sort((a,b)=>points.get(b)-points.get(a)||wins.get(b)-wins.get(a)||a.localeCompare(b,'de'));
+   const high=points.get(order[0]),low=points.get(order.at(-1));
+   const leaders=order.filter(p=>points.get(p)===high);
+   snapshots.push({
+    ranks:new Map(order.map((p,i)=>[p,i+1])),points:new Map(points),
+    sole:leaders.length===1?leaders[0]:null,
+    lantern:new Set(order.filter(p=>points.get(p)===low))
+   });
+  }
+  yearly.set(e.year,{e,rounds,standing,snapshots});
+  const champion=e.official_standings.find(x=>x.place===1)?.player_id;
+  for(const p of e.players){
+   const finish=standing.get(p);
+   seasons.get(p).push({year:e.year,place:finish.place,podium:finish.place<=3,champion:finish.place===1});
+   if(rounds.length>=3){
+    const before=snapshots.at(-3).ranks.get(p);
+    put('finalSprint',p+' ('+e.year+')',before-finish.place,{year:e.year});
+   }
+   const redLantern=streak(snapshots,s=>s.lantern.has(p));
+   maxLantern.set(p,Math.max(maxLantern.get(p),redLantern));
+   if(finish.place!==1){
+    let lostLead=0;
+    for(const snap of snapshots.slice(0,-1)){
+     if(snap.sole!==p)continue;
+     const rival=Math.max(...e.players.filter(x=>x!==p).map(x=>snap.points.get(x)));
+     lostLead=Math.max(lostLead,snap.points.get(p)-rival);
+    }
+    if(lostLead>0)put('lostLead',p+' ('+e.year+')',sevenRoundValue(lostLead,rounds.length),
+      {year:e.year,rawValue:lostLead,rawUnit:'Punkte Vorsprung',roundCount:rounds.length});
+   }
+   if(champion===p&&snapshots[0]?.sole===p)startFinish.set(p,startFinish.get(p)+1);
+   if(champion===p&&snapshots.slice(0,-1).some(s=>s.lantern.has(p)))lastChampion.set(p,lastChampion.get(p)+1);
+  }
+ }
+ const winnerYears=years.map(e=>e.official_standings.find(x=>x.place===1)?.player_id);
+ for(const p of people){
+  const rs=all.get(p),ss=seasons.get(p);
+  put('titleRun',p,streak(winnerYears,x=>x===p));
+  put('lanternRun',p,maxLantern.get(p));
+  if(startFinish.get(p)>0)put('startFinish',p,startFinish.get(p));
+  if(lastChampion.get(p)>0)put('lastChampion',p,lastChampion.get(p));
+  put('finalRoundWins',p,rs.filter(x=>x.final&&x.place===1).length);
+  const firstTitle=ss.findIndex(x=>x.champion);
+  if(firstTitle>=0)put('fastestChampion',p,firstTitle+1,{year:ss[firstTitle].year});
+  put('podiumYearRun',p,streak(years,e=>e.official_standings.some(x=>x.player_id===p&&x.place<=3)));
+  const titleYears=ss.filter(x=>x.champion).map(x=>x.year);
+  if(titleYears.length>1)put('titleGap',p,Math.max(...titleYears.slice(1).map((year,i)=>year-titleYears[i])));
+  put('winlessRun',p,streak(rs,x=>x.place!==1));
+  put('zeroRun',p,streak(rs,x=>x.points===0));
+  put('podiumYearDrought',p,streak(ss,x=>!x.podium));
+  put('roundPodiumDrought',p,streak(rs,x=>x.place>3));
+  put('lastFinal',p,rs.filter(x=>x.final&&x.last).length);
+  const missed=ss.filter(x=>{
+   if(x.champion)return false;
+   return yearly.get(x.year).snapshots.slice(0,-1).some(s=>s.sole===p);
+  }).length;
+  put('missedTitles',p,missed);
+  for(let i=1;i<ss.length;i++)put('seasonCrash',p+' ('+ss[i].year+')',ss[i].place-ss[i-1].place,
+    {year:ss[i].year,sourceNote:'Vorherige Teilnahme: '+ss[i-1].year+', Rang '+ss[i-1].place+'; danach Rang '+ss[i].place+'.'});
+ }
+ for(let i=1;i<years.length;i++){
+  const prior=winnerYears[i-1],now=yearly.get(years[i].year);
+  const position=now.standing.get(prior);
+  if(position)put('defenderCrash',prior+' ('+years[i].year+')',position.place,{year:years[i].year,
+    sourceNote:'Titel im vorherigen ausgetragenen Turnier '+years[i-1].year+'; Schlussrang '+position.place+' in '+years[i].year+'.'});
+ }
+ return data;
+}
+
 function calculate(seed){
  const editions=seed.editions||[];
  const players=new Map();const seasons=[];const yearRows=[];const pair=new Map();const annual=[];
@@ -91,6 +197,7 @@ function calculate(seed){
   });
  }
  const pvals=(key,filter=()=>true)=>ps.filter(filter).map(p=>({name:p.name,value:p[key]}));
+ const stories=storyMetrics(editions);
  add('Erfolge','Meistertitel',pvals('titles'),'Titel','Anzahl offizieller Schlussränge 1.');
  add('Erfolge','Jahrespodien',pvals('podium'),'Podien','Offizieller Schlussrang 1 bis 3.');
  add('Erfolge','Vizemeisterschaften',pvals('runner'),'zweite Plätze','Offizieller Schlussrang 2.');
@@ -115,6 +222,16 @@ function calculate(seed){
  add('Hall of Shame','Grösster Absturz innerhalb einer Saison',annual.flatMap(a=>a.people.map(p=>({name:p.name+' ('+a.year+')',year:a.year,value:p.fall}))),'Plätze','Grösster Rückfall von einem vorherigen besten zu einem späteren schlechteren kumulierten Zwischenrang im gleichen Turnier.');
  add('Hall of Shame','Meiste Runden mit roter Laterne in einem Jahr',annual.flatMap(a=>a.people.map(p=>seasonValue(p.name,a.year,p.lantern,'Runden mit roter Laterne',a.roundCount))),'Runden','Runden mit den niedrigsten kumulierten Gesamtpunkten; auch Gleichstände zählen, auf 7 Runden umgerechnet.');
  add('Hall of Shame','Grösster Fall nach einer Runde',annual.flatMap(a=>a.people.map(p=>({name:p.name+' ('+a.year+')',year:a.year,value:p.singleFall}))),'Plätze','Grösster Rangverlust in der kumulierten Rangliste zwischen zwei unmittelbar aufeinanderfolgenden Runden.');
+
+ add('Erfolge','Längste Meistertitel-Serie',stories.titleRun,'Titel','Meiste Meistertitel in unmittelbar aufeinanderfolgenden ausgetragenen Turnieren. Turnierfreie Jahre unterbrechen die Serie nicht.');
+ add('Erfolge','Meiste Siege in der letzten Turnierrunde',stories.finalRoundWins,'Siege','Rundensiege in der jeweils letzten Runde einer ausgetragenen Meisterschaft.');
+ add('Erfolge','Schnellster erster Meistertitel',stories.fastestChampion,'Teilnahmen','Wenigste eigene Turnierteilnahmen bis zum ersten Meistertitel; nur Spieler mit mindestens einem Titel.',{low:true});
+ add('Erfolge','Längste Jahrespodiums-Serie',stories.podiumYearRun,'Turniere','Aufeinanderfolgende ausgetragene Meisterschaften mit offiziellem Schlussrang 1 bis 3. Nichtteilnahmen unterbrechen die Serie.');
+ add('Erfolge','Längste Pause zwischen Meistertiteln',stories.titleGap,'Jahre','Grösster Abstand in Kalenderjahren zwischen zwei eigenen Meistertiteln; nur Spieler mit mindestens zwei Titeln.');
+ add('Erfolge','Start-Ziel-Champion',stories.startFinish,'Titel','Nach Runde 1 allein an der Spitze der kumulierten Punkte und am Turnierende offizieller Champion. Gemeinsame Führung zählt nicht.');
+ add('Erfolge','Vom letzten Zwischenrang zum Meister',stories.lastChampion,'Titel','Späterer Champion lag nach einer Runde vor der Schlussrunde bei den niedrigsten kumulierten Punkten; geteilte rote Laterne zählt.');
+ add('Erfolge','Grösster Finalspurt (letzte 2 Runden)',stories.finalSprint,'Plätze','Verbesserung vom kumulierten Zwischenrang nach der drittletzten Runde bis zum offiziellen Schlussrang. Rangverschiebung bleibt unnormiert.');
+
  add('Saisonrekorde','Höchste Saisonpunkte',seasons.map(s=>seasonValue(s.name,s.year,s.points,'Punkte',s.roundCount)),'Punkte','Saisonpunkte auf 7 Runden umgerechnet; historische Punktesysteme bleiben unverändert.');
  add('Saisonrekorde','Meiste Rundensiege in einem Jahr',seasons.map(s=>seasonValue(s.name,s.year,s.wins,'Rundensiege',s.roundCount)),'Siege','Rundensiege einer Saison auf 7 Runden umgerechnet.');
  add('Saisonrekorde','Meiste Rundenpodien in einem Jahr',seasons.map(s=>seasonValue(s.name,s.year,s.podium,'Rundenpodien',s.roundCount)),'Podien','Rundenpodien einer Saison auf 7 Runden umgerechnet.');
@@ -128,6 +245,18 @@ function calculate(seed){
  add('Hall of Shame','Teilnahmen ohne Jahrespodium',ps.filter(p=>!p.podium).map(p=>({name:p.name,value:p.appearances})),'Turniere','Nur Spieler ohne offizielles Jahrespodium.');
  add('Hall of Shame','Vizemeisterschaften ohne Titel',ps.filter(p=>!p.titles).map(p=>({name:p.name,value:p.runner})),'zweite Plätze','Nur Spieler ohne Meistertitel.');
  add('Hall of Shame','Schlechteste relative Saison',seasons.map(s=>({name:`${s.name} (${s.year})`,value:round(s.relative*100),year:s.year})),'%','Niedrigster relativer offizieller Schlussrang.',{low:true});
+
+ add('Hall of Shame','Längste Serie ohne Rundensieg',stories.winlessRun,'Runden','Meiste aufeinanderfolgende selbst gespielte Runden ohne offiziellen Rang 1; Turnierpausen ohne Teilnahme zählen nicht als Runden.');
+ add('Hall of Shame','Grösster verspielter Meisterschaftsvorsprung',stories.lostLead,'Punkte','Grösster alleiniger Punktevorsprung nach einer Runde vor der Schlussrunde, ohne am Ende Meister zu werden. Auf 7 Runden umgerechnet; Originalvorsprung in der Rangliste.');
+ add('Hall of Shame','Schlechtester Titelverteidiger',stories.defenderCrash,'Schlussrang','Schlechtester offizieller Schlussrang des Champions beim nächsten ausgetragenen Turnier, sofern er teilnahm.');
+ add('Hall of Shame','Längste Nullrunden-Serie',stories.zeroRun,'Runden','Meiste aufeinanderfolgende selbst gespielte Runden mit exakt null Punkten. Auch über Turniergrenzen hinweg.');
+ add('Hall of Shame','Längste Serie ohne Jahrespodium',stories.podiumYearDrought,'Turniere','Meiste aufeinanderfolgende eigene Turnierteilnahmen ohne offiziellen Jahresschlussrang 1 bis 3.');
+ add('Hall of Shame','Längste Serie ohne Rundenpodium',stories.roundPodiumDrought,'Runden','Meiste aufeinanderfolgende selbst gespielte Runden ohne offiziellen Rundenrang 1 bis 3.');
+ add('Hall of Shame','Grösster Absturz zur vorherigen Teilnahme',stories.seasonCrash,'Plätze','Grösster Rückfall im offiziellen Schlussrang gegenüber der eigenen vorherigen Turnierteilnahme; keine Hochrechnung von Rangplätzen.');
+ add('Hall of Shame','Längste Serie mit roter Laterne',stories.lanternRun,'Runden','Meiste aufeinanderfolgende Runden innerhalb einer Meisterschaft mit den niedrigsten kumulierten Punkten; geteilte rote Laterne zählt.');
+ add('Hall of Shame','Meiste letzte Plätze in der Schlussrunde',stories.lastFinal,'letzte Plätze','Letzter Platz in der jeweils letzten Turnierrunde anhand der niedrigsten Rundenzahl; alle Punktgleichen zählen.');
+ add('Hall of Shame','Meiste verspielte Meisterschaftsführungen',stories.missedTitles,'Turniere','Anzahl Meisterschaften mit mindestens einer alleinigen Führung nach einer Runde vor dem Finale, aber ohne späteren Titel.');
+
  add('Rivalitäten','Meiste gemeinsame Turniere',pairs.map(p=>({name:`${p.a} / ${p.b}`,value:p.years})),'Turniere','Beide Spieler nahmen am selben Jahrgang teil.');
  add('Rivalitäten','Grösster direkter Bilanzvorsprung',pairs.filter(p=>p.years>=3).map(p=>({name:`${p.advantageA>=p.advantageB?p.a:p.b} vor ${p.advantageA>=p.advantageB?p.b:p.a}`,value:Math.abs(p.advantageA-p.advantageB)})),'Jahre','Differenz der Jahre mit besserem offiziellen Schlussrang; mindestens 3 gemeinsame Teilnahmen.');
  return {records,years:editions.length,players:ps.length,seasonCount:seasons.length};
