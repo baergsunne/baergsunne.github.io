@@ -14,6 +14,15 @@ const assert=require('node:assert/strict');
    await page.goto('http://127.0.0.1:8765/#players',{waitUntil:'domcontentloaded'});
    await page.waitForFunction(()=>typeof db!=='undefined'&&db.editions.some(e=>e.year===2026),null,{timeout:30000});
    await page.evaluate(()=>{state.page='profile';state.profile='Schnarre';draw()});
+   const profileUI=await page.evaluate(()=>{const root=document.querySelector('.page--profile'),btn=root.querySelector('.backrow .backbtn'),css=getComputedStyle(btn);return {explainers:root.querySelectorAll('.explain-detail').length,visibleText:root.innerText.includes('Einfach erklärt'),backText:btn.textContent.trim(),backAction:btn.getAttribute('data-action'),border:css.borderTopColor,color:css.color,radius:css.borderTopLeftRadius,height:btn.getBoundingClientRect().height}});
+   assert.equal(profileUI.explainers,0,'no automatic explainers on player profile');
+   assert.equal(profileUI.visibleText,false,'no visible Einfach erklärt labels');
+   assert.equal(profileUI.backText,'← Zurück');
+   assert.equal(profileUI.backAction,'back','back navigation remains functional');
+   assert.equal(profileUI.border,'rgb(216, 175, 101)','gold outline');
+   assert.equal(profileUI.color,'rgb(233, 193, 123)','gold lettering');
+   assert.equal(profileUI.radius,'999px','Bärgsunne pill shape');
+   assert(profileUI.height>=44,'touch-friendly back control');
    const selector='.bp-form-dynamic';
    const inspect=()=>page.evaluate(()=>{
     const root=document.querySelector('.bp-form-dynamic');

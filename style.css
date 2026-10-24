@@ -349,3 +349,25 @@ main{width:min(100%,1240px);margin-inline:auto}
 #app .bp-tool-browse>summary,#app .bp-history-browse>summary,#app .bp-round-browse>summary{cursor:pointer;list-style:none;padding:12px 14px;border:1px solid rgba(216,182,113,.4);border-radius:12px;color:#e2bd77}
 #app .bp-tool-browse>summary::-webkit-details-marker,#app .bp-history-browse>summary::-webkit-details-marker,#app .bp-round-browse>summary::-webkit-details-marker{display:none}
 #app .bp-tool-browse[open]>summary,#app .bp-history-browse[open]>summary,#app .bp-round-browse[open]>summary{margin-bottom:12px}
+
+
+/* Player profiles: gold-and-heritage-green navigation inspired by the Bärgsunne design. */
+#app .page--profile .backrow{display:flex;align-items:center;justify-content:flex-start;margin-top:12px;margin-bottom:14px}
+#app .page--profile .backrow .backbtn{
+ display:inline-flex;align-items:center;justify-content:center;gap:9px;
+ min-height:44px;min-width:130px;padding:10px 20px;
+ border:1.5px solid #d8af65;border-radius:999px;
+ background:linear-gradient(145deg,#1c4636 0%,#103024 58%,#0b241b 100%);
+ color:#e9c17b;font-family:inherit;font-size:clamp(15px,3.9vw,18px);font-weight:700;line-height:1.2;
+ letter-spacing:.015em;text-decoration:none;cursor:pointer;
+ box-shadow:-3px 5px 12px rgba(0,0,0,.22),inset 0 1px 0 rgba(247,214,148,.14);
+ transition:background .18s ease,border-color .18s ease,box-shadow .18s ease;
+}
+#app .page--profile .backrow .backbtn:hover,
+#app .page--profile .backrow .backbtn:focus-visible{
+ border-color:#f4d596;background:linear-gradient(145deg,#275a45,#133a2a);
+ box-shadow:-3px 5px 14px rgba(0,0,0,.28),0 0 0 2px rgba(218,175,101,.2);
+}
+#app .page--profile .backrow .backbtn:focus-visible{outline:2px solid #f4d596;outline-offset:3px}
+/* Defence in depth: never show a legacy explainer in player profiles. */
+#app .page--profile .explain-detail{display:none!important}
