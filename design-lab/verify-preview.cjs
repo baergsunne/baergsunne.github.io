@@ -52,7 +52,7 @@ const assert=(condition,message)=>{if(!condition)throw new Error(message)};
      }
      if(name==="history")assert(await page.locator(".history-chronicle").count()===1,"History carousel missing");
      if(name==="stats"){assert(await page.locator(".x-stats-workspace .stat-content").count()===1,"Active statistics first missing");assert(await page.locator(".premium-masthead").count()===0,"Legacy statistics masthead still mounted");assert(await page.locator(".tool-directory .tool-tile").count()>=10,"Statistics tools missing");}
-     if(name==="players")assert((await page.locator(".page--players").innerText()).includes("Frauchi"),"Players missing");
+     if(name==="players"){assert(await page.locator(".x-players .x-player-row").count()===23,"All 23 career rows should remain navigable");assert((await page.locator(".x-players").innerText()).includes("Frauchi"),"Current roster missing");assert((await page.locator(".x-players").innerText()).includes("Mike"),"Record master missing");}
      if(name==="fame"){
       assert((await page.locator(".page--fame .podium").innerText()).includes("Mike"),"Record champion missing");
       assert(await page.locator(".x-fame-dominant").count()===1,"New recordmaster stage missing");
@@ -74,7 +74,7 @@ const assert=(condition,message)=>{if(!condition)throw new Error(message)};
      if(name==="live")assert(await page.locator(".discovery-livepage").count()===1,"Live page missing");
      await page.evaluate(()=>window.scrollTo({top:0,left:0,behavior:"instant"}));
      await page.waitForTimeout(120);
-     if((width===390||width===1440)&&["home","stats","fame"].includes(name))
+     if((width===390||width===1440)&&["home","stats","fame","players"].includes(name))
       await page.screenshot({path:path.join(out,name+"-"+width+".png"),fullPage:true});
      item.ok=true;
     }catch(e){item.error=String(e);report.errors.push({width,route:name,error:String(e)})}
