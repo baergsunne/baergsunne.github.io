@@ -1,0 +1,23 @@
+/* Responsive profile form selector and eight compact heritage metrics. */
+.page--profile .bp-form-dynamic{display:grid;gap:20px;min-width:0}
+.page--profile .bp-form-controls{display:flex;align-items:center;flex-wrap:wrap;gap:12px 14px;padding:16px;border:1px solid rgba(218,187,122,.28);border-radius:14px;background:linear-gradient(135deg,rgba(15,57,41,.8),rgba(44,82,59,.45))}
+.page--profile .bp-form-controls-title{flex-basis:100%;color:#ead7af;font-size:1rem;font-weight:700}
+.page--profile .bp-form-preset-row{display:flex;gap:7px;flex-wrap:wrap}
+.page--profile .bp-form-preset{font:inherit;font-size:.92rem;font-weight:650;color:#e9d8b6;background:rgba(8,39,29,.8);border:1px solid rgba(231,196,129,.35);border-radius:9px;padding:10px 12px;min-height:44px;cursor:pointer}
+.page--profile .bp-form-preset.is-active{color:#09291e;background:#e4c27f;border-color:#f0d49c}
+.page--profile .bp-form-preset:focus-visible,.page--profile .bp-form-custom-label input:focus-visible{outline:2px solid #f0d49c;outline-offset:2px}
+.page--profile .bp-form-custom-label{display:flex;align-items:center;gap:9px;color:#ead7af;font-size:.92rem}
+.page--profile .bp-form-custom-label input{box-sizing:border-box;width:74px;min-height:44px;border:1px solid rgba(231,196,129,.5);border-radius:9px;background:#0b2c20;color:#f6e5c5;font:inherit;font-weight:700;text-align:center}
+.page--profile .bp-form-available{color:#becbbd;font-size:.8rem}
+.page--profile .bp-form-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:11px}
+.page--profile .bp-form-tile{display:flex;flex-direction:column;justify-content:space-between;gap:12px;min-width:0;min-height:105px;padding:15px 14px;border-radius:13px;border:1px solid rgba(218,187,122,.13);background:linear-gradient(135deg,rgba(16,48,37,.93),rgba(33,72,53,.74));box-shadow:-2px 5px 12px rgba(0,0,0,.12)}
+.page--profile .bp-form-tile small{color:#cbd2c7;font-size:.89rem;line-height:1.3;overflow-wrap:break-word}
+.page--profile .bp-form-tile strong{color:#f3e4c9;font-size:clamp(1.2rem,2.6vw,1.8rem);font-weight:750;line-height:1.15;overflow-wrap:break-word}
+.page--profile .bp-form-tile--trend strong{color:#e9c985;font-size:clamp(1.05rem,2.1vw,1.45rem)}
+.page--profile .bp-form-summary{margin:0;color:#e7d8b9;line-height:1.55}
+.page--profile .bp-form-chart{width:100%;min-width:0;overflow:hidden}
+.page--profile .bp-form-chart svg{display:block;width:100%;height:clamp(145px,28vw,225px);color:#dfc18d}
+.page--profile .bp-form-chart-labels{display:flex;justify-content:space-between;gap:7px;color:#c7d0c3;font-size:.78rem}
+.page--profile .bp-form-dynamic .hint{margin:0;color:#bdcbbd;line-height:1.55}
+@media(max-width:680px){.page--profile .bp-form-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.page--profile .bp-form-tile{min-height:96px;padding:12px}.page--profile .bp-form-tile strong{font-size:1.5rem}.page--profile .bp-form-tile--trend strong{font-size:1.2rem}.page--profile .bp-form-controls{padding:12px}.page--profile .bp-form-preset{padding:9px 10px}.page--profile .bp-form-chart svg{height:175px}}
+@media(max-width:350px){.page--profile .bp-form-tile strong{font-size:1.25rem}.page--profile .bp-form-tile--trend strong{font-size:1.05rem}.page--profile .bp-form-custom-label{flex-wrap:wrap}}
