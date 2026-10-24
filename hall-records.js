@@ -197,6 +197,7 @@ function calculate(seed){
   });
  }
  const pvals=(key,filter=()=>true)=>ps.filter(filter).map(p=>({name:p.name,value:p[key]}));
+ const stories=storyMetrics(editions);
  add('Erfolge','Meistertitel',pvals('titles'),'Titel','Anzahl offizieller Schlussränge 1.');
  add('Erfolge','Jahrespodien',pvals('podium'),'Podien','Offizieller Schlussrang 1 bis 3.');
  add('Erfolge','Vizemeisterschaften',pvals('runner'),'zweite Plätze','Offizieller Schlussrang 2.');
@@ -221,6 +222,16 @@ function calculate(seed){
  add('Hall of Shame','Grösster Absturz innerhalb einer Saison',annual.flatMap(a=>a.people.map(p=>({name:p.name+' ('+a.year+')',year:a.year,value:p.fall}))),'Plätze','Grösster Rückfall von einem vorherigen besten zu einem späteren schlechteren kumulierten Zwischenrang im gleichen Turnier.');
  add('Hall of Shame','Meiste Runden mit roter Laterne in einem Jahr',annual.flatMap(a=>a.people.map(p=>seasonValue(p.name,a.year,p.lantern,'Runden mit roter Laterne',a.roundCount))),'Runden','Runden mit den niedrigsten kumulierten Gesamtpunkten; auch Gleichstände zählen, auf 7 Runden umgerechnet.');
  add('Hall of Shame','Grösster Fall nach einer Runde',annual.flatMap(a=>a.people.map(p=>({name:p.name+' ('+a.year+')',year:a.year,value:p.singleFall}))),'Plätze','Grösster Rangverlust in der kumulierten Rangliste zwischen zwei unmittelbar aufeinanderfolgenden Runden.');
+
+ add('Erfolge','Längste Meistertitel-Serie',stories.titleRun,'Titel','Meiste Meistertitel in unmittelbar aufeinanderfolgenden ausgetragenen Turnieren. Turnierfreie Jahre unterbrechen die Serie nicht.');
+ add('Erfolge','Meiste Siege in der letzten Turnierrunde',stories.finalRoundWins,'Siege','Rundensiege in der jeweils letzten Runde einer ausgetragenen Meisterschaft.');
+ add('Erfolge','Schnellster erster Meistertitel',stories.fastestChampion,'Teilnahmen','Wenigste eigene Turnierteilnahmen bis zum ersten Meistertitel; nur Spieler mit mindestens einem Titel.',{low:true});
+ add('Erfolge','Längste Jahrespodiums-Serie',stories.podiumYearRun,'Turniere','Aufeinanderfolgende ausgetragene Meisterschaften mit offiziellem Schlussrang 1 bis 3. Nichtteilnahmen unterbrechen die Serie.');
+ add('Erfolge','Längste Pause zwischen Meistertiteln',stories.titleGap,'Jahre','Grösster Abstand in Kalenderjahren zwischen zwei eigenen Meistertiteln; nur Spieler mit mindestens zwei Titeln.');
+ add('Erfolge','Start-Ziel-Champion',stories.startFinish,'Titel','Nach Runde 1 allein an der Spitze der kumulierten Punkte und am Turnierende offizieller Champion. Gemeinsame Führung zählt nicht.');
+ add('Erfolge','Vom letzten Zwischenrang zum Meister',stories.lastChampion,'Titel','Späterer Champion lag nach einer Runde vor der Schlussrunde bei den niedrigsten kumulierten Punkten; geteilte rote Laterne zählt.');
+ add('Erfolge','Grösster Finalspurt (letzte 2 Runden)',stories.finalSprint,'Plätze','Verbesserung vom kumulierten Zwischenrang nach der drittletzten Runde bis zum offiziellen Schlussrang. Rangverschiebung bleibt unnormiert.');
+
  add('Saisonrekorde','Höchste Saisonpunkte',seasons.map(s=>seasonValue(s.name,s.year,s.points,'Punkte',s.roundCount)),'Punkte','Saisonpunkte auf 7 Runden umgerechnet; historische Punktesysteme bleiben unverändert.');
  add('Saisonrekorde','Meiste Rundensiege in einem Jahr',seasons.map(s=>seasonValue(s.name,s.year,s.wins,'Rundensiege',s.roundCount)),'Siege','Rundensiege einer Saison auf 7 Runden umgerechnet.');
  add('Saisonrekorde','Meiste Rundenpodien in einem Jahr',seasons.map(s=>seasonValue(s.name,s.year,s.podium,'Rundenpodien',s.roundCount)),'Podien','Rundenpodien einer Saison auf 7 Runden umgerechnet.');
@@ -234,6 +245,18 @@ function calculate(seed){
  add('Hall of Shame','Teilnahmen ohne Jahrespodium',ps.filter(p=>!p.podium).map(p=>({name:p.name,value:p.appearances})),'Turniere','Nur Spieler ohne offizielles Jahrespodium.');
  add('Hall of Shame','Vizemeisterschaften ohne Titel',ps.filter(p=>!p.titles).map(p=>({name:p.name,value:p.runner})),'zweite Plätze','Nur Spieler ohne Meistertitel.');
  add('Hall of Shame','Schlechteste relative Saison',seasons.map(s=>({name:`${s.name} (${s.year})`,value:round(s.relative*100),year:s.year})),'%','Niedrigster relativer offizieller Schlussrang.',{low:true});
+
+ add('Hall of Shame','Längste Serie ohne Rundensieg',stories.winlessRun,'Runden','Meiste aufeinanderfolgende selbst gespielte Runden ohne offiziellen Rang 1; Turnierpausen ohne Teilnahme zählen nicht als Runden.');
+ add('Hall of Shame','Grösster verspielter Meisterschaftsvorsprung',stories.lostLead,'Punkte','Grösster alleiniger Punktevorsprung nach einer Runde vor der Schlussrunde, ohne am Ende Meister zu werden. Auf 7 Runden umgerechnet; Originalvorsprung in der Rangliste.');
+ add('Hall of Shame','Schlechtester Titelverteidiger',stories.defenderCrash,'Schlussrang','Schlechtester offizieller Schlussrang des Champions beim nächsten ausgetragenen Turnier, sofern er teilnahm.');
+ add('Hall of Shame','Längste Nullrunden-Serie',stories.zeroRun,'Runden','Meiste aufeinanderfolgende selbst gespielte Runden mit exakt null Punkten. Auch über Turniergrenzen hinweg.');
+ add('Hall of Shame','Längste Serie ohne Jahrespodium',stories.podiumYearDrought,'Turniere','Meiste aufeinanderfolgende eigene Turnierteilnahmen ohne offiziellen Jahresschlussrang 1 bis 3.');
+ add('Hall of Shame','Längste Serie ohne Rundenpodium',stories.roundPodiumDrought,'Runden','Meiste aufeinanderfolgende selbst gespielte Runden ohne offiziellen Rundenrang 1 bis 3.');
+ add('Hall of Shame','Grösster Absturz zur vorherigen Teilnahme',stories.seasonCrash,'Plätze','Grösster Rückfall im offiziellen Schlussrang gegenüber der eigenen vorherigen Turnierteilnahme; keine Hochrechnung von Rangplätzen.');
+ add('Hall of Shame','Längste Serie mit roter Laterne',stories.lanternRun,'Runden','Meiste aufeinanderfolgende Runden innerhalb einer Meisterschaft mit den niedrigsten kumulierten Punkten; geteilte rote Laterne zählt.');
+ add('Hall of Shame','Meiste letzte Plätze in der Schlussrunde',stories.lastFinal,'letzte Plätze','Letzter Platz in der jeweils letzten Turnierrunde anhand der niedrigsten Rundenzahl; alle Punktgleichen zählen.');
+ add('Hall of Shame','Meiste verspielte Meisterschaftsführungen',stories.missedTitles,'Turniere','Anzahl Meisterschaften mit mindestens einer alleinigen Führung nach einer Runde vor dem Finale, aber ohne späteren Titel.');
+
  add('Rivalitäten','Meiste gemeinsame Turniere',pairs.map(p=>({name:`${p.a} / ${p.b}`,value:p.years})),'Turniere','Beide Spieler nahmen am selben Jahrgang teil.');
  add('Rivalitäten','Grösster direkter Bilanzvorsprung',pairs.filter(p=>p.years>=3).map(p=>({name:`${p.advantageA>=p.advantageB?p.a:p.b} vor ${p.advantageA>=p.advantageB?p.b:p.a}`,value:Math.abs(p.advantageA-p.advantageB)})),'Jahre','Differenz der Jahre mit besserem offiziellen Schlussrang; mindestens 3 gemeinsame Teilnahmen.');
  return {records,years:editions.length,players:ps.length,seasonCount:seasons.length};
