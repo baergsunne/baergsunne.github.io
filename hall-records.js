@@ -54,19 +54,21 @@ function annualMetrics(e){
 }
 function calculate(seed){
  const editions=seed.editions||[];
- const players=new Map();const seasons=[];const yearRows=[];const pair=new Map();
- const get=n=>{if(!players.has(n))players.set(n,{name:n,appearances:0,titles:0,podium:0,runner:0,last:0,total:0,roundWins:0,roundPodium:0,roundLast:0,zeroRounds:0,rounds:0,places:[],relative:[],seasons:[],winsByYear:[],longestWin:0,longestTop3:0,winRun:0,top3Run:0,yearStreak:0,lastYear:null});return players.get(n)};
+ const players=new Map();const seasons=[];const yearRows=[];const pair=new Map();const annual=[];
+ const get=n=>{if(!players.has(n))players.set(n,{name:n,appearances:0,titles:0,podium:0,runner:0,last:0,total:0,roundWins:0,roundPodium:0,roundLast:0,zeroRounds:0,rounds:0,rankSum:0,places:[],relative:[],seasons:[],winsByYear:[],longestWin:0,longestTop3:0,winRun:0,top3Run:0,yearStreak:0,lastYear:null});return players.get(n)};
  for(const e of editions){
   const field=e.players.length;const standings=e.official_standings||[];const positions=new Map(standings.map(s=>[s.player_id,s]));
-  const currentWins=new Map(e.players.map(p=>[p,0]));const currentPodium=new Map(e.players.map(p=>[p,0]));
+  const currentWins=new Map(e.players.map(p=>[p,0]));const currentPodium=new Map(e.players.map(p=>[p,0]));const currentRelative=new Map(e.players.map(p=>[p,0]));
   for(const p of e.players){const s=positions.get(p);if(!s)continue;const r=get(p);r.appearances++;r.titles+=s.place===1?1:0;r.podium+=s.place<=3?1:0;r.runner+=s.place===2?1:0;r.last+=s.place===field?1:0;r.total+=s.points;r.places.push(s.place);r.relative.push(field>1?(field-s.place)/(field-1):1);r.seasons.push({year:e.year,place:s.place,field,points:s.points});}
-  for(const r of e.rounds){for(const x of r.results){const p=get(x.player_id);p.rounds++;p.roundWins+=x.place===1?1:0;p.roundPodium+=x.place<=3?1:0;p.roundLast+=window.BaergsunneRoundPlacement.isLast(x,r)?1:0;p.zeroRounds+=window.BaergsunneRoundPlacement.isZero(x)?1:0;p.winRun=x.place===1?p.winRun+1:0;p.top3Run=x.place<=3?p.top3Run+1:0;p.longestWin=Math.max(p.longestWin,p.winRun);p.longestTop3=Math.max(p.longestTop3,p.top3Run);if(x.place===1)currentWins.set(x.player_id,1+(currentWins.get(x.player_id)||0));if(x.place<=3)currentPodium.set(x.player_id,1+(currentPodium.get(x.player_id)||0));}}
-  for(const p of e.players){const s=positions.get(p);if(!s)continue;seasons.push({name:p,year:e.year,place:s.place,points:s.points,field,roundCount:e.rounds.length,wins:currentWins.get(p)||0,podium:currentPodium.get(p)||0,relative:field>1?(field-s.place)/(field-1):1});}
+  for(const r of e.rounds){for(const x of r.results){const p=get(x.player_id);p.rounds++;p.rankSum+=window.BaergsunneRoundPlacement.effectivePlace(x,r);currentRelative.set(x.player_id,(currentRelative.get(x.player_id)||0)+(field>1?(field-window.BaergsunneRoundPlacement.effectivePlace(x,r))/(field-1):1));p.roundWins+=x.place===1?1:0;p.roundPodium+=x.place<=3?1:0;p.roundLast+=window.BaergsunneRoundPlacement.isLast(x,r)?1:0;p.zeroRounds+=window.BaergsunneRoundPlacement.isZero(x)?1:0;p.winRun=x.place===1?p.winRun+1:0;p.top3Run=x.place<=3?p.top3Run+1:0;p.longestWin=Math.max(p.longestWin,p.winRun);p.longestTop3=Math.max(p.longestTop3,p.top3Run);if(x.place===1)currentWins.set(x.player_id,1+(currentWins.get(x.player_id)||0));if(x.place<=3)currentPodium.set(x.player_id,1+(currentPodium.get(x.player_id)||0));}}
+  for(const p of e.players){const s=positions.get(p);if(!s)continue;seasons.push({name:p,year:e.year,place:s.place,points:s.points,field,roundCount:e.rounds.length,wins:currentWins.get(p)||0,podium:currentPodium.get(p)||0,roundRelative:e.rounds.length?100*(currentRelative.get(p)||0)/e.rounds.length:NaN,relative:field>1?(field-s.place)/(field-1):1});}
   const lead=standings.find(x=>x.place===1),second=standings.find(x=>x.place===2);if(lead&&second)yearRows.push({year:e.year,champion:lead.player_id,gap:lead.points-second.points,points:lead.points,roundCount:e.rounds.length});
+  annual.push(annualMetrics(e));
   for(let a=0;a<standings.length;a++)for(let b=a+1;b<standings.length;b++){const x=standings[a],y=standings[b],key=[x.player_id,y.player_id].sort((u,v)=>u.localeCompare(v,'de')).join('|||');let v=pair.get(key);if(!v){v={a:key.split('|||')[0],b:key.split('|||')[1],years:0,advantageA:0,advantageB:0};pair.set(key,v)}v.years++;if(x.place<y.place){if(x.player_id===v.a)v.advantageA++;else v.advantageB++;}else if(x.place>y.place){if(x.player_id===v.a)v.advantageB++;else v.advantageA++;}}
  }
  const ps=[...players.values()],pairs=[...pair.values()];const records=[];
  function originalText(x){
+  if(x.sourceNote)return x.sourceNote;
   if(!Number.isFinite(x.rawValue)||!Number.isInteger(x.roundCount)||x.roundCount<1)return '';
   return `Original: ${round(x.rawValue)} ${x.rawUnit} in ${x.roundCount} ${x.roundCount===1?'Runde':'Runden'}.`;
  }
