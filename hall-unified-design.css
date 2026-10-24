@@ -30,6 +30,7 @@
   line-height:1.55!important;
 }
 #app .page--fame .hof-extended{
+  background:var(--bp-level-two-forest,linear-gradient(225deg,#203d30,#0b241b))!important;
   margin:26px 0!important;
   padding:clamp(16px,3.2vw,26px)!important;
 }
@@ -42,6 +43,7 @@
 }
 #app .page--fame .hof-category{grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr));gap:13px}
 #app .page--fame .hof-record{
+  background:linear-gradient(225deg,rgba(236,201,130,.15) 0%,rgba(231,191,110,.07) 33%,transparent 59%),linear-gradient(225deg,#42664b 0%,#31533e 40%,#204331 73%,#16392b 100%)!important;
   padding:clamp(13px,2.6vw,20px)!important;
   min-width:0;
 }
@@ -59,18 +61,21 @@
 }
 #app .page--fame .hof-tabs{gap:8px;flex-wrap:wrap;white-space:normal}
 #app .page--fame .hof-tab{
-  background:var(--bp-sunlight-surface,#1b3b2d)!important;
-  color:#f1e5cf!important;
-  border:1px solid rgba(232,195,126,.45)!important;
+  background:linear-gradient(225deg,#efdbb2 0%,#d6dcbb 43%,#b1bf99 100%)!important;
+  color:#17372a!important;
+  -webkit-text-fill-color:#17372a!important;
+  box-shadow:var(--bp-sunlight-shadow-soft,-3px 6px 12px rgba(7,27,21,.20))!important;
+  border:1px solid rgba(232,195,126,.60)!important;
   border-radius:12px!important;
   min-height:44px;
   padding:10px 13px;
   font-size:clamp(12px,2.5vw,15px);
 }
 #app .page--fame .hof-tab.selected{
-  background:#e8c37e!important;
-  color:#163426!important;
-  border-color:#e8c37e!important;
+  background:linear-gradient(225deg,#f8e3b5 0%,#eac77e 58%,#cfaa6e 100%)!important;
+  color:#173426!important;
+  -webkit-text-fill-color:#173426!important;
+  border-color:#f0ce8e!important;
   font-weight:850!important;
 }
 #app .page--fame .record-grid{gap:12px}
@@ -172,4 +177,117 @@
   padding:12px 8px!important;
   font-size:clamp(14px,3.6vw,17px)!important;
  }
+}
+
+/* Originalwerte bleiben bei allen auf sieben Runden normierten Saisonrekorden sichtbar. */
+#app .page--fame .hof-record>p.hof-record-original{
+  margin-top:4px!important;
+  color:#efcf90!important;
+  -webkit-text-fill-color:#efcf90!important;
+  font-size:clamp(12px,2.7vw,14px)!important;
+  line-height:1.45!important;
+}
+#app .page--fame .hof-scroll .hof-original-note{
+  display:block;
+  margin-top:4px;
+  font-size:clamp(11px,2.5vw,12px)!important;
+  line-height:1.4;
+  color:#c5d7c7!important;
+  -webkit-text-fill-color:#c5d7c7!important;
+}
+
+/* Miniature three-step podium for EVERY record: visual order second, first,
+   third. Scoped narrowly; leaves the Hall's championship podium unchanged. */
+#app .page--fame .hof-mini-podium{
+ display:grid!important;
+ grid-template-columns:repeat(3,minmax(0,1fr))!important;
+ align-items:end!important;
+ gap:clamp(5px,1vw,10px)!important;
+ margin:18px 0 14px!important;
+ width:100%!important;
+ min-width:0!important;
+}
+#app .page--fame .hof-mini-step{
+ box-sizing:border-box!important;
+ display:flex!important;
+ flex-direction:column!important;
+ align-items:center!important;
+ justify-content:flex-start!important;
+ gap:clamp(3px,.5vw,7px)!important;
+ min-width:0!important;
+ overflow:hidden!important;
+ text-align:center!important;
+ border:1px solid rgba(232,195,126,.36)!important;
+ border-radius:13px 13px 5px 5px!important;
+ padding:clamp(9px,1.5vw,14px) 5px 10px!important;
+ background:linear-gradient(225deg,rgba(236,205,150,.14),transparent 44%),linear-gradient(225deg,#355c45,#183b2c)!important;
+ box-shadow:-3px 6px 12px rgba(6,24,19,.23)!important;
+}
+#app .page--fame .hof-mini-step--1{
+ min-height:clamp(170px,17vw,204px)!important;
+ border-color:#ebc77d!important;
+ border-bottom:9px solid #ebc77d!important;
+ background:linear-gradient(225deg,rgba(240,203,131,.23),transparent 52%),linear-gradient(225deg,#47734f,#1b432f)!important;
+}
+#app .page--fame .hof-mini-step--2{
+ min-height:clamp(146px,15vw,181px)!important;
+ border-bottom:7px solid #c6b389!important;
+}
+#app .page--fame .hof-mini-step--3{
+ min-height:clamp(132px,14vw,167px)!important;
+ border-bottom:6px solid #a88c63!important;
+}
+#app .page--fame .hof-mini-medal{
+ font-size:clamp(21px,2.9vw,30px)!important;
+ line-height:1!important;
+}
+#app .page--fame .hof-mini-label{
+ color:#e7c98f!important;
+ -webkit-text-fill-color:#e7c98f!important;
+ font-size:clamp(10px,1.45vw,13px)!important;
+ line-height:1.1!important;
+}
+#app .page--fame .hof-mini-name{
+ font-size:clamp(12px,1.65vw,17px)!important;
+ color:#fff3de!important;
+ -webkit-text-fill-color:#fff3de!important;
+ font-weight:760!important;
+ line-height:1.12!important;
+ overflow-wrap:anywhere!important;
+ hyphens:auto!important;
+ width:100%!important;
+}
+#app .page--fame .hof-mini-year{
+ color:#cdd7c8!important;
+ -webkit-text-fill-color:#cdd7c8!important;
+ font-size:clamp(10px,1.4vw,12px)!important;
+}
+#app .page--fame .hof-mini-value{
+ font-size:clamp(13px,1.9vw,19px)!important;
+ color:#f0ce8b!important;
+ -webkit-text-fill-color:#f0ce8b!important;
+ line-height:1.1!important;
+}
+#app .page--fame .hof-mini-tie{
+ color:#f1d99f!important;
+ -webkit-text-fill-color:#f1d99f!important;
+ font-size:clamp(9px,1.18vw,11px)!important;
+ line-height:1.1!important;
+}
+#app .page--fame .hof-mini-step--empty{opacity:.55}
+#app .page--fame .hof-record>p.hof-mini-more{
+ font-size:12px!important;
+ color:#efcf90!important;
+ -webkit-text-fill-color:#efcf90!important;
+}
+@media(max-width:700px){
+ #app .page--fame .hof-mini-podium{gap:6px!important;margin-block:13px 10px!important}
+ #app .page--fame .hof-mini-step{padding:10px 3px 8px!important;gap:5px!important}
+ #app .page--fame .hof-mini-step--1{min-height:168px!important}
+ #app .page--fame .hof-mini-step--2{min-height:145px!important}
+ #app .page--fame .hof-mini-step--3{min-height:132px!important}
+ #app .page--fame .hof-mini-medal{font-size:24px!important}
+ #app .page--fame .hof-mini-name{font-size:clamp(11px,3.3vw,14px)!important}
+ #app .page--fame .hof-mini-value{font-size:clamp(12px,3.3vw,15px)!important}
+ #app .page--fame .hof-mini-tie{font-size:10px!important}
 }

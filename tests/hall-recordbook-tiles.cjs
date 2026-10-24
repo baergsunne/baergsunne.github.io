@@ -33,6 +33,43 @@ const assert=require('node:assert/strict');
    await page.locator('.page--fame .hof-tab').filter({hasText:'Rivalitäten'}).click();
    assert.equal(await page.locator('.page--fame .hof-category:not([hidden])').count(),1,'exactly one visible record category');
    assert.equal(await page.locator('.page--fame .hof-category:not([hidden])').getAttribute('data-hof-category'),'Rivalitäten','record category selection works');
+   // Every one of the 26 records has three ordered podium slots, and the
+   // complete (still personalized/sortable) table remains accessible below it.
+   for(const category of ['Erfolge','Saisonrekorde','Hall of Shame','Rivalitäten']){
+    await page.locator('.page--fame .hof-tab').filter({hasText:category,exact:true}).click();
+    const list=page.locator('.page--fame .hof-category:not([hidden]) .hof-record');
+    const count=await list.count();
+    assert(count>0,'each record category contains records');
+    for(let i=0;i<count;i++){
+     const record=list.nth(i);
+     const nodes=record.locator('.hof-mini-podium>.hof-mini-step');
+     assert.equal(await nodes.count(),3,'each record has 3 podium slots');
+     assert.deepEqual(await nodes.evaluateAll(e=>e.map(x=>x.className.match(/hof-mini-step--[123]/)[0])),['hof-mini-step--2','hof-mini-step--1','hof-mini-step--3']);
+     const y=await nodes.evaluateAll(e=>e.map(x=>x.getBoundingClientRect().height));
+     assert(y[1]>y[0]&&y[0]>y[2],'winner podium is tallest');
+     const details=record.locator('details').first();
+     await details.locator('summary').first().click();
+     assert(await details.evaluate(x=>x.open),'complete ranking opens below podium');
+     assert(await details.locator('table tbody tr').count()>0,'ranking contains entries');
+     await details.locator('summary').first().click();
+     assert(!(await details.evaluate(x=>x.open)),'ranking closes again');
+    }
+   }
+   await page.locator('.page--fame .hof-tab').filter({hasText:'Saisonrekorde',exact:true}).click();
+   const seasonPoints=page.locator('.page--fame .hof-category:not([hidden]) .hof-record').filter({has:page.locator('.hof-record-top span', {hasText:'Höchste Saisonpunkte'})});
+   assert.equal(await seasonPoints.locator('.hof-mini-step--1 .hof-mini-name').textContent(),'Frauchi','normalized points leader 2026');
+   assert.equal((await seasonPoints.locator('.hof-mini-step--1 .hof-mini-value').textContent()).trim(),'50','2026 score normalized to 7');
+   await seasonPoints.getByText('Vollständige Rangliste ansehen').click();
+   assert((await seasonPoints.locator('details tbody').innerText()).includes('Original: 76 Punkte in 15 Runden.'),'historic original in ranking');
+   const firstThree=await seasonPoints.locator('details tbody tr').evaluateAll(rows=>rows.slice(0,3).map(x=>x.querySelectorAll('td')[1].textContent.trim()));
+   const podiumThree=await seasonPoints.locator('.hof-mini-step:not(.hof-mini-step--empty) .hof-mini-name').allTextContents();
+   assert.equal(podiumThree.length,3);
+   assert(firstThree[0].startsWith(podiumThree[1]),'center winner equals first record row');
+   await page.locator('.page--fame .hof-tab').filter({hasText:'Erfolge',exact:true}).click();
+   const titles=page.locator('.page--fame .hof-category:not([hidden]) .hof-record').filter({has:page.locator('.hof-record-top span',{hasText:'Meistertitel'})});
+   assert.equal((await titles.locator('.hof-mini-step--1 .hof-mini-name').textContent()).trim(),'Mike');
+   assert.deepEqual(await titles.locator('.hof-mini-podium>.hof-mini-step .hof-mini-label').allTextContents(),['Rang 2','Rang 1','Rang 2'],'ties share the actual rank instead of an invented third place');
+   assert.deepEqual(await titles.locator('.hof-mini-podium>.hof-mini-step .hof-mini-medal').allTextContents(),['🥈','🥇','🥈'],'medals represent true ranks even if display slots differ');
    await page.locator('.page--fame .hof-tab').filter({hasText:'Erfolge'}).click();
    assert.equal(await page.locator('.page--fame .hof-category:not([hidden])').getAttribute('data-hof-category'),'Erfolge');
    console.log('HALL_RECORD_TILES_SUCCESS',width);
