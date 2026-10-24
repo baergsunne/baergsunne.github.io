@@ -21,10 +21,10 @@ const assert=require('node:assert/strict');
     const zero=records.find(x=>x.title==='Nullrunden');
     return {
      records:records.length,
-     2025Last:rule.lastPlayers(r2025),
-     2025Positive:r2025.results.find(x=>rule.isLast(x,r2025))?.points,
-     2026JointLast:rule.lastPlayers(r2026).sort(),
-     2007Group:rule.lastPlayers(r2007).length,
+     last2025:rule.lastPlayers(r2025),
+     positive2025:r2025.results.find(x=>rule.isLast(x,r2025))?.points,
+     joint2026:rule.lastPlayers(r2026).sort(),
+     group2007:rule.lastPlayers(r2007).length,
      leader:hall.holder,
      leaderValue:hall.value,
      zeroValue:zero.value,
@@ -35,10 +35,10 @@ const assert=require('node:assert/strict');
     };
    });
    assert.equal(check.records,27);
-   assert.equal(check["2025Positive"],2);
-   assert.equal(check["2025Last"].length,1);
-   assert.deepEqual(check["2026JointLast"],['Chopfi','Keel']);
-   assert.equal(check["2007Group"],3);
+   assert.equal(check["positive2025"],2);
+   assert.equal(check["last2025"].length,1);
+   assert.deepEqual(check["joint2026"],['Chopfi','Keel']);
+   assert.equal(check["group2007"],3);
    assert.equal(check.leader,'Keel');
    assert.equal(check.leaderValue,36);
    assert.equal(check.zeroValue,35);
