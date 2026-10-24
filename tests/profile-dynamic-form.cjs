@@ -20,21 +20,26 @@ const assert=require('node:assert/strict');
     const tiles=[...root.querySelectorAll('.bp-form-tile')].map(x=>({label:x.querySelector('small').textContent,value:x.querySelector('strong').textContent}));
     const n=Number(root.querySelector('[data-form-custom]').value);
     const expected=window.BAERGSUNNE_PROFILE_FORM.calculate(legacyPerson('Schnarre'),n);
-    return {n,tiles,expected,points:root.querySelectorAll('.bp-form-chart circle').length,
+    const forecast=window.BAERGSUNNE_PROFILE_FORM.forecast(legacyPerson('Schnarre'),n);
+    const columns=getComputedStyle(root.querySelector('.bp-form-grid')).gridTemplateColumns.split(' ').length;
+    return {n,tiles,expected,forecast,columns,points:root.querySelectorAll('.bp-form-chart circle').length,
       chart:root.querySelector('svg')?.getAttribute('aria-label'),
       overflow:document.documentElement.scrollWidth>window.innerWidth+2};
    });
    let r=await inspect();
-   assert.equal(r.n,10);assert.equal(r.tiles.length,8);assert.equal(r.points,10);
-   assert.deepEqual(r.tiles.map(x=>x.label),['Runden','Rundensiege','Top 3','Nuller','Ø Platz','Ø Punkte','Ø Position im Feld','Trend']);
+   assert.equal(r.n,10);assert.equal(r.tiles.length,9);assert.equal(r.columns,3);assert.equal(r.points,10);
+   assert.deepEqual(r.tiles.map(x=>x.label),['Runden','Rundensiege','Top 3','Nuller','Ø Platz','Ø Punkte','Ø Position im Feld','Trend','Prognose nächste Runde']);
    assert.equal(Number(r.tiles[0].value),10);assert.equal(Number(r.tiles[1].value),r.expected.wins);
    assert.equal(Number(r.tiles[2].value),r.expected.top3);assert.equal(Number(r.tiles[3].value),r.expected.zeros);
+   assert.equal(r.tiles[8].value,'Platz '+r.forecast.place);
    assert(!r.overflow,'mobile overflow at '+width);
    for(const n of [3,5,10]){
     await page.locator('[data-form-window="'+n+'"]').click();
     r=await inspect();assert.equal(r.n,n);assert.equal(r.points,n);
     assert.equal(Number(r.tiles[1].value),r.expected.wins);
     assert.equal(Number(r.tiles[3].value),r.expected.zeros);
+    assert.equal(r.tiles[8].value,'Platz '+r.forecast.place);
+    assert.equal(r.columns,3);
     assert(!r.overflow,'overflow after preset '+n+' at '+width);
    }
    const input=page.locator('[data-form-custom]');
@@ -45,9 +50,9 @@ const assert=require('node:assert/strict');
    assert.equal(Number(r.tiles[3].value),r.expected.zeros);
    assert(!r.overflow,'overflow after custom at '+width);
    await page.locator('[data-form-custom]').fill('1');await page.locator('[data-form-custom]').dispatchEvent('change');
-   r=await inspect();assert.equal(r.n,1);assert.equal(r.tiles[7].value,'–');
+   r=await inspect();assert.equal(r.n,1);assert.equal(r.tiles[7].value,'–');assert.equal(r.tiles[8].value,'Platz '+r.forecast.place);
    await page.evaluate(()=>{state.page='profile';state.profile='Frauchi';draw()});
-   assert.equal(await page.locator('.bp-form-tile').count(),8,'other profile has 8 tiles');
+   assert.equal(await page.locator('.bp-form-tile').count(),9,'other profile has 9 tiles');
    assert.equal(Number(await page.locator('[data-form-custom]').inputValue()),await page.evaluate(()=>Math.min(10,legacyPerson('Frauchi').length)),'profile defaults independently and respects available rounds');
    await page.evaluate(()=>{state.page='profile';state.profile='Schnarre';draw()});
    assert.equal(await page.locator('[data-form-custom]').inputValue(),'1','prior selection preserved');

@@ -18,12 +18,13 @@ const assert=require('node:assert/strict');
     const ordered=[...rounds].sort((a,b)=>a.year-b.year||a.round-b.round);
     const scores=[];
     for(let i=0;i+n<=ordered.length;i++){const segment=ordered.slice(i,i+n);scores.push(segment.reduce((s,x)=>s+ratio(x),0)/n)}
-    return {n,tiles,expected,scoreMax:Math.max(...scores),overflow:document.documentElement.scrollWidth>window.innerWidth+2,
+    const columns=getComputedStyle(root.querySelector('.bp-phase-grid')).gridTemplateColumns.split(' ').length;
+    return {n,tiles,expected,columns,scoreMax:Math.max(...scores),overflow:document.documentElement.scrollWidth>window.innerWidth+2,
      duplicateExplain:root.querySelectorAll('.bp-metrics-explain').length};
    });
    let x=await inspect();
-   assert.equal(x.n,10);assert.equal(x.tiles.length,8);
-   assert.deepEqual(x.tiles.map(t=>t.label),['Bestes Fenster','Von','Bis','Rundensiege','Punkte insgesamt','Ø Punkte pro Runde','Top-3-Platzierungen','Ø Position im Feld']);
+   assert.equal(x.n,10);assert.equal(x.tiles.length,9);assert.equal(x.columns,3);
+   assert.deepEqual(x.tiles.map(t=>t.label),['Bestes Fenster','Von','Bis','Rundensiege','Punkte insgesamt','Ø Punkte pro Runde','Top-3-Platzierungen','Ø Position im Feld','Nuller']);
    assert(Math.abs(x.expected.relative-x.scoreMax)<1e-8);
    assert.equal(x.duplicateExplain,0);
    assert(!x.overflow,'initial overflow '+width);
@@ -34,6 +35,8 @@ const assert=require('node:assert/strict');
     assert(Math.abs(x.expected.relative-x.scoreMax)<1e-8);
     assert.equal(Number(x.tiles[3].value),x.expected.wins);
     assert.equal(Number(x.tiles[6].value),x.expected.top3);
+    assert.equal(Number(x.tiles[8].value),x.expected.zeros);
+    assert.equal(x.columns,3);
     assert(!x.overflow,'preset overflow '+width);
    }
    await page.locator('[data-phase-custom]').fill('7');
@@ -43,7 +46,7 @@ const assert=require('node:assert/strict');
    assert.equal(Number(x.tiles[6].value),x.expected.top3);
    assert(!x.overflow,'custom overflow '+width);
    await page.evaluate(()=>{state.page='profile';state.profile='Frauchi';draw()});
-   assert.equal(await page.locator('.bp-phase-tile').count(),8);
+   assert.equal(await page.locator('.bp-phase-tile').count(),9);
    assert.equal(Number(await page.locator('[data-phase-custom]').inputValue()),await page.evaluate(()=>Math.min(10,rows().filter(x=>x.player_id==='Frauchi').length)));
    await page.evaluate(()=>{state.page='profile';state.profile='Schnarre';draw()});
    assert.equal(await page.locator('[data-phase-custom]').inputValue(),'7');
