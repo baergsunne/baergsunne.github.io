@@ -16,6 +16,12 @@ on:
       - 'unified-link-tiles-and-stats.css'
       - 'tests/unified-link-tiles-stats.cjs'
       - 'championship-live.js'
+      - 'chart-interaction.js'
+      - 'chart-interaction.css'
+      - 'profile-form.js'
+      - 'lab-premium.js'
+      - 'tests/chart-touch-axes.cjs'
+      - 'tests/profile-personalized-explanations.cjs'
       - 'championship-live.css'
       - 'tests/hero-trophy-regression.cjs'
       - 'race-sticky-navigation.css'
@@ -98,6 +104,7 @@ jobs:
       - run: node tests/real-cloudflare-audit.cjs
       - run: node tests/all-pages-audit.cjs
       - run: node tests/chart-values-integrity.cjs
+      - run: node tests/chart-touch-axes.cjs
       - run: node tests/profile-toolbar-audit.cjs
       - run: node tests/profile-card-order.cjs
       - run: node tests/profile-personalized-explanations.cjs
