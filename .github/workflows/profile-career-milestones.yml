@@ -1,0 +1,21 @@
+name: Player career milestones regression
+on:
+  pull_request:
+    paths:
+      - 'app.js'
+      - 'index.html'
+      - 'tests/profile-career-milestones.cjs'
+      - '.github/workflows/profile-career-milestones.yml'
+jobs:
+  career-milestones:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --check app.js && node --check tests/profile-career-milestones.cjs
+      - run: node tests/profile-career-milestones.cjs
