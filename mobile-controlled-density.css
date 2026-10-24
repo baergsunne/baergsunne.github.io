@@ -165,7 +165,7 @@
 
 /* 21 Oct 2026: precise second-pass bottom navigation (44px content row).
    Previous mobile strip: 55px. Target: 44px (20% shorter).
-   All five icon+label groups occupy identical fixed grid rows.
+   All six icon+label groups occupy identical fixed grid rows.
    Decorative active underline is absolute: it can no longer shift the icon. */
 @media(max-width:800px){
  #app nav.bottomnav{
@@ -257,5 +257,40 @@
   border-radius:1px;
   background:var(--bp-compact-gold);
   pointer-events:none;
+ }
+}
+
+
+/* 2026-10-24: six equally spaced links on the bottom stage.
+   Grid tracks are truly equal at 320px and wider, unlike content-sized flex
+   children. Icons and label baselines remain locked to the original 44px
+   vertical layout; no scrolling strip, clipping or second row. */
+@media(max-width:800px){
+ #app nav.bottomnav{
+  display:grid!important;
+  grid-template-columns:repeat(6,minmax(0,1fr));
+  align-items:start;
+  justify-content:stretch;
+  column-gap:0!important;
+  row-gap:0!important;
+ }
+ #app nav.bottomnav > button.bottomitem{
+  width:100%!important;
+  max-width:100%;
+  min-width:0;
+  flex:none!important;
+ }
+ #app nav.bottomnav > button.bottomitem > small{
+  display:block;
+  box-sizing:border-box;
+  width:100%;
+  min-width:0;
+  max-width:100%;
+  font-size:clamp(8px,2.45vw,10px);
+  font-weight:600;
+  letter-spacing:-.16px;
+  white-space:nowrap;
+  overflow:visible;
+  text-align:center;
  }
 }
