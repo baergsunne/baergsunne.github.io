@@ -32,7 +32,13 @@ function calculate(seed){
   records.push({
    category,title,holder:holders.join(', '),value:round(peak),unit,description,
    original:originalText(sorted[0]),scope:opt.scope||'historisch',count:eligible.length,
-   table:sorted.map((r,i)=>({name:r.name,value:round(r.value),year:r.year||'',rank:i+1,original:originalText(r)}))
+   table:sorted.map((r,i)=>{
+    // Competition ranks: equal values keep the same rank. Do not invent a
+    // separate third place when there are two competitors in second place.
+    const rank=sorted.findIndex(entry=>Math.abs(entry.value-r.value)<1e-9)+1;
+    const tieCount=sorted.filter(entry=>Math.abs(entry.value-r.value)<1e-9).length;
+    return {name:r.name,value:round(r.value),year:r.year||'',rank,tieCount,original:originalText(r)};
+   })
   });
  }
  const pvals=(key,filter=()=>true)=>ps.filter(filter).map(p=>({name:p.name,value:p[key]}));
@@ -68,19 +74,45 @@ function render(){
  if(!window.POKER_SEED)return '<p class="hint">Historische Daten nicht geladen.</p>';
  const data=calculate(window.POKER_SEED);
  const groups=['Erfolge','Saisonrekorde','Hall of Shame','Rivalitäten'];
- const card=r=>`<article class="hof-record">
-  <div class="hof-record-top"><span>${escape(r.title)}</span><b>${escape(r.value)} ${escape(r.unit)}</b></div>
-  <strong>${escape(r.holder)}</strong>
-  <p>${escape(r.description)}</p>
-  ${r.original?`<p class="hof-record-original">${escape(r.original)}</p>`:''}
-  <details><summary>Vollständige Rangliste ansehen</summary><div class="hof-scroll">
-   <table><thead><tr><th>Rang</th><th>Spieler / Saison</th><th>${escape(r.unit)}</th></tr></thead>
-   <tbody>${r.table.map((x,i)=>`<tr><td>${i+1}</td><td>${escape(x.name)}${x.original?`<small class="hof-original-note">${escape(x.original)}</small>`:''}</td><td>${escape(x.value)}</td></tr>`).join('')}</tbody></table>
-  </div></details></article>`;
+ // Three individual leaders are visible, while ties keep their actual rank.
+ // A missing podium slot stays empty rather than inventing a player or rank.
+ const step=(x,slot)=>{
+  if(!x)return `<div class="hof-mini-step hof-mini-step--${slot} hof-mini-step--empty" aria-label="Podiumplatz nicht besetzt"><span class="hof-mini-medal" aria-hidden="true">–</span><span class="hof-mini-label">Nicht besetzt</span></div>`;
+  const medal=slot===1?'🥇':slot===2?'🥈':'🥉';
+  const parts=/^(.*?)\s*\((\d{4})\)$/.exec(x.name);
+  const displayName=parts?parts[1]:x.name;
+  const year=parts?parts[2]:'';
+  return `<div class="hof-mini-step hof-mini-step--${slot}" aria-label="Rang ${x.rank}: ${escape(x.name)}, ${escape(x.value)}">
+    <span class="hof-mini-medal" aria-hidden="true">${medal}</span>
+    <span class="hof-mini-label">Rang ${x.rank}</span>
+    <strong class="hof-mini-name">${escape(displayName)}</strong>
+    ${year?`<span class="hof-mini-year">${escape(year)}</span>`:''}
+    <b class="hof-mini-value">${escape(x.value)}</b>
+    ${x.tieCount>1?'<span class="hof-mini-tie">Gleichstand</span>':''}
+   </div>`;
+ };
+ const card=r=>{
+  const podium=`<div class="hof-mini-podium" aria-label="Podium: ${escape(r.title)}">
+   ${step(r.table[1],2)}
+   ${step(r.table[0],1)}
+   ${step(r.table[2],3)}
+  </div>`;
+  const hiddenTies=r.table.slice(3).filter(x=>x.rank<=3);
+  return `<article class="hof-record">
+   <div class="hof-record-top"><span>${escape(r.title)}</span><b>${escape(r.value)} ${escape(r.unit)}</b></div>
+   <p>${escape(r.description)}</p>
+   ${podium}
+   ${hiddenTies.length?`<p class="hof-mini-more">${hiddenTies.length} weitere gleichplatzierte ${hiddenTies.length===1?'Person':'Personen'} in der Rangliste</p>`:''}
+   <details><summary>Vollständige Rangliste ansehen</summary><div class="hof-scroll">
+    <table><thead><tr><th>Rang</th><th>Spieler / Saison</th><th>${escape(r.unit)}</th></tr></thead>
+    <tbody>${r.table.map(x=>`<tr><td>${x.rank}</td><td>${escape(x.name)}${x.original?`<small class="hof-original-note">${escape(x.original)}</small>`:''}</td><td>${escape(x.value)}</td></tr>`).join('')}</tbody></table>
+   </div></details>
+  </article>`;
+ };
  return `<section class="hof-extended" aria-label="Historisches Rekordbuch">
   <div class="eyebrow">DAS REKORDBUCH</div>
   <h2>Legenden, Dramen und Negativrekorde</h2>
-  <p>${data.records.length} automatisch berechnete Rekordlisten aus ${data.years} historischen Turnieren. Tippe auf eine Kategorie, danach auf einen Rekord. Gleichstände werden gemeinsam ausgewiesen. Saisonrekorde werden auf 7 Runden umgerechnet.</p>
+  <p>${data.records.length} automatisch berechnete Rekordlisten aus ${data.years} historischen Turnieren. Wähle eine Kategorie und entdecke zu jedem Rekord das Podium mit den drei Bestplatzierten. Die vollständige Rangliste lässt sich darunter aufklappen. Gleichstände teilen sich denselben Rang. Saisonrekorde werden auf 7 Runden umgerechnet.</p>
   <nav class="hof-tabs" aria-label="Rekordkategorien">${groups.map((g,i)=>`<button type="button" class="hof-tab ${i===0?'selected':''}" data-hof-tab="${escape(g)}">${escape(g)}</button>`).join('')}</nav>
   ${groups.map((g,i)=>`<div class="hof-category" data-hof-category="${escape(g)}" ${i?'hidden':''}>${data.records.filter(r=>r.category===g).map(card).join('')}</div>`).join('')}
   <p class="hof-source">Quelle: originale Schlussranglisten und chronologische Rundenresultate. Die Saisonwerte werden auf 7 Runden umgerechnet; Originalergebnisse, historische Punktesysteme und Feldgrössen bleiben unverändert. Relative Platzierungen werden nicht erneut umgerechnet.</p>
