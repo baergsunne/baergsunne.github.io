@@ -239,46 +239,74 @@ function seriesColor(name,index){const nameIndex=names.indexOf(name);return colo
 function lineChart(series,{height=0,unit='',percent=false,rank=false}={}){if(!series.length||series.every(s=>!s.values.length))return `<div class="empty">Keine Daten für dieses Diagramm</div>`;let all=series.flatMap(s=>s.values.filter(v=>v.v!==null&&Number.isFinite(v.v)).map(p=>p.v));if(!all.length)return '<div class="empty">Keine Werte</div>';const seriesCount=Math.max(1,series.length),autoHeight=Math.min(430,Math.max(320,250+seriesCount*14));let ymax=rank?Math.max(1,...all):Math.max(1,...all)*1.12,ymin=rank?1:Math.min(0,...all),W=560,H=height||Math.min(330,Math.max(250,220+seriesCount*8)),m={t:26,b:46,l:46,r:22},bw=W-m.l-m.r,bh=H-m.t-m.b;const xes=[...new Set(series.flatMap(s=>s.values.map(v=>v.x)))].sort((a,b)=>Number(a)-Number(b));const px=x=>m.l+(xes.length<=1?bw/2:xes.indexOf(x)*bw/(xes.length-1));const py=v=>m.t+((rank?v-1:ymax-v)/(rank?Math.max(1,ymax-1):ymax-ymin))*bh;let grid=Array.from({length:5},(_,i)=>{let v=rank?1+(ymax-1)*i/4:ymax*(1-i/4);let y=py(v);return `<line x1="${m.l}" y1="${y}" x2="${W-m.r}" y2="${y}" stroke="#385444" stroke-dasharray="4 5"/><text x="${m.l-9}" y="${y+4}" fill="#91AFA0" font-size="11" text-anchor="end">${Math.round(v)}${percent?'%':''}</text>`}).join('');let xl=xes.filter((_,i)=>xes.length<=13||i%Math.ceil(xes.length/10)===0).map(x=>`<text x="${px(x)}" y="${H-11}" text-anchor="middle" font-size="11" fill="#A4B9A9">${x}</text>`).join('');let paths=series.map((s,idx)=>{if(state.hiddenSeries.includes(s.name))return "";let col=seriesColor(s.name,idx),vals=s.values.filter(z=>z.v!==null&&Number.isFinite(z.v)),pts=vals.map(z=>`${px(z.x)},${py(z.v)}`).join(' ');const runs=[];let run=[];for(const z of s.values){if(z.v===null||!Number.isFinite(z.v)){if(run.length)runs.push(run);run=[];}else run.push(z);}if(run.length)runs.push(run);return `${runs.map(group=>group.length>1?`<polyline points="${group.map(z=>`${px(z.x)},${py(z.v)}`).join(' ')}" stroke="${col}" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`:'').join('')}<g>${vals.map(z=>`<circle data-bp-point data-bp-x="${px(z.x)}" data-bp-label="${esc(z.x)}" data-bp-series="${esc(s.name)}" data-bp-value="${pointsFmt(z.v)}${esc(unit)}" cx="${px(z.x)}" cy="${py(z.v)}" r="5.5" fill="${col}" stroke="#10241B" stroke-width="2"><title>${esc(s.name)} · ${esc(z.x)}: ${pointsFmt(z.v)}${unit}</title></circle>`).join('')}</g>`}).join('');return `<div class="chart-scroll chart-scroll--large"><svg class="chart-svg chart-svg--large" data-bp-chart="line" tabindex="0" viewBox="0 0 ${W} ${H}" role="img" aria-label="Interaktiver Werteverlauf">${grid}${paths}${xl}</svg></div><div class="bp-series-legend bp-series-legend--compact" aria-label="Spielerlegende">${series.map((s,i)=>`<button type="button" class="bp-series-pill bp-series-pill--compact ${state.hiddenSeries.includes(s.name)?'is-muted':''}" data-action="toggleseries" data-value="${esc(s.name)}" aria-pressed="${!state.hiddenSeries.includes(s.name)}" style="--series:${seriesColor(s.name,i)};"><span class="bp-series-dot"></span><span class="bp-series-name">${esc(s.name)}</span></button>`).join('')}</div>`}
 function barChart(data,barKey='v',limit=16){const a=data.slice(0,limit),max=Math.max(1,...a.map(d=>d[barKey]||0));return `<div class="bars">${a.map((d,i)=>`<div class="barrow" data-bp-chart-item data-bp-label="${esc(d.name)}" data-bp-value="${pointsFmt(d[barKey]||0)}" tabindex="0"><span>${esc(d.name)}</span><div class="track"><i style="width:${Math.max(0,(d[barKey]||0)/max*100)}%;background:${colors[i%colors.length]}"></i></div><strong>${pointsFmt(d[barKey]||0)}</strong></div>`).join('')}</div>`}
 function home(){
- const ordered=[...db.editions].sort((a,b)=>b.year-a.year),latest=ordered[0],winner=latest.official_standings.find(x=>x.place===1);
- const players=new Set(db.editions.flatMap(e=>e.players));
- const numRounds=db.editions.reduce((n,e)=>n+e.rounds.length,0);
- const hall=db.editions.flatMap(e=>e.official_standings.filter(x=>x.place===1).map(x=>({year:e.year,player:x.player_id})));const counts={};hall.forEach(x=>counts[x.player]=(counts[x.player]||0)+1);
- const top=Object.entries(counts).sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0],'de'))[0];
- // Functional design-lab: summary derived from the verified archive, not fixtures.
- const adhStandings=[...latest.official_standings].sort((a,b)=>Number(a.place)-Number(b.place)||a.player_id.localeCompare(b.player_id,'de'));
- const adhRunner=adhStandings.find(x=>Number(x.place)===2);
- const adhLead=winner&&adhRunner?Number(winner.points)-Number(adhRunner.points):null;
- const adhRanking=`<section class="adh-scoreboard" aria-label="Offizieller Turnierendstand ${esc(latest.year)} – Top 5"><div class="adh-scoreboard-main"><div class="adh-scoreboard-title"><strong>Endstand ${esc(latest.year)}</strong><small>TOP 5 / ${adhStandings.length}</small></div>${adhStandings.slice(0,5).map(r=>`<button type="button" class="adh-place" data-action="profile" data-value="${esc(r.player_id)}" aria-label="Spielerprofil ${esc(r.player_id)} öffnen"><span class="adh-rank">${String(r.place).padStart(2,'0')}</span><span class="adh-name">${esc(r.player_id)}</span><span class="adh-points">${esc(pointsFmt(Number(r.points)))}</span></button>`).join('')}</div><aside class="adh-scoreboard-aside" aria-label="Meisterschaftsabstand"><span>Vorsprung</span><b>${adhLead===null?'–':'+'+esc(pointsFmt(adhLead))}</b><span>Punkte</span><small>${adhRunner?'auf Rang 2 · '+esc(adhRunner.player_id):''}</small></aside></section>`;
- const live=liveWidget(true);
- const feature=(title,desc,action,value,icon,content)=>`<button class="discovery-feature" data-action="${action}" data-value="${esc(value)}"><span class="discovery-feature-icon">${icon}</span><span class="discovery-feature-copy"><strong>${title}</strong><small>${desc}</small>${content?`<em>${content}</em>`:''}</span><span class="discovery-feature-arrow">↗</span></button>`;
- return `<div class="discovery-home"><section class="discovery-hero" aria-label="Bärgsunne Poker"><div class="discovery-hero-inner"><img class="discovery-hero-logo" src="assets/logo-premium.webp" alt="Bärgsunne Poker – Lenk" decoding="async"/></div></section>
- <section class="discovery-counts" aria-label="Archiv in Zahlen"><div><strong>${db.editions.length}</strong><span>Turniere</span></div><div><strong>${players.size}</strong><span>Spieler</span></div><div><strong>${numRounds}</strong><span>Runden</span></div></section>
- <section class="discovery-champion" aria-label="Amtierender Champion ${latest.year}"><div class="discovery-champion-copy"><span class="overline">AMTIERENDER CHAMPION</span><strong class="discovery-champion-year">${latest.year}</strong><h2>${winner?esc(winner.player_id):'Kein offizieller Sieger'}</h2><p>${winner?'<strong>'+pointsFmt(winner.points)+' Punkte</strong>':'Noch kein bestätigter Sieger'}</p><button type="button" data-action="openyear" data-value="${latest.year}">Titelweg im Jahrbuch ${latest.year} ansehen</button></div><div class="discovery-champion-trophy"><img src="assets/trophy-premium.webp" loading="eager" fetchpriority="high" decoding="async" alt="Originaler Bärgsunne-Turnierpokal"/></div></section>
- ${adhRanking}
- ${live}
- <section class="discovery-section"<div class="discovery-head discovery-head--single"><h2>Der Einstieg</h2></div><div class="discovery-features">
- ${feature('Historie','Turniere erleben','go','history',icon('archive'),`${ordered.length} Jahrbücher`)}
- ${feature('Statistiken','Analysen & Rekorde','go','stats',icon('chart-trend'),'Studio & mehr')}
- ${feature('Hall of Fame','Meister & Rekorde','go','fame',icon('crown'),top?`${esc(top[0])}: ${top[1]} Titel`:null)}
- ${feature('Spieler','Profile entdecken','go','players',icon('players'),`${players.size} Spieler`)}
- </div></section>
- <section class="discovery-section"><div class="discovery-head discovery-head--single"><h2>Werkzeuge entdecken</h2></div><div class="discovery-mini-grid">
- ${feature('Duelle','Spieler vergleichen','statsrounds','rivals',icon('duel'))}
- ${feature('Wenn–Dann-Finder','Ereignisse verknüpfen','statsrounds','patterns',icon('pattern'))}
- ${feature('Diagramme','Zahlen als Grafik','statsrounds','lab',icon('chart-selection'))}
- ${feature('Simulator','Turniere durchspielen','statsrounds','simulator',icon('simulator'))}
- ${feature('Muster-Finder','Muster entdecken','statsrounds','muster',icon('pattern'))}
- ${feature('Übersicht','Zahlen & Rekorde','statsrounds','overview',icon('chart-trend'))}
- </div></section>
- <section class="discovery-section discovery-history-teaser" aria-label="Historie entdecken"><div class="discovery-head discovery-head--single"><h2>Historie entdecken</h2></div><div class="discovery-mini-grid">
- ${feature('Jahrbuch','Champions und Podestplätze','historyteaser','yearbook',icon('podium'))}
- ${feature('Runden','Jede Runde und ihre Originalresultate','historyteaser','replay',icon('rounds'))}
- ${feature('Schlüsselmomente','Führungswechsel und Wendepunkte','historyteaser','moments',icon('pattern'))}
- ${feature('Rekordbuch','Bestleistungen und Negativrekorde','historyteaser','records',icon('record'))}
- ${feature('Teilnehmerfeld','Neulinge, Rückkehrer und Stammgäste','historyteaser','field',icon('players'))}
- ${feature('Jahresvergleich','Was hat sich zum letzten Turnier verändert?','historyteaser','compare',icon('compare'))}
-</div></section></div>`;
+ const ordered=[...db.editions].sort((a,b)=>b.year-a.year);
+ const latest=ordered[0];
+ const standings=[...latest.official_standings].sort((a,b)=>Number(a.place)-Number(b.place)||a.player_id.localeCompare(b.player_id,'de'));
+ const winner=standings.find(x=>Number(x.place)===1),runner=standings.find(x=>Number(x.place)===2);
+ const lead=winner&&runner?Number(winner.points)-Number(runner.points):null;
+ const participants=new Set(db.editions.flatMap(e=>e.players));
+ const rounds=db.editions.reduce((sum,e)=>sum+e.rounds.length,0);
+ const titles=new Map();
+ for(const e of db.editions){const w=e.official_standings.find(x=>Number(x.place)===1);if(w)titles.set(w.player_id,(titles.get(w.player_id)||0)+1);}
+ const master=[...titles].sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0],'de'))[0];
+ const entry=(label,detail,action,value,accent)=>`<button type="button" class="x-entry ${accent?'x-entry-featured':''}" data-action="${action}" data-value="${esc(value)}"><span class="x-entry-title">${esc(label)}</span><span class="x-entry-description">${esc(detail)}</span><span class="x-entry-arrow" aria-hidden="true">↗</span></button>`;
+ const row=(r,i)=>`<button type="button" class="x-table-row ${i===0?'x-table-winner':''}" data-action="profile" data-value="${esc(r.player_id)}"><span class="x-rank">${String(r.place).padStart(2,'0')}</span><span class="x-player">${esc(r.player_id)}</span><span class="x-points">${esc(pointsFmt(Number(r.points)))}</span></button>`;
+ const count=(n,l)=>`<div class="x-figure"><strong>${esc(n)}</strong><small>${esc(l)}</small></div>`;
+ return `<div class="x-home">
+ <section class="x-cover" aria-label="Bärgsunne Poker 2026">
+   <div class="x-cover-brand"><img class="discovery-hero-logo x-logo" src="assets/logo-premium.webp" alt="Bärgsunne Poker – Lenk" decoding="async"><div class="x-cover-stamp">LENK IM SIMMENTAL <span>SEIT 2007</span></div></div>
+   <div class="x-cover-main">
+     <div class="x-champion-layout">
+       <div class="x-champion-stat"><span class="x-eyebrow">CHAMPION · ${esc(latest.year)}</span><strong class="x-champion-points">${winner?esc(pointsFmt(winner.points)):'–'}</strong><div class="x-champion-label">PUNKTE</div><h1>${winner?esc(winner.player_id):'–'}</h1><button class="x-text-action" type="button" data-action="openyear" data-value="${latest.year}">TITELWEG ${esc(latest.year)} ANSEHEN <span aria-hidden="true">↗</span></button></div>
+       <div class="x-cover-trophy"><img src="assets/trophy-premium.webp" alt="Bärgsunne Pokal" decoding="async"><span>TURNIERSIEGER ${esc(latest.year)}</span></div>
+     </div>
+     <div class="x-cover-footer"><span>${esc(latest.year)} / ${esc(standings.length)} SPIELER</span><span>OFFIZIELLER ENDRANG</span></div>
+   </div>
+ </section>
+ <section class="x-result-layout" aria-label="Endstand ${latest.year}">
+   <div class="x-results">
+     <div class="x-section-top"><div><span class="x-eyebrow">DIE LETZTE MEISTERSCHAFT</span><h2>Endstand <em>${esc(latest.year)}</em></h2></div><button type="button" data-action="openyear" data-value="${latest.year}" class="x-inline-link">Jahrbuch ↗</button></div>
+     <div class="x-table-heading"><span>RANG</span><span>SPIELER</span><span>PKT.</span></div>
+     <div class="x-table-body">${standings.map(row).join('')}</div>
+   </div>
+   <div class="x-result-aside">
+     <div class="x-result-gain"><span class="x-eyebrow">ABSTAND ZU RANG 2</span><strong>${lead===null?'–':'+'+esc(pointsFmt(lead))}</strong><span>PUNKTE</span><small>${runner?esc(runner.player_id):''}</small></div>
+     <div class="x-master"><span class="x-eyebrow">REKORDMEISTER</span><strong>${master?esc(master[1]):'–'}</strong><span>TITEL</span><button type="button" data-action="profile" data-value="${master?esc(master[0]):''}">${master?esc(master[0]):'–'} ↗</button></div>
+   </div>
+ </section>
+ <section class="x-archive-strip" aria-label="Das Bärgsunne Archiv">
+   <div class="x-strip-title">DAS ARCHIV <span>2007—${esc(latest.year)}</span></div>
+   <div class="x-figures">${count(db.editions.length,'TURNIERE')}${count(participants.size,'SPIELER')}${count(rounds,'RUNDEN')}</div>
+ </section>
+ <section class="x-pathways">
+   <div class="x-section-top"><div><span class="x-eyebrow">ZUGANG ZU DEN DATEN</span><h2>Entdecken.</h2></div></div>
+   <div class="x-entry-list">
+     ${entry('Statistiken','Duelle, Karrieren, Diagramme, Muster','go','stats',true)}
+     ${entry('Historie',`${db.editions.length} Jahrgänge · Runden · Originalergebnisse`,'go','history',true)}
+     ${entry('Hall of Fame',`${master?master[0]:'–'} · ${master?master[1]:'–'} Titel · Rekordbuch`,'go','fame',false)}
+     ${entry('Spieler',`${participants.size} Profile · Laufbahnen · Rivalen`,'go','players',false)}
+   </div>
+ </section>
+ <section class="x-datasets">
+   <div class="x-dataset-column"><div class="x-dataset-head"><span class="x-eyebrow">ANALYSE-WERKZEUGE</span><h2>Zahlen vergleichen</h2></div>
+   ${entry('Duelle','Spieler gegen Spieler','statsrounds','rivals')}
+   ${entry('Muster-Finder','Runden und Platzierungen','statsrounds','muster')}
+   ${entry('Wenn–Dann-Finder','Ereignisse verknüpfen','statsrounds','patterns')}
+   ${entry('Diagramme','Zahlen als Grafik','statsrounds','lab')}
+   ${entry('Simulator','Turniere durchspielen','statsrounds','simulator')}
+   ${entry('Übersicht','Zahlen und Rekorde','statsrounds','overview')}</div>
+   <div class="x-dataset-column"><div class="x-dataset-head"><span class="x-eyebrow">HISTORISCHES ARCHIV</span><h2>Jahre untersuchen</h2></div>
+   ${entry('Jahrbuch','Champions und Podien','historyteaser','yearbook')}
+   ${entry('Runden','Originalresultate','historyteaser','replay')}
+   ${entry('Schlüsselmomente','Führungs- und Rangwechsel','historyteaser','moments')}
+   ${entry('Rekordbuch','Historische Spitzenwerte','historyteaser','records')}
+   ${entry('Teilnehmerfeld','Neulinge und Rückkehrer','historyteaser','field')}
+   ${entry('Jahresvergleich','Turnier gegen Turnier','historyteaser','compare')}</div>
+ </section>
+ <section class="x-live-archive"><div class="x-section-top"><div><span class="x-eyebrow">TURNIERSTATUS</span><h2>Live-Archiv.</h2></div></div>${liveWidget(true)}</section>
+ </div>`;
 }
+
 const TOOL_CHOICES=Object.create(null);
 try{
  const saved=JSON.parse(localStorage.getItem('baergsunne-tool-choices-v216')||'null');
