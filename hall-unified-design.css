@@ -30,6 +30,7 @@
   line-height:1.55!important;
 }
 #app .page--fame .hof-extended{
+  background:var(--bp-level-two-forest,linear-gradient(225deg,#203d30,#0b241b))!important;
   margin:26px 0!important;
   padding:clamp(16px,3.2vw,26px)!important;
 }
@@ -42,6 +43,7 @@
 }
 #app .page--fame .hof-category{grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr));gap:13px}
 #app .page--fame .hof-record{
+  background:linear-gradient(225deg,rgba(236,201,130,.15) 0%,rgba(231,191,110,.07) 33%,transparent 59%),linear-gradient(225deg,#42664b 0%,#31533e 40%,#204331 73%,#16392b 100%)!important;
   padding:clamp(13px,2.6vw,20px)!important;
   min-width:0;
 }
@@ -59,18 +61,21 @@
 }
 #app .page--fame .hof-tabs{gap:8px;flex-wrap:wrap;white-space:normal}
 #app .page--fame .hof-tab{
-  background:var(--bp-sunlight-surface,#1b3b2d)!important;
-  color:#f1e5cf!important;
-  border:1px solid rgba(232,195,126,.45)!important;
+  background:linear-gradient(225deg,#efdbb2 0%,#d6dcbb 43%,#b1bf99 100%)!important;
+  color:#17372a!important;
+  -webkit-text-fill-color:#17372a!important;
+  box-shadow:var(--bp-sunlight-shadow-soft,-3px 6px 12px rgba(7,27,21,.20))!important;
+  border:1px solid rgba(232,195,126,.60)!important;
   border-radius:12px!important;
   min-height:44px;
   padding:10px 13px;
   font-size:clamp(12px,2.5vw,15px);
 }
 #app .page--fame .hof-tab.selected{
-  background:#e8c37e!important;
-  color:#163426!important;
-  border-color:#e8c37e!important;
+  background:linear-gradient(225deg,#f8e3b5 0%,#eac77e 58%,#cfaa6e 100%)!important;
+  color:#173426!important;
+  -webkit-text-fill-color:#173426!important;
+  border-color:#f0ce8e!important;
   font-weight:850!important;
 }
 #app .page--fame .record-grid{gap:12px}
@@ -172,4 +177,21 @@
   padding:12px 8px!important;
   font-size:clamp(14px,3.6vw,17px)!important;
  }
+}
+
+/* Originalwerte bleiben bei allen auf sieben Runden normierten Saisonrekorden sichtbar. */
+#app .page--fame .hof-record>p.hof-record-original{
+  margin-top:4px!important;
+  color:#efcf90!important;
+  -webkit-text-fill-color:#efcf90!important;
+  font-size:clamp(12px,2.7vw,14px)!important;
+  line-height:1.45!important;
+}
+#app .page--fame .hof-scroll .hof-original-note{
+  display:block;
+  margin-top:4px;
+  font-size:clamp(11px,2.5vw,12px)!important;
+  line-height:1.4;
+  color:#c5d7c7!important;
+  -webkit-text-fill-color:#c5d7c7!important;
 }
