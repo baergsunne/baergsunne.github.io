@@ -12,27 +12,35 @@ export function validateConfig(input) {
   if(!Array.isArray(points)||points.length!==players.length||points.some(x=>!Number.isInteger(x)||x<0||x>1000))throw Error('Punkte pro Platz ungültig.');
   return {year,roundCount,players,points};
 }
-export function validatePlaces(places,config) {
-  if(!Array.isArray(places)||places.length!==config.players.length||places.some(x=>typeof x!=='string')||new Set(places).size!==places.length||places.some(x=>!config.players.includes(x)))throw Error('Jeder Teilnehmer muss genau einmal platziert werden.');
-  return places;
+export function normalizeResults(places,config){
+ if(Array.isArray(places)&&places.every(x=>typeof x==='string')){validatePlaces(places,config);return places.map((player,i)=>({player,place:i+1,points:config.points[i]}));}
+ if(!Array.isArray(places)||places.length!==config.players.length)throw Error('Jeder Teilnehmer muss genau einmal platziert werden.');
+ const names=places.map(x=>x?.player);
+ if(names.some(x=>typeof x!=='string'||!config.players.includes(x))||new Set(names).size!==config.players.length)throw Error('Jeder Teilnehmer muss genau einmal platziert werden.');
+ if(places.some(x=>!Number.isInteger(x.place)||x.place<1||x.place>config.players.length||!Number.isInteger(x.points)||x.points<0||x.points>1000))throw Error('Rang oder Punkte ungültig.');
+ return places.map(x=>({player:x.player,place:x.place,points:x.points}));
+}
+export function validatePlaces(places,config){
+ if(!Array.isArray(places)||places.length!==config.players.length||places.some(x=>typeof x!=='string')||new Set(places).size!==places.length||places.some(x=>!config.players.includes(x)))throw Error('Jeder Teilnehmer muss genau einmal platziert werden.');
+ return places;
 }
 export function standings(t,through=t.roundCount) {
   const previous=through>1?standings(t,through-1):[];
   const rows=t.players.map(player=>({player,points:0,wins:0,podiums:0,played:0,places:[]}));
   for(let i=1;i<=Math.min(through,t.roundCount);i++) {
     const places=t.published[i]; if(!places)continue;
-    places.forEach((player,index)=>{const r=rows.find(x=>x.player===player);r.points+=t.points[index];r.wins+=Number(index===0);r.podiums+=Number(index<3);r.played++;r.places.push(index+1);});
+    normalizeResults(places,t).forEach(x=>{const r=rows.find(v=>v.player===x.player);r.points+=x.points;r.wins+=Number(x.place===1);r.podiums+=Number(x.place<=3);r.played++;r.places.push(x.place);});
   }
   rows.sort((a,b)=>b.points-a.points||b.wins-a.wins||a.player.localeCompare(b.player,'de-CH'));
   return rows.map((r,i)=>({...r,rank:i+1,gap:rows[0].points-r.points, movement:previous.length?previous.find(x=>x.player===r.player).rank-(i+1):0}));
 }
 export function publicSnapshot(t,updatedAt) {
-  const rounds=Array.from({length:t.roundCount},(_,i)=>t.published[i+1]?{number:i+1,winner:t.published[i+1][0],results:t.published[i+1].map((player,j)=>({player,place:j+1,points:t.points[j]}))}:null).filter(Boolean);
+  const rounds=Array.from({length:t.roundCount},(_,i)=>t.published[i+1]?{number:i+1,winner:normalizeResults(t.published[i+1],t).find(x=>x.place===1)?.player||null,results:normalizeResults(t.published[i+1],t)}:null).filter(Boolean);
   const board=standings(t);
   return {status:t.status==='final'?'final':rounds.length?'live':'planned',year:t.year,players:t.players,round_count:t.roundCount,scoring:t.points,rounds,latest_round:rounds.at(-1)?.number||0,standings:board,leaders:board.filter(x=>x.points===board[0]?.points).map(x=>x.player),updated_at:updatedAt,final:t.final};
 }
 export function finalizedEdition(t) {
   if(Object.keys(t.published).length!==t.roundCount)throw Error('Alle Runden müssen veröffentlicht sein.');
   const board=standings(t);
-  return {year:t.year,status:'HISTORICAL_REAL',source:'Bärgsunne Poker Live – vom Owner bestätigte Schlussrangliste',location:'Bärgsunne',players:t.players,round_count:t.roundCount,scoring:{name:'Originalpunktzahl',points_by_place:t.points},rounds:Array.from({length:t.roundCount},(_,i)=>({number:i+1,results:t.published[i+1].map((player,j)=>({player_id:player,points:t.points[j],place:j+1}))})),official_standings:board.map(x=>({player_id:x.player,points:x.points,place:x.rank}))};
+  return {year:t.year,status:'HISTORICAL_REAL',source:'Bärgsunne Poker Live – vom Owner bestätigte Schlussrangliste',location:'Bärgsunne',players:t.players,round_count:t.roundCount,scoring:{name:'Originalpunktzahl',points_by_place:t.points},rounds:Array.from({length:t.roundCount},(_,i)=>({number:i+1,results:normalizeResults(t.published[i+1],t).map(x=>({player_id:x.player,points:x.points,place:x.place}))})),official_standings:board.map(x=>({player_id:x.player,points:x.points,place:x.rank}))};
 }

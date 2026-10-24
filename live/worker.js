@@ -1,4 +1,4 @@
-import {freshTournament,validateConfig,validatePlaces,publicSnapshot,finalizedEdition} from './core.js';
+import {freshTournament,validateConfig,validatePlaces,normalizeResults,publicSnapshot,finalizedEdition} from './core.js';
 
 const json=(value,status=200,extra={})=>new Response(JSON.stringify(value),{status,headers:{'content-type':'application/json; charset=utf-8','cache-control':'no-store','x-content-type-options':'nosniff','referrer-policy':'no-referrer',...extra}});
 // GitHub Pages may read only published results; authentication and writes stay same-origin.
@@ -113,10 +113,10 @@ export default {async fetch(req,env,ctx){
     if(b.revision!==row.revision)return fail('Stand veraltet.',409);const t=JSON.parse(row.document),number=Number(b.round);
     if(t.status==='final')return fail('Turnier abgeschlossen.',409);
     if(!Number.isInteger(number)||number<1||number>t.roundCount)return fail('Runde ungültig.',400);
-    if(b.action==='draft'){validatePlaces(b.places,t);t.rounds[number]=b.places;return update(env,row,t,'draft:'+number,ctx);}
+    if(b.action==='draft'){t.rounds[number]=normalizeResults(b.places,t);return update(env,row,t,'draft:'+number,ctx);}
     if(b.action==='publish'){
-      validatePlaces(b.places,t);if(!Object.keys(t.published).length&&number!==1||number>1&&!t.published[number-1])return fail('Vorherige Runde zuerst veröffentlichen.',409);
-      t.rounds[number]=b.places;t.published[number]=b.places;t.status='live';return update(env,row,t,'publish:'+number,ctx);
+      const results=normalizeResults(b.places,t);if(!Object.keys(t.published).length&&number!==1||number>1&&!t.published[number-1])return fail('Vorherige Runde zuerst veröffentlichen.',409);
+      t.rounds[number]=results;t.published[number]=results;t.status='live';return update(env,row,t,'publish:'+number,ctx);
     }
     if(b.action==='withdraw'){
       if(!t.published[number])return fail('Runde nicht veröffentlicht.',409);
