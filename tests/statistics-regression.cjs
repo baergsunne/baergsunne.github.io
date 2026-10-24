@@ -12,12 +12,37 @@ const app=fs.readFileSync('app.js','utf8');assert(app.includes('validateArchiveE
 assert(app.includes('appBootstrapped=true;\n syncRoute();'),'first paint must use bundled canonical 17-year data without Cloudflare');assert(app.includes("if(needsLivePolling(state.page))refreshLive()"),'only active Home/Live may poll the remote backend');
 assert(!app.includes('const initialArchiveRequest=apiBase?refreshLive():Promise.resolve()'),'remote fetch must not gate first paint');
 console.log(JSON.stringify({success:true,years:years.size,rounds:totalRounds,player_rounds:totalResults,year2021:true,archiveValidation:true,dynamicYearSelection:true}));
-// Confirmed owner rule: every zero-point round is a last-place result;
-// if a round has no zero-point players, the final rank is last.
-let countedLast=0,zeroPointLast=0,positiveLast=0;
-for(const e of data.editions.filter(e=>e.year<=2025))for(const r of e.rounds){const lastRank=Math.max(...r.results.map(x=>x.place));for(const x of r.results){if(x.points===0||x.place===e.players.length){countedLast++;if(x.points===0)zeroPointLast++;else positiveLast++;}}}
-assert.equal(countedLast,253,'Historical last placements');assert.equal(zeroPointLast,246);assert.equal(positiveLast,7);
-assert(app.includes('last:a.filter(x=>x.points===0||x.place===x.field).length'));
-assert(app.includes('last:count(r=>r.points===0||r.place===r.field)'));
-assert(app.includes('firstLast:i===0&&(x?.points===0||x?.place===e.players.length)'));
-console.log('LAST_PLACE_RULE_SUCCESS',JSON.stringify({last:countedLast,zero:zeroPointLast,positive:positiveLast}));
+// Every lowest-scoring player is last regardless of the archived position
+// or the historic minimum point award. Original results stay untouched.
+vm.runInNewContext(fs.readFileSync('round-placement.js','utf8'),ctx);
+const placement=ctx.window.BaergsunneRoundPlacement;
+let countedLast=0,zeros=0,positiveLast=0,sharedLast=0;
+for(const e of data.editions)for(const r of e.rounds){
+ const min=placement.lowestPoints(r);
+ const last=placement.lastPlayers(r);
+ assert(last.length>0,'all rounds have a last-place group '+e.year+'/'+r.number);
+ if(last.length>1)sharedLast++;
+ for(const x of r.results){
+  const flagged=placement.isLast(x,r);
+  assert.equal(flagged,x.points===min);
+  if(flagged){countedLast++;if(x.points>0)positiveLast++;}
+  if(placement.isZero(x))zeros++;
+  if(flagged)assert.equal(placement.effectivePlace(x,r),r.results.length);
+  else assert.equal(placement.effectivePlace(x,r),x.place);
+ }
+}
+assert.equal(countedLast,267,'lowest-point last places including ties across 147 rounds');
+assert.equal(zeros,260,'zero rounds are separate from last-place awards');
+assert.equal(positiveLast,7,'seven positive 2025 last places count');
+assert.equal(sharedLast,116,'every multi-zero round has shared last places');
+const zeroTie=data.editions.find(e=>e.year===2026).rounds[0];
+assert.deepEqual(JSON.parse(JSON.stringify(placement.lastPlayers(zeroTie))).sort(),['Chopfi','Keel']);
+assert(placement.isBottomN(zeroTie.results.find(x=>x.player_id==='Chopfi'),zeroTie,2));
+const positive=data.editions.find(e=>e.year===2025).rounds[0];
+assert(placement.isLast(positive.results.find(x=>x.points===2),positive));
+assert(app.includes('last:a.filter(x=>x.isLast).length'));
+assert(app.includes('last:count(r=>r.isLast)'));
+assert(app.includes('firstLast:i===0&&window.BaergsunneRoundPlacement.isLast'));
+assert(fs.readFileSync('hall-records.js','utf8').includes("add('Hall of Shame','Nullrunden'"));
+assert(fs.readFileSync('index.html','utf8').includes('round-placement.js?v='));
+console.log('LAST_PLACE_RULE_SUCCESS',JSON.stringify({rounds:totalRounds,last:countedLast,zero:zeros,positiveLast,sharedLast}));
