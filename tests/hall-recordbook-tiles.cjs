@@ -20,7 +20,7 @@ const assert=require('node:assert/strict');
      columns:getComputedStyle(tabs).gridTemplateColumns.split(' ').length,
      tabsScroll:tabs.scrollWidth-tabs.clientWidth,
      labels:cards.map(x=>x.textContent.trim()),
-     podiumPositions:[...podium.children].map(x=>x.className.match(/position-\\d/)?.[0])
+     podiumPositions:[...podium.children].map(x=>x.className.match(/position-[123]/)?.[0])
     };
    });
    assert(layout.podiumBeforeBook,'podium precedes record book');
