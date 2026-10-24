@@ -24,3 +24,34 @@
 .page--profile .bp-form-dynamic .hint{margin:0;color:#bdcbbd;line-height:1.55}
 @media(max-width:680px){.page--profile .bp-form-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}.page--profile .bp-form-tile{min-height:96px;padding:10px 7px;gap:7px}.page--profile .bp-form-tile small{font-size:.73rem;line-height:1.2;overflow-wrap:anywhere}.page--profile .bp-form-tile strong{font-size:clamp(1.03rem,4vw,1.36rem);line-height:1.12}.page--profile .bp-form-tile--trend strong{font-size:clamp(.89rem,3.3vw,1.13rem)}.page--profile .bp-form-tile--forecast strong{font-size:clamp(.93rem,3.3vw,1.16rem)}.page--profile .bp-form-controls{padding:12px}.page--profile .bp-form-preset{padding:9px 10px}.page--profile .bp-form-chart svg{height:175px}}
 @media(max-width:350px){.page--profile .bp-form-grid{gap:5px}.page--profile .bp-form-tile{padding:9px 5px;min-height:92px}.page--profile .bp-form-tile small{font-size:.68rem}.page--profile .bp-form-tile strong{font-size:1rem}.page--profile .bp-form-tile--trend strong,.page--profile .bp-form-tile--forecast strong{font-size:.84rem}.page--profile .bp-form-custom-label{flex-wrap:wrap}}
+
+/* Final iPhone metric balance: compact, centered, legible 3-by-3 cards. */
+.page--profile .bp-form-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+.page--profile .bp-form-tile{
+ box-sizing:border-box;display:flex;flex-direction:column;align-items:center;justify-content:center;
+ text-align:center;gap:5px;min-width:0;min-height:86px;padding:9px 7px;
+}
+.page--profile .bp-form-tile small{
+ display:block;width:100%;font-size:clamp(.83rem,1.5vw,.94rem);line-height:1.2;
+ text-align:center;overflow-wrap:break-word;hyphens:auto;
+}
+.page--profile .bp-form-tile strong{
+ display:block;width:100%;font-size:clamp(1.38rem,2.7vw,1.78rem);line-height:1.12;
+ text-align:center;overflow-wrap:break-word;
+}
+.page--profile .bp-form-tile--trend strong{font-size:clamp(1rem,2.5vw,1.24rem)}
+.page--profile .bp-form-tile--forecast strong{font-size:clamp(1.08rem,2.7vw,1.45rem)}
+@media(max-width:680px){
+ .page--profile .bp-form-grid{gap:7px}
+ .page--profile .bp-form-tile{min-height:86px;padding:8px 6px;gap:5px}
+ .page--profile .bp-form-tile small{font-size:clamp(.78rem,3.15vw,.89rem);line-height:1.18}
+ .page--profile .bp-form-tile strong{font-size:clamp(1.28rem,5.1vw,1.55rem);line-height:1.1}
+ .page--profile .bp-form-tile--trend strong{font-size:clamp(.99rem,3.7vw,1.2rem)}.page--profile .bp-form-tile--forecast strong{font-size:clamp(1.13rem,4.5vw,1.42rem)}
+}
+@media(max-width:350px){
+ .page--profile .bp-form-grid{gap:5px}
+ .page--profile .bp-form-tile{min-height:86px;padding:7px 4px;gap:4px}
+ .page--profile .bp-form-tile small{font-size:.74rem;line-height:1.16}
+ .page--profile .bp-form-tile strong{font-size:1.22rem}
+ .page--profile .bp-form-tile--trend strong{font-size:.94rem}.page--profile .bp-form-tile--forecast strong{font-size:1.07rem}
+}
