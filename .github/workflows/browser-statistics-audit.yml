@@ -16,6 +16,8 @@ on:
       - 'tests/no-ghost-startup.cjs'
       - 'tests/public-site-chart-check.cjs'
       - 'discovery-home.css'
+      - 'live-unified-design.css'
+      - 'tests/live-heritage-unified.cjs'
       - 'unified-link-tiles-and-stats.css'
       - 'tests/unified-link-tiles-stats.cjs'
       - 'championship-live.js'
@@ -97,6 +99,7 @@ jobs:
       - run: node tests/history-six-visual-unity.cjs
       - run: node tests/browser-audit.cjs
       - run: node tests/hero-trophy-regression.cjs
+      - run: node tests/live-heritage-unified.cjs
       - run: node tests/unified-link-tiles-stats.cjs
       - run: node tests/mobile-controlled-density.cjs
       - run: node tests/mobile-bottomnav-grid-alignment.cjs
