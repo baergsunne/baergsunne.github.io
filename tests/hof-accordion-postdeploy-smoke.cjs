@@ -6,7 +6,7 @@ async function get(url){const ac=new AbortController();const timeout=setTimeout(
 (async()=>{
  const html=await get(page+'/');
  assert.equal(html.status,200,'GitHub Pages public main site');
- assert.match(html.body,/hall-unified-design\.css\?v=20261025-filter1/,'merged stylesheet cache key');
+ assert.match(html.body,/hall-unified-design\.css\?v=20261025-hof-stats-panel1/,'merged stylesheet cache key');
  assert.match(html.body,/app\.js\?v=20261025-hof-stats-panel1/,'merged JS cache key');
  for(const [file,expected] of [
   ['app.js?v=20261025-hof-stats-panel1','function famePage(){'],
