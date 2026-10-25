@@ -1,0 +1,48 @@
+name: Isolated Admin Worker Build
+on:
+  push:
+    branches:
+      - ops/admin-worker-build-20261025
+permissions:
+  contents: write
+jobs:
+  build:
+    if: "!contains(github.event.head_commit.message, '[admin-bundle-built]')"
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --check admin-live.js && node --test live/worker.test.js
+      - run: npm run build:preview
+      - name: Package checked module for isolated Cloudflare upload
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          import crypto from 'node:crypto';
+          const path='dist-live-preview-worker.mjs';
+          const buf=fs.readFileSync(path);
+          const source=buf.toString('utf8');
+          if(!source.includes('/api/admin/new-tournament') || !source.includes('/api/admin/years')) {
+            throw Error('Expected new admin API routes missing');
+          }
+          fs.mkdirSync('_admin_deploy_parts',{recursive:true});
+          const base=buf.toString('base64');
+          const parts=base.match(/.{1,80000}/g)||[];
+          for(let i=0;i<parts.length;i++)fs.writeFileSync('_admin_deploy_parts/part-'+String(i).padStart(3,'0')+'.txt',parts[i]);
+          fs.writeFileSync('_admin_deploy_parts/manifest.json',JSON.stringify({
+            version:'2026-10-25-admin-main',bytes:buf.length,
+            sha256:crypto.createHash('sha256').update(buf).digest('hex'),
+            partCount:parts.length, base64Length:base.length
+          },null,2));
+          console.log('ADMIN_WORKER_BUILD_OK',JSON.stringify({bytes:buf.length,parts:parts.length,sha256:crypto.createHash('sha256').update(buf).digest('hex')}));
+          NODE
+      - name: Persist compiled module only on isolated branch
+        run: |
+          git config user.name "Bärgsunne CI"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -f _admin_deploy_parts
+          git commit -m "Store verified admin module parts [admin-bundle-built]"
+          git push
