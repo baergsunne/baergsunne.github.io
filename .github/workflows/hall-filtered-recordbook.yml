@@ -1,0 +1,26 @@
+name: Hall of Fame filtered recordbook regression
+on:
+  pull_request:
+    paths:
+      - 'app.js'
+      - 'hall-records.js'
+      - 'hall-unified-design.css'
+      - 'index.html'
+      - 'tests/hall-filtered-recordbook.cjs'
+      - '.github/workflows/hall-filtered-recordbook.yml'
+jobs:
+  filtering:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-save playwright
+      - run: npx playwright install chromium
+      - run: python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/poker-hall-filter-server.log 2>&1 &
+      - run: node --check app.js && node --check hall-records.js && node --check tests/hall-filtered-recordbook.cjs
+      - run: node tests/hall-filtered-recordbook.cjs

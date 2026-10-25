@@ -56,7 +56,7 @@ function annualMetrics(e){
 /* Story records: every value comes from documented round results and official
    final standings. A shared points minimum is a shared red lantern; an
    alphabetically ordered tiebreak never pretends to be an elimination order. */
-function storyMetrics(editions){
+function storyMetrics(editions,isChosen=()=>true){
  const years=[...editions].sort((a,b)=>a.year-b.year);
  const people=[...new Set(years.flatMap(e=>e.players))];
  const all=new Map(people.map(p=>[p,[]]));
@@ -101,6 +101,7 @@ function storyMetrics(editions){
   yearly.set(e.year,{e,rounds,standing,snapshots});
   const champion=e.official_standings.find(x=>x.place===1)?.player_id;
   for(const p of e.players){
+   if(!isChosen(p))continue;
    const finish=standing.get(p);
    seasons.get(p).push({year:e.year,place:finish.place,podium:finish.place<=3,champion:finish.place===1});
    if(rounds.length>=3){
@@ -125,6 +126,7 @@ function storyMetrics(editions){
  }
  const winnerYears=years.map(e=>e.official_standings.find(x=>x.place===1)?.player_id);
  for(const p of people){
+  if(!isChosen(p))continue;
   const rs=all.get(p),ss=seasons.get(p);
   put('titleRun',p,streak(winnerYears,x=>x===p));
   put('lanternRun',p,maxLantern.get(p));
@@ -152,25 +154,32 @@ function storyMetrics(editions){
  for(let i=1;i<years.length;i++){
   const prior=winnerYears[i-1],now=yearly.get(years[i].year);
   const position=now.standing.get(prior);
-  if(position)put('defenderCrash',prior+' ('+years[i].year+')',position.place,{year:years[i].year,
+  if(position&&isChosen(prior))put('defenderCrash',prior+' ('+years[i].year+')',position.place,{year:years[i].year,
     sourceNote:'Titel im vorherigen ausgetragenen Turnier '+years[i-1].year+'; Schlussrang '+position.place+' in '+years[i].year+'.'});
  }
  return data;
 }
 
-function calculate(seed){
- const editions=seed.editions||[];
+function calculate(seed,filters={}){
+ const yearSet=Array.isArray(filters.years)&&filters.years.length?new Set(filters.years.map(Number)):null;
+ const playerSet=Array.isArray(filters.players)&&filters.players.length?new Set(filters.players):null;
+ const isChosen=name=>!playerSet||playerSet.has(name);
+ // Keep each original tournament intact: the selection limits candidates,
+ // never rewrites official places, championship leaders or point margins.
+ const editions=(seed.editions||[]).filter(e=>(!yearSet||yearSet.has(e.year))&&(!playerSet||e.players.some(isChosen)));
  const players=new Map();const seasons=[];const yearRows=[];const pair=new Map();const annual=[];
  const get=n=>{if(!players.has(n))players.set(n,{name:n,appearances:0,titles:0,podium:0,runner:0,last:0,total:0,roundWins:0,roundPodium:0,roundLast:0,zeroRounds:0,rounds:0,rankSum:0,places:[],relative:[],seasons:[],winsByYear:[],longestWin:0,longestTop3:0,winRun:0,top3Run:0,yearStreak:0,lastYear:null});return players.get(n)};
  for(const e of editions){
   const field=e.players.length;const standings=e.official_standings||[];const positions=new Map(standings.map(s=>[s.player_id,s]));
   const currentWins=new Map(e.players.map(p=>[p,0]));const currentPodium=new Map(e.players.map(p=>[p,0]));const currentRelative=new Map(e.players.map(p=>[p,0]));
-  for(const p of e.players){const s=positions.get(p);if(!s)continue;const r=get(p);r.appearances++;r.titles+=s.place===1?1:0;r.podium+=s.place<=3?1:0;r.runner+=s.place===2?1:0;r.last+=s.place===field?1:0;r.total+=s.points;r.places.push(s.place);r.relative.push(field>1?(field-s.place)/(field-1):1);r.seasons.push({year:e.year,place:s.place,field,points:s.points});}
-  for(const r of e.rounds){for(const x of r.results){const p=get(x.player_id);p.rounds++;p.rankSum+=window.BaergsunneRoundPlacement.effectivePlace(x,r);currentRelative.set(x.player_id,(currentRelative.get(x.player_id)||0)+(field>1?(field-window.BaergsunneRoundPlacement.effectivePlace(x,r))/(field-1):1));p.roundWins+=x.place===1?1:0;p.roundPodium+=x.place<=3?1:0;p.roundLast+=window.BaergsunneRoundPlacement.isLast(x,r)?1:0;p.zeroRounds+=window.BaergsunneRoundPlacement.isZero(x)?1:0;p.winRun=x.place===1?p.winRun+1:0;p.top3Run=x.place<=3?p.top3Run+1:0;p.longestWin=Math.max(p.longestWin,p.winRun);p.longestTop3=Math.max(p.longestTop3,p.top3Run);if(x.place===1)currentWins.set(x.player_id,1+(currentWins.get(x.player_id)||0));if(x.place<=3)currentPodium.set(x.player_id,1+(currentPodium.get(x.player_id)||0));}}
-  for(const p of e.players){const s=positions.get(p);if(!s)continue;seasons.push({name:p,year:e.year,place:s.place,points:s.points,field,roundCount:e.rounds.length,wins:currentWins.get(p)||0,podium:currentPodium.get(p)||0,roundRelative:e.rounds.length?100*(currentRelative.get(p)||0)/e.rounds.length:NaN,relative:field>1?(field-s.place)/(field-1):1});}
-  const lead=standings.find(x=>x.place===1),second=standings.find(x=>x.place===2);if(lead&&second)yearRows.push({year:e.year,champion:lead.player_id,gap:lead.points-second.points,points:lead.points,roundCount:e.rounds.length});
-  annual.push(annualMetrics(e));
-  for(let a=0;a<standings.length;a++)for(let b=a+1;b<standings.length;b++){const x=standings[a],y=standings[b],key=[x.player_id,y.player_id].sort((u,v)=>u.localeCompare(v,'de')).join('|||');let v=pair.get(key);if(!v){v={a:key.split('|||')[0],b:key.split('|||')[1],years:0,advantageA:0,advantageB:0};pair.set(key,v)}v.years++;if(x.place<y.place){if(x.player_id===v.a)v.advantageA++;else v.advantageB++;}else if(x.place>y.place){if(x.player_id===v.a)v.advantageB++;else v.advantageA++;}}
+  for(const p of e.players){if(!isChosen(p))continue;const s=positions.get(p);if(!s)continue;const r=get(p);r.appearances++;r.titles+=s.place===1?1:0;r.podium+=s.place<=3?1:0;r.runner+=s.place===2?1:0;r.last+=s.place===field?1:0;r.total+=s.points;r.places.push(s.place);r.relative.push(field>1?(field-s.place)/(field-1):1);r.seasons.push({year:e.year,place:s.place,field,points:s.points});}
+  for(const r of e.rounds){for(const x of r.results){if(!isChosen(x.player_id))continue;const p=get(x.player_id);p.rounds++;p.rankSum+=window.BaergsunneRoundPlacement.effectivePlace(x,r);currentRelative.set(x.player_id,(currentRelative.get(x.player_id)||0)+(field>1?(field-window.BaergsunneRoundPlacement.effectivePlace(x,r))/(field-1):1));p.roundWins+=x.place===1?1:0;p.roundPodium+=x.place<=3?1:0;p.roundLast+=window.BaergsunneRoundPlacement.isLast(x,r)?1:0;p.zeroRounds+=window.BaergsunneRoundPlacement.isZero(x)?1:0;p.winRun=x.place===1?p.winRun+1:0;p.top3Run=x.place<=3?p.top3Run+1:0;p.longestWin=Math.max(p.longestWin,p.winRun);p.longestTop3=Math.max(p.longestTop3,p.top3Run);if(x.place===1)currentWins.set(x.player_id,1+(currentWins.get(x.player_id)||0));if(x.place<=3)currentPodium.set(x.player_id,1+(currentPodium.get(x.player_id)||0));}}
+  for(const p of e.players){if(!isChosen(p))continue;const s=positions.get(p);if(!s)continue;seasons.push({name:p,year:e.year,place:s.place,points:s.points,field,roundCount:e.rounds.length,wins:currentWins.get(p)||0,podium:currentPodium.get(p)||0,roundRelative:e.rounds.length?100*(currentRelative.get(p)||0)/e.rounds.length:NaN,relative:field>1?(field-s.place)/(field-1):1});}
+  const lead=standings.find(x=>x.place===1),second=standings.find(x=>x.place===2);if(lead&&second&&isChosen(lead.player_id))yearRows.push({year:e.year,champion:lead.player_id,gap:lead.points-second.points,points:lead.points,roundCount:e.rounds.length});
+  const metrics=annualMetrics(e);
+  metrics.people=metrics.people.filter(p=>isChosen(p.name));
+  annual.push(metrics);
+  for(let a=0;a<standings.length;a++)for(let b=a+1;b<standings.length;b++){const x=standings[a],y=standings[b];if(!isChosen(x.player_id)||!isChosen(y.player_id))continue;const key=[x.player_id,y.player_id].sort((u,v)=>u.localeCompare(v,'de')).join('|||');let v=pair.get(key);if(!v){v={a:key.split('|||')[0],b:key.split('|||')[1],years:0,advantageA:0,advantageB:0};pair.set(key,v)}v.years++;if(x.place<y.place){if(x.player_id===v.a)v.advantageA++;else v.advantageB++;}else if(x.place>y.place){if(x.player_id===v.a)v.advantageB++;else v.advantageA++;}}
  }
  const ps=[...players.values()],pairs=[...pair.values()];const records=[];
  function originalText(x){
@@ -179,7 +188,8 @@ function calculate(seed){
   return `Original: ${round(x.rawValue)} ${x.rawUnit} in ${x.roundCount} ${x.roundCount===1?'Runde':'Runden'}.`;
  }
  function add(category,title,values,unit,description,opt={}){
-  const eligible=values.filter(x=>Number.isFinite(x.value));
+  // An isolated year/player selection may have no candidates for a record.
+  const eligible=(values||[]).filter(x=>Number.isFinite(x.value));
   if(!eligible.length)return;
   const sorted=eligible.sort((a,b)=>(opt.low?a.value-b.value:b.value-a.value)||String(a.name).localeCompare(String(b.name),'de'));
   const peak=sorted[0].value;
@@ -197,7 +207,7 @@ function calculate(seed){
   });
  }
  const pvals=(key,filter=()=>true)=>ps.filter(filter).map(p=>({name:p.name,value:p[key]}));
- const stories=storyMetrics(editions);
+ const stories=storyMetrics(editions,isChosen);
  add('Erfolge','Meistertitel',pvals('titles'),'Titel','Anzahl offizieller Schlussränge 1.');
  add('Erfolge','Jahrespodien',pvals('podium'),'Podien','Offizieller Schlussrang 1 bis 3.');
  add('Erfolge','Vizemeisterschaften',pvals('runner'),'zweite Plätze','Offizieller Schlussrang 2.');
@@ -213,8 +223,8 @@ function calculate(seed){
 
  add('Erfolge','Bester Ø Rundenrang (mindestens 10 Runden)',ps.filter(p=>p.rounds>=10).map(p=>({name:p.name,value:p.rankSum/p.rounds})),'Ø Rang','Durchschnitt der gewerteten Rundenplätze bei mindestens 10 gespielten Runden. Kleinere Werte sind besser; die unterschiedliche Teilnehmerzahl wirkt auf den Durchschnitt.',{low:true});
  add('Saisonrekorde','Beste durchschnittliche relative Rundenplatzierung',seasons.filter(s=>s.roundCount>0).map(s=>({name:s.name+' ('+s.year+')',year:s.year,value:s.roundRelative,sourceNote:'Grundlage: '+s.roundCount+' Runden · offizieller Jahresrang '+s.place+'.'})),'%','Durchschnitt der relativen Rundenplatzierungen einer Saison. 100 % steht für Rang 1, 0 % für einen letzten Platz; unterschiedliche Teilnehmerzahlen sind berücksichtigt.');
- add('Saisonrekorde','Meiste Führungswechsel',annual.map(a=>seasonValue('Meisterschaft',a.year,a.changes,'Führungswechsel',a.roundCount)),'Wechsel','Wechsel zwischen zwei eindeutig allein Führenden nach einer Runde, auf 7 Runden umgerechnet.');
- add('Saisonrekorde','Grösster zwischenzeitlicher Rückstand des Champions',annual.filter(a=>a.champion).map(a=>seasonValue(a.champion,a.year,a.comeback,'Punkte Rückstand',a.roundCount)),'Punkte','Maximaler Punkterückstand des späteren Champions nach einer gespielten Runde, auf 7 Runden umgerechnet.');
+ add('Saisonrekorde','Meiste Führungswechsel',(!playerSet?annual:[]).map(a=>seasonValue('Meisterschaft',a.year,a.changes,'Führungswechsel',a.roundCount)),'Wechsel','Wechsel zwischen zwei eindeutig allein Führenden nach einer Runde, auf 7 Runden umgerechnet.');
+ add('Saisonrekorde','Grösster zwischenzeitlicher Rückstand des Champions',annual.filter(a=>a.champion&&isChosen(a.champion)).map(a=>seasonValue(a.champion,a.year,a.comeback,'Punkte Rückstand',a.roundCount)),'Punkte','Maximaler Punkterückstand des späteren Champions nach einer gespielten Runde, auf 7 Runden umgerechnet.');
  add('Saisonrekorde','Meiste Top-5-Runden in einem Jahr',annual.flatMap(a=>a.people.map(p=>seasonValue(p.name,a.year,p.top5,'Top-5-Runden',a.roundCount))),'Runden','Rundenplatzierungen unter den ersten fünf innerhalb eines Turniers, auf 7 Runden umgerechnet.');
  add('Saisonrekorde','Grösste Aufholjagd innerhalb einer Saison',annual.flatMap(a=>a.people.map(p=>({name:p.name+' ('+a.year+')',year:a.year,value:p.climb}))),'Plätze','Grösste Verbesserung vom vorherigen schlechtesten kumulativen Zwischenrang zu einem späteren besten Zwischenrang im gleichen Jahr.');
  add('Saisonrekorde','Meiste Runden an der Spitze in einem Jahr',annual.flatMap(a=>a.people.map(p=>seasonValue(p.name,a.year,p.leads,'Führungsrunden',a.roundCount))),'Runden','Runden mit den meisten kumulierten Punkten; auch geteilte Führungen zählen, auf 7 Runden umgerechnet.');
@@ -253,11 +263,12 @@ function calculate(seed){
 
  add('Rivalitäten','Meiste gemeinsame Turniere',pairs.map(p=>({name:`${p.a} / ${p.b}`,value:p.years})),'Turniere','Beide Spieler nahmen am selben Jahrgang teil.');
  add('Rivalitäten','Grösster direkter Bilanzvorsprung',pairs.filter(p=>p.years>=3).map(p=>({name:`${p.advantageA>=p.advantageB?p.a:p.b} vor ${p.advantageA>=p.advantageB?p.b:p.a}`,value:Math.abs(p.advantageA-p.advantageB)})),'Jahre','Differenz der Jahre mit besserem offiziellen Schlussrang; mindestens 3 gemeinsame Teilnahmen.');
- return {records,years:editions.length,players:ps.length,seasonCount:seasons.length};
+ return {records,years:editions.length,players:ps.length,seasonCount:seasons.length,filtered:!!yearSet||!!playerSet};
 }
-function render(){
- if(!window.POKER_SEED)return '<p class="hint">Historische Daten nicht geladen.</p>';
- const data=calculate(window.POKER_SEED);
+let activeCategory='Erfolge';
+function render(seed=window.POKER_SEED,filters={}){
+ if(!seed)return '<p class="hint">Historische Daten nicht geladen.</p>';
+ const data=calculate(seed,filters);
  const groups=['Erfolge','Saisonrekorde','Hall of Shame','Rivalitäten'];
  // Three individual leaders are visible, while ties keep their actual rank.
  // A missing podium slot stays empty rather than inventing a player or rank.
@@ -297,12 +308,14 @@ function render(){
  return `<section class="hof-extended" aria-label="Historisches Rekordbuch">
   <div class="eyebrow">DAS REKORDBUCH</div>
   <h2>Legenden, Dramen und Negativrekorde</h2>
-  <p>${data.records.length} automatisch berechnete Rekordlisten aus ${data.years} historischen Turnieren. Wähle eine Kategorie und entdecke zu jedem Rekord das Podium mit den drei Bestplatzierten. Die vollständige Rangliste lässt sich darunter aufklappen. Gleichstände teilen sich denselben Rang. Zählbare Saisonleistungen und Punkteabstände werden auf 7 Runden umgerechnet; Rangbewegungen und relative Werte bleiben auf ihrer eigenen Skala. Letzte Rundenplätze folgen der niedrigsten Punktzahl jeder Runde, Nullrunden werden separat gezählt.</p>
-  <nav class="hof-tabs" aria-label="Rekordkategorien">${groups.map((g,i)=>`<button type="button" class="hof-tab ${i===0?'selected':''}" data-hof-tab="${escape(g)}">${escape(g)}</button>`).join('')}</nav>
-  ${groups.map((g,i)=>`<div class="hof-category" data-hof-category="${escape(g)}" ${i?'hidden':''}>${data.records.filter(r=>r.category===g).map(card).join('')}</div>`).join('')}
+  <p>${data.records.length} automatisch berechnete Rekordlisten aus ${data.years} ausgewählten Turnieren und ${data.players} berücksichtigten Spielern. Wähle eine Kategorie und entdecke zu jedem Rekord das Podium mit den drei Bestplatzierten. Die vollständige Rangliste lässt sich darunter aufklappen. Gleichstände teilen sich denselben Rang. Zählbare Saisonleistungen und Punkteabstände werden auf 7 Runden umgerechnet; Rangbewegungen und relative Werte bleiben auf ihrer eigenen Skala. Letzte Rundenplätze folgen der niedrigsten Punktzahl jeder Runde, Nullrunden werden separat gezählt.</p>
+  ${data.filtered?'<p class="hof-filter-scope">Gefilterte Ansicht · Offizielle Rangplätze und Turnierverläufe bleiben unverändert. Saisonweite Rekorde beziehen sich auf die ausgewählten Turniere, persönliche Rekorde nur auf die gewählten Spieler.</p>':''}
+  ${data.records.length?'':'<p class="hof-filter-empty">Für diese Auswahl sind keine auswertbaren Rekorde vorhanden. Erweitere die Jahre oder Spieler.</p>'}
+  <nav class="hof-tabs" aria-label="Rekordkategorien">${groups.map((g,i)=>`<button type="button" class="hof-tab ${g===activeCategory?'selected':''}" data-hof-tab="${escape(g)}">${escape(g)}</button>`).join('')}</nav>
+  ${groups.map((g,i)=>`<div class="hof-category" data-hof-category="${escape(g)}" ${g===activeCategory?'':'hidden'}>${data.records.filter(r=>r.category===g).map(card).join('')||'<p class="hof-filter-empty">Für diese Kategorie gibt es in der Auswahl keine qualifizierten Rekorde.</p>'}</div>`).join('')}
   <p class="hof-source">Quelle: originale Schlussranglisten und chronologische Rundenresultate. Saisonwerte für Punkte, Führungen und Rundenanzahlen werden auf 7 Runden umgerechnet. Rangbewegungen bleiben absolute Rangverschiebungen und relative Platzierungen unverändert. Originalergebnisse, Punktesysteme und Feldgrössen werden nie geändert.</p>
  </section>`;
 }
 window.BaergsunneHallRecords={calculate,render};
-document.addEventListener('click',e=>{const b=e.target.closest('[data-hof-tab]');if(!b)return;const root=b.closest('.hof-extended');if(!root)return;root.querySelectorAll('[data-hof-tab]').forEach(x=>x.classList.toggle('selected',x===b));root.querySelectorAll('[data-hof-category]').forEach(x=>x.hidden=x.dataset.hofCategory!==b.dataset.hofTab);});
+document.addEventListener('click',e=>{const b=e.target.closest('[data-hof-tab]');if(!b)return;const root=b.closest('.hof-extended');if(!root)return;activeCategory=b.dataset.hofTab;root.querySelectorAll('[data-hof-tab]').forEach(x=>x.classList.toggle('selected',x===b));root.querySelectorAll('[data-hof-category]').forEach(x=>x.hidden=x.dataset.hofCategory!==b.dataset.hofTab);});
 })();
