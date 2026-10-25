@@ -16,19 +16,19 @@ html.bp-intro-active #app .page--home .discovery-hero-logo{visibility:hidden}
  const root=document.documentElement,curtain=document.getElementById('bp-intro');
  if(!root.classList.contains('bp-intro-active')){curtain.remove();return;}
  const logo=document.getElementById('bp-intro-logo');let finished=false;
- const finish=()=>{if(finished)return;finished=true;root.classList.remove('bp-intro-active');curtain.remove();};
+ const finish=(reason='complete')=>{if(finished)return;finished=true;root.dataset.bpIntroFinish=reason;root.classList.remove('bp-intro-active');curtain.remove();};
  window.setTimeout(finish,5000);
  window.addEventListener('hashchange',()=>{if(location.hash&&location.hash!=='#home')finish();});
  document.addEventListener('DOMContentLoaded',()=>{
   if(finished)return;
   if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){finish();return;}
   const target=document.querySelector('#app .page--home .discovery-hero-logo');
-  if(!target||!logo.animate){finish();return;}
+  if(!target||!logo.animate){finish('missing-target-or-animation');return;}
   window.scrollTo({top:0,left:0,behavior:'instant'});
   const fly=()=>{
    if(finished)return;
    const from=logo.getBoundingClientRect(),to=target.getBoundingClientRect();
-   if(!from.width||!from.height||!to.width||!to.height||to.bottom<0||to.top>innerHeight){finish();return;}
+   if(!from.width||!from.height||!to.width||!to.height||to.bottom<0||to.top>innerHeight){finish('invalid-layout');return;}
    // CSS object-fit:contain may letterbox the image box when max-height is
    // active. The old non-uniform scale(sx, sy) widened the real artwork and
    // caused a visible snap when the untransformed Home hero became visible.
@@ -40,7 +40,7 @@ html.bp-intro-active #app .page--home .discovery-hero-logo{visibility:hidden}
     return {left:box.left+(box.width-w)/2,top:box.top+(box.height-h)/2,width:w,height:h};
    };
    const sourcePaint=painted(logo,from),targetPaint=painted(target,to);
-   if(!sourcePaint.width||!targetPaint.width){finish();return;}
+   if(!sourcePaint.width||!targetPaint.width){finish('invalid-paint');return;}
    const scale=targetPaint.width/sourcePaint.width;
    // The image's transform-origin remains its own top-left box corner.
    // The painted inset must also scale to land on the target's inset.
@@ -50,7 +50,20 @@ html.bp-intro-active #app .page--home .discovery-hero-logo{visibility:hidden}
     [{transform:'translate3d(0,0,0) scale(1)'},{transform:'translate3d('+x+'px,'+y+'px,0) scale('+scale+')'}],
     {duration:700,easing:'cubic-bezier(.2,.72,.18,1)',fill:'forwards'}
    );
-   motion.finished.then(()=>{if(finished)return;curtain.dataset.introLanded='true';curtain.classList.add('bp-intro-reveal');window.setTimeout(finish,480);}).catch(finish);
+   motion.finished.then(()=>{
+    if(finished)return;
+    const liveBox=logo.getBoundingClientRect();
+    const landedPaint=painted(logo,liveBox);
+    const matrix=new DOMMatrixReadOnly(getComputedStyle(logo).transform);
+    root.dataset.bpIntroLanding=JSON.stringify({
+     source:landedPaint,target:targetPaint,
+     scaleX:Math.hypot(matrix.a,matrix.b),scaleY:Math.hypot(matrix.c,matrix.d)
+    });
+    curtain.dataset.introLanded='true';
+    root.dataset.bpIntroFinish='landed';
+    curtain.classList.add('bp-intro-reveal');
+    window.setTimeout(()=>finish('landed'),480);
+   }).catch(()=>finish('flight-cancelled'));
   };
   if(target.complete&&target.naturalWidth){window.setTimeout(fly,1000);return;}
   let resolved=false;const ready=()=>{if(resolved)return;resolved=true;window.setTimeout(fly,1000);};
