@@ -3,6 +3,9 @@ on:
   push:
     branches:
       - ops/admin-worker-build-20261025
+  pull_request:
+    paths:
+      - '.github/workflows/private-admin-worker-smoke.yml'
 permissions:
   contents: read
 jobs:
