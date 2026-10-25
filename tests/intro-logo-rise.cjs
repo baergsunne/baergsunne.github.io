@@ -4,7 +4,7 @@ const assert=require('node:assert/strict');
 (async()=>{
  const browser=await chromium.launch({headless:true});
  try{
-  for(const width of [390,768]){
+  for(const width of [320,375,390,430,768,1024]){
    const page=await browser.newPage({viewport:{width,height:844},isMobile:width<500,hasTouch:width<500});
    const errors=[];page.on('pageerror',e=>errors.push(e.message));
    await page.goto('http://127.0.0.1:8765/',{waitUntil:'domcontentloaded'});
@@ -17,7 +17,31 @@ const assert=require('node:assert/strict');
    assert.equal(opening.active,true,width+' logo intro should be active on the Home entry');
    assert.equal(opening.visible,true,width+' logo curtain should cover the site');
    assert.equal(opening.hero,true);assert.equal(opening.count,1);
-   await page.waitForFunction(()=>!document.documentElement.classList.contains('bp-intro-active'),null,{timeout:6500});
+   // Verify that the source and target PAINT THE SAME ARTWORK RECTANGLE
+   // at landing. DOM element rectangles alone miss max-height+object-fit letterboxing.
+   await page.waitForFunction(()=>document.querySelector('#bp-intro')?.dataset.introLanded==='true',null,{timeout:6000});
+   const landing=await page.evaluate(()=>{
+    const src=document.getElementById('bp-intro-logo'),dst=document.querySelector('.discovery-hero-logo');
+    function painted(img){
+     const b=img.getBoundingClientRect(),ratio=img.naturalWidth/img.naturalHeight;
+     const w=Math.min(b.width,b.height*ratio),h=w/ratio;
+     return {left:b.left+(b.width-w)/2,top:b.top+(b.height-h)/2,width:w,height:h};
+    }
+    const source=painted(src),target=painted(dst);
+    const matrix=new DOMMatrixReadOnly(getComputedStyle(src).transform);
+    return {source,target,scaleX:Math.hypot(matrix.a,matrix.b),scaleY:Math.hypot(matrix.c,matrix.d)};
+   });
+   for(const k of ['left','top','width','height']){
+    assert(Math.abs(landing.source[k]-landing.target[k])<1.4,width+' image alignment '+k+': '+JSON.stringify(landing));
+   }
+   assert(Math.abs(landing.scaleX-landing.scaleY)<0.0001,width+' logo must never be squeezed or widened during flight');
+   await page.waitForTimeout(85);
+   const steady=await page.evaluate(()=>{
+    const im=document.getElementById('bp-intro-logo'),b=im.getBoundingClientRect(),r=im.naturalWidth/im.naturalHeight;
+    return Math.min(b.width,b.height*r);
+   });
+   assert(Math.abs(steady-landing.target.width)<1.4,width+' image does not resize in the reveal phase');
+      await page.waitForFunction(()=>!document.documentElement.classList.contains('bp-intro-active'),null,{timeout:6500});
    const completed=await page.evaluate(()=>({
     removed:!document.querySelector('#bp-intro'),
     heroVisible:getComputedStyle(document.querySelector('.discovery-hero-logo')).visibility,
