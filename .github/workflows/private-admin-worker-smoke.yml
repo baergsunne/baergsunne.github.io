@@ -33,3 +33,22 @@ jobs:
           status="$(curl -sS -o /tmp/live-response -w '%{http_code}' --max-time 18 "$API/api/live")"
           test "$status" = "200" || { echo "Public API HTTP $status"; exit 1; }
           node -e "const s=require('fs').readFileSync('/tmp/live-response','utf8');const d=JSON.parse(s);if(d.year!==2026||d.status!=='final')throw Error('Unexpected public tournament year/status');console.log('PUBLIC_LIVE_2026_UNCHANGED')"
+
+      - name: Verify updated production admin files and protected API
+        env:
+          API: https://baergsunne-live-isolated-20261015.baergsunne-poker-2026.workers.dev
+        run: |
+          set -euo pipefail
+          status="$(curl -sS -o /tmp/admin-page -w '%{http_code}' --max-time 18 "$API/admin.html")"
+          test "$status" = "200" || { echo "Admin HTML HTTP $status"; exit 1; }
+          grep -q 'Neues Turnier eröffnen' /tmp/admin-page || { echo "New tournament admin UI missing"; exit 1; }
+          grep -q 'Turnier laden' /tmp/admin-page || { echo "Year selector missing"; exit 1; }
+          status="$(curl -sS -o /tmp/admin-js -w '%{http_code}' --max-time 18 "$API/admin-live.js")"
+          test "$status" = "200" || { echo "Admin JS HTTP $status"; exit 1; }
+          grep -q '/api/admin/new-tournament' /tmp/admin-js || { echo "New tournament logic missing"; exit 1; }
+          grep -q '/api/admin/years' /tmp/admin-js || { echo "Year-list API missing"; exit 1; }
+          status="$(curl -sS -o /tmp/admin-years-public -w '%{http_code}' --max-time 18 "$API/api/admin/years")"
+          test "$status" = "401" || { echo "Unauthorized admin years request unexpectedly HTTP $status"; exit 1; }
+          status="$(curl -sS -o /tmp/admin-editions -w '%{http_code}' --max-time 18 "$API/api/editions")"
+          test "$status" = "200" || { echo "Public editions HTTP $status"; exit 1; }
+          node -e "const d=JSON.parse(require('fs').readFileSync('/tmp/admin-editions','utf8'));if(d.editions.filter(e=>e.year===2026).length!==1)throw Error('2026 archive mismatch');if(d.editions.some(e=>e.year===2027))throw Error('Unexpected 2027 edition');console.log('ADMIN_AND_ARCHIVE_SMOKE_GREEN')"
