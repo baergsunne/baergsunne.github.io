@@ -1,0 +1,32 @@
+name: Admin tournament year and confirmation regression
+on:
+  pull_request:
+    paths:
+      - 'admin.html'
+      - 'admin-live.js'
+      - 'admin-live.css'
+      - 'live/core.js'
+      - 'live/worker.js'
+      - 'live/worker.test.js'
+      - 'tests/admin-annual-workflow.cjs'
+      - '.github/workflows/admin-annual-workflow.yml'
+  workflow_dispatch:
+jobs:
+  admin:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --check admin-live.js
+      - run: node --check live/worker.js
+      - run: node --test live/worker.test.js
+      - run: npm run build:preview
+      - run: npm install --no-save playwright
+      - run: npx playwright install chromium
+      - run: python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/poker-admin-server.log 2>&1 &
+      - run: node tests/admin-annual-workflow.cjs
