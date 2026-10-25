@@ -3,7 +3,7 @@ on:
   pull_request:
     paths:
       - 'tests/hof-accordion-postdeploy-smoke.cjs'
-      - '.github/workflows/hof-remote-deploy.yml'
+      - '.github/workflows/hof-accordion-postdeploy.yml'
 jobs:
   remote:
     runs-on: ubuntu-latest
@@ -15,5 +15,5 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - run: node --check tests/hof-remote-deploy-verification.cjs
+      - run: node --check tests/hof-accordion-postdeploy-smoke.cjs
       - run: node tests/hof-accordion-postdeploy-smoke.cjs
