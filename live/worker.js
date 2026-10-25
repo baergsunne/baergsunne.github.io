@@ -117,7 +117,7 @@ export default {async fetch(req,env,ctx){
     const previous=JSON.parse(last.document),next=last.year+1;
     if(previous.status!=='final')return fail('Das aktuelle Turnier muss zuerst abgeschlossen sein.',409);
     if(next>2100)return fail('Jahr ungültig.',400);
-    if(b.confirmation!=='NEXT_TOURNAMENT'||b.previousYear!==last.year||b.year!==next)
+    if(b.confirmation!=='NEXT_TOURNAMENT'||b.previousYear!==last.year||b.previousRevision!==last.revision||b.year!==next)
       return fail('Das nächste Turnierjahr muss ausdrücklich bestätigt werden.',409);
     const inherited=validateConfig({year:next,players:previous.players.slice(),roundCount:previous.roundCount,points:previous.points.slice()});
     const tournament={...freshTournament(next),...inherited};
