@@ -55,12 +55,13 @@ const assert=require('node:assert/strict');
 
    const single=await page.evaluate(()=>{
     const data=window.BaergsunneHallRecords.calculate(window.POKER_SEED,{years:[2025,2026],players:['Frauchi']});
-    const ownerRecords=data.records.filter(r=>r.category==='Erfolge'||r.category==='Hall of Shame');
+    const ownerRecords=data.records.filter(r=>r.category!=='Rivalitäten');
     const owners=ownerRecords.flatMap(r=>r.table.map(x=>x.name));
     return {
      years:data.years,players:data.players,scope:document.querySelector('.hof-filter-choice[data-action="openplayers"] strong').textContent,
      owners,tab:document.querySelector('.hof-tab.selected')?.dataset.hofTab,
      rivalCount:data.records.filter(r=>r.category==='Rivalitäten').length,
+     noTournamentOnlyRecord:!data.records.some(r=>r.title==='Meiste Führungswechsel'),
      count:document.querySelectorAll('.page--fame .hof-record').length,
      computedCount:data.records.length,
      hasUnofficial:ownerRecords.some(r=>r.table.some(x=>x.name.replace(/\s+\(\d{4}\)$/,'')!=='Frauchi')),
@@ -73,6 +74,7 @@ const assert=require('node:assert/strict');
    assert.equal(single.tab,'Hall of Shame','recordbook category selection survives redraw');
    assert(!single.hasUnofficial,'no other people in personal record lists');
    assert.equal(single.rivalCount,0,'no invented head-to-head records for a single player');
+   assert(single.noTournamentOnlyRecord,'unattributable tournament-wide metrics are not presented as player records');
    assert.equal(single.count,single.computedCount,'page and engine use same filter');
    assert(!single.horizontalOverflow,'no overflow after filters');
 
