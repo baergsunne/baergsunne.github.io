@@ -28,6 +28,14 @@ html.bp-intro-active #app .page--home .discovery-hero-logo{visibility:hidden}
   const fly=()=>{
    if(finished)return;
    const from=logo.getBoundingClientRect(),to=target.getBoundingClientRect();
+   root.dataset.bpIntroLayout=JSON.stringify({
+    from:{width:from.width,height:from.height,top:from.top,left:from.left},
+    to:{width:to.width,height:to.height,top:to.top,left:to.left,bottom:to.bottom},
+    curtainDisplay:getComputedStyle(curtain).display,
+    active:root.classList.contains('bp-intro-active'),
+    logoNatural:[logo.naturalWidth,logo.naturalHeight],
+    heroNatural:[target.naturalWidth,target.naturalHeight],innerHeight
+   });
    if(!from.width||!from.height||!to.width||!to.height||to.bottom<0||to.top>innerHeight){finish('invalid-layout');return;}
    // CSS object-fit:contain may letterbox the image box when max-height is
    // active. The old non-uniform scale(sx, sy) widened the real artwork and
