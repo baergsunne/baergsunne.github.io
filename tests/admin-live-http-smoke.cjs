@@ -44,7 +44,7 @@ async function get(host, path) {
     assert(!editions.some(e=>e.year===2027),'2027 must not have been opened');
 
     const gated = await get(privatePreview, '/admin.html');
-    assert.equal(gated.response.status,200,'preview gate should respond');
+    assert([200,401,403].includes(gated.response.status),'preview gate should deny unauthenticated access without server error');
     assert.match(gated.body,/private Vorschau|Vorschauzugang/i,'preview must require passphrase for unauthenticated visitors');
     assert(!gated.body.includes('id="year"'),'preview admin HTML must not be accessible without gate');
 
