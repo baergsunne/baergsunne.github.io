@@ -1,0 +1,19 @@
+name: Hall Statistics accordion post-deploy smoke
+on:
+  pull_request:
+    paths:
+      - 'tests/hof-accordion-postdeploy-smoke.cjs'
+      - '.github/workflows/hof-remote-deploy.yml'
+jobs:
+  remote:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --check tests/hof-remote-deploy-verification.cjs
+      - run: node tests/hof-accordion-postdeploy-smoke.cjs
