@@ -2,7 +2,7 @@ name: Hall of Fame Cloudflare bundle audit
 on:
   push:
     branches:
-      - ops/hof-worker-sync-20261025
+      - ops/hof-accordion-worker-20261025
   pull_request:
     paths:
       - 'live/build.mjs'
