@@ -101,9 +101,42 @@ export default {async fetch(req,env,ctx){
     const year=Number(url.searchParams.get('year')||2026),row=await entry(env,year);
     return json(row?{revision:row.revision,document:JSON.parse(row.document),updated_at:row.updated_at}:{revision:null,document:freshTournament(year)});
    }
+   if(path==='/api/admin/years'&&method==='GET'){
+    const records=await env.DB.prepare('SELECT year,revision,document,updated_at FROM tournaments ORDER BY year DESC').all();
+    const years=records.results.map(row=>({year:row.year,revision:row.revision,status:JSON.parse(row.document).status,updated_at:row.updated_at}));
+    const latest=years[0]||null;
+    return json({years,current_year:latest?.year||null,next_year:latest?.status==='final'&&latest.year<2100?latest.year+1:null});
+   }
+   if(path==='/api/admin/new-tournament'&&method==='POST'){
+    // The last complete year is the only allowed source for a successor. A
+    // normal year selection cannot create a new D1 row, and existing seasons
+    // are never reset, overwritten or copied with any played/published rounds.
+    const b=await body(req);
+    const last=await env.DB.prepare('SELECT year,revision,document FROM tournaments ORDER BY year DESC LIMIT 1').first();
+    if(!last)return fail('Zuerst das erste Turnier einrichten.',409);
+    const previous=JSON.parse(last.document),next=last.year+1;
+    if(previous.status!=='final')return fail('Das aktuelle Turnier muss zuerst abgeschlossen sein.',409);
+    if(next>2100)return fail('Jahr ungültig.',400);
+    if(b.confirmation!=='NEXT_TOURNAMENT'||b.previousYear!==last.year||b.previousRevision!==last.revision||b.year!==next)
+      return fail('Das nächste Turnierjahr muss ausdrücklich bestätigt werden.',409);
+    const inherited=validateConfig({year:next,players:previous.players.slice(),roundCount:previous.roundCount,points:previous.points.slice()});
+    const tournament={...freshTournament(next),...inherited};
+    const at=new Date().toISOString();
+    const result=await env.DB.prepare('INSERT OR IGNORE INTO tournaments(year,revision,document,updated_at,actor,action) VALUES(?,0,?,?,?,?)')
+      .bind(next,JSON.stringify(tournament),at,'owner','start').run();
+    if(result.meta.changes!==1)return fail('Das Turnier wurde bereits auf einem anderen Gerät eröffnet. Bitte neu laden.',409);
+    return json({ok:true,year:next,status:'planned',revision:0,updated_at:at,previous_year:last.year,publicly_visible:true},201);
+   }
    if(path==='/api/admin/config'&&method==='PUT'){
     const b=await body(req),c=validateConfig(b.document),row=await entry(env,c.year);
-    if(!row){if(b.revision!==null)return fail('Stand veraltet.',409);const t={...freshTournament(c.year),...c};
+    if(!row){
+      // Bootstrap only: an existing championship must never be bypassed with a
+      // hidden config write. New seasons are created via the 2-confirmation flow.
+      if(b.revision!==null)return fail('Stand veraltet.',409);
+      const existing=await env.DB.prepare('SELECT year FROM tournaments ORDER BY year DESC LIMIT 1').first();
+      if(existing)return fail('Neues Turnier nur über «Neues Turnier eröffnen» starten.',409);
+      if(c.year!==2026)return fail('Erstes Turnierjahr muss 2026 sein.',409);
+      const t={...freshTournament(c.year),...c};
       const at=new Date().toISOString(),result=await env.DB.prepare('INSERT OR IGNORE INTO tournaments(year,revision,document,updated_at,actor,action) VALUES(?,0,?,?,?,?)').bind(c.year,JSON.stringify(t),at,'owner','create').run();return result.meta.changes===1?json({revision:0}):fail('Stand veraltet.',409);}
     const t=JSON.parse(row.document);if(t.status!=='planned'||Object.keys(t.published).length||Object.keys(t.rounds).length)return fail('Konfiguration nach Rundenerfassung gesperrt.',409);
     if(b.revision!==row.revision)return fail('Stand veraltet.',409);return update(env,row,{...t,...c},'config',ctx);

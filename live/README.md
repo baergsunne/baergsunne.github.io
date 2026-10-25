@@ -9,9 +9,17 @@ Basis: Work-06-Branch `ce0b0b4e6f5804a8c3297f280de1de00aa274b89`. Dieser Entwick
 - Jeder Entwurf, jede Veröffentlichung, Rücknahme und Korrektur erhöht die Revision. Eine D1-Triggerzeile protokolliert den vorherigen und neuen Turnierzustand. Veraltete Bearbeitungen liefern HTTP 409.
 - Die öffentliche API liefert nur veröffentlichte Runden. Eine Korrektur erfolgt durch erneutes Veröffentlichen der vollständigen Runde; bei späteren Runden muss eine Rücknahme von hinten nach vorne erfolgen.
 - Die definitive Rangfolge sortiert nach Punkten, danach Rundensiegen, danach Namen. Diese Tie-Break-Regel wurde vom Owner bestätigt. Der Owner bestätigt die gesamte Schlussrangliste vor Abschluss.
-- Nach Abschluss ist die Saison schreibgeschützt und wird als zusätzliche Ausgabe über `/api/editions` in die Website eingeblendet; die Originaldateien bleiben unverändert. Zukünftige Turniere werden im Admin über eine neue Jahreszahl angelegt. Die öffentliche Ansicht wählt automatisch das jüngste aktive Turnier, sonst das jüngste abgeschlossene.
+- Nach Abschluss ist die Saison schreibgeschützt und wird als zusätzliche Ausgabe über `/api/editions` in die Website eingeblendet; die Originaldateien bleiben unverändert. **Neue Turniere werden ausschliesslich mit «Neues Turnier eröffnen» und zwei expliziten Bestätigungen für das unmittelbar folgende Jahr** angelegt (2027 nach 2026). Die API prüft den abgeschlossenen Vorgänger, Revision, Authentifizierung und Jahr; vorhandene D1-Turniere werden niemals überschrieben. Das neue Turnier erbt nur Spieler, Rundenanzahl und Punktesystem, nicht Resultate oder Entwürfe. Die öffentliche Ansicht wählt automatisch das jüngste aktive/geplante Turnier, sonst das jüngste abgeschlossene.
 - Während des Turniers zeigt die Live-Seite Spielerprofile und laufende Bestwerte nur aus veröffentlichten Runden. Historische Titel/Rekorde werden erst nach finaler Bestätigung um die Saison erweitert.
 - Der Simulator importiert veröffentlichte Runden als lokal gesperrte Vorlage und vervollständigt die übrigen Runden auf dem Gerät; keine Simulatorroute schreibt in D1.
+
+## Admin-Bedienung ab 2027
+
+- «Turnier laden» ist eine Dropdown-Liste aller bisherigen historischen Jahrgänge aus `data.js` plus über den Worker verwalteter Turniere. Historische, nicht im Live-Backend geführte Jahrgänge sind schreibgeschützt; die ursprünglichen Tabellen bleiben unverändert.
+- Erst zwei Bestätigungen ermöglichen den Wechsel von `final` zu einem neu erzeugten `planned`-Nachfolgejahr. Bestätigt wird die **Neueröffnung**, nicht eine nachträgliche Änderung des vorigen Jahres.
+- Entwurf speichern, veröffentlichen, Konfiguration speichern, zurückziehen und abschliessen benötigen explizite Bestätigung. Nach erfolgreicher D1-Antwort wird oben ein kontrastreicher Erfolgsstatus angezeigt und die Seite nach oben gefahren. Fehlermeldungen erscheinen ebenfalls oben; während des API-Aufrufs sind parallele Klicks blockiert.
+- Entwürfe bleiben privat. Erst veröffentlichte Runden fliessen in `/api/live`; ein endgültiger Turnierabschluss ergänzt das öffentliche Archiv `/api/editions`. Das Starten allein erweitert das historische Rekordbuch noch nicht.
+- **Deployment-Gate:** GitHub-Quellcode und Preview-Build allein aktualisieren den Worker nicht. Der Bärgsunne-Worker befindet sich im Cloudflare-Konto mit ID `146645dd85e8e16115082d2f10f1bf46`; nur mit genau diesem autorisierten Konto, vorheriger D1-Sicherung, Test auf isolierter Vorschau und gesonderter Freigabe auf den bestehenden Worker deployen. Beim Prüfen von PR #121 war in ChatGPT lediglich ein anderes Cloudflare-Konto verbunden. Kein automatisches Anlegen eines echten neuen Turniers im Rahmen der Bereitstellung.
 
 ## Sicherheit
 
