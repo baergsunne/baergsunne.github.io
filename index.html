@@ -29,9 +29,28 @@ html.bp-intro-active #app .page--home .discovery-hero-logo{visibility:hidden}
    if(finished)return;
    const from=logo.getBoundingClientRect(),to=target.getBoundingClientRect();
    if(!from.width||!from.height||!to.width||!to.height||to.bottom<0||to.top>innerHeight){finish();return;}
-   const x=to.left-from.left,y=to.top-from.top,sx=to.width/from.width,sy=to.height/from.height;
-   const motion=logo.animate([{transform:'translate3d(0,0,0) scale(1,1)'},{transform:'translate3d('+x+'px,'+y+'px,0) scale('+sx+','+sy+')'}],{duration:700,easing:'cubic-bezier(.2,.72,.18,1)',fill:'forwards'});
-   motion.finished.then(()=>{if(finished)return;curtain.classList.add('bp-intro-reveal');window.setTimeout(finish,480);}).catch(finish);
+   // CSS object-fit:contain may letterbox the image box when max-height is
+   // active. The old non-uniform scale(sx, sy) widened the real artwork and
+   // caused a visible snap when the untransformed Home hero became visible.
+   // Match the actual painted artwork, not the two independently sized boxes.
+   const painted=(img,box)=>{
+    const ratio=img.naturalWidth/img.naturalHeight;
+    if(!Number.isFinite(ratio)||ratio<=0)return box;
+    const w=Math.min(box.width,box.height*ratio),h=w/ratio;
+    return {left:box.left+(box.width-w)/2,top:box.top+(box.height-h)/2,width:w,height:h};
+   };
+   const sourcePaint=painted(logo,from),targetPaint=painted(target,to);
+   if(!sourcePaint.width||!targetPaint.width){finish();return;}
+   const scale=targetPaint.width/sourcePaint.width;
+   // The image's transform-origin remains its own top-left box corner.
+   // The painted inset must also scale to land on the target's inset.
+   const x=targetPaint.left-from.left-(sourcePaint.left-from.left)*scale;
+   const y=targetPaint.top-from.top-(sourcePaint.top-from.top)*scale;
+   const motion=logo.animate(
+    [{transform:'translate3d(0,0,0) scale(1)'},{transform:'translate3d('+x+'px,'+y+'px,0) scale('+scale+')'}],
+    {duration:700,easing:'cubic-bezier(.2,.72,.18,1)',fill:'forwards'}
+   );
+   motion.finished.then(()=>{if(finished)return;curtain.dataset.introLanded='true';curtain.classList.add('bp-intro-reveal');window.setTimeout(finish,480);}).catch(finish);
   };
   if(target.complete&&target.naturalWidth){window.setTimeout(fly,1000);return;}
   let resolved=false;const ready=()=>{if(resolved)return;resolved=true;window.setTimeout(fly,1000);};
