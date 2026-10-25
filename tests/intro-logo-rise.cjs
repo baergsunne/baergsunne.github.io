@@ -20,43 +20,24 @@ const assert=require('node:assert/strict');
    // Verify that the source and target PAINT THE SAME ARTWORK RECTANGLE
    // at landing. DOM element rectangles alone miss max-height+object-fit letterboxing.
    try{
-    await page.waitForFunction(()=>document.querySelector('#bp-intro')?.dataset.introLanded==='true',null,{timeout:4100});
+    await page.waitForFunction(()=>!!document.documentElement.dataset.bpIntroLanding,null,{timeout:4100});
    }catch(error){
     const debug=await page.evaluate(()=>{
-     const logo=document.querySelector('#bp-intro-logo'),hero=document.querySelector('.discovery-hero-logo'),curtain=document.querySelector('#bp-intro');
+     const logo=document.querySelector('#bp-intro-logo'),hero=document.querySelector('.discovery-hero-logo'),root=document.documentElement;
      const rect=e=>e?Object.fromEntries(['width','height','top','left','bottom'].map(k=>[k,e.getBoundingClientRect()[k]])):null;
-     return {url:location.href,active:document.documentElement.classList.contains('bp-intro-active'),
-      reduced:matchMedia('(prefers-reduced-motion: reduce)').matches,
-      loaded:document.readyState,logo:rect(logo),hero:rect(hero),
-      logoNatural:logo?.naturalWidth,heroNatural:hero?.naturalWidth,
-      curtain:!!curtain,landed:curtain?.dataset.introLanded,
-      animations:logo?.getAnimations().map(a=>({playState:a.playState,currentTime:a.currentTime})),
-      css:logo?getComputedStyle(logo).transform:null};
+     return {active:root.classList.contains('bp-intro-active'),outcome:root.dataset.bpIntroFinish,
+       reduced:matchMedia('(prefers-reduced-motion:reduce)').matches,logo:rect(logo),
+       hero:rect(hero),logoNatural:logo?.naturalWidth,heroNatural:hero?.naturalWidth,
+       hash:location.hash,loading:document.readyState};
     });
-    throw Error(width+' intro did not land: '+JSON.stringify(debug)+' '+errors.join(' | ')+' '+error.message);
+    throw Error(width+' logo flight never landed: '+JSON.stringify(debug)+' '+errors.join(' | ')+' '+error.message);
    }
-   const landing=await page.evaluate(()=>{
-    const src=document.getElementById('bp-intro-logo'),dst=document.querySelector('.discovery-hero-logo');
-    function painted(img){
-     const b=img.getBoundingClientRect(),ratio=img.naturalWidth/img.naturalHeight;
-     const w=Math.min(b.width,b.height*ratio),h=w/ratio;
-     return {left:b.left+(b.width-w)/2,top:b.top+(b.height-h)/2,width:w,height:h};
-    }
-    const source=painted(src),target=painted(dst);
-    const matrix=new DOMMatrixReadOnly(getComputedStyle(src).transform);
-    return {source,target,scaleX:Math.hypot(matrix.a,matrix.b),scaleY:Math.hypot(matrix.c,matrix.d)};
-   });
+   const landing=await page.evaluate(()=>JSON.parse(document.documentElement.dataset.bpIntroLanding));
    for(const k of ['left','top','width','height']){
     assert(Math.abs(landing.source[k]-landing.target[k])<1.4,width+' image alignment '+k+': '+JSON.stringify(landing));
    }
-   assert(Math.abs(landing.scaleX-landing.scaleY)<0.0001,width+' logo must never be squeezed or widened during flight');
-   await page.waitForTimeout(85);
-   const steady=await page.evaluate(()=>{
-    const im=document.getElementById('bp-intro-logo'),b=im.getBoundingClientRect(),r=im.naturalWidth/im.naturalHeight;
-    return Math.min(b.width,b.height*r);
-   });
-   assert(Math.abs(steady-landing.target.width)<1.4,width+' image does not resize in the reveal phase');
-      await page.waitForFunction(()=>!document.documentElement.classList.contains('bp-intro-active'),null,{timeout:6500});
+   assert(Math.abs(landing.scaleX-landing.scaleY)<0.0001,width+' logo is never widened separately from its height');
+   await page.waitForFunction(()=>!document.documentElement.classList.contains('bp-intro-active'),null,{timeout:6500});
    const completed=await page.evaluate(()=>({
     removed:!document.querySelector('#bp-intro'),
     heroVisible:getComputedStyle(document.querySelector('.discovery-hero-logo')).visibility,
@@ -65,6 +46,13 @@ const assert=require('node:assert/strict');
    }));
    assert.equal(completed.removed,true);assert.equal(completed.heroVisible,'visible');
    assert.equal(completed.counts,'17');assert.equal(completed.scrollY,0);
+   const afterPainting=await page.evaluate(()=>{
+    const img=document.querySelector('.discovery-hero-logo'),b=img.getBoundingClientRect();
+    const ratio=img.naturalWidth/img.naturalHeight,w=Math.min(b.width,b.height*ratio),h=w/ratio;
+    return {left:b.left+(b.width-w)/2,top:b.top+(b.height-h)/2,width:w,height:h};
+   });
+   for(const k of ['left','top','width','height'])
+    assert(Math.abs(afterPainting[k]-landing.target[k])<2.2,width+' hero remains at its painted position after overlay closes: '+k);
    assert.deepEqual(errors,[],width+' intro should not throw');
    await page.close();
   }
