@@ -73,7 +73,7 @@ function tournament(year,status,roundCount=7){
    await page.locator('#login input[name=username]').fill('test-owner');
    await page.locator('#login input[name=password]').fill('local-test-only');
    await page.locator('#login-form button').click();
-   await page.locator('#heading').getByText(/2026/).waitFor().catch(async()=>{await page.locator('#heading').waitFor()});
+   await page.waitForFunction(()=>document.querySelector('#heading')?.textContent.includes('2026'),null,{timeout:8000});
    await page.waitForFunction(()=>document.querySelector('#year').options.length===2);
    const years=await page.locator('#year option').allTextContents();
    assert(years.some(x=>x.includes('2007')&&x.includes('Archiv')),'Historical year in dropdown');
