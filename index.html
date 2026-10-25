@@ -22,11 +22,16 @@ html.bp-intro-active #app .page--home .discovery-hero-logo{visibility:hidden}
  document.addEventListener('DOMContentLoaded',()=>{
   if(finished)return;
   if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){finish();return;}
-  const target=document.querySelector('#app .page--home .discovery-hero-logo');
-  if(!target||!logo.animate){finish('missing-target-or-animation');return;}
+  const liveTarget=()=>document.querySelector('#app .page--home .discovery-hero-logo');
+  const preloadTarget=liveTarget();
+  if(!preloadTarget||!logo.animate){finish('missing-target-or-animation');return;}
   window.scrollTo({top:0,left:0,behavior:'instant'});
   const fly=()=>{
    if(finished)return;
+   // A Live API refresh may redraw Home while the intro is waiting. Never
+   // animate towards a detached stale IMG with a 0x0 bounding rectangle.
+   const target=liveTarget();
+   if(!target){finish('missing-live-target');return;}
    const from=logo.getBoundingClientRect(),to=target.getBoundingClientRect();
    root.dataset.bpIntroLayout=JSON.stringify({
     from:{width:from.width,height:from.height,top:from.top,left:from.left},
@@ -73,9 +78,9 @@ html.bp-intro-active #app .page--home .discovery-hero-logo{visibility:hidden}
     window.setTimeout(()=>finish('landed'),480);
    }).catch(()=>finish('flight-cancelled'));
   };
-  if(target.complete&&target.naturalWidth){window.setTimeout(fly,1000);return;}
+  if(preloadTarget.complete&&preloadTarget.naturalWidth){window.setTimeout(fly,1000);return;}
   let resolved=false;const ready=()=>{if(resolved)return;resolved=true;window.setTimeout(fly,1000);};
-  target.addEventListener('load',ready,{once:true});target.addEventListener('error',ready,{once:true});window.setTimeout(ready,900);
+  preloadTarget.addEventListener('load',ready,{once:true});preloadTarget.addEventListener('error',ready,{once:true});window.setTimeout(ready,900);
  },{once:true});
 })();
 </script></body></html>
