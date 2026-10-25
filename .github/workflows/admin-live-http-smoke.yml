@@ -3,6 +3,10 @@ on:
   push:
     branches:
       - ops/admin-http-smoke-20261025
+  pull_request:
+    paths:
+      - 'tests/admin-live-http-smoke.cjs'
+      - '.github/workflows/admin-live-http-smoke.yml'
 jobs:
   live-http:
     runs-on: ubuntu-latest
