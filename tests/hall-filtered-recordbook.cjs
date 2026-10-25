@@ -92,11 +92,11 @@ const assert=require('node:assert/strict');
    await panel.locator('[data-tool-range="years"]').click();
    assert((await panel.locator('summary small').innerText()).includes('2 Turniere'),'year range selection works');
 
-   await page.locator('[data-action="go"][data-value="stats"]').first().click();
+   await page.locator('[data-action="go"][data-value="stats"]:visible').first().click();
    await page.waitForSelector('.page--stats .tool-choice-panel');
    const stats=await page.locator('.page--stats .tool-choice-panel summary small').innerText();
    assert(!stats.includes('2 Turniere'),'Hall filter does not leak to Statistics overview');
-   await page.locator('[data-action="go"][data-value="fame"]').first().click();
+   await page.locator('[data-action="go"][data-value="fame"]:visible').first().click();
    await page.waitForSelector('.page--fame .tool-choice-panel');
    assert((await page.locator('.page--fame .tool-choice-panel summary small').innerText()).includes('2 Turniere'),'Hall filter persists on navigation');
    assert.deepEqual(errors,[],'no JavaScript runtime failures '+width);
