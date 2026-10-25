@@ -31,7 +31,7 @@ const assert=require('node:assert/strict');
    const panel=page.locator('.page--fame > .tool-choice-panel');
    await panel.locator('summary').click();
    assert(await panel.evaluate(el=>el.open),'accordion opens on tap');
-   assert.equal(await panel.locator('[data-tool-choice="years"]').count(),16,'all 16 original tournament years available');
+   assert.equal(await panel.locator('[data-tool-choice="years"]').count(),17,'all 17 documented tournament years available');
 
    await panel.locator('[data-tool-pick="years"][data-tool-mode="none"]').click();
    for(const year of [2025,2026]){
@@ -83,7 +83,7 @@ const assert=require('node:assert/strict');
    // Shared component resets this page alone; it must not alter Stats overview.
    await panel.locator('[data-tool-reset]').click();
    assert.equal(await page.locator('.page--fame .hof-record').count(),50,'reset restores all original records');
-   assert((await panel.locator('summary small').innerText()).includes('16 Turniere'),'all year count returns');
+   assert((await panel.locator('summary small').innerText()).includes('17 Turniere'),'all year count returns');
    assert(await panel.evaluate(el=>el.open),'reset retains open accordion');
 
    // The same From/To range selection offered in the Statistics overview.
