@@ -359,53 +359,21 @@
  color:#edca88!important;
 }
 
-/* Hall of Fame · compact year/player recordbook scope directly under masthead.
-   Deliberately page-scoped: does not alter selections on other pages. */
-#app .page--fame>.hof-filter{
- width:100%;max-width:100%;min-width:0;margin:16px 0 12px;
- padding:clamp(12px,2.5vw,20px);
- border:1px solid rgba(215,188,131,.34);
- border-left:3px solid #deb575;border-radius:13px;
- background:linear-gradient(225deg,rgba(224,195,134,.095),transparent 48%),linear-gradient(225deg,#1b4332,#0c281f);
- box-shadow:-4px 7px 15px rgba(2,19,12,.20);
+/* Hall of Fame reuses the same Statistics accordion (no duplicated
+   selection-card CSS). Keep the chooser directly beneath its hero. */
+#app .page--fame > .tool-choice-panel{
+ width:100%;min-width:0;margin:16px 0 18px!important;
 }
-#app .page--fame .hof-filter-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
-#app .page--fame .hof-filter-head .overline{font-size:clamp(11px,2.4vw,13px);letter-spacing:.12em;color:#e9c786!important}
-#app .page--fame .hof-filter-reset{
- flex:none;background:transparent;border:0;padding:6px 3px;
- color:#e9c786;font-size:clamp(11px,2.5vw,14px);font-weight:750;cursor:pointer;
+#app .page--fame > .tool-choice-panel summary{
+ min-height:76px;
 }
-#app .page--fame .hof-filter-reset:disabled{opacity:.42;cursor:default}
-#app .page--fame .hof-filter-controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-#app .page--fame .hof-filter-choice{
- display:flex;flex-direction:column;justify-content:center;align-items:stretch;gap:7px;
- min-width:0;min-height:70px;padding:11px clamp(8px,2.1vw,15px);
- background:linear-gradient(225deg,rgba(210,183,129,.09),transparent 68%),#193b2e;
- border:1px solid rgba(175,198,170,.35);border-radius:10px;
- text-align:left;color:#f2ebdd;cursor:pointer;
-}
-#app .page--fame .hof-filter-choice>span{
- display:flex;align-items:center;gap:7px;color:#d7e0ce;font-size:clamp(11px,2.6vw,14px)
-}
-#app .page--fame .hof-filter-choice .bp-icon{width:18px;height:18px;flex:none}
-#app .page--fame .hof-filter-choice>strong{
- display:flex;justify-content:space-between;align-items:center;gap:6px;
- min-width:0;font-size:clamp(13px,3.5vw,17px);line-height:1.25;
- overflow-wrap:anywhere;color:#fff5de;
-}
-#app .page--fame .hof-filter-choice>strong>b{color:#ecc583;font-size:20px;flex:none}
-#app .page--fame .hof-filter-choice:focus-visible,
-#app .page--fame .hof-filter-reset:focus-visible{outline:2px solid #ebc77d;outline-offset:2px}
-#app .page--fame .hof-filter-note{
- margin:9px 0 0;font-size:clamp(11px,2.4vw,13px);line-height:1.35;
- color:#c5d3c1;-webkit-text-fill-color:#c5d3c1;
+#app .page--fame > .tool-choice-panel .tool-choice-body{
+ min-width:0;
 }
 #app .page--fame .hof-filter-scope,
 #app .page--fame .hof-filter-empty{
  padding:9px 11px;border-left:2px solid rgba(231,194,119,.6);
  color:#d6e3cf!important;font-size:13px;line-height:1.5;
 }
-@media(max-width:350px){
- #app .page--fame .hof-filter-controls{gap:7px}
  #app .page--fame .hof-filter-choice{padding:9px 8px;min-height:68px}
 }
