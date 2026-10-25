@@ -1,0 +1,63 @@
+name: Hall of Fame Cloudflare bundle audit
+on:
+  push:
+    branches:
+      - ops/hof-worker-sync-20261025
+  pull_request:
+    paths:
+      - 'live/build.mjs'
+      - '.github/workflows/hof-worker-sync.yml'
+permissions:
+  contents: write
+jobs:
+  bundle:
+    if: "!contains(github.event.head_commit.message, '[hof-bundle-built]')"
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --check live/build.mjs && node --check app.js && node --check hall-records.js
+      - run: node --test live/worker.test.js live/core-mixed-2026.test.js
+      - run: npm run build:preview
+      - run: node --check dist-live-preview-worker.mjs
+      - name: Check every local asset referenced by HTML
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          import crypto from 'node:crypto';
+          const html=fs.readFileSync('dist-live/index.html','utf8');
+          const refs=[...html.matchAll(/(?:src|href)=["']([^"']+)["']/g)]
+           .map(m=>m[1].split('?')[0].split('#')[0])
+           .filter(x=>x&&!x.includes('://')&&!x.startsWith('/'));
+          const text=refs.filter(x=>!x.endsWith('.webp'));
+          const missing=text.filter(x=>!fs.existsSync('dist-live/'+x));
+          if(missing.length)throw Error('Missing embedded assets: '+missing.join(', '));
+          for(const [file,pattern] of [
+           ['app.js','function fameFilter()'],
+           ['hall-records.js','function calculate(seed,filters={}'],
+           ['hall-unified-design.css','.hof-filter-controls'],
+           ['admin-live.js','/api/admin/new-tournament']]){
+           const content=fs.readFileSync('dist-live/'+file,'utf8');
+           if(!content.includes(pattern))throw Error('Expected updated asset missing: '+file);
+          }
+          const buf=fs.readFileSync('dist-live-preview-worker.mjs');
+          const hash=crypto.createHash('sha256').update(buf).digest('hex');
+          fs.mkdirSync('_hof_worker_bundle',{recursive:true});
+          const base=buf.toString('base64');
+          const parts=base.match(/.{1,80000}/g)||[];
+          for(let i=0;i<parts.length;i++)
+           fs.writeFileSync('_hof_worker_bundle/part-'+String(i).padStart(3,'0')+'.txt',parts[i]);
+          fs.writeFileSync('_hof_worker_bundle/manifest.json',JSON.stringify({bytes:buf.length,sha256:hash,count:parts.length,base64Length:base.length,assetRefs:refs.length},null,2));
+          console.log('HOF_WORKER_BUNDLE_SUCCESS',JSON.stringify({bytes:buf.length,sha256:hash,parts:parts.length,checkedRefs:refs.length}));
+          NODE
+      - name: Store isolated verified bundle for connector
+        if: github.event_name == 'push'
+        run: |
+          git config user.name "Bärgsunne CI"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -f _hof_worker_bundle
+          git commit -m "Store tested Hall of Fame preview module [hof-bundle-built]"
+          git push
