@@ -42,3 +42,22 @@ jobs:
           status="$(curl -sS -o /tmp/diag-json -w '%{http_code}' --max-time 18 "$PREVIEW/__admin_health_20261025")"
           test "$status" = "200" || { echo "Probe HTTP $status"; exit 1; }
           node -e "const d=JSON.parse(require('fs').readFileSync('/tmp/diag-json','utf8'));console.log('BACKEND_DIAGNOSTIC',JSON.stringify(d));if(!d.ok)process.exit(1)"
+
+      - name: Verify corrected production admin files and protected API
+        env:
+          API: https://baergsunne-live-isolated-20261015.baergsunne-poker-2026.workers.dev
+        run: |
+          set -euo pipefail
+          status="$(curl -sS -o /tmp/admin-page -w '%{http_code}' --max-time 18 "$API/admin.html")"
+          test "$status" = "200" || { echo "Admin HTML HTTP $status"; exit 1; }
+          grep -q 'Neues Turnier eröffnen' /tmp/admin-page || { echo "New tournament admin UI missing"; exit 1; }
+          grep -q 'Turnier laden' /tmp/admin-page || { echo "Year selector missing"; exit 1; }
+          status="$(curl -sS -o /tmp/admin-js -w '%{http_code}' --max-time 18 "$API/admin-live.js")"
+          test "$status" = "200" || { echo "Admin JS HTTP $status"; exit 1; }
+          grep -q '/api/admin/new-tournament' /tmp/admin-js || { echo "New tournament JS route missing"; exit 1; }
+          grep -q '/api/admin/years' /tmp/admin-js || { echo "Year list JS route missing"; exit 1; }
+          status="$(curl -sS -o /tmp/admin-years-public -w '%{http_code}' --max-time 18 "$API/api/admin/years")"
+          test "$status" = "401" || { echo "Unauthorized admin request unexpectedly HTTP $status"; exit 1; }
+          status="$(curl -sS -o /tmp/admin-editions -w '%{http_code}' --max-time 18 "$API/api/editions")"
+          test "$status" = "200" || { echo "Archive HTTP $status"; exit 1; }
+          node -e "const e=JSON.parse(require('fs').readFileSync('/tmp/admin-editions','utf8')).editions;const a=e.filter(x=>x.year===2026);if(a.length!==1)throw Error('2026 missing or duplicated');const s=a[0].official_standings.map(x=>x.place+'. '+x.player_id+' '+x.points).join(' | ');if(s!=='1. Frauchi 50 | 2. König 39 | 3. Mike 29 | 4. Schnarre 28 | 5. Bröne 27 | 6. Keel 26 | 7. Niko 23 | 8. Mänu 20 | 9. Chopfi 17 | 10. Fösu 11')throw Error('2026 original final standings changed');if(e.some(x=>x.year===2027))throw Error('Unexpected 2027');console.log('CORRECTED_PRODUCTION_ADMIN_AND_2026_ARCHIVE_GREEN')"
