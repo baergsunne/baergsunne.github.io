@@ -18,7 +18,7 @@ html.bp-intro-active #app .page--home .discovery-hero-logo{visibility:hidden}
  const logo=document.getElementById('bp-intro-logo');let finished=false;
  const finish=()=>{if(finished)return;finished=true;root.classList.remove('bp-intro-active');curtain.remove();};
  window.setTimeout(finish,5000);
- window.addEventListener('hashchange',finish,{once:true});
+ window.addEventListener('hashchange',()=>{if(location.hash&&location.hash!=='#home')finish();});
  document.addEventListener('DOMContentLoaded',()=>{
   if(finished)return;
   if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){finish();return;}
