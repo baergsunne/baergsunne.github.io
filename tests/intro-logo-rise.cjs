@@ -19,7 +19,22 @@ const assert=require('node:assert/strict');
    assert.equal(opening.hero,true);assert.equal(opening.count,1);
    // Verify that the source and target PAINT THE SAME ARTWORK RECTANGLE
    // at landing. DOM element rectangles alone miss max-height+object-fit letterboxing.
-   await page.waitForFunction(()=>document.querySelector('#bp-intro')?.dataset.introLanded==='true',null,{timeout:6000});
+   try{
+    await page.waitForFunction(()=>document.querySelector('#bp-intro')?.dataset.introLanded==='true',null,{timeout:4100});
+   }catch(error){
+    const debug=await page.evaluate(()=>{
+     const logo=document.querySelector('#bp-intro-logo'),hero=document.querySelector('.discovery-hero-logo'),curtain=document.querySelector('#bp-intro');
+     const rect=e=>e?Object.fromEntries(['width','height','top','left','bottom'].map(k=>[k,e.getBoundingClientRect()[k]])):null;
+     return {url:location.href,active:document.documentElement.classList.contains('bp-intro-active'),
+      reduced:matchMedia('(prefers-reduced-motion: reduce)').matches,
+      loaded:document.readyState,logo:rect(logo),hero:rect(hero),
+      logoNatural:logo?.naturalWidth,heroNatural:hero?.naturalWidth,
+      curtain:!!curtain,landed:curtain?.dataset.introLanded,
+      animations:logo?.getAnimations().map(a=>({playState:a.playState,currentTime:a.currentTime})),
+      css:logo?getComputedStyle(logo).transform:null};
+    });
+    throw Error(width+' intro did not land: '+JSON.stringify(debug)+' '+errors.join(' | ')+' '+error.message);
+   }
    const landing=await page.evaluate(()=>{
     const src=document.getElementById('bp-intro-logo'),dst=document.querySelector('.discovery-hero-logo');
     function painted(img){
