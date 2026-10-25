@@ -47,7 +47,16 @@ async function attempt(fn){
    catch(loadError){message(loadError.message,'error',true)}
   }else message(e.message,'error',true);
   if(e.message==='Anmeldung erforderlich.'){$('panel').hidden=true;$('login').hidden=false;token='';state=null}
- }finally{pending=false;setBusy(false)}
+ }finally{
+  pending=false;setBusy(false);
+  // During reload the status can change (e.g. publish enables Withdraw), so
+  // calculate these two controls from the fresh D1 document, not old flags.
+  if(state&&!$('round-panel').hidden){
+   const n=Number($('round').value),t=state.document;
+   $('withdraw').disabled=!t.published[n];
+   $('draft').disabled=t.status==='final';
+  }
+ }
 }
 function selected(){return [...document.querySelectorAll('[data-place]')].map(x=>x.value)}
 function confirmedPlaces(){
