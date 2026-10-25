@@ -3,3 +3,23 @@
 .stand-row{grid-template-columns:2rem minmax(0,1fr) 4.2rem 4rem;gap:5px;align-items:center;font-size:clamp(12px,3.4vw,15px)}
 .stand-row span:nth-child(n+3){text-align:right;font-variant-numeric:tabular-nums}
 .stand-row span:nth-child(2){overflow-wrap:anywhere;font-weight:700}
+
+
+/* Admin workflow: the same Bärgsunne heritage card language and a clearly
+   identifiable result at the top after any confirmed server mutation. */
+main>section#panel{background:linear-gradient(225deg,#234733 0%,#142f22 55%,#09241a 100%);box-shadow:-4px 7px 18px rgba(2,16,11,.26);border-color:rgba(235,196,126,.38)}
+#start-new{background:linear-gradient(225deg,#254e37,#103527 65%,#09261c);border:1px solid rgba(236,198,130,.52);box-shadow:-3px 7px 16px rgba(2,17,12,.25)}
+#start-new h3{margin:0 0 7px;color:#f1cd8d}
+#start-new p{line-height:1.55;color:#d3dfd3}
+#start-tournament{display:block;width:100%;border:1px solid #efd28c;background:linear-gradient(125deg,#efd08a,#d3ae6d);color:#133626}
+#message{scroll-margin-top:12px;margin:17px 0;min-height:45px;line-height:1.5;border:1px solid rgba(233,194,117,.44);padding:13px 15px;box-shadow:-4px 7px 12px rgba(2,17,12,.23);overflow-wrap:anywhere}
+#message[data-kind="success"]{background:linear-gradient(225deg,#225940,#123b2b 58%,#082e21);border-color:#e8c37e;color:#fff0d2;font-weight:750}
+#message[data-kind="error"]{background:linear-gradient(225deg,#633835,#3a201e);border-color:#e7a9a0;color:#fff5ed;font-weight:700}
+#message[data-kind="info"]{background:linear-gradient(225deg,#284d36,#143628);color:#e5ebdc}
+#message:focus{outline:2px solid #f1d094;outline-offset:3px}
+#year{font-weight:800;font-variant-numeric:tabular-nums;min-height:52px;appearance:auto}
+#panel h2,#panel h3{color:#eac47f}
+#panel button:not(.danger){box-shadow:-2px 5px 10px rgba(3,19,13,.20)}
+button:disabled{cursor:wait}
+#standings .muted{line-height:1.55;padding:8px 0 4px}
+@media(max-width:390px){#panel{padding:14px}#start-new{padding:14px}#standings .stand-row{font-size:11px;gap:3px}}
