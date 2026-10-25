@@ -188,7 +188,8 @@ function calculate(seed,filters={}){
   return `Original: ${round(x.rawValue)} ${x.rawUnit} in ${x.roundCount} ${x.roundCount===1?'Runde':'Runden'}.`;
  }
  function add(category,title,values,unit,description,opt={}){
-  const eligible=values.filter(x=>Number.isFinite(x.value));
+  // An isolated year/player selection may have no candidates for a record.
+  const eligible=(values||[]).filter(x=>Number.isFinite(x.value));
   if(!eligible.length)return;
   const sorted=eligible.sort((a,b)=>(opt.low?a.value-b.value:b.value-a.value)||String(a.name).localeCompare(String(b.name),'de'));
   const peak=sorted[0].value;
