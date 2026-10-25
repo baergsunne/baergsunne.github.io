@@ -96,7 +96,8 @@ test('incomplete season cannot be archived and public draft remains empty',async
  assert.equal(db.prepare('SELECT count(*) AS n FROM audit WHERE action=?').get('finalize').n,0);
  db.close();
 });
-\ntest('no future tournament can be started while the previous year is incomplete or historical archives are rewritten',async()=>{
+
+test('no future tournament can be started while the previous year is incomplete or historical archives are rewritten',async()=>{
  const {env,db}=fixture(),c=client(env),source=fs.readFileSync(new URL('../data.js',import.meta.url));
  await c.send('/api/setup','POST',{secret:env.BOOTSTRAP_SECRET,username:'owner',password:'a-very-strong-password'});
  const anon=await c.send('/api/admin/years');
