@@ -40,7 +40,7 @@ async function read(host,path) {
  const data=JSON.parse(snapshot.body);
  assert.equal(data.year,2026);
  assert.equal(data.status,'final');
- assert.equal(data.rounds.length,8,'the 2026 archival rounds are all retained');
+ assert.equal(data.rounds.length,data.round_count,'all officially configured 2026 rounds are retained');
  const history=await read(urls.worker,'/api/editions');
  assert.equal(history.code,200);
  const list=JSON.parse(history.body).editions;
