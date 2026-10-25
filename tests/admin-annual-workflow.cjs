@@ -21,7 +21,7 @@ function tournament(year,status,roundCount=7){
    page.on('pageerror',error=>errors.push(error.message));
    page.on('dialog',async dialog=>{
     dialogMessages.push(dialog.message());
-    await (dialogAnswers.shift()?'accept':'dismiss').call(dialog);
+    if(dialogAnswers.shift())await dialog.accept();else await dialog.dismiss();
    });
    const seasons=new Map([[2026,{revision:60,document:tournament(2026,'final')}]]);let session=false;
    const responses=(data,status=200)=>({status,contentType:'application/json',headers:{'cache-control':'no-store'},body:JSON.stringify(data)});
