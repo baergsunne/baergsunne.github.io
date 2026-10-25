@@ -46,14 +46,14 @@ const sample=e=>{
     draw();
     window.BAERGSUNNE_CHAMPIONSHIP.mount();
    },live);
-   await page.waitForFunction(()=>document.querySelector('.page--live .cl-table tbody tr'),null,{timeout:8000});
+   await page.waitForFunction(()=>document.querySelector('.page--live .championship-live .discovery-live-row:not(.heading)'),null,{timeout:8000});
    const metrics=await page.evaluate(()=>{
     const $=s=>document.querySelector('.page--live '+s);
     const css=e=>{if(!e)return null;const st=getComputedStyle(e),r=e.getBoundingClientRect();return {
      gradient:st.backgroundImage,shadow:st.boxShadow,color:st.color,
      font:st.fontFamily,left:r.left,right:r.right,width:r.width,height:r.height
     }};
-    const rowCount=$$('.cl-table tbody tr');
+    const rowCount=$('.discovery-live-row:not(.heading)');
     function $$(s){return document.querySelectorAll('.page--live '+s);}
     const boards=[...$$('.discovery-live-row:not(.heading)')];
     return {
@@ -62,16 +62,19 @@ const sample=e=>{
       leader:$('.cl-leader-score strong')?.textContent,
       stage:css($('.cl-leader')),kpi:css($('.cl-kpis>div')),block:css($('.cl-block')),
       master:css($('.discovery-live')),admin:css($('.live-admin-entry')),
-      heading:css($('.cl-head h2')),bigHeader:css($('.cl-table thead th')),
-      rankRow:css($('.cl-table tbody tr')),rankFirst:css($('.cl-table tbody td:first-child')),
-      link:css($('.cl-table .cl-player-link')),
-      legacyRow:css($('.discovery-live-row:not(.heading)')),
+      heading:css($('.cl-head h2')),bigHeader:css($('.discovery-live-row.heading>span:first-child')),
+      rankRow:css($('.discovery-live-row:not(.heading)')),rankFirst:css($('.discovery-live-row:not(.heading)>span:first-child')),
       form:css($('.cl-form li')),
       chart:css($('.cl-chart')),
       headerFont:getComputedStyle($('.premium-masthead h1')).fontFamily,
       rowCount:rowCount.length,boards:boards.length,
-      winner:$('.cl-table tbody tr:first-child .cl-player-link')?.textContent,
-      points:$('.cl-table tbody tr:first-child td:nth-child(3)')?.textContent,
+      winner:$('.discovery-live-row:not(.heading) strong')?.firstChild?.textContent?.trim(),
+      points:$('.discovery-live-row:not(.heading)>span:last-child')?.textContent,
+      singleTable:$('.discovery-live-table').length===1,
+      singleCard:$('.discovery-live').length===1,
+      noDuplicate:$('.cl-table,.cl-table-wrap').length===0,
+      noRemoved:!['Rundensieger','Laufende Bestwerte 2026','Spielerprofile · Live','Rundenergebnisse'].some(x=>[...$('.discovery-live h3')].some(h=>h.textContent.trim()===x)),
+      placed:!!$('.championship-live>.discovery-live')&&$('.championship-live>.discovery-live').previousElementSibling?.classList.contains('cl-leader'),
       year:$('.cl-kicker')?.textContent,
       status:$('.cl-status')?.textContent,
       trophy:$('.cl-leader-trophy')?.getAttribute('src'),
@@ -87,8 +90,10 @@ const sample=e=>{
    assert.equal(metrics.leader,leader.player_id);
    assert.equal(metrics.winner,leader.player_id);
    assert(metrics.points.includes(String(leader.points)),'Official champion points unchanged');
-   assert.equal(metrics.rowCount,edition.players.length,'Detailed standings preserve all competitors');
-   assert.equal(metrics.boards,edition.players.length,'Classic live ranking preserves all competitors');
+   assert.equal(metrics.rowCount,edition.players.length,'The sole Live-Turniertabelle preserves all competitors');
+   assert.equal(metrics.boards,edition.players.length,'One ranking with all published players');
+   assert(metrics.singleTable&&metrics.singleCard&&metrics.noDuplicate&&metrics.noRemoved,'Only the requested Live-Turniertabelle remains; supplementary content removed');
+   assert(metrics.placed,'The Live-Turniertabelle replaces Meisterschaftstabelle after the leader card');
    assert.equal(metrics.status,'ABGESCHLOSSEN','Finished 2026 status stays final');
    assert(metrics.year.includes('2026'));
    assert.equal(metrics.trophy,'assets/trophy-premium.webp');
@@ -96,7 +101,7 @@ const sample=e=>{
    assert(metrics.details>0,'Original open chart retained');
    assert(metrics.pageOverflow<=2,width+' live page must not overflow viewport: '+metrics.pageOverflow);
    assert(metrics.left>=0&&metrics.right<=width+2,width+' live page bounds');
-   for(const name of ['stage','kpi','block','master','admin','rankRow','legacyRow']){
+   for(const name of ['stage','kpi','block','master','admin','rankRow']){
     const item=metrics[name];assert(item,width+' missing '+name);
     assert(item.gradient.includes('225deg'),width+' '+name+' uses one Heritage light direction: '+item.gradient);
     assert(item.shadow!=='none',width+' '+name+' has downward-left shadow');
@@ -104,7 +109,9 @@ const sample=e=>{
    }
    assert(metrics.rankFirst.color===metrics.bigHeader.color,'Live ranking gold accents match');
    assert.equal(metrics.heading.font,metrics.headerFont,'Live section heading inherits the site typography');
-   assert(metrics.link.height>=32,'Player links retain comfortable touch height');
+   assert(metrics.rankRow.height>=44,'Published rankings remain touch-friendly');
+   await page.evaluate(()=>window.BAERGSUNNE_CHAMPIONSHIP.mount());
+   assert.equal(await page.locator('.page--live .championship-live .discovery-live-table').count(),1,'Repeated mounting must not duplicate or destroy the standings');
    await page.locator('.page--live .cl-block > summary').filter({hasText:'Rundenchronik'}).click();
    assert(await page.locator('.page--live .cl-round').count()===edition.round_count,'Chronology preserves published rounds');
    await page.locator('.page--live .cl-round > summary').first().click();
@@ -117,7 +124,7 @@ const sample=e=>{
    const visible=await page.locator('.page--live .cl-chart polyline').first().evaluate(el=>getComputedStyle(el).display);
    assert.notEqual(visible,'none','Chart series returns when checked');
    assert.deepEqual(errors,[],width+' Live visual regression browser errors');
-   console.log('LIVE_HERITAGE_UNIFIED_PASS',JSON.stringify({width,rows:metrics.rowCount,legacyRows:metrics.boards,
+   console.log('LIVE_HERITAGE_UNIFIED_PASS',JSON.stringify({width,rows:metrics.rowCount,singleTable:metrics.singleTable,
      officialChampion:metrics.winner,status:metrics.status,overflow:metrics.pageOverflow}));
    await page.close();
   }
@@ -126,7 +133,7 @@ const sample=e=>{
   await page.waitForFunction(()=>document.querySelector('.page--live'));
   await page.evaluate(()=>{window.BAERGSUNNE_PUBLIC_LIVE={status:'planned',year:2027,players:[],rounds:[],standings:[]};state.page='live';draw();});
   const planned=await page.evaluate(()=>({message:document.querySelector('.discovery-live-empty')?.innerText,
-   intro:document.querySelector('.cl-table'),bg:getComputedStyle(document.querySelector('.discovery-live-empty')).backgroundImage}));
+   intro:document.querySelector('.championship-live'),bg:getComputedStyle(document.querySelector('.discovery-live-empty')).backgroundImage}));
   assert(planned.message?.includes('Kein aktives Live-Turnier'),'No-live view intact');
   assert.equal(planned.intro,null,'No fake championship while inactive');
   assert(planned.bg.includes('225deg'),'No-live tile shares same gradient');
