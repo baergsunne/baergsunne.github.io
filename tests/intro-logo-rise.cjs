@@ -25,7 +25,7 @@ const assert=require('node:assert/strict');
     const debug=await page.evaluate(()=>{
      const logo=document.querySelector('#bp-intro-logo'),hero=document.querySelector('.discovery-hero-logo'),root=document.documentElement;
      const rect=e=>e?Object.fromEntries(['width','height','top','left','bottom'].map(k=>[k,e.getBoundingClientRect()[k]])):null;
-     return {active:root.classList.contains('bp-intro-active'),outcome:root.dataset.bpIntroFinish,
+     return {active:root.classList.contains('bp-intro-active'),outcome:root.dataset.bpIntroFinish,layout:root.dataset.bpIntroLayout,
        reduced:matchMedia('(prefers-reduced-motion:reduce)').matches,logo:rect(logo),
        hero:rect(hero),logoNatural:logo?.naturalWidth,heroNatural:hero?.naturalWidth,
        hash:location.hash,loading:document.readyState};
