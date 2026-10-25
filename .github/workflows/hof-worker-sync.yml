@@ -36,9 +36,9 @@ jobs:
           const missing=text.filter(x=>!fs.existsSync('dist-live/'+x));
           if(missing.length)throw Error('Missing embedded assets: '+missing.join(', '));
           for(const [file,pattern] of [
-           ['app.js','function fameFilter()'],
+           ['app.js','function famePage(){'],
            ['hall-records.js','function calculate(seed,filters={}'],
-           ['hall-unified-design.css','.hof-filter-controls'],
+           ['hall-unified-design.css','.page--fame > .tool-choice-panel'],
            ['admin-live.js','/api/admin/new-tournament']]){
            const content=fs.readFileSync('dist-live/'+file,'utf8');
            if(!content.includes(pattern))throw Error('Expected updated asset missing: '+file);
