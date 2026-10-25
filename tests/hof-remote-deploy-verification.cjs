@@ -17,6 +17,15 @@ async function get(url){const ac=new AbortController();const timeout=setTimeout(
   assert.equal(r.status,200,'New Hall asset must load: '+file);
   assert(r.body.includes(expected),'New Hall code must be active: '+file);
  }
+ for(const [file,expected] of [
+  ['app.js','function fameFilter()'],
+  ['hall-records.js','function calculate(seed,filters={})'],
+  ['hall-unified-design.css','.hof-filter-controls']
+ ]){
+  const r=await get(live+'/'+file);
+  assert.equal(r.status,200,'Cloudflare embedded Hall file: '+file);
+  assert(r.body.includes(expected),'Cloudflare embedded Hall code must match: '+file);
+ }
  const admin=await get(live+'/admin.html');
  assert.equal(admin.status,200,'Existing live Admin remains available');
  assert.match(admin.body,/Neues Turnier eröffnen/);
