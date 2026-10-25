@@ -53,7 +53,7 @@ const sample=e=>{
      gradient:st.backgroundImage,shadow:st.boxShadow,color:st.color,
      font:st.fontFamily,left:r.left,right:r.right,width:r.width,height:r.height
     }};
-    const rowCount=$('.discovery-live-row:not(.heading)');
+    const rowCount=$$('.discovery-live-row:not(.heading)');
     function $$(s){return document.querySelectorAll('.page--live '+s);}
     const boards=[...$$('.discovery-live-row:not(.heading)')];
     return {
@@ -70,10 +70,10 @@ const sample=e=>{
       rowCount:rowCount.length,boards:boards.length,
       winner:$('.discovery-live-row:not(.heading) strong')?.firstChild?.textContent?.trim(),
       points:$('.discovery-live-row:not(.heading)>span:last-child')?.textContent,
-      singleTable:$('.discovery-live-table').length===1,
-      singleCard:$('.discovery-live').length===1,
-      noDuplicate:$('.cl-table,.cl-table-wrap').length===0,
-      noRemoved:!['Rundensieger','Laufende Bestwerte 2026','Spielerprofile · Live','Rundenergebnisse'].some(x=>[...$('.discovery-live h3')].some(h=>h.textContent.trim()===x)),
+      singleTable:$$('.discovery-live-table').length===1,
+      singleCard:$$('.discovery-live').length===1,
+      noDuplicate:$$('.cl-table,.cl-table-wrap').length===0,
+      noRemoved:!['Rundensieger','Laufende Bestwerte 2026','Spielerprofile · Live','Rundenergebnisse'].some(x=>[...$$('.discovery-live h3')].some(h=>h.textContent.trim()===x)),
       placed:!!$('.championship-live>.discovery-live')&&$('.championship-live>.discovery-live').previousElementSibling?.classList.contains('cl-leader'),
       year:$('.cl-kicker')?.textContent,
       status:$('.cl-status')?.textContent,
