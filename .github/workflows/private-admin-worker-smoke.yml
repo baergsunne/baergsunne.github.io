@@ -20,7 +20,9 @@ jobs:
           set -euo pipefail
           for route in /admin.html /api/admin/years /api/live; do
             status="$(curl -L -sS -o /tmp/preview-response -w '%{http_code}' --max-time 18 "$PREVIEW$route")"
-            test "$status" = "200" || { echo "Preview returned HTTP $status for $route"; exit 1; }
+            echo "Private preview HTTP $status for $route"
+            echo "BODY_PREFIX: $(head -c 160 /tmp/preview-response | tr '\\n' ' ')"
+            test "$status" = "200" || { echo "Unexpected preview status"; exit 1; }
             grep -q 'Private Bärgsunne Vorschau' /tmp/preview-response || { echo "Private gate missing on $route"; exit 1; }
           done
           echo "PRIVATE_PREVIEW_GATE_OK"
