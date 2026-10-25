@@ -63,7 +63,7 @@ const assert=require('node:assert/strict');
      rivalCount:data.records.filter(r=>r.category==='Rivalitäten').length,
      count:document.querySelectorAll('.page--fame .hof-record').length,
      computedCount:data.records.length,
-     hasUnofficial:ownerRecords.some(r=>r.table.some(x=>x.name.replace(/\\s+\\(\\d{4}\\)$/,'')!=='Frauchi')),
+     hasUnofficial:ownerRecords.some(r=>r.table.some(x=>x.name.replace(/\s+\(\d{4}\)$/,'')!=='Frauchi')),
      horizontalOverflow:document.documentElement.scrollWidth>innerWidth+2
     };
    });
