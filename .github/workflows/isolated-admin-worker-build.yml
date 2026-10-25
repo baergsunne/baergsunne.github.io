@@ -15,7 +15,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - run: node --check admin-live.js && node --test live/worker.test.js
+      - run: node --check admin-live.js && node --test live/worker.test.js live/core-mixed-2026.test.js
       - run: npm run build:preview
       - name: Package checked module for isolated Cloudflare upload
         run: |
