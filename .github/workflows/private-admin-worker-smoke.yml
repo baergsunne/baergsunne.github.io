@@ -1,0 +1,31 @@
+name: Private Admin Worker Smoke
+on:
+  push:
+    branches:
+      - ops/admin-worker-build-20261025
+permissions:
+  contents: read
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Verify private preview still requires gate
+        env:
+          PREVIEW: https://baergsunne-live-private-preview.baergsunne-poker-2026.workers.dev
+        run: |
+          set -euo pipefail
+          for route in /admin.html /api/admin/years /api/live; do
+            status="$(curl -L -sS -o /tmp/preview-response -w '%{http_code}' --max-time 18 "$PREVIEW$route")"
+            test "$status" = "200" || { echo "Preview returned HTTP $status for $route"; exit 1; }
+            grep -q 'Private Bärgsunne Vorschau' /tmp/preview-response || { echo "Private gate missing on $route"; exit 1; }
+          done
+          echo "PRIVATE_PREVIEW_GATE_OK"
+      - name: Verify public 2026 read API unchanged
+        env:
+          API: https://baergsunne-live-isolated-20261015.baergsunne-poker-2026.workers.dev
+        run: |
+          set -euo pipefail
+          status="$(curl -sS -o /tmp/live-response -w '%{http_code}' --max-time 18 "$API/api/live")"
+          test "$status" = "200" || { echo "Public API HTTP $status"; exit 1; }
+          node -e "const s=require('fs').readFileSync('/tmp/live-response','utf8');const d=JSON.parse(s);if(d.year!==2026||d.status!=='final')throw Error('Unexpected public tournament year/status');console.log('PUBLIC_LIVE_2026_UNCHANGED')"
