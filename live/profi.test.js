@@ -138,9 +138,9 @@ test('spectator WebSocket is origin-bound, capability-bound and never accepts a 
 });
 test('official mode uses registered roster and may only write a non-public draft for a nonfinal round',async()=>{
  const {env,db}=fixture(),c=client(env);await login(c);
- const config={year:2027,roundCount:2,players:['Anna','Berta','Carlo'],points:[10,8,6]};
+ const config={year:2026,roundCount:2,players:['Anna','Berta','Carlo'],points:[10,8,6]};
  assert.equal((await c.send('/api/admin/config','PUT',{revision:null,document:config})).code,200);
- let p=await c.send('/api/profi/create','POST',{mode:'official',year:2027,round:1});
+ let p=await c.send('/api/profi/create','POST',{mode:'official',year:2026,round:1});
  assert.equal(p.code,201);
  const id=p.value.id;
  assert.deepEqual(p.value.document.names,config.players);
@@ -151,11 +151,11 @@ test('official mode uses registered roster and may only write a non-public draft
  assert.equal(r.code,200);
  const d=await c.send('/api/profi/draft','POST',{id,revision:4,championshipRevision:0});
  assert.equal(d.code,200,JSON.stringify(d.value));
- const state=await c.send('/api/admin/state?year=2027');
+ const state=await c.send('/api/admin/state?year=2026');
  assert.deepEqual(state.value.document.rounds[1],['Anna','Carlo','Berta']);
  assert.equal(state.value.document.published[1],undefined);
- const snapshot=await c.send('/api/live?year=2027');
+ const snapshot=await c.send('/api/live?year=2026');
  assert.equal(snapshot.value.rounds.length,0);
- assert.equal(db.prepare('SELECT count(*) AS n FROM audit WHERE year=2027').get().n,2);
- assert.equal((await c.send('/api/profi/create','POST',{mode:'official',year:2027,round:4})).code,409);
+ assert.equal(db.prepare('SELECT count(*) AS n FROM audit WHERE year=2026').get().n,2);
+ assert.equal((await c.send('/api/profi/create','POST',{mode:'official',year:2026,round:4})).code,409);
 });
