@@ -10,24 +10,25 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 4
     steps:
-      - name: Diagnose HTTPS response and confirm private access gate
+      - name: Assert private gate, neutral spectator assets, and viewer token security
         shell: bash
         env:
           BASE: https://baergsunne-profi-timer-preview-20261028.baergsunne-poker-2026.workers.dev
-          OLD: https://baergsunne-blinds-timer-preview-20261017.baergsunne-poker-2026.workers.dev
         run: |
           set -euo pipefail
-          for p in / /watch.html /api/profi/watch?id=00000000000000000000000000000000; do
-            response="$(curl -sS --connect-timeout 10 --max-time 20 -D /tmp/headers -o /tmp/body -w '%{http_code}' "$BASE$p")"
-            echo "PATH $p HTTP $response"
-            grep -iE '^(server:|content-type:|www-authenticate:|location:|cf-ray:|x-robots-tag:|cf-access:)' /tmp/headers || true
-            echo -n 'Body snippet: '; head -c 250 /tmp/body | tr '\n' ' '; echo
+          for path in / /profi-live-admin.html /setup.html /api/profi/list; do
+            http="$(curl -sS -o /tmp/locked -w '%{http_code}' --connect-timeout 10 --max-time 20 "$BASE$path")"
+            test "$http" = 401
+            grep -q 'Private Bärgsunne Vorschau' /tmp/locked
+            echo "PASS: $path protected (401)"
           done
-          oldcode="$(curl -sS --connect-timeout 10 --max-time 20 -o /dev/null -w '%{http_code}' "$OLD/")"
-          echo "OLDER PREVIEW ROOT STATUS $oldcode"
-          rootcode="$(curl -sS --connect-timeout 10 --max-time 20 -D /tmp/rootheaders -o /tmp/rootbody -w '%{http_code}' "$BASE/")"
-          case "$rootcode" in
-            200) grep -q 'Private Bärgsunne Vorschau' /tmp/rootbody ;;
-            401|403) echo 'Preview remains access-protected at edge; owner access diagnosis required.' ;;
-            *) exit 1 ;;
-          esac
+          for path in /watch.html /watch.js /live/profi-clock.js; do
+            http="$(curl -sS -o /tmp/public -w '%{http_code}' --connect-timeout 10 --max-time 20 "$BASE$path")"
+            test "$http" = 200
+            test -s /tmp/public
+            echo "PASS: $path reachable (200)"
+          done
+          http="$(curl -sS -o /tmp/blocked -w '%{http_code}' --connect-timeout 10 --max-time 20 "$BASE/api/profi/watch?id=00000000000000000000000000000000")"
+          test "$http" = 403
+          grep -q 'Zugriff verweigert' /tmp/blocked
+          echo "PASS: anonymous API 403 and no spectator data exposed"
