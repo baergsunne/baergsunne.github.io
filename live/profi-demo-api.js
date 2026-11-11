@@ -14,6 +14,10 @@ async function capability(env,tag,id){
  return hex(new Uint8Array(await crypto.subtle.sign('HMAC',key,new TextEncoder().encode('demo:'+tag+':'+id))));
 }
 const draftUrl=(url,id,viewer)=>url.origin+'/watch.html#id='+id+'&token='+viewer;
+async function viewerToken(env,doc){
+ const key=await crypto.subtle.importKey('raw',new TextEncoder().encode(env.PROFI_VIEWER_SECRET),{name:'HMAC',hash:'SHA-256'},false,['sign']);
+ return hex(new Uint8Array(await crypto.subtle.sign('HMAC',key,new TextEncoder().encode('profi:watch:'+doc.id+':'+doc.viewerVersion))));
+}
 async function body(req){
  const s=await req.text();if(s.length>6000)throw Object.assign(Error('Eingabe zu gross.'),{status:413});
  try{return JSON.parse(s||'{}');}catch{throw Object.assign(Error('Ungültige Eingabe.'),{status:400})}
@@ -43,6 +47,13 @@ export async function handleDemo({req,env,url}){
    const data=await body(req);
    validate(['official','free'].includes(data.mode),'Modus ungültig.');
    const now=Date.now(),expires=now+LIFETIME;
+   const names=fixtures(data.mode,data.names);
+   const stack=data.stack===undefined?5000:Number(data.stack),rebuyStack=data.rebuyStack===undefined?stack:Number(data.rebuyStack),addonStack=data.addonStack===undefined?stack:Number(data.addonStack);
+   const mode=data.mode,title=mode==='official'?'Bärgsunne · Test-Runde 1':String(data.title||'Privater Pokerabend').trim();
+   const id=hex(crypto.getRandomValues(new Uint8Array(16)));
+   const doc=makeTournament({id,mode,title,names,year:mode==='official'?2027:null,round:mode==='official'?1:null,stack,rebuyStack,addonStack});
+   doc.demo=true;doc.demoExpiresAt=expires;
+   await env.DB.prepare('DELETE FROM profi_demo_sessions WHERE expires_at<?').bind(now).run();
    const count=await env.DB.prepare('SELECT COUNT(*) AS n FROM profi_demo_sessions WHERE expires_at>?').bind(now).first();
    validate((count?.n||0)<MAX_ACTIVE,'Alle Demo-Plätze sind belegt. Bitte später erneut versuchen.',429);
    const day=new Date(now).toISOString().slice(0,10),ip=req.headers.get('cf-connecting-ip')||'local';
@@ -52,21 +63,13 @@ export async function handleDemo({req,env,url}){
     const result=await env.DB.prepare('INSERT INTO profi_demo_limits(bucket,count,expires_at) VALUES(?,1,?) ON CONFLICT(bucket) DO UPDATE SET count=count+1 WHERE count<?').bind(key,now+86400000,limit).run();
     validate(result.meta.changes===1,'Demo-Tageskontingent erreicht. Bitte später erneut versuchen.',429);
    }
-   const id=hex(crypto.getRandomValues(new Uint8Array(16)));
-   const mode=data.mode,names=fixtures(mode,data.names);
-   const stack=data.stack===undefined?5000:Number(data.stack);
-   const rebuyStack=data.rebuyStack===undefined?stack:Number(data.rebuyStack);
-   const addonStack=data.addonStack===undefined?stack:Number(data.addonStack);
-   const title=mode==='official'?'Bärgsunne · Test-Runde 1':String(data.title||'Privater Pokerabend').trim();
-   const doc=makeTournament({id,mode,title,names,year:mode==='official'?2027:null,round:mode==='official'?1:null,stack,rebuyStack,addonStack});
-   doc.demo=true;doc.demoExpiresAt=expires;
    const write=await env.DB.prepare('INSERT INTO profi_demo_sessions(id,revision,document,expires_at,created_at,updated_at) VALUES(?,0,?,?,?,?)').bind(id,JSON.stringify(doc),expires,now,now).run();
    validate(write.meta.changes===1,'Demo konnte nicht eröffnet werden.',503);
-   return json({id,revision:0,operator:await capability(env,'operator',id),document:doc,summary:viewerSnapshot(doc,now),viewerUrl:draftUrl(url,id,await capability(env,'watch',id)),expiresAt:expires},201);
+   return json({id,revision:0,operator:await capability(env,'operator',id),document:doc,summary:viewerSnapshot(doc,now),viewerUrl:draftUrl(url,id,await viewerToken(env,doc)),expiresAt:expires},201);
   }
   if(path==='/api/profi/demo/state'&&method==='GET'){
    const {row,doc}=await access(req,env,url);
-   return json({id:doc.id,revision:row.revision,document:doc,summary:viewerSnapshot(doc),viewerUrl:draftUrl(url,doc.id,await capability(env,'watch',doc.id)),expiresAt:row.expires_at});
+   return json({id:doc.id,revision:row.revision,document:doc,summary:viewerSnapshot(doc),viewerUrl:draftUrl(url,doc.id,await viewerToken(env,doc)),expiresAt:row.expires_at});
   }
   if(path==='/api/profi/demo/action'&&method==='PUT'){
    const id=url.searchParams.get('id')||'';
@@ -78,7 +81,7 @@ export async function handleDemo({req,env,url}){
    const updated=await env.DB.prepare('UPDATE profi_demo_sessions SET document=?,revision=revision+1,updated_at=? WHERE id=? AND revision=? AND expires_at>?')
     .bind(JSON.stringify(modified),Date.now(),id,row.revision,Date.now()).run();
    validate(updated.meta.changes===1,'Demo wurde inzwischen verändert. Bitte aktualisieren.',409);
-   return json({revision:row.revision+1,document:modified,summary:viewerSnapshot(modified),viewerUrl:draftUrl(url,id,await capability(env,'watch',id)),expiresAt:row.expires_at});
+   return json({revision:row.revision+1,document:modified,summary:viewerSnapshot(modified),viewerUrl:draftUrl(url,id,await viewerToken(env,modified)),expiresAt:row.expires_at});
   }
   if(path==='/api/profi/demo/draft'&&method==='GET'){
    const {row,doc}=await access(req,env,url);
@@ -86,7 +89,7 @@ export async function handleDemo({req,env,url}){
    const places=ranking(doc).places;validate(Array.isArray(places),'Ergebnis unvollständig.',409);
    return json({demo:true,officialPublication:false,revision:row.revision,year:2027,round:1,
     title:'Unveröffentlichter Ergebnisentwurf · reine Simulation',
-    places:places.map((name,i)=>({place:i+1,name,points:Math.max(0,10-i*2)}))});
+    places:places.map((name,i)=>({place:i+1,name,points:[10,8,6,5,4,3,2,1,0,0][i]??0}))});
   }
   return err('Demofunktion nicht vorhanden.',404);
  }catch(e){
