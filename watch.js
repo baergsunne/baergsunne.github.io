@@ -59,6 +59,7 @@ async function sync(){
   $('notice').hidden=true;loaded=true;paint();connectSocket();
  }catch(e){$('notice').hidden=false;$('notice').textContent=loaded?'Verbindung unterbrochen. Die letzte bekannte Uhrzeit wird weiter angezeigt, bis wieder eine Verbindung besteht.':'Verbindung noch nicht verfügbar. Bitte erneut versuchen.';}finally{activeSync=false;}
 }
+document.getElementById('refresh')?.addEventListener('click',sync);
 window.addEventListener('online',sync);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)sync()});
 setInterval(tick,1000);
