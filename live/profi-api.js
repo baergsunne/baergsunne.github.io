@@ -45,12 +45,17 @@ export async function handleProfi({req,env,ctx,url,auth,entry,update}){
   if(path==='/api/profi/watch'&&method==='GET'){
    const id=url.searchParams.get('id')||'',ticket=req.headers.get('x-viewer-token')||'';
    if(!idPattern.test(id)||!tokenPattern.test(ticket))return fail('Zugriff verweigert.',403);
-   const row=await getRow(env,id);
+   let row=await getRow(env,id),isDemo=false;
+   if(!row){
+    row=await env.DB.prepare('SELECT * FROM profi_demo_sessions WHERE id=?').bind(id).first();
+    isDemo=!!row;
+   }
    if(!row)return fail('Zugriff verweigert.',403);
    const d=docOf(row);
    if(!secureEq(ticket,await spectatorToken(env,d)))return fail('Zugriff verweigert.',403);
+   if(isDemo && Number(row.expires_at)<=Date.now())return fail('Demo abgelaufen.',410);
    if(d.status==='finished'||d.status==='cancelled')return fail('Turnier beendet.',410);
-   return reply({revision:row.revision,pushEnabled:!!env.PROFI_EVENTS,...viewerSnapshot(d)});
+   return reply({revision:row.revision,pushEnabled:!isDemo&&!!env.PROFI_EVENTS,...viewerSnapshot(d)});
   }
   if(path==='/api/profi/socket'&&method==='GET'){
    if(!env.PROFI_EVENTS)return fail('Ereignisgesteuerte Live-Verbindung nicht aktiviert.',503);
