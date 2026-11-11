@@ -32,3 +32,20 @@ Administrator des **Testsystems** muss über `/setup.html` einmalig einen separa
 GitHub Actions Live-Smoke: `40611015221` **grün**. Es wurde extern geprüft: Ohne Vorschaucookie HTTP 401 mit Vorschau-Anmeldeseite; die neutrale Zuschaueransicht, das Zuschauer-JS und Blind-Uhrmodul HTTP 200; ungültiger Zuschauer-Token HTTP 403. Die geschützte Administrator-Seite ist ebenfalls HTTP 401. GitHub Integrations-/Browsertests auf dem Branch zuletzt `40610849525` erfolgreich; nachfolgende Regressionsläufe laufen weiterhin.
 
 **Noch keine Abnahme** des echten eingeloggten Test-Admins, der finalen Rundenergebnis-Übergabe und der Live-Zuschauerverbindung zwischen mehreren iPhones. Diese folgen erst nach nutzerseitiger Einrichtung und Tests. Kostenlimite: Free-Tarif ist vom Nutzer bestätigt; OAuth Billing Read ist weiterhin nicht erteilt. Keine gebührenpflichtigen Ressourcen verwendet.
+
+
+## 11. November 2026 – Ohne Vorschaucode und ohne Login testbar
+
+Auf ausdrücklichen Wunsch wurde der isolierte Cloudflare-Testworker `baergsunne-profi-timer-preview-20261028` auf eine **frei erreichbare, aber vollständig fiktive Demo** umgestellt. Direkter Einstieg:
+
+`https://baergsunne-profi-timer-preview-20261028.baergsunne-poker-2026.workers.dev/profi-demo.html`
+
+- `profi-demo.html` und `profi-demo.js` sind ohne Vorschaupasswort und ohne Administratoranmeldung aufrufbar. Auch die Root-Adresse leitet dorthin.
+- Betriebsarten: Bärgsunne-Runde nur mit **zehn synthetischen Spielern im Demojahr 2027** und Freies Turnier mit benutzerdefinierten Testspielern.
+- Vollständige operative Demo mit Start/Pause/Blindwechsel, Ausscheiden/Rebuy/Add-on/Undo, Chipübersicht, neutraler QR-Zuschaueransicht und **nicht-speicherbarem, niemals veröffentlichtem Ergebnisentwurf**.
+- Neu: `live/profi-demo-api.js`, D1-Migration `0003_profi_demo.sql`, Tabellen `profi_demo_sessions` und `profi_demo_limits` auf ausschliesslich isolierter D1. Pro Browser wird eine nicht-ratbare, zeitlich begrenzte Operator-Berechtigung erstellt und lokal gespeichert. Zuschauer-Links sind HMAC-signiert, nur lesend und widerrufbar. Die Demo läuft 90 Minuten; maximale gleichzeitige Sitzungen und Tageslimits schützen das Workers-Free-Kontingent.
+- Worker-Binding `DEMO_ONLY=true`: **sämtliche realen Admin-, Anmelde-, Publikations- und Meisterschafts-APIs geben HTTP 403 zurück**. Nur Demo- und autorisierte Zuschauer-APIs bleiben aktiv. Die vorherige Vorschaucode-Sperre bleibt als Secret intern vorhanden, ist für die Demo jedoch nicht erforderlich.
+- Diese Demo hat keine Verknüpfung zur produktiven Bärgsunne-Website und zur offiziellen D1. `main`, Historie, Ranglisten und deren Freigaben bleiben unverändert.
+- Cloudflare-Worker-Upload und Bindings verifiziert, neue D1-Tabellen geprüft. **Externe GitHub-Actions-HTTP-E2E-Prüfungen des neuen No-Login-Modus sind am 11.11.2026 noch in Warteschlange.** Daher keine Behauptung über bereits bestandene reale Smartphone-Mehrgerätetests. Ein Nutzer kann die HTTPS-Testseite sofort eigenständig öffnen und bedienen.
+
+Die ältere Dokumentation weiter oben beschreibt den *damaligen* passwortgeschützten Stand vom Oktober und ist für die aktuelle öffentliche Demo nicht mehr die Bedienanleitung. Die produktive Administrationsarchitektur bleibt getrennt.
