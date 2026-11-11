@@ -1,4 +1,4 @@
-name: Private Profi-Timer HTTPS Security Smoke
+name: Anonymous Profi-Demo HTTPS Safety Gate
 on:
   push:
     branches: [feature/profi-timer-preview-main-20261028]
@@ -10,25 +10,25 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 4
     steps:
-      - name: Assert private gate, neutral spectator assets, and viewer token security
+      - name: Verify passwordless demo and locked real administration
         shell: bash
         env:
           BASE: https://baergsunne-profi-timer-preview-20261028.baergsunne-poker-2026.workers.dev
         run: |
           set -euo pipefail
-          for path in / /profi-live-admin.html /setup.html /api/profi/list; do
-            http="$(curl -sS -o /tmp/locked -w '%{http_code}' --connect-timeout 10 --max-time 20 "$BASE$path")"
-            test "$http" = 401
-            grep -q 'Private Bärgsunne Vorschau' /tmp/locked
-            echo "PASS: $path protected (401)"
+          for p in /profi-demo.html /profi-demo.js /profi-qr.js /watch.html /watch.js /live/profi-clock.js; do
+            code="$(curl -sS --connect-timeout 10 --max-time 20 -o /tmp/page -w '%{http_code}' "$BASE$p")"
+            test "$code" = 200
+            test -s /tmp/page
+            echo "PASS: Public demo asset $p"
           done
-          for path in /watch.html /watch.js /live/profi-clock.js; do
-            http="$(curl -sS -o /tmp/public -w '%{http_code}' --connect-timeout 10 --max-time 20 "$BASE$path")"
-            test "$http" = 200
-            test -s /tmp/public
-            echo "PASS: $path reachable (200)"
+          curl -fsSL --connect-timeout 10 --max-time 20 "$BASE/" | grep -q 'OHNE ANMELDUNG'
+          echo 'PASS: Root opens the demo without a gate'
+          for p in /api/admin/years /profi-live-admin.html /setup.html /api/profi/state; do
+            code="$(curl -sS -o /tmp/blocked -w '%{http_code}' "$BASE$p")"
+            test "$code" = 403
+            echo "PASS: Privileged route $p blocked"
           done
-          http="$(curl -sS -o /tmp/blocked -w '%{http_code}' --connect-timeout 10 --max-time 20 "$BASE/api/profi/watch?id=00000000000000000000000000000000")"
-          test "$http" = 403
-          grep -q 'Zugriff verweigert' /tmp/blocked
-          echo "PASS: anonymous API 403 and no spectator data exposed"
+          code="$(curl -sS -o /tmp/blocked -w '%{http_code}' "$BASE/api/profi/watch?id=00000000000000000000000000000000")"
+          test "$code" = 403
+          echo 'PASS: Spectator API inaccessible without valid QR token'
