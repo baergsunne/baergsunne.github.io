@@ -1,6 +1,7 @@
 import {freshTournament,validateConfig,validatePlaces,publicSnapshot,finalizedEdition} from './core.js';
 import {handleProfi} from './profi-api.js';
 import {handleDemo} from './profi-demo-api.js';
+import {handleDemo} from './profi-demo-api.js';
 import {ProfiEvents} from './profi-events.js';
 export {ProfiEvents};
 
@@ -35,6 +36,7 @@ return json({revision:row.revision+1,updated_at:at});}
 export default {async fetch(req,env,ctx){
  try {
   const url=new URL(req.url),path=url.pathname,method=req.method;
+  if(env.DEMO_ONLY==='true'&&(path==='/admin.html'||path==='/setup.html'||path==='/profi-live-admin.html'||path==='/api/setup'||path==='/api/login'||path.startsWith('/api/admin/')||(path.startsWith('/api/profi/')&&!path.startsWith('/api/profi/demo/')&&path!=='/api/profi/watch'))){return fail('Nur die öffentliche Test-Demo ist aktiviert.',403);}
   if(env.PREVIEW_REQUIRED==='true'&&!env.PREVIEW_GATE_SECRET)return fail('Private Vorschau noch nicht freigeschaltet.',503);
   if(env.PREVIEW_GATE_SECRET&&!['/','/index.html','/profi-demo.html','/profi-demo.js','/profi-qr.js','/live/profi-clock.js','/watch.html','/watch.js','/api/profi/watch','/api/profi/socket'].includes(path)&&!path.startsWith('/api/profi/demo/')){
    const today=new Date().toISOString().slice(0,10),valid=await digest(env.PREVIEW_GATE_SECRET+':'+today);
