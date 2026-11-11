@@ -1,5 +1,6 @@
 import {freshTournament,validateConfig,validatePlaces,publicSnapshot,finalizedEdition} from './core.js';
 import {handleProfi} from './profi-api.js';
+import {handleDemo} from './profi-demo-api.js';
 import {ProfiEvents} from './profi-events.js';
 export {ProfiEvents};
 
@@ -35,7 +36,7 @@ export default {async fetch(req,env,ctx){
  try {
   const url=new URL(req.url),path=url.pathname,method=req.method;
   if(env.PREVIEW_REQUIRED==='true'&&!env.PREVIEW_GATE_SECRET)return fail('Private Vorschau noch nicht freigeschaltet.',503);
-  if(env.PREVIEW_GATE_SECRET&&!['/watch.html','/watch.js','/live/profi-clock.js','/api/profi/watch','/api/profi/socket'].includes(path)){
+  if(env.PREVIEW_GATE_SECRET&&!['/','/index.html','/profi-demo.html','/profi-demo.js','/profi-qr.js','/live/profi-clock.js','/watch.html','/watch.js','/api/profi/watch','/api/profi/socket'].includes(path)&&!path.startsWith('/api/profi/demo/')){
    const today=new Date().toISOString().slice(0,10),valid=await digest(env.PREVIEW_GATE_SECRET+':'+today);
    const cookie=req.headers.get('cookie')?.match(/(?:^|;\s*)bp_preview=([a-f0-9]{64})(?:;|$)/)?.[1];
    if(!equal(cookie,valid)){
@@ -52,6 +53,7 @@ export default {async fetch(req,env,ctx){
    if(!env.DB)return fail('Datenbank nicht verbunden.',503);
    if(method!=='GET'&&!sameOrigin(req))return fail('Herkunft nicht erlaubt.',403);
    if(method!=='GET'&&!/^application\/json(?:;|$)/i.test(req.headers.get('content-type')||''))return fail('JSON erforderlich.',415);
+   if(path.startsWith('/api/profi/demo/'))return handleDemo({req,env,url});
    if(path.startsWith('/api/profi/'))return handleProfi({req,env,ctx,url,auth,entry,update});
    if(path==='/api/live'&&method==='GET'){
     const requested=url.searchParams.get('year');
