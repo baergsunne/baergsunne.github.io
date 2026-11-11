@@ -1,0 +1,77 @@
+name: Public Demo No-Login HTTPS E2E
+on:
+  push:
+    branches: [feature/profi-timer-preview-main-20261028]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify-public-demo:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check public demo, QR watcher and privileged route isolation
+        env:
+          BASE: https://baergsunne-profi-timer-preview-20261028.baergsunne-poker-2026.workers.dev
+        shell: bash
+        run: |
+          node --input-type=module <<'JS'
+          import assert from 'node:assert/strict';
+          const base=process.env.BASE;
+          async function request(path,method='GET',data,operator='',viewer=''){
+           const headers={'origin':base};
+           if(data!==undefined)headers['content-type']='application/json';
+           if(operator)headers['x-demo-operator']=operator;
+           if(viewer)headers['x-viewer-token']=viewer;
+           const response=await fetch(base+path,{method,headers,body:data===undefined?undefined:JSON.stringify(data)});
+           let value;try{value=await response.json()}catch{value=await response.text()}
+           return {code:response.status,value};
+          }
+          const html=await request('/profi-demo.html');
+          assert.equal(html.code,200,'public demo page visible without passwords');
+          assert.ok(html.value.includes('OHNE ANMELDUNG'));
+          const js=await request('/profi-demo.js');
+          assert.equal(js.code,200,'client-side demo script visible');
+          const admin=await request('/api/admin/years');
+          assert.equal(admin.code,403,'real admin endpoints unavailable');
+          const privateLogin=await request('/profi-live-admin.html');
+          assert.equal(privateLogin.code,403,'real professional admin console locked');
+          const created=await request('/api/profi/demo/create','POST',{mode:'official'});
+          assert.equal(created.code,201,'create fictional Bärgsunne demo without login: '+JSON.stringify(created.value));
+          const {id,operator,viewerUrl}=created.value;
+          assert.deepEqual(created.value.document.names.length,10);
+          assert.equal(created.value.document.demo,true);
+          const token=new URLSearchParams(new URL(viewerUrl).hash.substring(1)).get('token');
+          assert.equal((await request('/api/profi/demo/state?id='+id)).code,403,'non-operator cannot administer demo');
+          assert.equal((await request('/api/profi/demo/state?id='+id,'GET',undefined,operator)).code,200);
+          const noTicket=await request('/api/profi/watch?id='+id);
+          assert.equal(noTicket.code,403);
+          const viewer=await request('/api/profi/watch?id='+id,'GET',undefined,'',token);
+          assert.equal(viewer.code,200,'QR viewer receives fictional tournament');
+          assert.equal(viewer.value.activeCount,10);
+          assert.equal((await request('/api/profi/demo/action?id='+id,'PUT',{revision:0,action:'start'},'0'.repeat(64))).code,403);
+          let r=await request('/api/profi/demo/action?id='+id,'PUT',{revision:0,action:'start'},operator);
+          assert.equal(r.code,200);
+          r=await request('/api/profi/demo/action?id='+id,'PUT',{revision:1,action:'out',name:'Testspieler 10'},operator);
+          assert.equal(r.code,200,'one fictional player can be eliminated');
+          assert.equal(r.value.summary.activeCount,9);
+          const after=await request('/api/profi/watch?id='+id,'GET',undefined,'',token);
+          assert.equal(after.code,200);
+          assert.equal(after.value.activeCount,9,'second device receives new state');
+          r=await request('/api/profi/demo/action?id='+id,'PUT',{revision:2,action:'revoke'},operator);
+          assert.equal(r.code,200);
+          assert.equal((await request('/api/profi/watch?id='+id,'GET',undefined,'',token)).code,403,'old QR is revoked');
+          const renewed=new URLSearchParams(new URL(r.value.viewerUrl).hash.substring(1)).get('token');
+          assert.notEqual(renewed,token);
+          assert.equal((await request('/api/profi/watch?id='+id,'GET',undefined,'',renewed)).code,200);
+          r=await request('/api/profi/demo/action?id='+id,'PUT',{revision:3,action:'cancel'},operator);
+          assert.equal(r.code,200);
+          assert.equal((await request('/api/profi/watch?id='+id,'GET',undefined,'',renewed)).code,403);
+          const free=await request('/api/profi/demo/create','POST',{mode:'free',names:['Anna','Berta','Carlo'],title:'Firma Test'});
+          assert.equal(free.code,201,'independent free turnier also works');
+          assert.equal(free.value.document.mode,'free');
+          console.log('PASS: Public demo without code/login, fake official and free mode, HMAC QR, real multi-request state and revocation, protected privileged APIs.');
+          JS
